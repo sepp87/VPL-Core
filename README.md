@@ -33,6 +33,7 @@ STYLE
 
 
 TODO
+* Add customization functionality through config file
 * Add exceptions
 * Add comments
 * Add hints

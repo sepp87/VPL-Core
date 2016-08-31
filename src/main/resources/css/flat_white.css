@@ -1,0 +1,290 @@
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('SourceCodePro-Regular.otf');
+}
+
+@font-face {
+    src: url('fontawesome-webfont.ttf');
+}
+
+.radial-menu {
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
+}
+
+.text-area{
+    -fx-background-color: transparent;
+    -fx-font-family:'Source Code Pro';
+    -fx-pref-column-count: 22;
+    -fx-pref-row-count: 10;
+    -fx-wrap-text: true;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-bar:vertical:disabled {
+    -fx-opacity: 0;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent,
+        linear-gradient(from 0px 3.5px to 0px 12px, repeat, #5F5F5F 0%, transparent 10%);
+    /*linear-gradient(from 0px 3.5px to 0px 12px, repeat, #b5b5b5 0%, transparent 10%);*/
+    -fx-background-insets: 16 0 0 0;
+}
+
+
+.text-area .scroll-pane .content .text {
+    /*-fx-line-spacing: 7;*/
+}
+
+.text-field{
+    -fx-background-color: transparent;
+    -fx-font-family: 'Source Code Pro';
+    -fx-pref-column-count: 22;
+    -fx-prompt-text-fill: #5F5F5F;
+}
+
+.label{
+    -fx-font-size: 10;
+}
+
+.h3 {
+    -fx-padding: 6 6 6 10;
+    -fx-font-size: 10;
+    -fx-font-weight: bold;
+}
+
+.vpl {
+    -fx-background-color: #efefef;
+}
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-font-family: 'Source Code Pro';
+}
+
+.list-view .list-cell {
+    -fx-text-fill: #5F5F5F;
+}
+
+.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:filled:hover {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:even {  
+    -fx-background-color: rgba(127,127,127,0.1);
+}
+
+.list-view .list-cell:odd { 
+    -fx-background-color: transparent;
+}
+
+.list-view .scroll-bar:vertical:disabled {
+    -fx-max-width: 0;
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-opacity: 0;
+}
+
+.list-view .scroll-bar:horizontal .increment-arrow,
+.list-view .scroll-bar:horizontal .decrement-arrow,
+.list-view .scroll-bar:horizontal .increment-button,
+.list-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}
+
+.titled-pane > .title 
+{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
+}
+
+.titled-pane > *.content 
+{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-box-border: transparent;
+    -fx-padding: 0.167em;
+}
+
+.vpl-element {
+    -fx-background-color: transparent;
+    -fx-background-insets: 5 5 5 5;
+}
+
+.vpl-button{
+    -fx-padding: 0;
+    /*-fx-label-padding: 0;*/
+    -fx-background-color: transparent;
+    -fx-border-insets: 0;
+    -fx-border-width: 0;
+    -fx-font-family: FontAwesome;
+    -fx-font-size: 24;
+    -fx-text-fill: #5F5F5F;
+}
+
+.vpl-button:hover{
+    -fx-text-fill: salmon;
+}
+
+.vpl-tag{
+    -fx-padding: 0;
+    -fx-alignment: center-left;
+    -fx-background-color: transparent;
+    -fx-border-insets: 0;
+    -fx-border-width: 0;
+    -fx-font-family: Arial;
+    -fx-font-size: 18;
+    -fx-text-fill: #5F5F5F;
+    -fx-highlight-fill: #F8644C;
+}
+
+.selection-rectangle {
+    -fx-border-color: lightgrey;
+    -fx-border-width: 3;
+    -fx-border-style: dotted;
+    -fx-border-radius: 10;
+}
+
+.hub {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4;
+    -fx-border-color: white;
+    -fx-border-insets: 0 0 0 0;
+    -fx-border-width: 0;
+    -fx-border-style: solid;
+    -fx-border-radius: 0;
+    -fx-padding: 10 0 10 0;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
+}
+
+.hub:hover {
+    /*-fx-background-color: pink;*/
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
+}
+
+.hub-selected{
+    -fx-background-color: lightblue;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
+    /*-fx-border-color: #F8B516;*/
+    /*-fx-border-color: #5F5F5F;*/
+    /*    -fx-border-color: #6385c7;
+        -fx-border-width: 2;
+        -fx-border-radius: 6;
+        -fx-border-insets: -5;*/
+}
+
+.hub-header{
+    -fx-padding: 0 0 5 0;
+}
+
+.hub-awesome-icon{
+    -fx-font-family: FontAwesome;
+    -fx-font-size: 30;
+    -fx-text-fill: #5F5F5F;
+}
+
+.hub-awesome-icon:hover{
+    -fx-text-fill: salmon;
+}
+
+.hub-text{
+    -fx-font-size: 30;
+    -fx-text-fill: #5F5F5F;
+    -fx-font-weight: bold;
+}
+
+.hub-group {
+    -fx-background-color: transparent;
+    -fx-border-color: lightblue;
+    -fx-border-insets: -10;
+    -fx-border-width: 2;
+    -fx-border-style: solid;
+    -fx-border-radius: 10;
+}
+
+.port{
+    -fx-min-width: 10;
+    -fx-min-height: 24;
+    -fx-max-width: 12;
+    -fx-max-height: 24;
+    -fx-background-color: rgba(255,255,255,0.9);       
+    -fx-border-style: solid;
+    -fx-border-color: lightgrey;
+}
+
+.port:hover{
+    -fx-background-color: salmon;    
+}
+
+.port-active{
+    -fx-min-width: 10;
+    -fx-min-height: 24;
+    -fx-max-width: 12;
+    -fx-max-height: 24;
+    -fx-background-color: #b5b5b5;          
+    -fx-border-style: solid;
+    -fx-border-color: lightgrey;
+}
+
+.port-active:hover{
+    -fx-background-color: salmon;    
+}
+
+.port-in{
+    -fx-background-insets: 1 1 1 0;
+    -fx-background-radius: 0 4 4 0;   
+    -fx-border-radius: 0 2 2 0;
+    -fx-border-width: 2 2 2 0;
+}
+
+.port-out{
+    -fx-background-insets: 1 0 1 1;
+    -fx-background-radius: 4 0 0 4;   
+    -fx-border-radius: 2 0 0 2;
+    -fx-border-width: 2 0 2 2;
+}
+
+.in-port-box{
+    -fx-spacing: 10;
+    -fx-padding: 0 10 0 0;
+}
+
+
+.out-port-box{
+    -fx-spacing: 10;
+    -fx-padding: 0 0 0 10;
+}
+
+
+.connection{
+    -fx-fill: null;
+    -fx-stroke: #b5b5b5;
+    -fx-stroke-width: 2;
+    -fx-stroke-style: solid;
+}
+
+.temp-line{
+    -fx-stroke: #b5b5b5;
+    -fx-stroke-width: 2;
+    -fx-stroke-dash-array: 0 6;
+    -fx-stroke-dash-offset: 6;
+    -fx-stroke-line-cap: round;
+}

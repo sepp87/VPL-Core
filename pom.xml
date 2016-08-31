@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jo.vpl</groupId>
+    <name>jo.vpl</name>
+    <artifactId>jo.vpl</artifactId>
+    <version>2</version>
+    <packaging>jar</packaging>
+    
+    <dependencies>        
+        
+        
+
+        <!-- Logger is dependent on the presence of StaticLoggerBinder -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jo</groupId>
+            <artifactId>jo.util</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
+    <build>
+        <plugins>   
+            
+            <!-- XSD in Java classes omzetten
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.12.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        
+                        <configuration>
+                            <generatePackage>jo.vpl.schema</generatePackage>
+                            <sources>
+                                <source>src/main/resources/schema/vpl.xsd</source>
+                            </sources>
+                        </configuration>
+                        
+                        <id>vplxml</id>
+                    </execution>
+                </executions>
+            </plugin> -->
+                  
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxb2-maven-plugin</artifactId>
+            <version>2.2</version>
+            <executions>
+                <execution>
+                    <id>xjc</id>
+                    <goals>
+                        <goal>xjc</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <!--
+                    Include the sources from 3 locations:
+                    1) an explicitly named file
+                    2) a directory (including recursively finding all files in it)
+                    3) a non-existent path, which is silently ignored
+                -->
+                <sources>
+                    <source>src/main/resources/schema</source>
+                    <!--<source>src/main/foo/xsds</source>
+                    <source>src/main/a/nonexistent/path</source>-->
+                </sources>
+                <!--
+                    When providing xjcSourceExcludeFilters, the default exclude
+                    Filter definitions are overridden by the Patterns supplied.
+
+                    Any filter whose path ends with any of the Java Regular Expression Patterns
+                    supplied will be excluded from the XJC sources. In this example,
+                    files found under any of the source directories will be excluded from XJC
+                    processing if their full paths end with '.xsd' or '.foo'
+                
+                    <xjcSourceExcludeFilters>
+                        <filter implementation="org.codehaus.mojo.jaxb2.shared.filters.pattern.PatternFileFilter">
+                            <patterns>
+                                <pattern>\.xsd</pattern>
+                                <pattern>\.foo</pattern>
+                            </patterns>
+                        </filter>
+                    </xjcSourceExcludeFilters>
+                    -->
+                    <!--
+                        Package name of the generated sources.
+                    -->
+                    <!--<packageName>jo.vpl.xml</packageName>-->
+
+                    <!--
+                        Copy all source XSDs into the generate artifact.
+                        Place them at the supplied xsdPathWithinArtifact, that is within the given directory.
+                    
+                    <xsdPathWithinArtifact>source/xsds</xsdPathWithinArtifact>-->
+                </configuration>
+            </plugin>
+
+                  
+            <!-- See https://maven.apache.org/plugins/ for more plugins -->    
+            <!-- Set main class and add classplath -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>jo.vpl.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Copy project dependencies-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- exclude junit, we need runtime dependency only -->
+                            <includeScope>runtime</includeScope>
+                            <!--<outputDirectory>${project.build.directory}/lib/</outputDirectory>-->
+                            <outputDirectory>build/lib/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> 
+            
+            <!-- Copy project jar build-->
+            <plugin>
+                <groupId>com.github.goldin</groupId>
+                <artifactId>copy-maven-plugin</artifactId>
+                <version>0.2.5</version>
+                <executions>
+                    <execution>
+                        <id>deploy-to-local-directory</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <skipIdentical>false</skipIdentical>
+                            <failIfNotFound>false</failIfNotFound>
+                            <resources>
+                                <resource>
+                                    <description>Copy artifact to another directory</description>
+                                    <targetPath>build</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>                
+        </plugins>        
+    </build>
+    
+</project>

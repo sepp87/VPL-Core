@@ -1,7 +1,7 @@
 package jo.vpl.hub.math;
 
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
 import jo.vpl.core.HubInfo;
 import jo.vpl.util.IconType;
@@ -17,7 +17,7 @@ import jo.vpl.util.IconType;
         tags = {"math", "subtract", "min"})
 public class Subtract extends Hub {
 
-    public Subtract(VPLControl hostCanvas) {
+    public Subtract(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("X-Y");

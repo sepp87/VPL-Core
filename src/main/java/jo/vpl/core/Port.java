@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import jo.vpl.util.TypeExtensions;
 
@@ -20,20 +21,24 @@ public class Port extends VBox {
 
     private final ObjectProperty data = new SimpleObjectProperty(this, "data", null);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
+    private final StringProperty name = new SimpleStringProperty(this, "name", null);
 
     public ObservableList<Connection> connectedConnections;
     public Class dataType;
     public PortTypes portType;
-    public String name;
     public Hub parentHub;
     public boolean multiDockAllowed;
     public BindingPoint origin;
 
     public Port(String name, Hub parent, PortTypes portType, Class type) {
+        Tooltip tip = new Tooltip();
+        Tooltip.install(this, tip);
+        tip.textProperty().bind(this.nameProperty());
+
         this.parentHub = parent;
         this.dataType = type;
         this.portType = portType;
-        this.name = name;
+        this.setName(name);
 
         getStyleClass().add("port");
         getStyleClass().add("port-" + portType.toString().toLowerCase());
@@ -76,8 +81,8 @@ public class Port extends VBox {
     }
 
     /**
-     * @TODO CHANGE FROM ORIGINAL CODE
-     * Consume event to prevent hub from moving around.
+     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent hub from moving
+     * around.
      *
      * @param e
      */
@@ -87,8 +92,8 @@ public class Port extends VBox {
 
     private void port_MousePress(MouseEvent e) {
         /**
-         * @TODO CHANGE FROM ORIGINAL CODE
-         * Origin is only calculated on size- and property changed
+         * @TODO CHANGE FROM ORIGINAL CODE Origin is only calculated on size-
+         * and property changed
          */
         calcOrigin();
 
@@ -118,8 +123,7 @@ public class Port extends VBox {
 
                     /**
                      * Make a new connection and remove all the existing
-                     * connections
-                     * Where is multi connect?
+                     * connections Where is multi connect?
                      */
                     if (portType == PortTypes.OUT) {
                         if (parentHub.hostCanvas.tempStartPort.connectedConnections.size() > 0) {
@@ -149,8 +153,8 @@ public class Port extends VBox {
 
                 }
                 /**
-                 * Return values back to default state in which no connection
-                 * is being made.
+                 * Return values back to default state in which no connection is
+                 * being made.
                  */
                 parentHub.hostCanvas.splineMode = SplineMode.NOTHING;
                 parentHub.hostCanvas.clearTempLine();
@@ -194,6 +198,7 @@ public class Port extends VBox {
 
     public void calculateData(Object value) {
         if (portType == PortTypes.IN) {
+
             if (multiDockAllowed && connectedConnections.size() > 1) {
 
                 dataType.cast(new Object());
@@ -229,6 +234,18 @@ public class Port extends VBox {
 
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    public final void setName(String value) {
+        name.set(value);
+    }
+
+    public final String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
+        return name;
     }
 
     private void handle_Active(Object obj, Object oldVal, Object newVal) {

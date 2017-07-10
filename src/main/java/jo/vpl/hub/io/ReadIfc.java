@@ -1,7 +1,7 @@
-package jo.vpl.hub.parse;
+package jo.vpl.hub.io;
 
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import java.io.File;
 import javafx.scene.control.Label;
 import jo.vpl.core.HubInfo;
@@ -11,18 +11,18 @@ import jo.vpl.core.HubInfo;
  * @author JoostMeulenkamp
  */
 @HubInfo(
-        name = "File.ParseIFC",
-        category = "Geometry",
-        description = "View 3D geometry",
-        tags = {"view", "3D"})
-public class ParseIFC extends Hub {
+        name = "IO.ReadIfc",
+        category = "io",
+        description = "Read an Ifc file",
+        tags = {"io","view", "3D"})
+public class ReadIfc extends Hub {
 
     /**
      * A hub that embeds an external Obj viewer class
      *
      * @param hostCanvas
      */
-    public ParseIFC(VPLControl hostCanvas) {
+    public ReadIfc(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("Read .ifc");
@@ -46,7 +46,7 @@ public class ParseIFC extends Hub {
 
     @Override
     public Hub clone() {
-        Hub hub = new ParseIFC(hostCanvas);
+        Hub hub = new ReadIfc(hostCanvas);
         return hub;
     }
 

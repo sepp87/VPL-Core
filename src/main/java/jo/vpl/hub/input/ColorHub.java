@@ -1,7 +1,7 @@
 package jo.vpl.hub.input;
 
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
@@ -19,7 +19,7 @@ import jo.vpl.xml.HubTag;
         tags = {"input", "color"})
 public class ColorHub extends Hub {
 
-    public ColorHub(VPLControl hostCanvas) {
+    public ColorHub(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("Color Picker");

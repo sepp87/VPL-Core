@@ -2,7 +2,7 @@ package jo.vpl.hub.input;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import jo.vpl.core.Hub;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -32,7 +32,7 @@ public class IntegerSlider extends Hub {
     IntegerProperty integerMax = new SimpleIntegerProperty();
     IntegerProperty integerStep = new SimpleIntegerProperty();
 
-    public IntegerSlider(VPLControl hostCanvas) {
+    public IntegerSlider(VplControl hostCanvas) {
         super(hostCanvas);
         setName("Integer");
 

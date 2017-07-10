@@ -1,8 +1,11 @@
 package jo.vpl.hub.input;
 
-import jo.vpl.core.VPLControl;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import jo.vpl.core.VplControl;
 import jo.vpl.core.Hub;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
@@ -20,7 +23,7 @@ import jo.vpl.xml.HubTag;
         tags = {"input", "line", "string"})
 public class StringHub extends Hub {
 
-    public StringHub(VPLControl hostCanvas) {
+    public StringHub(VplControl hostCanvas) {
         super(hostCanvas);
         setName("String");
 
@@ -34,6 +37,17 @@ public class StringHub extends Hub {
                 + "fx-font-size: 10;\n");
 
         addControlToHub(text);
+
+//        text.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+//
+//            @Override
+//            public void handle(javafx.scene.input.KeyEvent event) {
+//                if (event.getCode() == KeyCode.TAB) {
+//                    System.out.println("TAB pressed");
+//                    event.consume(); // do nothing
+//                }
+//            }
+//        });
 
         text.setOnKeyReleased(this::textField_KeyRelease);
         this.setOnMouseEntered(this::textField_MouseEnter);
@@ -50,6 +64,10 @@ public class StringHub extends Hub {
     }
 
     private void textField_KeyRelease(KeyEvent e) {
+        System.out.println(e.getCode());
+        if (e.getCode().equals(KeyCode.TAB)) {
+
+        }
         calculate();
     }
 

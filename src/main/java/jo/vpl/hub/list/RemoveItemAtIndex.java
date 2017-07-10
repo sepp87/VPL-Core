@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
 import jo.vpl.core.HubInfo;
+import jo.vpl.core.Port;
 import jo.vpl.util.IconType;
 
 /**
@@ -20,20 +21,40 @@ import jo.vpl.util.IconType;
         tags = {"list", "remove", "index", "delete"})
 public class RemoveItemAtIndex extends Hub {
 
-    public RemoveItemAtIndex(VPLControl hostCanvas) {
+    public RemoveItemAtIndex(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("i");
 
         //There is no checking of list in port make connection boolean statement
         //Might want to fix that!
-        addInPortToHub("list", Object.class);
+        addInPortToHub("List", Object.class);
         addInPortToHub("int", int.class);
 
-        addOutPortToHub("obj", Object.class);
+        addOutPortToHub("Object", Object.class);
 
         Label label = getAwesomeIcon(IconType.FA_DEDENT);
         addControlToHub(label);
+    }
+
+    @Override
+    public void handle_IncomingConnectionAdded(Port source, Port incoming) {
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+            //Set data type corresponding to incoming
+            outPorts.get(0).dataType = incoming.dataType;
+            outPorts.get(0).setName(incoming.getName());
+        }
+    }
+
+    @Override
+    public void handle_IncomingConnectionRemoved(Port source) {
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+            //Reset data type to initial state
+            outPorts.get(0).dataType = Object.class;
+            outPorts.get(0).setName("Object");
+        }
     }
 
     /**
@@ -47,9 +68,7 @@ public class RemoveItemAtIndex extends Hub {
         Object index = inPorts.get(1).getData();
 
         //Finish calculate if there is no incoming data
-        if (raw == null) {
-            outPorts.get(0).dataType = Object.class;
-            outPorts.get(0).name = "obj";
+        if (raw == null || index == null) {
             return;
         }
 
@@ -86,10 +105,6 @@ public class RemoveItemAtIndex extends Hub {
 
             //Set outgoing data
             outPorts.get(0).setData(out);
-
-            //Set data type corresponding to source
-            outPorts.get(0).dataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
-            outPorts.get(0).name = inPorts.get(0).connectedConnections.get(0).getStartPort().name;
         }
     }
 

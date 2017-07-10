@@ -1,5 +1,7 @@
 package jo.vpl;
 
+import jo.vpl.core.VplGlobal;
+
 /**
  *
  * @author JoostMeulenkamp
@@ -7,6 +9,15 @@ package jo.vpl;
 public class Main {
 
     public static void main(String[] args) {
-        VPLTester.launch(VPLTester.class);
+        
+        //Initialize runtime path
+        VplGlobal.defineRuntimePath();
+        
+        //Load all Hub types
+        VplGlobal.loadInternalHubs();
+        VplGlobal.loadExternalHubs();
+        
+        //Launch the UI
+        VplTester.launch(VplTester.class);
     }
 }

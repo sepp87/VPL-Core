@@ -16,7 +16,7 @@ public class Connection {
 
     public final Port startPort;
     public final Port endPort;
-    public VPLControl hostCanvas;
+    public VplControl hostCanvas;
     public CubicCurve curve;
     private final BindingPoint startBezierPoint;
     private final BindingPoint endBezierPoint;
@@ -29,7 +29,7 @@ public class Connection {
      * @param startPort the OUT port [ ]<
      * @param endPort the IN port >[ ]
      */
-    public Connection(VPLControl hostCanvas, Port sPort, Port ePort) {
+    public Connection(VplControl hostCanvas, Port sPort, Port ePort) {
         this.hostCanvas = hostCanvas;
 
         this.startPort = sPort;
@@ -56,11 +56,15 @@ public class Connection {
         startPort.connectedConnections.add(this);
         endPort.connectedConnections.add(this);
 
+        //A single incoming connection was made, handle it in the hub
+        //to forward incoming data type to out port e.g. in getFirstItemOfList
+        endPort.parentHub.handle_IncomingConnectionAdded(endPort, startPort);
+        
         endPort.calculateData(startPort.getData());
 
         /**
-         * @TODO::NEW CHANGE FROM ORIGINAL CODE
-         * Check if connection already exist within the connectionCollection
+         * @TODO::NEW CHANGE FROM ORIGINAL CODE Check if connection already
+         * exist within the connectionCollection
          */
         defineCurve();
 
@@ -107,6 +111,9 @@ public class Connection {
         hostCanvas.connectionSet.remove(this);
 
         startPort.dataProperty().removeListener(endPort.startPort_DataChangeListener);
+        if (!endPort.multiDockAllowed) {
+            endPort.parentHub.handle_IncomingConnectionRemoved(endPort);
+        }
     }
 
     public void serialize(ConnectionTag xmlTag) {

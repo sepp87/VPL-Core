@@ -5,7 +5,7 @@ import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ScrollBar;
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javax.xml.namespace.QName;
@@ -25,7 +25,7 @@ public class TextHub extends Hub {
 
     boolean editable = true;
 
-    public TextHub(VPLControl hostCanvas) {
+    public TextHub(VplControl hostCanvas) {
         super(hostCanvas);
         setName("Panel");
         setResizable(true);
@@ -109,7 +109,7 @@ public class TextHub extends Hub {
         if (inPorts.get(0).getData() != null && inPorts.get(0).connectedConnections.size() > 0) {
             //Set data type corresponding to source
             outPorts.get(0).dataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
-            outPorts.get(0).name = inPorts.get(0).connectedConnections.get(0).getStartPort().name;
+            outPorts.get(0).setName(inPorts.get(0).connectedConnections.get(0).getStartPort().getName());
             if (data instanceof List) {
                 List list = (List) data;
 
@@ -122,7 +122,7 @@ public class TextHub extends Hub {
         } else {
             //Set data type back to string
             outPorts.get(0).dataType = String.class;
-            outPorts.get(0).name = "str";
+            outPorts.get(0).setName("String");
             if (inPorts.get(0).isActive()) {
                 area.setText("null");
             } else {

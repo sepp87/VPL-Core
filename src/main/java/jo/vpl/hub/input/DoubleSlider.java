@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import jo.vpl.core.Hub;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -30,7 +30,7 @@ public class DoubleSlider extends Hub {
     Slider slider;
     DoubleBinding doubleValue;
 
-    public DoubleSlider(VPLControl hostCanvas) {
+    public DoubleSlider(VplControl hostCanvas) {
         super(hostCanvas);
         setName("Double");
 

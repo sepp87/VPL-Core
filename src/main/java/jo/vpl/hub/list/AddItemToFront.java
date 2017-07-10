@@ -3,9 +3,10 @@ package jo.vpl.hub.list;
 import java.util.ArrayList;
 import java.util.List;
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
 import jo.vpl.core.HubInfo;
+import jo.vpl.core.Port;
 import jo.vpl.util.IconType;
 
 /**
@@ -19,7 +20,7 @@ import jo.vpl.util.IconType;
         tags = {"list", "add"})
 public class AddItemToFront extends Hub {
 
-    public AddItemToFront(VPLControl hostCanvas) {
+    public AddItemToFront(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("+");
@@ -36,6 +37,26 @@ public class AddItemToFront extends Hub {
         addControlToHub(label);
     }
 
+    @Override
+    public void handle_IncomingConnectionAdded(Port source, Port incoming) {
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+            //Set data type corresponding to incoming
+            outPorts.get(0).dataType = incoming.dataType;
+            outPorts.get(0).setName(incoming.getName());
+        }
+    }
+
+    @Override
+    public void handle_IncomingConnectionRemoved(Port source) {
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+            //Reset data type to initial state
+            outPorts.get(0).dataType = Object.class;
+            outPorts.get(0).setName("Object");
+        }
+    }
+
     /**
      * calculate function is called whenever new data is incoming
      */
@@ -46,9 +67,7 @@ public class AddItemToFront extends Hub {
         Object item = inPorts.get(1).getData();
 
         //Finish calculate if there is no incoming data
-        if (raw == null || item == null) {
-            outPorts.get(0).dataType = Object.class;
-            outPorts.get(0).name = "obj";
+        if (raw == null) {
             return;
         }
 
@@ -83,10 +102,6 @@ public class AddItemToFront extends Hub {
 
         //Set outgoing data
         outPorts.get(0).setData(target);
-
-        //Set data type corresponding to source
-        outPorts.get(0).dataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
-        outPorts.get(0).name = inPorts.get(0).connectedConnections.get(0).getStartPort().name;
     }
 
     @Override

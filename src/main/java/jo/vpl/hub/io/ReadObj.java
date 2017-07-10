@@ -1,7 +1,7 @@
-package jo.vpl.hub.parse;
+package jo.vpl.hub.io;
 
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import jo.vpl.watch3D.ObjParser;
 import java.io.File;
 import java.util.List;
@@ -15,19 +15,19 @@ import jo.vpl.util.IconType;
  * @author JoostMeulenkamp
  */
 @HubInfo(
-        name = "File.ParseOBJ",
-        category = "read",
-        description = "Parse a Wavefront .obj file",
+        name = "IO.ReadObj",
+        category = "io",
+        description = "Read a Wavefront .obj file",
         tags = {"read", "obj", "parse"}
 )
-public class ParseOBJ extends Hub {
+public class ReadObj extends Hub {
 
     /**
      * A hub that embeds an external Obj viewer class
      *
      * @param hostCanvas
      */
-    public ParseOBJ(VPLControl hostCanvas) {
+    public ReadObj(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("Obj");
@@ -58,7 +58,7 @@ public class ParseOBJ extends Hub {
 
     @Override
     public Hub clone() {
-        Hub hub = new ParseOBJ(hostCanvas);
+        Hub hub = new ReadObj(hostCanvas);
         return hub;
     }
 

@@ -1,17 +1,13 @@
 package jo.vpl.core;
 
 import java.awt.MouseInfo;
-import java.util.*;
 import java.util.logging.*;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
-import static javafx.collections.FXCollections.observableArrayList;
-import org.reflections.Reflections;
 
 import javafx.scene.input.*;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
-import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
@@ -24,34 +20,14 @@ public class SelectHub extends Hub {
 
     private ListView listView;
     private TextField searchField;
-    private static Map<String, Class> hubMap = new HashMap<>();
-    private static ObservableList<String> hubList = observableArrayList();
 
     /**
-     * Retrieve all hubs from jo.vpl.hub package
-     */
-    static {
-        Reflections reflections = new Reflections("jo.vpl.hub");
-        Set<Class<? extends Hub>> hubTypes = reflections.getSubTypesOf(Hub.class);
-
-        for (Class type : hubTypes) {
-            if (type.isAnnotationPresent(HubInfo.class)) {
-                HubInfo info = (HubInfo) type.getAnnotation(HubInfo.class);
-                hubMap.put(info.name(), type);
-                hubList.add(info.name());
-            }
-        }
-
-        Collections.sort(hubList);
-    }
-
-    /**
-     * Select hub is used to pick a hub type and place it on the host canvas.
-     * It reads out classes inside the package and adds them to a list view.
+     * Select hub is used to pick a hub type and place it on the host canvas. It
+     * reads out classes inside the package and adds them to a list view.
      *
      * @param hostCanvas
      */
-    public SelectHub(VPLControl hostCanvas) {
+    public SelectHub(VplControl hostCanvas) {
         super(hostCanvas);
 
         searchField = new TextField();
@@ -67,7 +43,7 @@ public class SelectHub extends Hub {
         listView.setMaxWidth(240);
         listView.setPrefHeight(127);
 
-        listView.setItems(hubList);
+        listView.setItems(VplGlobal.HUB_TYPE_LIST);
 
         this.setOnMouseExited(this::selectHub_MouseExit);
         this.setOnMouseDragExited(this::selectHub_MouseExit);
@@ -115,35 +91,28 @@ public class SelectHub extends Hub {
 
         if (!"".equals(keyWord)) {
             /**
-             * Regular expression to filter the list with.
-             * (?i) : makes it ignore case
-             * \Q ... \E : takes care of possible special characters in keyWord
-             * . : means any character
-             * * : zero to multiple times recurring
+             * Regular expression to filter the list with. (?i) : makes it
+             * ignore case \Q ... \E : takes care of possible special characters
+             * in keyWord . : means any character * : zero to multiple times
+             * recurring
              */
 
             String regex = "(?si).*\\Q" + keyWord + "\\E.*";
 
             /**
-             * OPTION
-             * List<String> list = hubList.stream()
-             * .filter(x -> x.matches(regex))
-             * .collect(Collectors.toList());
-             * ObservableList<String> tempList = observableArrayList();
-             * for (String s : list) {
-             * tempList.add(s);
-             * }
+             * OPTION List<String> list = hubList.stream() .filter(x ->
+             * x.matches(regex)) .collect(Collectors.toList());
+             * ObservableList<String> tempList = observableArrayList(); for
+             * (String s : list) { tempList.add(s); }
              * listView.setItems(tempList);
              *
-             * OPTION
-             * listView.setItems(hubList.stream()
-             * .filter(x -> x.matches(regex))
-             * .collect(collectingAndThen(toList(), l ->
+             * OPTION listView.setItems(hubList.stream() .filter(x ->
+             * x.matches(regex)) .collect(collectingAndThen(toList(), l ->
              * FXCollections.observableArrayList(l))));
              *
              * OPTION
              */
-            listView.setItems(hubList.stream()
+            listView.setItems(VplGlobal.HUB_TYPE_LIST.stream()
                     .filter(x -> x.matches(regex))
                     .collect(toCollection(FXCollections::observableArrayList)));
 
@@ -152,7 +121,7 @@ public class SelectHub extends Hub {
             }
 
         } else {
-            listView.setItems(hubList);
+            listView.setItems(VplGlobal.HUB_TYPE_LIST);
         }
     }
 
@@ -209,17 +178,20 @@ public class SelectHub extends Hub {
         }
 
         //Maybe move this to Hostcanvas
-        Class type = hubMap.get(selectedType);
+        Class type = VplGlobal.HUB_TYPE_MAP.get(selectedType);
 
         try {
-            Hub hub = (Hub) type.getConstructor(VPLControl.class).newInstance(hostCanvas);
+            Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(hostCanvas);
 
             double x = MouseInfo.getPointerInfo().getLocation().x;
             double y = MouseInfo.getPointerInfo().getLocation().y;
             Point2D pt = hostCanvas.screenToLocal(x, y);
 
-            hub.setLayoutX(pt.getX() - 20);
-            hub.setLayoutY(pt.getY() - 20);
+//            hub.setLayoutX(pt.getX() - 20);
+//            hub.setLayoutY(pt.getY() - 20);
+
+            hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
+            hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
 
             hostCanvas.getChildren().add(hub);
             hostCanvas.hubSet.add(hub);

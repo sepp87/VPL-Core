@@ -2,7 +2,7 @@ package jo.vpl.hub.list;
 
 import java.util.List;
 import jo.vpl.core.Hub;
-import jo.vpl.core.VPLControl;
+import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
 import jo.vpl.core.HubInfo;
 
@@ -17,7 +17,7 @@ import jo.vpl.core.HubInfo;
         tags = {"list", "size", "length"})
 public class Size extends Hub {
 
-    public Size(VPLControl hostCanvas) {
+    public Size(VplControl hostCanvas) {
         super(hostCanvas);
 
         setName("l");
@@ -45,8 +45,6 @@ public class Size extends Hub {
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
-            outPorts.get(0).dataType = Object.class;
-            outPorts.get(0).name = "obj";
             return;
         }
 
@@ -57,10 +55,6 @@ public class Size extends Hub {
 
             //Set outgoing data
             outPorts.get(0).setData(source.size());
-
-            //Set data type corresponding to source
-            outPorts.get(0).dataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
-            outPorts.get(0).name = inPorts.get(0).connectedConnections.get(0).getStartPort().name;
         }
     }
 

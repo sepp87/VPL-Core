@@ -20,14 +20,14 @@ import javafx.scene.paint.Color;
  *
  * @author JoostMeulenkamp
  */
-public class HubGroup extends VPLElement {
+public class HubGroup extends VplElement {
 
     public int id;
 
     private static int counter;
     public ObservableSet<Hub> childHubs;
 
-    public HubGroup(VPLControl vplControl) {
+    public HubGroup(VplControl vplControl) {
         super(vplControl);
 
         getStyleClass().add("hub-group");

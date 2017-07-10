@@ -15,7 +15,7 @@ import jo.vpl.util.IconType;
  *
  * @author JoostMeulenkamp
  */
-public abstract class Hub extends VPLElement {
+public abstract class Hub extends VplElement {
 
     public UUID uuid;
     public Pane inPortBox;
@@ -29,7 +29,7 @@ public abstract class Hub extends VPLElement {
 
     public Point2D oldMousePosition;
 
-    public Hub(VPLControl vplControl) {
+    public Hub(VplControl vplControl) {
         super(vplControl);
         uuid = UUID.randomUUID();
 
@@ -210,9 +210,10 @@ public abstract class Hub extends VPLElement {
      *
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
+     * @return the Port
      */
-    public void addInPortToHub(String name, Class type) {
-        addInPortToHub(name, type, false);
+    public Port addInPortToHub(String name, Class type) {
+        return addInPortToHub(name, type, false);
     }
 
     /**
@@ -221,13 +222,15 @@ public abstract class Hub extends VPLElement {
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
      * @param multiDockAllowed if multiple connections are allowed
+     * @return the Port
      */
-    public void addInPortToHub(String name, Class type, boolean multiDockAllowed) {
+    public Port addInPortToHub(String name, Class type, boolean multiDockAllowed) {
         Port port = new Port(name, this, PortTypes.IN, type);
         port.multiDockAllowed = multiDockAllowed;
         inPortBox.getChildren().add(port);
         port.dataProperty().addListener(port_DataChangeListener);
         inPorts.add(port);
+        return port;
     }
 
     /**
@@ -252,6 +255,7 @@ public abstract class Hub extends VPLElement {
         public void changed(ObservableValue obj, Object oldVal, Object newVal) {
             //        try {
 //            if (AutoCheckBox.IsChecked != null && (bool) AutoCheckBox.IsChecked) {
+
             calculate();
             //            }
 //            HasError = false;
@@ -269,13 +273,14 @@ public abstract class Hub extends VPLElement {
      *
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
+     * @return the Port
      */
-    public void addOutPortToHub(String name, Class type) {
+    public Port addOutPortToHub(String name, Class type) {
         Port port = new Port(name, this, PortTypes.OUT, type);
         port.multiDockAllowed = true;
         outPortBox.getChildren().add(port);
-
         outPorts.add(port);
+        return port;
     }
 
     /**
@@ -305,12 +310,38 @@ public abstract class Hub extends VPLElement {
         super.delete();
     }
 
+    /**
+     * Called when a new connection is incoming. Ideal for forwarding a data type
+     * to an out port e.g. hubs operating on collections. Its removed counterpart
+     * is used to set the data type of the out port back to its initial state. 
+     * Only called when multi dock is not allowed!
+     *
+     * @param source port the connection was added to
+     * @param incoming port which sends the data
+     */
+    protected void handle_IncomingConnectionAdded(Port source, Port incoming) {
+
+    }
+
+    /**
+     * Called when an incoming connection is removed. Ideal for forwarding a data type
+     * to an out port e.g. hubs operating on collections. Its removed counterpart
+     * is used to set the data type of the out port back to its initial state.
+     * Only called when multi dock is not allowed!
+     *
+     * @param source port the connection was removed from
+     */
+    protected void handle_IncomingConnectionRemoved(Port source) {
+
+    }
+
     public abstract void calculate();
 
     protected abstract Hub clone();
 
     public void serialize(HubTag xmlTag) {
-        xmlTag.setType(getClass().getName());
+//        xmlTag.setType(getClass().getName());
+        xmlTag.setType(this.getClass().getAnnotation(HubInfo.class).name());
         xmlTag.setUUID(uuid.toString());
         xmlTag.setX(getLayoutX());
         xmlTag.setY(getLayoutY());

@@ -1,4 +1,4 @@
-DESCRIPTION
+DESCRIPTION<br>
 A visual programming environment build with JavaFX.
 
 See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
@@ -25,6 +25,7 @@ SHORTCUTS
 
 CUSTOMIZE
 * Create custom hubs by copying TemplateHub.java and change its behaviour
+* Create your own library with hub types and add it to "build/ext/"
 
 
 STYLE
@@ -33,15 +34,29 @@ STYLE
 
 
 TODO
-* Add customization functionality through config file
-* Add exceptions
-* Add comments
 * Add hints
+* Add exceptions
+
+* Add start screen
+* Add menu bar
+* Add customization functionality through config file
+* Add comments
 * Add labels to radial menu
 * Add scripting hub
 * Add functionality to remove connections
 * Improve grouping
 * Improve saving of hub settings
+* BUG text and hubs are copied / pasted simultaneously
+* BUG TextHub line and underline do not align
+* Create template plugin project (FatJar, OneJar or UberJar which omits existing dependencies)
+
+* (DONE) BUG getFirstInList should put out the same class as the incoming node prescribes
+*        When multi dock not allowed function hub.handle_IncomingConnectionAdded() is called
+         Another bug could arise at deserializing when the connection order creation is not correct
+* (DONE) BUG hub not copied to correct coordinates underneath cursor
+* (DONE) Add external loading of hub types
+* (DONE) Improve loading of hub types
+* (DONE) Fix zoom on Windows
 
 
 CREDITS

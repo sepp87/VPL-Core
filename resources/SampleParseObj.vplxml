@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.example.net/test" Scale="0.5" TranslateX="211.12500193452618" TranslateY="84.21564495228935">
+    <Hubs>
+        <Hub Type="jo.vpl.hub.input.TextHub" UUID="eb0eafca-ff0f-4c42-b39c-4f44ea569dcd" X="55.65367300724125" Y="-15.462999447328826"/>
+        <Hub Type="jo.vpl.hub.input.FileHub" UUID="f1791feb-af92-4236-9c36-b86022c7e197" X="-687.0" Y="-209.0" test="hello world!"/>
+        <Hub Type="jo.vpl.hub.input.ColorHub" UUID="c8ec0d2c-1c30-4643-8c51-2385c2d4cc34" X="-286.906286645988" Y="108.38742797480222"/>
+        <Hub Type="jo.vpl.hub.read.ObjHub" UUID="58faf907-a7a4-4849-8fd8-636f29d2e622" X="-267.40000165991876" Y="-161.71999914383122"/>
+        <Hub Type="jo.vpl.hub.view.Watch3D" UUID="b2e79de4-dc68-4e17-bbad-bd6ca5d16db8" X="441.0" Y="-55.0"/>
+    </Hubs>
+    <Connections>
+        <Connection StartHub="58faf907-a7a4-4849-8fd8-636f29d2e622" StartIndex="1" EndHub="eb0eafca-ff0f-4c42-b39c-4f44ea569dcd" EndIndex="0"/>
+        <Connection StartHub="eb0eafca-ff0f-4c42-b39c-4f44ea569dcd" StartIndex="0" EndHub="b2e79de4-dc68-4e17-bbad-bd6ca5d16db8" EndIndex="1"/>
+        <Connection StartHub="c8ec0d2c-1c30-4643-8c51-2385c2d4cc34" StartIndex="0" EndHub="b2e79de4-dc68-4e17-bbad-bd6ca5d16db8" EndIndex="2"/>
+        <Connection StartHub="58faf907-a7a4-4849-8fd8-636f29d2e622" StartIndex="0" EndHub="b2e79de4-dc68-4e17-bbad-bd6ca5d16db8" EndIndex="0"/>
+        <Connection StartHub="f1791feb-af92-4236-9c36-b86022c7e197" StartIndex="0" EndHub="58faf907-a7a4-4849-8fd8-636f29d2e622" EndIndex="0"/>
+    </Connections>
+</Document>

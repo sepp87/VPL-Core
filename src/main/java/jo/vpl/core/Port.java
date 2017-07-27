@@ -197,23 +197,62 @@ public class Port extends VBox {
     }
 
     public void calculateData(Object value) {
+
+        boolean fxThread = Thread.currentThread().getName().equals("JavaFX Application Thread");
+        if (!fxThread) {
+            System.out.println(this.parentHub.getName());
+        }
+
         if (portType == PortTypes.IN) {
 
             if (multiDockAllowed && connectedConnections.size() > 1) {
 
                 dataType.cast(new Object());
-                List list = new ArrayList<>();
+                List listOfLists = new ArrayList<>();
 
 //                var listType = typeof(List < >).MakeGenericType(new Type[]{DataType});
 //                IList list = (IList) Activator.CreateInstance(listType);
                 for (Connection connection : connectedConnections) {
-                    list.add(connection.getStartPort().getData());
-                }
 
-                data.set(list);
+                    //Cast all primitive dataType to String if this port dataType is String
+                    Port startPort = connection.getStartPort();
+                    if (dataType == String.class && TypeExtensions.contains(startPort.dataType)) {
+                        if (startPort.getData() instanceof List) {
+                            List list = (List) startPort.getData();
+                            List newList = new ArrayList<>();
+                            for (Object primitive : list) {
+                                newList.add(primitive + "");
+                            }
+                            listOfLists.add(newList);
+                        } else {
+                            listOfLists.add(startPort.getData() + "");
+                        }
+                    } else {
+                        listOfLists.add(startPort.getData());
+                    }
+
+                }
+                data.set(listOfLists);
+
             } else if (connectedConnections.size() > 0) {
                 System.out.println("Data Received: " + value);
-                data.set(connectedConnections.get(0).getStartPort().getData());
+
+                //Cast all primitive dataType to String if this port dataType is String
+                Port startPort = connectedConnections.get(0).getStartPort();
+                if (dataType == String.class && TypeExtensions.contains(startPort.dataType)) {
+                    if (startPort.getData() instanceof List) {
+                        List list = (List) startPort.getData();
+                        List newList = new ArrayList<>();
+                        for (Object primitive : list) {
+                            newList.add(primitive + "");
+                        }
+                        data.set(newList);
+                    } else {
+                        data.set(startPort.getData() + "");
+                    }
+                } else {
+                    data.set(startPort.getData());
+                }
 
             } else {
                 data.set(null);

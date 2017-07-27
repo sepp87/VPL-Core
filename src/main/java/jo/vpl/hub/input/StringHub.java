@@ -1,14 +1,15 @@
 package jo.vpl.hub.input;
 
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import jo.vpl.core.VplControl;
 import jo.vpl.core.Hub;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
+import static jo.util.General.getBooleanValue;
+import static jo.util.General.getDoubleValue;
+import static jo.util.General.getIntegerValue;
+import static jo.util.General.getLongValue;
 import jo.vpl.core.HubInfo;
 import jo.vpl.xml.HubTag;
 
@@ -27,7 +28,7 @@ public class StringHub extends Hub {
         super(hostCanvas);
         setName("String");
 
-        addOutPortToHub("str", String.class);
+        addOutPortToHub("String : Value", String.class);
 
         TextField text = new TextField();
         text.setPromptText("Write here...");
@@ -48,7 +49,6 @@ public class StringHub extends Hub {
 //                }
 //            }
 //        });
-
         text.setOnKeyReleased(this::textField_KeyRelease);
         this.setOnMouseEntered(this::textField_MouseEnter);
         this.setOnMouseExited(this::textField_MouseExit);
@@ -64,10 +64,10 @@ public class StringHub extends Hub {
     }
 
     private void textField_KeyRelease(KeyEvent e) {
-        System.out.println(e.getCode());
-        if (e.getCode().equals(KeyCode.TAB)) {
-
-        }
+//        System.out.println(e.getCode());
+//        if (e.getCode().equals(KeyCode.TAB)) {
+//
+//        }
         calculate();
     }
 
@@ -85,8 +85,55 @@ public class StringHub extends Hub {
     public void calculate() {
         //Forward empty string as null
         if ("".equals(getString())) {
+            outPorts.get(0).dataType = String.class;
+            outPorts.get(0).setName("String : Value");
             outPorts.get(0).setData(null);
         }
+
+        String str = getString();
+
+        Boolean bool = getBooleanValue(str);
+        if (bool != null) {
+
+            //Set outgoing data
+            outPorts.get(0).dataType = Boolean.class;
+            outPorts.get(0).setName("Boolean : Value");
+            outPorts.get(0).setData(bool);
+            return;
+        }
+
+        Integer integer = getIntegerValue(str);
+        if (integer != null) {
+
+            //Set outgoing data
+            outPorts.get(0).dataType = Integer.class;
+            outPorts.get(0).setName("Integer : Value");
+            outPorts.get(0).setData(integer);
+            return;
+        }
+
+        Long lng = getLongValue(str);
+        if (lng != null) {
+
+            //Set outgoing data
+            outPorts.get(0).dataType = Long.class;
+            outPorts.get(0).setName("Long : Value");
+            outPorts.get(0).setData(lng);
+            return;
+        }
+
+        Double dbl = getDoubleValue(str);
+        if (dbl != null) {
+
+            //Set outgoing data
+            outPorts.get(0).dataType = Double.class;
+            outPorts.get(0).setName("Double : Value");
+            outPorts.get(0).setData(dbl);
+            return;
+        }
+
+        outPorts.get(0).dataType = String.class;
+        outPorts.get(0).setName("String : Value");
         outPorts.get(0).setData(getString());
     }
 
@@ -94,6 +141,7 @@ public class StringHub extends Hub {
     public void serialize(HubTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.getOtherAttributes().put(QName.valueOf("string"), getString());
+        xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outPorts.get(0).dataType.getSimpleName());
     }
 
     @Override
@@ -101,6 +149,37 @@ public class StringHub extends Hub {
         super.deserialize(xmlTag);
         String str = xmlTag.getOtherAttributes().get(QName.valueOf("string"));
         this.setString(str);
+
+        //Retrieval of custom attribute
+        String value = xmlTag.getOtherAttributes().get(QName.valueOf("outDataType"));
+        switch (value) {
+            case "Double":
+                outPorts.get(0).dataType = Double.class;
+                outPorts.get(0).setName("Double : Value");
+                break;
+
+            case "Integer":
+                outPorts.get(0).dataType = Integer.class;
+                outPorts.get(0).setName("Integer : Value");
+                break;
+
+            case "Long":
+                outPorts.get(0).dataType = Long.class;
+                outPorts.get(0).setName("Long : Value");
+                break;
+
+            case "Boolean":
+                outPorts.get(0).dataType = Boolean.class;
+                outPorts.get(0).setName("Boolean : Value");
+                break;
+
+            case "String":
+                outPorts.get(0).dataType = String.class;
+                outPorts.get(0).setName("String : Value");
+                break;
+
+        }
+        calculate();
     }
 
     @Override

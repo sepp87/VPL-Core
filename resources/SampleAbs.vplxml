@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.example.net/test" Scale="0.5" TranslateX="80.46597051346646" TranslateY="25.671910451358574">
+    <Hubs>
+        <Hub Type="jo.vpl.hub.input.DoubleSlider" UUID="2059640b-c609-4d4a-aa60-32950c8d6e42" X="-363.2725132751466" Y="255.91000793457033"/>
+        <Hub Type="jo.vpl.hub.math.Substract" UUID="228f0d28-eda9-41ca-a9b2-8af095f9a3bc" X="-67.46316528320312" Y="112.04026412963867"/>
+        <Hub Type="jo.vpl.hub.math.Abs" UUID="838ce8be-dc1f-4480-b5a2-b04656e0ba32" X="214.0" Y="635.0"/>
+        <Hub Type="jo.vpl.hub.math.Pi" UUID="efecef24-cc47-423b-8fe9-1f380e809f1a" X="-251.46317219734192" Y="78.040283203125"/>
+        <Hub Type="jo.vpl.hub.input.TextHub" UUID="b582079f-63ed-4953-9329-51df721308f4" X="595.7500152587894" Y="260.4912422943112"/>
+        <Hub Type="jo.vpl.hub.input.TextHub" UUID="c53835fa-5954-42ab-9a70-1f55c3779f29" X="205.06805419921875" Y="-251.34381866455078"/>
+    </Hubs>
+    <Connections>
+        <Connection StartHub="2059640b-c609-4d4a-aa60-32950c8d6e42" StartIndex="0" EndHub="228f0d28-eda9-41ca-a9b2-8af095f9a3bc" EndIndex="1"/>
+        <Connection StartHub="c53835fa-5954-42ab-9a70-1f55c3779f29" StartIndex="0" EndHub="838ce8be-dc1f-4480-b5a2-b04656e0ba32" EndIndex="0"/>
+        <Connection StartHub="228f0d28-eda9-41ca-a9b2-8af095f9a3bc" StartIndex="0" EndHub="c53835fa-5954-42ab-9a70-1f55c3779f29" EndIndex="0"/>
+        <Connection StartHub="efecef24-cc47-423b-8fe9-1f380e809f1a" StartIndex="0" EndHub="228f0d28-eda9-41ca-a9b2-8af095f9a3bc" EndIndex="0"/>
+        <Connection StartHub="838ce8be-dc1f-4480-b5a2-b04656e0ba32" StartIndex="0" EndHub="b582079f-63ed-4953-9329-51df721308f4" EndIndex="0"/>
+    </Connections>
+</Document>

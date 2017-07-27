@@ -41,7 +41,7 @@ public class GetLastItem extends Hub {
         if (index == 0) {
             //Set data type corresponding to incoming
             outPorts.get(0).dataType = incoming.dataType;
-            outPorts.get(0).setName(incoming.getName());
+            outPorts.get(0).setName(incoming.dataType.getSimpleName());
         }
     }
 
@@ -66,6 +66,7 @@ public class GetLastItem extends Hub {
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 
@@ -82,6 +83,10 @@ public class GetLastItem extends Hub {
         //Process incoming data
         List source = (List) raw;
 
+        if(source.isEmpty()) {
+            return;
+        }
+        
         //Get last item
         int index = source.size() - 1;
         Object out = source.get(index);

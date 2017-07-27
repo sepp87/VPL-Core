@@ -68,6 +68,7 @@ public class Sort extends Hub {
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 

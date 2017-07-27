@@ -26,10 +26,10 @@ public class AddItemToEnd extends Hub {
 
         //There is no checking of list in port make connection boolean statement
         //Might want to fix that!
-        addInPortToHub("list", Object.class);
-        addInPortToHub("obj", Object.class);
+        addInPortToHub("Object : List", Object.class);
+        addInPortToHub("Object : Item", Object.class);
 
-        addOutPortToHub("obj", Object.class);
+        addOutPortToHub("Object : List", Object.class);
 
         Label label = new Label("...+");
         label.getStyleClass().add("hub-text");
@@ -53,7 +53,7 @@ public class AddItemToEnd extends Hub {
         if (index == 0) {
             //Reset data type to initial state
             outPorts.get(0).dataType = Object.class;
-            outPorts.get(0).setName("Object");
+            outPorts.get(0).setName("Object : List");
         }
     }
 
@@ -62,12 +62,14 @@ public class AddItemToEnd extends Hub {
      */
     @Override
     public void calculate() {
+
         //Get incoming data
         Object raw = inPorts.get(0).getData();
         Object item = inPorts.get(1).getData();
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 
@@ -83,8 +85,9 @@ public class AddItemToEnd extends Hub {
         }
         if (inPorts.get(1).connectedConnections.size() > 0
                 && inPorts.get(0).connectedConnections.size() > 0) {
-            if (inPorts.get(0).connectedConnections.get(0).getStartPort().dataType
-                    != inPorts.get(1).connectedConnections.get(0).getStartPort().dataType) {
+            Class listDataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
+            Class itemDataType = inPorts.get(1).connectedConnections.get(0).getStartPort().dataType;
+            if (itemDataType.isAssignableFrom(listDataType)) {
                 System.out.println("Element is not of same type as the list's");
                 hasError = true;
             }
@@ -96,12 +99,26 @@ public class AddItemToEnd extends Hub {
         //Add item to end
         List source = (List) raw;
 
-        List target = new ArrayList();
-        target.addAll(source);
-        target.add(item);
+        //Create a new list when autoCheckBox is checked, otherwise add to existing 
+        //HACK new list is created that is identical because otherwise data is not forwarded
+        //When isClicked, check changes to empty circle
+        if (this.autoCheckBox.isClicked()) {
+            source.add(item);
+            List target = new ArrayList();
+            target.addAll(source);
 
-        //Set outgoing data
-        outPorts.get(0).setData(target);
+            //Set outgoing data
+            outPorts.get(0).setData(target);
+
+        } else {
+            List target = new ArrayList();
+            target.addAll(source);
+            target.add(item);
+
+            //Set outgoing data
+            outPorts.get(0).setData(target);
+        }
+
     }
 
     @Override

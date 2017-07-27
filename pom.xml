@@ -111,7 +111,7 @@
                     3) a non-existent path, which is silently ignored
                 -->
                 <sources>
-                    <source>src/main/resources/schema</source>
+                    <source>resources/schema</source>
                     <!--<source>src/main/foo/xsds</source>
                     <source>src/main/a/nonexistent/path</source>-->
                 </sources>

@@ -40,7 +40,7 @@ public class GetFirstItem extends Hub {
         if (index == 0) {
             //Set data type corresponding to incoming
             outPorts.get(0).dataType = incoming.dataType;
-            outPorts.get(0).setName(incoming.getName());
+            outPorts.get(0).setName(incoming.dataType.getSimpleName());
         }
     }
 
@@ -65,6 +65,7 @@ public class GetFirstItem extends Hub {
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 
@@ -80,6 +81,10 @@ public class GetFirstItem extends Hub {
 
         //Process incoming data
         List source = (List) raw;
+
+        if (source.isEmpty()) {
+            return;
+        }
 
         //Get first item
         Object out = source.get(0);

@@ -1,5 +1,5 @@
 DESCRIPTION<br>
-A visual programming environment build with JavaFX.
+A visual programming environment build with JavaFX.<br>
 
 See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 
@@ -21,6 +21,12 @@ SHORTCUTS
 * CTRL-N: new graph
 * Space: zoom to fit
 * Del: delete selected hubs
+
+FUNCTIONALITIES
+* Input functions to generate primitve data types e.g. String, Boolean, Integer, Long, Double
+* Math functions such as multiply, divide, add and substract
+* List functions to get, add, remove and replace items
+* Json functions to get properties
 
 
 CUSTOMIZE
@@ -44,12 +50,14 @@ TODO
 * Add labels to radial menu
 * Add scripting hub
 * Add functionality to remove connections
+* Add looping groups/areas
+* Add auto load of save file
 * Improve grouping
 * Improve saving of hub settings
 * BUG text and hubs are copied / pasted simultaneously
-* BUG TextHub line and underline do not align
 * Create template plugin project (FatJar, OneJar or UberJar which omits existing dependencies)
 
+* (DONE) BUG TextHub line and underline do not align > changed gradient to 11.5px of textarea in css
 * (DONE) BUG getFirstInList should put out the same class as the incoming node prescribes
 *        When multi dock not allowed function hub.handle_IncomingConnectionAdded() is called
          Another bug could arise at deserializing when the connection order creation is not correct
@@ -59,5 +67,5 @@ TODO
 * (DONE) Fix zoom on Windows
 
 
-CREDITS
+CREDITS<br>
 Based on Dominic Singer's C# WPF version (available at https://github.com/tumcms/TUM.CMS.VPLControl). For further attributions and licenses, see the license file.

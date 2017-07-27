@@ -21,7 +21,7 @@ public class Pi extends Hub {
 
         setName("Pi");
 
-        addOutPortToHub("Value", double.class);        
+        addOutPortToHub("double : Pi", double.class);        
         
         Label label = new Label("Pi");
         label.getStyleClass().add("hub-text");

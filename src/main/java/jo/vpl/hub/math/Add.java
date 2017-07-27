@@ -1,5 +1,6 @@
 package jo.vpl.hub.math;
 
+import java.util.List;
 import jo.vpl.core.Hub;
 import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
@@ -13,7 +14,7 @@ import jo.vpl.util.IconType;
 @HubInfo(
         name = "Math.Add",
         category = "Math",
-        description = "Add Y to X",
+        description = "Add B to A",
         tags = {"math", "add", "plus"})
 public class Add extends Hub {
 
@@ -22,10 +23,10 @@ public class Add extends Hub {
 
         setName("Add");
 
-        addInPortToHub("Value1", double.class);
-        addInPortToHub("Value2", double.class);
+        addInPortToHub("double : A", double.class);
+        addInPortToHub("double : B", double.class);
 
-        addOutPortToHub("Value", double.class);
+        addOutPortToHub("double : Result", double.class);
 
         Label label = getAwesomeIcon(IconType.FA_PLUS);
         addControlToHub(label);
@@ -37,16 +38,23 @@ public class Add extends Hub {
     @Override
     public void calculate() {
 
-        /**
-         * @TODO EMPTY STRINGS ARE FATAL
-         */
-        if (inPorts.get(0).getData() != null && inPorts.get(1).getData() != null) {
-            Double d = Double.parseDouble(inPorts.get(0).getData().toString())
-                    + Double.parseDouble(inPorts.get(1).getData().toString());
+        //Get data
+        Object raw1 = inPorts.get(0).getData();
+        Object raw2 = inPorts.get(1).getData();
 
-            outPorts.get(0).setData(d);
-        } else {
+        //Finish calculate if there is no incoming data
+        if (raw1 == null || raw2 == null) {
             outPorts.get(0).setData(null);
+            return;
+        }
+
+        if (raw1 instanceof List || raw2 instanceof List) {
+            //not yet supported
+            outPorts.get(0).setData(null);
+        } else {
+            double result = (double) raw1 + (double) raw2;
+            outPorts.get(0).setData(result);
+
         }
 
     }

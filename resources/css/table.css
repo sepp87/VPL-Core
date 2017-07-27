@@ -1,0 +1,21 @@
+.table-pane{
+    -fx-spacing: 1;
+}
+
+.table-pane > .column {
+    -fx-spacing: 1;
+}
+
+.table-pane > .column > .cell {
+    -fx-min-height: 26;
+    -fx-max-height: 26;
+    -fx-pref-height: 26;
+    -fx-alignment: center-left;
+    -fx-background-color: white;
+
+}
+
+.table-pane > .column > .cell > .label {
+    -fx-padding: 6 6 6 10;
+    -fx-font-size: 12;
+}

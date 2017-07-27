@@ -28,8 +28,8 @@ public class ReplaceItemAtIndex extends Hub {
         //There is no checking of list in port make connection boolean statement
         //Might want to fix that!
         addInPortToHub("List", Object.class);
-        addInPortToHub("int", int.class);
         addInPortToHub("Object", Object.class);
+        addInPortToHub("int : Index", int.class);
 
         addOutPortToHub("Object", Object.class);
 
@@ -64,11 +64,12 @@ public class ReplaceItemAtIndex extends Hub {
     public void calculate() {
         //Get incoming data
         Object raw = inPorts.get(0).getData();
-        Object index = inPorts.get(1).getData();
-        Object element = inPorts.get(2).getData();
+        Object element = inPorts.get(1).getData();
+        Object index = inPorts.get(2).getData();
 
         //Finish calculate if there is no incoming data
         if (raw == null || index == null || element == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 
@@ -86,14 +87,16 @@ public class ReplaceItemAtIndex extends Hub {
             System.out.println("Just one item can be replaced at a time");
             hasError = true;
         }
-        if (inPorts.get(2).connectedConnections.size() > 0
+        if (inPorts.get(1).connectedConnections.size() > 0
                 && inPorts.get(0).connectedConnections.size() > 0) {
-            if (inPorts.get(0).connectedConnections.get(0).getStartPort().dataType
-                    != inPorts.get(2).connectedConnections.get(0).getStartPort().dataType) {
+            Class listDataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
+            Class itemDataType = inPorts.get(1).connectedConnections.get(0).getStartPort().dataType;
+            if (itemDataType.isAssignableFrom(listDataType)) {
                 System.out.println("Element is not of same type as the list's");
                 hasError = true;
             }
         }
+
         if (hasError) {
             return;
         }

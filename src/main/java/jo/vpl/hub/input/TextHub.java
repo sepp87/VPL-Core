@@ -4,10 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import jo.vpl.core.Hub;
 import jo.vpl.core.VplControl;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
 import jo.vpl.xml.HubTag;
@@ -30,22 +33,39 @@ public class TextHub extends Hub {
         setName("Panel");
         setResizable(true);
 
-        addInPortToHub("obj", Object.class);
-        addOutPortToHub("str", String.class);
+        addInPortToHub("Object", Object.class);
+        addOutPortToHub("String", String.class);
 
         TextArea area = new TextArea();
+
         area.layoutBoundsProperty().addListener(e -> {
             ScrollBar scrollBarv = (ScrollBar) area.lookup(".scroll-bar:vertical");
             scrollBarv.setDisable(true);
 
+            ScrollPane pane = (ScrollPane) area.lookup(".scroll-pane");
+            pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            
 //            Text text = (Text) area.lookup(".text");
 //            text.setLineSpacing(7);
         });
 
         addControlToHub(area);
 
-        area.setOnKeyReleased(this::textArea_KeyRelease);
         inPorts.get(0).activeProperty().addListener(this::handle_IncomingData);
+
+        area.setOnKeyReleased(this::textArea_KeyRelease);
+        this.setOnMouseEntered(this::textArea_MouseEnter);
+        this.setOnMouseExited(this::textArea_MouseExit);
+    }
+
+    private void textArea_MouseEnter(MouseEvent e) {
+        TextArea text = (TextArea) controls.get(0);
+        text.requestFocus();
+    }
+
+    private void textArea_MouseExit(MouseEvent e) {
+        hostCanvas.requestFocus();
     }
 
     private void textArea_KeyRelease(KeyEvent e) {
@@ -114,7 +134,11 @@ public class TextHub extends Hub {
                 List list = (List) data;
 
                 for (Object object : list) {
-                    area.appendText(object.toString() + "\n");
+                    if (object == null) {
+                        area.appendText("null" + "\n");
+                    } else {
+                        area.appendText(object.toString() + "\n");
+                    }
                 }
             } else {
                 area.setText(data.toString());
@@ -152,6 +176,8 @@ public class TextHub extends Hub {
         super.deserialize(xmlTag);
         String str = xmlTag.getOtherAttributes().get(QName.valueOf("text"));
         this.setText(str);
+        //Set Data
+        outPorts.get(0).setData(str);
     }
 
     @Override

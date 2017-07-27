@@ -35,4 +35,8 @@ public class HubButton extends Button {
             clicked = false;
         }
     }
+    
+    public boolean isClicked(){
+        return clicked;
+    }
 }

@@ -27,9 +27,9 @@ public class TemplateHub extends Hub {
 
         setName("Template");
 
-        addInPortToHub("obj", Object.class);
+        addInPortToHub("Object", Object.class);
 
-        addOutPortToHub("str", String.class);
+        addOutPortToHub("String", String.class);
 
         Label label = getAwesomeIcon(IconType.FA_PAPER_PLANE);
         addControlToHub(label);
@@ -46,6 +46,7 @@ public class TemplateHub extends Hub {
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
+            outPorts.get(0).setData(null);
             return;
         }
 

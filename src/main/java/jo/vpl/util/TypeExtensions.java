@@ -21,7 +21,8 @@ public class TypeExtensions {
                 int.class,
                 long.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Short.class, Arrays.asList(
                 Object.class,
@@ -29,33 +30,39 @@ public class TypeExtensions {
                 int.class,
                 long.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Integer.class, Arrays.asList(
                 Object.class,
                 int.class,
                 long.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Long.class, Arrays.asList(
                 Object.class,
                 long.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Float.class, Arrays.asList(
                 Object.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Double.class, Arrays.asList(
                 Object.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(Boolean.class, Arrays.asList(
                 Object.class,
-                boolean.class
+                boolean.class,
+                String.class
         ));
         castMap.put(byte.class, Arrays.asList(
                 Object.class,
@@ -65,7 +72,8 @@ public class TypeExtensions {
                 long.class,
                 char.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(short.class, Arrays.asList(
                 Object.class,
@@ -75,7 +83,8 @@ public class TypeExtensions {
                 long.class,
                 char.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(int.class, Arrays.asList(
                 Object.class,
@@ -85,7 +94,9 @@ public class TypeExtensions {
                 long.class,
                 char.class,
                 float.class,
-                double.class
+                double.class,
+                String.class,
+                Number.class
         ));
         castMap.put(long.class, Arrays.asList(
                 Object.class,
@@ -95,7 +106,9 @@ public class TypeExtensions {
                 int.class,
                 char.class,
                 float.class,
-                double.class
+                double.class,
+                String.class,
+                Number.class
         ));
         castMap.put(char.class, Arrays.asList(
                 Object.class,
@@ -104,7 +117,8 @@ public class TypeExtensions {
                 int.class,
                 long.class,
                 float.class,
-                double.class
+                double.class,
+                String.class
         ));
         castMap.put(float.class, Arrays.asList(
                 Object.class,
@@ -114,7 +128,9 @@ public class TypeExtensions {
                 int.class,
                 long.class,
                 char.class,
-                double.class
+                double.class,
+                String.class,
+                Number.class
         ));
         castMap.put(double.class, Arrays.asList(
                 Object.class,
@@ -124,17 +140,19 @@ public class TypeExtensions {
                 int.class,
                 long.class,
                 char.class,
-                float.class
+                float.class,
+                String.class,
+                Number.class
         ));
         castMap.put(boolean.class, Arrays.asList(
                 Object.class,
-                Boolean.class
+                Boolean.class,
+                String.class
         ));
     }
 
     public static boolean isCastableTo(Class from, Class to) {
 
-        
         if (to.isAssignableFrom(from)) {
             return true;
         } else if (castMap.containsKey(from) && castMap.get(from).contains(to)) {
@@ -143,5 +161,9 @@ public class TypeExtensions {
             return false;
         }
 
+    }
+
+    public static boolean contains(Class type) {
+        return castMap.containsKey(type);
     }
 }

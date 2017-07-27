@@ -1,5 +1,6 @@
 package jo.vpl.hub.math;
 
+import java.util.List;
 import jo.vpl.core.Hub;
 import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
@@ -10,10 +11,10 @@ import jo.vpl.core.HubInfo;
  * @author JoostMeulenkamp
  */
 @HubInfo(
-	name = "Math.Abs",  
+        name = "Math.Abs",
         category = "Math",
-        description = "Get the absolute value of X",
-	tags = {"math","abs"})
+        description = "Get the absolute value of A",
+        tags = {"math", "abs"})
 public class Abs extends Hub {
 
     public Abs(VplControl hostCanvas) {
@@ -21,11 +22,11 @@ public class Abs extends Hub {
 
         setName("Abs");
 
-        addInPortToHub("Value1", double.class);
+        addInPortToHub("double : A", double.class);
 
-        addOutPortToHub("Value", double.class);
+        addOutPortToHub("double : Result", double.class);
 
-        Label label = new Label("|X|");
+        Label label = new Label("|A|");
         label.getStyleClass().add("hub-text");
 
         addControlToHub(label);
@@ -37,11 +38,21 @@ public class Abs extends Hub {
     @Override
     public void calculate() {
 
-        if (inPorts.get(0).getData() != null) {
-            Double in = Double.parseDouble(inPorts.get(0).getData().toString());
-            Double out = Math.abs(in);
-            
-            outPorts.get(0).setData(out);
+        //Get data
+        Object raw = inPorts.get(0).getData();
+
+        //Finish calculate if there is no incoming data
+        if (raw == null) {
+            outPorts.get(0).setData(null);
+            return;
+        }
+
+        if (raw instanceof List) {
+            //not yet supported
+            outPorts.get(0).setData(null);
+        } else {
+            double result = Math.abs((double) raw);
+            outPorts.get(0).setData(result);
         }
 
     }

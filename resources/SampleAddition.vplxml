@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.example.net/test" Scale="0.6414636979978665" TranslateX="213.76686846835105" TranslateY="22.465463072907284">
+    <Hubs>
+        <Hub Type="jo.vpl.hub.math.Add" UUID="8b966de2-386a-47b6-a4cd-8490d0a53952" X="97.0" Y="166.0"/>
+        <Hub Type="jo.vpl.hub.input.DoubleSlider" UUID="6003686a-7a0e-4d56-81db-2af810074678" X="-397.0" Y="-17.99999761581421"/>
+        <Hub Type="jo.vpl.hub.input.DoubleSlider" UUID="b990d0d2-dce4-4a1e-8535-cca4dfd20988" X="-339.0" Y="398.0"/>
+        <Hub Type="jo.vpl.hub.input.TextHub" UUID="8a6bd7df-a2fd-4940-8270-bbc55edb85e6" X="350.28976882934603" Y="107.60685241699218"/>
+    </Hubs>
+    <Connections>
+        <Connection StartHub="6003686a-7a0e-4d56-81db-2af810074678" StartIndex="0" EndHub="8b966de2-386a-47b6-a4cd-8490d0a53952" EndIndex="0"/>
+        <Connection StartHub="8b966de2-386a-47b6-a4cd-8490d0a53952" StartIndex="0" EndHub="8a6bd7df-a2fd-4940-8270-bbc55edb85e6" EndIndex="0"/>
+        <Connection StartHub="b990d0d2-dce4-4a1e-8535-cca4dfd20988" StartIndex="0" EndHub="8b966de2-386a-47b6-a4cd-8490d0a53952" EndIndex="1"/>
+    </Connections>
+</Document>

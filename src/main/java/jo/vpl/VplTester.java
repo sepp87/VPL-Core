@@ -13,7 +13,8 @@ public class VplTester extends Application {
     int snapshotCounter = 0;
 
     public void start(Stage stage) throws Exception {
-//        defineRunEnvironment();
+        System.out.println(Thread.currentThread().getName());
+        
         AnchorPane pane = new AnchorPane();
 
         VplControl host = new VplControl();

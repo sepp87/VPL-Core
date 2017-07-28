@@ -4,8 +4,12 @@ import java.util.List;
 import jo.vpl.core.Hub;
 import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
+import jo.vpl.hub.loop.TimeInterval;
 import jo.vpl.util.IconType;
+import jo.vpl.xml.HubTag;
 
 /**
  *
@@ -18,8 +22,9 @@ import jo.vpl.util.IconType;
         tags = {"check", "if", "condition"})
 public class IfCondition extends Hub {
 
-    static String[] operators = {">",">=","==", "!=", "<=", "<"};
-    
+    private final Label OPERATOR;
+    static String[] operators = {">", ">=", "==", "!=", "<=", "<"};
+
     public IfCondition(VplControl hostCanvas) {
         super(hostCanvas);
 
@@ -30,10 +35,30 @@ public class IfCondition extends Hub {
 
         addOutPortToHub("Boolean : Result", Boolean.class);
 
-        Label label = new Label("A > B");
-        label.getStyleClass().add("hub-text");
+        OPERATOR = new Label("A > B");
+        OPERATOR.setUserData(0);
+        OPERATOR.getStyleClass().add("hub-text");
+        OPERATOR.setOnMouseClicked(this::button_MouseClick);
 
-        addControlToHub(label);
+        addControlToHub(OPERATOR);
+    }
+
+    //Toggle between on and off by listening to the switch property of the timer
+    private void button_MouseClick(MouseEvent e) {
+
+        int index = (int) OPERATOR.getUserData();
+        if (index == 5) {
+            OPERATOR.setUserData(0);
+        } else {
+            OPERATOR.setUserData(++index);
+        }
+        updateOperator();
+    }
+    
+    private void updateOperator() {
+        int index = (int) OPERATOR.getUserData();
+        OPERATOR.setText("A " + operators[index] + " B");
+        calculate();
     }
 
     /**
@@ -55,17 +80,59 @@ public class IfCondition extends Hub {
         if (raw1 instanceof List || raw2 instanceof List) {
             //not yet supported
             outPorts.get(0).setData(null);
-            
+
         } else {
             //Does this 
-            boolean result = ((Number) raw1).doubleValue() > ((Number) raw2).doubleValue();
+            int index = (int) OPERATOR.getUserData();
+            String operator = operators[index];
+            Boolean result = null;
+            switch (operator) {
+                case ">":
+                    result = ((Number) raw1).doubleValue() > ((Number) raw2).doubleValue();
+                    break;
+                case ">=":
+                    result = ((Number) raw1).doubleValue() >= ((Number) raw2).doubleValue();
+                    break;
+                case "==":
+                    result = ((Number) raw1).doubleValue() == ((Number) raw2).doubleValue();
+                    break;
+                case "!=":
+                    result = ((Number) raw1).doubleValue() != ((Number) raw2).doubleValue();
+                    break;
+                case "<=":
+                    result = ((Number) raw1).doubleValue() <= ((Number) raw2).doubleValue();
+                    break;
+                case "<":
+                    result = ((Number) raw1).doubleValue() < ((Number) raw2).doubleValue();
+                    break;
+            }
+
             outPorts.get(0).setData(result);
         }
     }
 
     @Override
+    public void serialize(HubTag xmlTag) {
+        super.serialize(xmlTag);
+        //Retrieval of custom attribute
+        xmlTag.getOtherAttributes().put(QName.valueOf("operator"), (int) OPERATOR.getUserData() + "");
+    }
+
+    @Override
+    public void deserialize(HubTag xmlTag) {
+        super.deserialize(xmlTag);
+        //Retrieval of custom attribute
+        String value = xmlTag.getOtherAttributes().get(QName.valueOf("operator"));
+        int index = Integer.parseInt(value);
+        OPERATOR.setUserData(index);
+        updateOperator();
+    }
+
+    @Override
     public Hub clone() {
-        Hub hub = new IfCondition(hostCanvas);
+        IfCondition hub = new IfCondition(hostCanvas);
+        hub.OPERATOR.setUserData(this.OPERATOR.getUserData());
+        hub.updateOperator();
         return hub;
     }
 }

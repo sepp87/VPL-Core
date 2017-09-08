@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import jo.vpl.core.Hub;
 import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
@@ -64,8 +67,35 @@ public class GetItemByKey extends Hub {
         }
 
         //This calculate function does not (yet) support lists
-        if (rawObject instanceof List || rawKey instanceof List) {
+        if (rawKey instanceof List) {
             outPorts.get(0).setData(null);
+            return;
+        }
+
+        if (rawObject instanceof List) {
+
+            String key = (String) rawKey;
+            List list = (List) rawObject;
+            Set<Class> types = new HashSet<>();
+            Set<String> names = new HashSet<>();
+            List<Object> data = new ArrayList<>();
+
+            for (Object object : list) {
+                String json = (String) object;
+                Result result = getItemByKey(json, key);
+                if (result != null) {
+                    types.add(result.dataType);
+                    names.add(result.name);
+                    data.add(result.data);
+                }
+            }
+
+            if (names.size() == 1 && types.size() == 1) {
+                outPorts.get(0).dataType = types.stream().findFirst().get();
+                outPorts.get(0).setName(names.stream().findFirst().get());
+                outPorts.get(0).setData(data);
+            }
+
             return;
         }
 
@@ -150,6 +180,89 @@ public class GetItemByKey extends Hub {
         } catch (IllegalStateException e) {
             //Throw exception that Json is not of type JsonObject and return
             outPorts.get(0).setData(null);
+        }
+    }
+
+    private class Result {
+
+        Class dataType;
+        String name;
+        Object data;
+
+        Result() {
+
+        }
+
+        Result(Class dataType, String name, Object data) {
+            this.dataType = dataType;
+            this.name = name;
+            this.data = data;
+        }
+    }
+
+    private Result getItemByKey(String json, String key) {
+        try {
+            JsonElement jsonElement = parser.parse(json);
+
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+            if (!jsonObject.has(key)) {
+                //Throw exception that Json does not have this property
+                return null;
+            }
+
+            JsonElement value = jsonObject.get(key);
+            if (value.isJsonPrimitive()) {
+
+                String str = value.toString();
+                if (str.startsWith("\"")) {
+
+                    //Set outgoing data
+                    outPorts.get(0).dataType = String.class;
+                    outPorts.get(0).setName("String");
+                    String data = str.substring(1, str.length() - 1);
+                    return new Result(String.class, "String", data);
+                }
+
+                Boolean bool = getBooleanValue(str);
+                if (bool != null) {
+                    return new Result(Boolean.class, "Boolean", bool);
+                }
+
+                Integer integer = getIntegerValue(str);
+                if (integer != null) {
+                    return new Result(Integer.class, "Integer", integer);
+                }
+
+                Long lng = getLongValue(str);
+                if (lng != null) {
+                    return new Result(Long.class, "Long", lng);
+                }
+
+                Double dbl = getDoubleValue(str);
+                if (dbl != null) {
+                    return new Result(Double.class, "Double", dbl);
+                }
+
+            }
+
+            Result result = new Result();
+            result.dataType = String.class;
+            if (value.isJsonArray()) {
+                result.name = "String : Array";
+            } else if (value.isJsonObject()) {
+                result.name = "String : Object";
+            }
+
+            result.data = value.toString();
+            return result;
+
+        } catch (JsonParseException e) {
+            //Throw exception that Json is not formatted correctly
+            return null;
+        } catch (IllegalStateException e) {
+            //Throw exception that Json is not of type JsonObject and return
+            return null;
         }
     }
 

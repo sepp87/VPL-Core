@@ -29,6 +29,7 @@ public class Port extends VBox {
     public Hub parentHub;
     public boolean multiDockAllowed;
     public BindingPoint origin;
+    public int index;
 
     public Port(String name, Hub parent, PortTypes portType, Class type) {
         Tooltip tip = new Tooltip();
@@ -39,6 +40,12 @@ public class Port extends VBox {
         this.dataType = type;
         this.portType = portType;
         this.setName(name);
+        
+        if(portType == PortTypes.IN){
+            index = parent.inPorts.size();
+        } else {
+            index = parent.outPorts.size();
+        }
 
         getStyleClass().add("port");
         getStyleClass().add("port-" + portType.toString().toLowerCase());

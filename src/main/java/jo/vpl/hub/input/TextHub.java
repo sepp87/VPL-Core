@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
+import jo.vpl.core.Port;
 import jo.vpl.xml.HubTag;
 
 /**
@@ -80,10 +81,10 @@ public class TextHub extends Hub {
         //Do Action
         if ((boolean) isActive) {
             area.setEditable(false);
-            calculate();
+  //          calculate();
         } else {
             area.setEditable(true);
-            calculate();
+//            calculate();
         }
     }
 
@@ -114,7 +115,14 @@ public class TextHub extends Hub {
         }
         outPorts.get(0).setData(data);
     }
+    
+    @Override
+    public void handle_IncomingConnectionRemoved(Port source) {
+        outPorts.get(0).setData(null);
+    }
 
+    
+    
     /**
      * Print whatever is incoming
      */
@@ -126,7 +134,7 @@ public class TextHub extends Hub {
         area.setText("");
 
         //Do Action
-        if (inPorts.get(0).getData() != null && inPorts.get(0).connectedConnections.size() > 0) {
+        if (inPorts.get(0).getData() != null) {
             //Set data type corresponding to source
             outPorts.get(0).dataType = inPorts.get(0).connectedConnections.get(0).getStartPort().dataType;
             outPorts.get(0).setName(inPorts.get(0).connectedConnections.get(0).getStartPort().getName());

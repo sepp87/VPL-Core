@@ -34,7 +34,7 @@ public class ArrayAsList extends Hub {
     public ArrayAsList(VplControl hostCanvas) {
         super(hostCanvas);
 
-        setName("getJsonValue");
+        setName("ArrayAsList");
 
         addInPortToHub("String : Json", String.class);
         addOutPortToHub("String : List", String.class);

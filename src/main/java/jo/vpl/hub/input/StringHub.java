@@ -74,6 +74,7 @@ public class StringHub extends Hub {
     public void setString(String str) {
         TextField textField = (TextField) controls.get(0);
         textField.setText(str);
+        calculate();
     }
 
     public String getString() {
@@ -185,6 +186,7 @@ public class StringHub extends Hub {
     @Override
     public Hub clone() {
         StringHub hub = new StringHub(hostCanvas);
+        System.out.println("found " + this.getString());
         hub.setString(this.getString());
         return hub;
     }

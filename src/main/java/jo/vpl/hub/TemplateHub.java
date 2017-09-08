@@ -8,6 +8,7 @@ import jo.vpl.core.VplControl;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
+import jo.vpl.core.Port;
 import jo.vpl.util.IconType;
 import jo.vpl.xml.HubTag;
 
@@ -33,6 +34,31 @@ public class TemplateHub extends Hub {
 
         Label label = getAwesomeIcon(IconType.FA_PAPER_PLANE);
         addControlToHub(label);
+    }
+
+    /**
+     * Function to handle data when a connection is added and before calculate
+     * is called
+     */
+    @Override
+    public void handle_IncomingConnectionAdded(Port source, Port incoming) {
+        //Sample code for handling just specific ports
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+
+        }
+    }
+
+    /**
+     * Function to handle data when a connection is removed
+     */
+    @Override
+    public void handle_IncomingConnectionRemoved(Port source) {
+        //Sample code for handling just specific ports
+        int index = inPorts.indexOf(source);
+        if (index == 0) {
+
+        }
     }
 
     /**

@@ -234,6 +234,19 @@ public abstract class Hub extends VplElement {
     }
 
     /**
+     * Add a port to the hub
+     *
+     * @param port the port to add
+     * @return the Port
+     */
+    public Port addInPortToHub(Port port) {
+        inPortBox.getChildren().add(port.index, port);
+        port.dataProperty().addListener(port_DataChangeListener);
+        inPorts.add(port.index, port);
+        return port;
+    }
+
+    /**
      * Remove a port from the hub
      *
      * @param port the port to remove
@@ -311,10 +324,10 @@ public abstract class Hub extends VplElement {
     }
 
     /**
-     * Called when a new connection is incoming. Ideal for forwarding a data type
-     * to an out port e.g. hubs operating on collections. Its removed counterpart
-     * is used to set the data type of the out port back to its initial state. 
-     * Only called when multi dock is not allowed!
+     * Called when a new connection is incoming. Ideal for forwarding a data
+     * type to an out port e.g. hubs operating on collections. Its removed
+     * counterpart is used to set the data type of the out port back to its
+     * initial state. Only called when multi dock is not allowed!
      *
      * @param source port the connection was added to
      * @param incoming port which sends the data
@@ -324,10 +337,10 @@ public abstract class Hub extends VplElement {
     }
 
     /**
-     * Called when an incoming connection is removed. Ideal for forwarding a data type
-     * to an out port e.g. hubs operating on collections. Its removed counterpart
-     * is used to set the data type of the out port back to its initial state.
-     * Only called when multi dock is not allowed!
+     * Called when an incoming connection is removed. Ideal for forwarding a
+     * data type to an out port e.g. hubs operating on collections. Its removed
+     * counterpart is used to set the data type of the out port back to its
+     * initial state. Only called when multi dock is not allowed!
      *
      * @param source port the connection was removed from
      */

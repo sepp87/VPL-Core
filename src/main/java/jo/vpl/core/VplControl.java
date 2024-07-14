@@ -858,8 +858,7 @@ public class VplControl extends AnchorPane {
         String errorMessage = "";
         
         try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class
-            );
+            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
 //            JAXBElement<DocumentTag> document

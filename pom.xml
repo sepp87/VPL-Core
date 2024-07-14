@@ -9,8 +9,17 @@
     
     <dependencies>        
         
-        
 
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.1</version>
+        </dependency>
         <!-- Logger is dependent on the presence of StaticLoggerBinder -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -43,7 +52,7 @@
             <artifactId>google-api-services-sheets</artifactId>
             <version>v4-rev481-1.22.0</version>
         </dependency>
-<!--        <dependency> //For checking ContentType/MimeType (but it is an extra jar)
+        <!--        <dependency> //For checking ContentType/MimeType (but it is an extra jar)
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.12</version>
@@ -61,7 +70,12 @@
             <version>2.7</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        
     </dependencies>
     
     <properties>
@@ -73,83 +87,24 @@
     <build>
         <plugins>   
             
-            <!-- XSD in Java classes omzetten
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.12.3</version>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>4.0.0</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        
-                        <configuration>
-                            <generatePackage>jo.vpl.schema</generatePackage>
-                            <sources>
-                                <source>src/main/resources/schema/vpl.xsd</source>
-                            </sources>
-                        </configuration>
-                        
-                        <id>vplxml</id>
                     </execution>
                 </executions>
-            </plugin> -->
-                  
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jaxb2-maven-plugin</artifactId>
-            <version>2.2</version>
-            <executions>
-                <execution>
-                    <id>xjc</id>
-                    <goals>
-                        <goal>xjc</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <!--
-                    Include the sources from 3 locations:
-                    1) an explicitly named file
-                    2) a directory (including recursively finding all files in it)
-                    3) a non-existent path, which is silently ignored
-                -->
-                <sources>
-                    <source>resources/schema</source>
-                    <!--<source>src/main/foo/xsds</source>
-                    <source>src/main/a/nonexistent/path</source>-->
-                </sources>
-                <!--
-                    When providing xjcSourceExcludeFilters, the default exclude
-                    Filter definitions are overridden by the Patterns supplied.
-
-                    Any filter whose path ends with any of the Java Regular Expression Patterns
-                    supplied will be excluded from the XJC sources. In this example,
-                    files found under any of the source directories will be excluded from XJC
-                    processing if their full paths end with '.xsd' or '.foo'
-                
-                    <xjcSourceExcludeFilters>
-                        <filter implementation="org.codehaus.mojo.jaxb2.shared.filters.pattern.PatternFileFilter">
-                            <patterns>
-                                <pattern>\.xsd</pattern>
-                                <pattern>\.foo</pattern>
-                            </patterns>
-                        </filter>
-                    </xjcSourceExcludeFilters>
-                    -->
-                    <!--
-                        Package name of the generated sources.
-                    -->
-                    <!--<packageName>jo.vpl.xml</packageName>-->
-
-                    <!--
-                        Copy all source XSDs into the generate artifact.
-                        Place them at the supplied xsdPathWithinArtifact, that is within the given directory.
-                    
-                    <xsdPathWithinArtifact>source/xsds</xsdPathWithinArtifact>-->
-                </configuration>
-            </plugin>
+            </plugin> 
+            
+                                    <!--
+<source>${basedir}/resources/schema/vplxml.xsd</source>
+                                <packageName>jo.vpl.xml</packageName>
+                                    -->
+            
 
                   
             <!-- See https://maven.apache.org/plugins/ for more plugins -->    

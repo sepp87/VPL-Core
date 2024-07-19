@@ -24,11 +24,11 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+//import javax.xml.bind.JAXBContext;
+//import javax.xml.bind.JAXBElement;
+//import javax.xml.bind.JAXBException;
+//import javax.xml.bind.Marshaller;
+//import javax.xml.bind.Unmarshaller;
 import jo.vpl.xml.*;
 
 /**
@@ -265,8 +265,9 @@ public class VplControl extends AnchorPane {
                 return;
             }
 
-            double delta = 1.2;
-
+//            double delta = 1.2;
+            double delta = 1.05;
+            
             double scale = getScale(); // currently we only use Y, same value is used for X
             double oldScale = scale;
 
@@ -810,115 +811,112 @@ public class VplControl extends AnchorPane {
     }
 
     public void serialize(File file) {
-        try {
-
-            ObjectFactory factory = new ObjectFactory();
-
-            HubsTag hubsTag = factory.createHubsTag();
-
-            for (Hub hub : hubSet) {
-                HubTag hubTag = factory.createHubTag();
-                hub.serialize(hubTag);
-                hubsTag.getHub().add(hubTag);
-            }
-
-            ConnectionsTag connectionsTag = factory.createConnectionsTag();
-
-            for (Connection connection : connectionSet) {
-                ConnectionTag connectionTag = factory.createConnectionTag();
-                connection.serialize(connectionTag);
-                connectionsTag.getConnection().add(connectionTag);
-            }
-
-            DocumentTag documentTag = factory.createDocumentTag();
-            documentTag.setScale(getScale());
-            documentTag.setTranslateX(getTranslateX());
-            documentTag.setTranslateY(getTranslateY());
-
-            documentTag.setHubs(hubsTag);
-            documentTag.setConnections(connectionsTag);
-
-            JAXBElement<DocumentTag> document = factory.createDocument(documentTag);
-
-            JAXBContext context = JAXBContext.newInstance("jo.vpl.xml");
-            Marshaller marshaller = context.createMarshaller();
-
-            //Pretty output
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(document, file);
-
-        } catch (JAXBException ex) {
-            Logger.getLogger(VplControl.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//
+//            ObjectFactory factory = new ObjectFactory();
+//
+//            HubsTag hubsTag = factory.createHubsTag();
+//
+//            for (Hub hub : hubSet) {
+//                HubTag hubTag = factory.createHubTag();
+//                hub.serialize(hubTag);
+//                hubsTag.getHub().add(hubTag);
+//            }
+//
+//            ConnectionsTag connectionsTag = factory.createConnectionsTag();
+//
+//            for (Connection connection : connectionSet) {
+//                ConnectionTag connectionTag = factory.createConnectionTag();
+//                connection.serialize(connectionTag);
+//                connectionsTag.getConnection().add(connectionTag);
+//            }
+//
+//            DocumentTag documentTag = factory.createDocumentTag();
+//            documentTag.setScale(getScale());
+//            documentTag.setTranslateX(getTranslateX());
+//            documentTag.setTranslateY(getTranslateY());
+//
+//            documentTag.setHubs(hubsTag);
+//            documentTag.setConnections(connectionsTag);
+//
+//            JAXBElement<DocumentTag> document = factory.createDocument(documentTag);
+//
+//            JAXBContext context = JAXBContext.newInstance("jo.vpl.xml");
+//            Marshaller marshaller = context.createMarshaller();
+//
+//            //Pretty output
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//            marshaller.marshal(document, file);
+//
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(VplControl.class
+//                    .getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void deserialize(File file) {
         
-        String errorMessage = "";
-        
-        try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-//            JAXBElement<DocumentTag> document
-//                    = (JAXBElement<DocumentTag>) unmarshaller.
-//                    unmarshal(ClassLoader.getSystemResourceAsStream("problem/expense.xml"));
-            JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
-            DocumentTag documentTag = document.getValue();
-
-            setScale(documentTag.getScale());
-            setTranslateX(documentTag.getTranslateX());
-            setTranslateY(documentTag.getTranslateY());
-
-            HubsTag hubsTag = documentTag.getHubs();
-            List<HubTag> hubTagList = hubsTag.getHub();
-            if (hubTagList
-                    != null) {
-                for (HubTag hubTag : hubTagList) {
-                    errorMessage = "Hub type " + hubTag.getType() + " not found.";
-                    Class type = VplGlobal.HUB_TYPE_MAP.get(hubTag.getType());
-//                    Class type = Class.forName(hubTag.getType());
-                    Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(this);
-                    hub.deserialize(hubTag);
-                    hubSet.add(hub);
-                    getChildren().add(hub);
-                }
-            }
-
-            ConnectionsTag connectionsTag = documentTag.getConnections();
-            List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
-            if (connectionTagList
-                    != null) {
-                for (ConnectionTag connectionTag : connectionTagList) {
-
-                    UUID startHubUUID = UUID.fromString(connectionTag.getStartHub());
-                    int startPortIndex = connectionTag.getStartIndex();
-                    UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
-                    int endPortIndex = connectionTag.getEndIndex();
-
-                    Hub startHub = null;
-                    Hub endHub = null;
-                    for (Hub hub : hubSet) {
-                        if (hub.uuid.compareTo(startHubUUID) == 0) {
-                            startHub = hub;
-                        } else if (hub.uuid.compareTo(endHubUUID) == 0) {
-                            endHub = hub;
-                        }
-                    }
-
-                    if (startHub != null && endHub != null) {
-                        Port startPort = startHub.outPorts.get(startPortIndex);
-                        Port endPort = endHub.inPorts.get(endPortIndex);
-                        Connection connection = new Connection(this, startPort, endPort);
-                        connectionSet.add(connection);
-                    }
-                }
-            }
-        } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(VplControl.class
-                    .getName()).log(Level.SEVERE, errorMessage, ex);
-        }
+//        String errorMessage = "";
+//        
+//        try {
+//            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//            JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
+//            DocumentTag documentTag = document.getValue();
+//
+//            setScale(documentTag.getScale());
+//            setTranslateX(documentTag.getTranslateX());
+//            setTranslateY(documentTag.getTranslateY());
+//
+//            HubsTag hubsTag = documentTag.getHubs();
+//            List<HubTag> hubTagList = hubsTag.getHub();
+//            if (hubTagList
+//                    != null) {
+//                for (HubTag hubTag : hubTagList) {
+//                    errorMessage = "Hub type " + hubTag.getType() + " not found.";
+//                    Class type = VplGlobal.HUB_TYPE_MAP.get(hubTag.getType());
+////                    Class type = Class.forName(hubTag.getType());
+//                    Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(this);
+//                    hub.deserialize(hubTag);
+//                    hubSet.add(hub);
+//                    getChildren().add(hub);
+//                }
+//            }
+//
+//            ConnectionsTag connectionsTag = documentTag.getConnections();
+//            List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
+//            if (connectionTagList
+//                    != null) {
+//                for (ConnectionTag connectionTag : connectionTagList) {
+//
+//                    UUID startHubUUID = UUID.fromString(connectionTag.getStartHub());
+//                    int startPortIndex = connectionTag.getStartIndex();
+//                    UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
+//                    int endPortIndex = connectionTag.getEndIndex();
+//
+//                    Hub startHub = null;
+//                    Hub endHub = null;
+//                    for (Hub hub : hubSet) {
+//                        if (hub.uuid.compareTo(startHubUUID) == 0) {
+//                            startHub = hub;
+//                        } else if (hub.uuid.compareTo(endHubUUID) == 0) {
+//                            endHub = hub;
+//                        }
+//                    }
+//
+//                    if (startHub != null && endHub != null) {
+//                        Port startPort = startHub.outPorts.get(startPortIndex);
+//                        Port endPort = endHub.inPorts.get(endPortIndex);
+//                        Connection connection = new Connection(this, startPort, endPort);
+//                        connectionSet.add(connection);
+//                    }
+//                }
+//            }
+//        } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+//            Logger.getLogger(VplControl.class
+//                    .getName()).log(Level.SEVERE, errorMessage, ex);
+//        }
     }
 }
 

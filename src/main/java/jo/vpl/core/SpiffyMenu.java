@@ -23,11 +23,9 @@ import java.util.Map;
 
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.FadeTransitionBuilder;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
-import javafx.animation.ParallelTransitionBuilder;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.beans.property.DoubleProperty;
@@ -139,24 +137,24 @@ public class SpiffyMenu extends Group {
         centerNode.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 new EventHandler<MouseEvent>() {
 
-                    @Override
-                    public void handle(final MouseEvent event) {
-                        if (selectedItem == null) {
-                            centerNode.displayCenter();
-                        }
-                    }
-                });
+            @Override
+            public void handle(final MouseEvent event) {
+                if (selectedItem == null) {
+                    centerNode.displayCenter();
+                }
+            }
+        });
 
         centerNode.addEventHandler(MouseEvent.MOUSE_EXITED,
                 new EventHandler<MouseEvent>() {
 
-                    @Override
-                    public void handle(final MouseEvent event) {
-                        if (selectedItem == null) {
-                            centerNode.hideCenter();
-                        }
-                    }
-                });
+            @Override
+            public void handle(final MouseEvent event) {
+                if (selectedItem == null) {
+                    centerNode.hideCenter();
+                }
+            }
+        });
 
         centerNode.setOnMouseClicked(this::handle_CloseMenu);
 
@@ -198,11 +196,11 @@ public class SpiffyMenu extends Group {
         item.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>() {
 
-                    @Override
-                    public void handle(final MouseEvent event) {
-                        // TODO Animate the little long click spoiler...
-                    }
-                });
+            @Override
+            public void handle(final MouseEvent event) {
+                // TODO Animate the little long click spoiler...
+            }
+        });
 
         item.addEventHandler(MouseEvent.MOUSE_CLICKED, selectionEventHandler);
 
@@ -415,8 +413,8 @@ public class SpiffyMenu extends Group {
             final Animation itemTransition = new Timeline(new KeyFrame(
                     Duration.ZERO, new KeyValue(it.startAngleProperty(),
                             startAngleBegin)), new KeyFrame(
-                            Duration.millis(400), new KeyValue(it.startAngleProperty(),
-                                    startAngleEnd)));
+                    Duration.millis(400), new KeyValue(it.startAngleProperty(),
+                    startAngleEnd)));
 
             transition.getChildren().add(itemTransition);
 
@@ -425,9 +423,9 @@ public class SpiffyMenu extends Group {
             final Timeline iconTransition = new Timeline(new KeyFrame(
                     Duration.millis(0),
                     new KeyValue(image.opacityProperty(), 0)), new KeyFrame(
-                            Duration.millis(300), new KeyValue(image.opacityProperty(),
-                                    0)), new KeyFrame(Duration.millis(400),
-                            new KeyValue(image.opacityProperty(), 1.0)));
+                    Duration.millis(300), new KeyValue(image.opacityProperty(),
+                    0)), new KeyFrame(Duration.millis(400),
+                    new KeyValue(image.opacityProperty(), 1.0)));
 
             transition.getChildren().add(iconTransition);
         }
@@ -454,27 +452,47 @@ public class SpiffyMenu extends Group {
         final Animation itemTransition = new Timeline(new KeyFrame(
                 Duration.ZERO, new KeyValue(backgroundColorAnimValue, 0)),
                 new KeyFrame(Duration.millis(300), new KeyValue(
-                                backgroundColorAnimValue, 1.0)));
+                        backgroundColorAnimValue, 1.0)));
         transition.getChildren().add(itemTransition);
 
         // Selected item image icon color change
-        final FadeTransition selectedItemImageBlackFade = FadeTransitionBuilder
-                .create().node(itemAndValueToIcon.get(newSelectedItem))
-                .duration(Duration.millis(400)).fromValue(1.0).toValue(0.0)
-                .build();
+        final FadeTransition selectedItemImageBlackFade = new FadeTransition();
+        selectedItemImageBlackFade.setNode(itemAndValueToIcon.get(newSelectedItem));
+        selectedItemImageBlackFade.setDuration(Duration.millis(400));
+        selectedItemImageBlackFade.setFromValue(1);
+        selectedItemImageBlackFade.setToValue(0);
 
-        final FadeTransition selectedItemImageWhiteFade = FadeTransitionBuilder
-                .create().node(itemAndValueToWhiteIcon.get(newSelectedItem))
-                .duration(Duration.millis(400)).fromValue(0).toValue(1.0)
-                .build();
+        final FadeTransition selectedItemImageWhiteFade = new FadeTransition();
+        selectedItemImageBlackFade.setNode(itemAndValueToWhiteIcon.get(newSelectedItem));
+        selectedItemImageBlackFade.setDuration(Duration.millis(400));
+        selectedItemImageBlackFade.setFromValue(0);
+        selectedItemImageBlackFade.setToValue(1);
+
+//        final FadeTransition selectedItemImageBlackFade = FadeTransitionBuilder
+//                .create().node(itemAndValueToIcon.get(newSelectedItem))
+//                .duration(Duration.millis(400)).fromValue(1.0).toValue(0.0)
+//                .build();
+//
+//        final FadeTransition selectedItemImageWhiteFade = FadeTransitionBuilder
+//                .create().node(itemAndValueToWhiteIcon.get(newSelectedItem))
+//                .duration(Duration.millis(400)).fromValue(0).toValue(1.0)
+//                .build();
         transition.getChildren().addAll(selectedItemImageBlackFade,
                 selectedItemImageWhiteFade);
 
         // Unselected items fading
-        final FadeTransition notSelectedTransition = FadeTransitionBuilder
-                .create().node(notSelectedItemEffect)
-                .duration(Duration.millis(200)).delay(Duration.millis(200))
-                .fromValue(0).toValue(0.8).build();
+        final FadeTransition notSelectedTransition = new FadeTransition();
+        selectedItemImageBlackFade.setNode(notSelectedItemEffect);
+        selectedItemImageBlackFade.setDuration(Duration.millis(200));
+        selectedItemImageBlackFade.setDelay(Duration.millis(200));
+        selectedItemImageBlackFade.setFromValue(0);
+        selectedItemImageBlackFade.setToValue(0.8);
+
+//        final FadeTransition notSelectedTransition = FadeTransitionBuilder
+//                .create().node(notSelectedItemEffect)
+//                .duration(Duration.millis(200))
+//                .delay(Duration.millis(200))
+//                .fromValue(0).toValue(0.8).build();
         notSelectedItemEffect.setOpacity(0);
         notSelectedItemEffect.setVisible(true);
 
@@ -515,20 +533,33 @@ public class SpiffyMenu extends Group {
     }
 
     public void hideMenu() {
-        final FadeTransition fade = FadeTransitionBuilder.create()
-                .node(this).fromValue(1).toValue(0)
-                .duration(Duration.millis(300))
-                .onFinished(new EventHandler<ActionEvent>() {
+        final FadeTransition fade = new FadeTransition();
+        fade.setNode(this);
+        fade.setDuration(Duration.millis(300));
+        fade.setFromValue(1);
+        fade.setToValue(0);
+        fade.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(final ActionEvent arg0) {
+                SpiffyMenu.this.setVisible(false);
+            }
+        });
 
-                    @Override
-                    public void handle(final ActionEvent arg0) {
-                        SpiffyMenu.this.setVisible(false);
-                    }
-                }).build();
+//        final FadeTransition fade = FadeTransitionBuilder.create()
+//                .node(this).fromValue(1).toValue(0)
+//                .duration(Duration.millis(300))
+//                .onFinished(new EventHandler<ActionEvent>() {
+//
+//                    @Override
+//                    public void handle(final ActionEvent arg0) {
+//                        SpiffyMenu.this.setVisible(false);
+//                    }
+//                }).build();
+        final ParallelTransition transition = new ParallelTransition();
+        transition.getChildren().add(fade);
 
-        final ParallelTransition transition = ParallelTransitionBuilder
-                .create().children(fade).build();
-
+//        final ParallelTransition transition = ParallelTransitionBuilder
+//                .create().children(fade).build();
         transition.play();
     }
 
@@ -540,14 +571,21 @@ public class SpiffyMenu extends Group {
         this.setTranslateY(y);
         this.setVisible(true);
 
-        final FadeTransition fade = FadeTransitionBuilder.create()
-                .node(this).fromValue(0).toValue(1)
-                .duration(Duration.millis(300))
-                .build();
+        final FadeTransition fade = new FadeTransition();
+        fade.setNode(this);
+        fade.setDuration(Duration.millis(300));
+        fade.setFromValue(0);
+        fade.setToValue(1);
 
-        final ParallelTransition transition = ParallelTransitionBuilder
-                .create().children(fade).build();
+//        final FadeTransition fade = FadeTransitionBuilder.create()
+//                .node(this).fromValue(0).toValue(1)
+//                .duration(Duration.millis(300))
+//                .build();
+        final ParallelTransition transition = new ParallelTransition();
+        transition.getChildren().add(fade);
 
+//        final ParallelTransition transition = ParallelTransitionBuilder
+//                .create().children(fade).build();
         transition.play();
 
     }
@@ -564,12 +602,26 @@ class SpiffyMenuCenter extends Region {
     public SpiffyMenuCenter() {
         getChildren().add(hideTransitionGroup);
         getChildren().add(showTransitionGroup);
-        showTransition = FadeTransitionBuilder.create()
-                .duration(Duration.millis(400)).node(showTransitionGroup)
-                .fromValue(0.0).toValue(1.0).build();
-        hideTransition = FadeTransitionBuilder.create()
-                .duration(Duration.millis(400)).node(hideTransitionGroup)
-                .fromValue(1.0).toValue(0.0).build();
+
+        showTransition = new FadeTransition();
+        showTransition.setNode(showTransitionGroup);
+        showTransition.setDuration(Duration.millis(400));
+        showTransition.setFromValue(0);
+        showTransition.setToValue(1);
+
+//        showTransition = FadeTransitionBuilder.create()
+//                .duration(Duration.millis(400)).node(showTransitionGroup)
+//                .fromValue(0.0).toValue(1.0).build();
+
+        hideTransition = new FadeTransition();
+        hideTransition.setNode(showTransitionGroup);
+        hideTransition.setDuration(Duration.millis(400));
+        hideTransition.setFromValue(1);
+        hideTransition.setToValue(0);
+
+//        hideTransition = FadeTransitionBuilder.create()
+//                .duration(Duration.millis(400)).node(hideTransitionGroup)
+//                .fromValue(1.0).toValue(0.0).build();
     }
 
     public void addCenterItem(final Region centerGraphic) {

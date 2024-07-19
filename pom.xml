@@ -100,10 +100,10 @@
                 </executions>
             </plugin> 
             
-                                    <!--
+            <!--
 <source>${basedir}/resources/schema/vplxml.xsd</source>
-                                <packageName>jo.vpl.xml</packageName>
-                                    -->
+        <packageName>jo.vpl.xml</packageName>
+            -->
             
 
                   
@@ -123,7 +123,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+                         
             <!-- Copy project dependencies-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -140,41 +140,40 @@
                             <!-- exclude junit, we need runtime dependency only -->
                             <includeScope>runtime</includeScope>
                             <!--<outputDirectory>${project.build.directory}/lib/</outputDirectory>-->
-                            <outputDirectory>build/lib/</outputDirectory>
+                            <outputDirectory>${basedir}/build/lib/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin> 
             
             <!-- Copy project jar build-->
+            <!-- https://stackoverflow.com/questions/586202/best-practices-for-copying-files-with-maven -->
             <plugin>
-                <groupId>com.github.goldin</groupId>
-                <artifactId>copy-maven-plugin</artifactId>
-                <version>0.2.5</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>deploy-to-local-directory</id>
+                        <id>copy-resource-one</id>
                         <phase>install</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <skipIdentical>false</skipIdentical>
-                            <failIfNotFound>false</failIfNotFound>
+                            <outputDirectory>${basedir}/build</outputDirectory>
                             <resources>
                                 <resource>
-                                    <description>Copy artifact to another directory</description>
-                                    <targetPath>build</targetPath>
-                                    <directory>${project.build.directory}</directory>
+                                    <directory>${basedir}/target</directory>
                                     <includes>
-                                        <include>*.jar</include>
+                                        <include>jo.vpl-2.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>                
+            </plugin>    
+                                      
+                                                                
         </plugins>        
     </build>
     

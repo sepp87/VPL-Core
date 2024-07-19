@@ -26,7 +26,7 @@ public class VplTester extends Application {
 //        pane.getStylesheets().add("css/default.css");
         pane.getStyleClass().add("vpl");
 
-        Scene scene = new Scene(pane, 800, 600);
+        Scene scene = new Scene(pane, 1600, 1200);
 
         stage.setScene(scene);
         stage.setTitle("VPLTester");

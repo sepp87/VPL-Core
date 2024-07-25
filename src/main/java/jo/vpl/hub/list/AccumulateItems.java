@@ -37,7 +37,7 @@ public class AccumulateItems extends Hub {
 
         addControlToHub(label);
 
-        List list = jo.util.General.getList(Object.class);
+        List list = jo.vpl.core.Util.getList(Object.class);
         outPorts.get(0).setData(list);
     }
 
@@ -46,7 +46,7 @@ public class AccumulateItems extends Hub {
         int index = inPorts.indexOf(source);
         if (index == 0) {
             //Set data type corresponding to incoming
-            List list = jo.util.General.getList(incoming.dataType);
+            List list = jo.vpl.core.Util.getList(incoming.dataType);
             outPorts.get(0).setData(list);
             outPorts.get(0).dataType = incoming.dataType;
             outPorts.get(0).setName(incoming.dataType.getSimpleName() + " : List");
@@ -58,7 +58,7 @@ public class AccumulateItems extends Hub {
         int index = inPorts.indexOf(source);
         if (index == 0) {
             //Reset data type to initial state
-            List list = jo.util.General.getList(Object.class);
+            List list = jo.vpl.core.Util.getList(Object.class);
             outPorts.get(0).setData(list);
             outPorts.get(0).dataType = Object.class;
             outPorts.get(0).setName("Object : List");
@@ -85,7 +85,7 @@ public class AccumulateItems extends Hub {
         }
 
         //Note: Also null values are added to the list     
-        List target = jo.util.General.getList(outPorts.get(0).dataType);
+        List target = jo.vpl.core.Util.getList(outPorts.get(0).dataType);
         target.addAll(source);
         target.add(item);
         outPorts.get(0).setData(target);
@@ -126,7 +126,7 @@ public class AccumulateItems extends Hub {
                     type = Class.forName(className);
 
             }
-            List list = jo.util.General.getList(type);
+            List list = jo.vpl.core.Util.getList(type);
             outPorts.get(0).setData(list);
             outPorts.get(0).dataType = type;
             outPorts.get(0).setName(type.getSimpleName() + " : List");

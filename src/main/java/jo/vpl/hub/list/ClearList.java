@@ -36,7 +36,7 @@ public class ClearList extends Hub {
 
         addControlToHub(label);
 
-        List list = jo.util.General.getList(Object.class);
+        List list = jo.vpl.core.Util.getList(Object.class);
         outPorts.get(0).setData(list);
     }
 

@@ -64,12 +64,12 @@ public class VplGlobal {
      */
     public static void loadExternalHubs() {
 
-        File dir = jo.util.IO.getDirectory(EXTERNAL_LIBRARIES);
+        File dir = Util.getDirectory(EXTERNAL_LIBRARIES);
         if (!dir.exists() && !dir.isDirectory()) {
             return;
         }
 
-        List<File> externalLibs = jo.util.IO.filterFilesByRegex(dir.listFiles(), "^.*(.jar)$");
+        List<File> externalLibs = Util.filterFilesByRegex(dir.listFiles(), "^.*(.jar)$");
 
         for (File lib : externalLibs) {
             try {
@@ -120,7 +120,7 @@ public class VplGlobal {
 
     public static void defineRuntimePath() {
 
-        String path = jo.util.General.getPathOfJAR(VplGlobal.class);
+        String path = Util.getPathOfJAR(VplGlobal.class);
         if (path.toLowerCase().contains("build")) {
             String[] newPath = {"ext"};
             EXTERNAL_LIBRARIES = newPath;

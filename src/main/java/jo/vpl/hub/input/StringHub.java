@@ -6,10 +6,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
-import static jo.util.General.getBooleanValue;
-import static jo.util.General.getDoubleValue;
-import static jo.util.General.getIntegerValue;
-import static jo.util.General.getLongValue;
+import static jo.vpl.core.Util.getBooleanValue;
+import static jo.vpl.core.Util.getDoubleValue;
+import static jo.vpl.core.Util.getIntegerValue;
+import static jo.vpl.core.Util.getLongValue;
 import jo.vpl.core.HubInfo;
 import jo.vpl.xml.HubTag;
 

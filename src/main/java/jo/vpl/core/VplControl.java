@@ -1,5 +1,10 @@
 package jo.vpl.core;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import java.awt.MouseInfo;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -24,11 +29,11 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+//import javax.xml.bind.JAXBContext;
+//import javax.xml.bind.JAXBElement;
+//import javax.xml.bind.JAXBException;
+//import javax.xml.bind.Marshaller;
+//import javax.xml.bind.Unmarshaller;
 import jo.vpl.xml.*;
 
 /**
@@ -265,8 +270,9 @@ public class VplControl extends AnchorPane {
                 return;
             }
 
-            double delta = 1.2;
-
+//            double delta = 1.2;
+            double delta = 1.05;
+            
             double scale = getScale(); // currently we only use Y, same value is used for X
             double oldScale = scale;
 
@@ -858,13 +864,9 @@ public class VplControl extends AnchorPane {
         String errorMessage = "";
         
         try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class
-            );
+            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
-//            JAXBElement<DocumentTag> document
-//                    = (JAXBElement<DocumentTag>) unmarshaller.
-//                    unmarshal(ClassLoader.getSystemResourceAsStream("problem/expense.xml"));
             JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
             DocumentTag documentTag = document.getValue();
 

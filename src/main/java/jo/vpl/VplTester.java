@@ -49,11 +49,11 @@ public class VplTester extends Application {
 //
 //    public void scanExternalLibraries() {
 //
-//        File dir = jo.util.IO.getDirectory(EXTERNAL_LIBRARIES_DIR);
+//        File dir = jo.vpl.core.Util.getDirectory(EXTERNAL_LIBRARIES_DIR);
 //        if (!dir.exists() && !dir.isDirectory()) {
 //            return;
 //        }
-//        List<File> externalLibs = jo.util.IO.filterFilesByRegex(dir.listFiles(), "^.*(.jar)$");
+//        List<File> externalLibs = jo.vpl.core.Util.filterFilesByRegex(dir.listFiles(), "^.*(.jar)$");
 //
 //    }
 //

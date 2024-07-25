@@ -1,7 +1,9 @@
 package jo.vpl.watch3D;
 
-import jo.util.obj.Model;
-import jo.util.obj.Parser;
+import jo.vpl.watch3D.obj.Model;
+import jo.vpl.watch3D.obj.Model.Geometry;
+import jo.vpl.watch3D.obj.Model.Material;
+import jo.vpl.watch3D.obj.Parser;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,7 @@ import java.util.logging.Logger;
 import javafx.scene.*;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
-import jo.util.obj.Model.Geometry;
-import jo.util.obj.Model.Material;
+
 
 /**
  *

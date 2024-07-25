@@ -80,7 +80,7 @@ public class ToFormattedString extends Hub {
         } else {
             //Process incoming data
             String rawDate = (String) raw;
-            String pattern = jo.util.Date.getDateFormat(rawDate);
+            String pattern = jo.vpl.core.Util.getDateFormat(rawDate);
 
             if (pattern == null) {
                 return;

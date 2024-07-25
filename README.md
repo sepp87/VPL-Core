@@ -1,18 +1,18 @@
-DESCRIPTION<br>
+### DESCRIPTION<br>
 A visual programming environment build with JavaFX.<br>
 
 See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
+<br><br>
 
-
-QUICK START
+### QUICK START
 * Left drag: selection rectangle
 * Right drag: pan
 * Right click: radial menu
 * Double click: open hub search box
 * Mouse wheel: zoom
+<br>
 
-
-SHORTCUTS
+### SHORTCUTS
 * CTRL-C: copy selected hubs
 * CTRL-V: paste copied hubs
 * CTRL-G: group selected hubs
@@ -21,51 +21,54 @@ SHORTCUTS
 * CTRL-N: new graph
 * Space: zoom to fit
 * Del: delete selected hubs
+<br>
 
-FUNCTIONALITIES
+### FUNCTIONALITIES
 * Input functions to generate primitve data types e.g. String, Boolean, Integer, Long, Double
 * Math functions such as multiply, divide, add and substract
 * List functions to get, add, remove and replace items
 * Json functions to get properties
+<br>
 
-
-CUSTOMIZE
+### CUSTOMIZE
 * Create custom hubs by copying TemplateHub.java and change its behaviour
 * Create your own library with hub types and add it to "build/ext/"
+<br>
 
-
-STYLE
+### STYLE
 * Change styles in VPLTester.java to either flat white, flat dark or default
 * Customize your own style by using one of the above styles as template
+<br>
 
 
-TODO
-* Add hints
-* Add exceptions
+### TODO
+* General UI/UX
+    * Start screen
+    * Menu bar
+    * Undo/redo
+    * Auto save/load
+    * Save canvas size, position and zoom factor
+    * Zoom controls
 
-* Add start screen
-* Add menu bar
-* Add customization functionality through config file
-* Add comments
-* Add labels to radial menu
-* Add scripting hub
-* Add functionality to remove connections
-* Add looping groups/areas
-* Add auto load of save file
-* Improve grouping
-* Improve saving of hub settings
-* BUG text and hubs are copied / pasted simultaneously
-* Create template plugin project (FatJar, OneJar or UberJar which omits existing dependencies)
+* Hub behaviour
+    * Hints
+    * Remove connections
+    * Exceptions
+    * Save hub size
 
-* (DONE) BUG TextHub line and underline do not align > changed gradient to 11.5px of textarea in css
-* (DONE) BUG getFirstInList should put out the same class as the incoming node prescribes
-*        When multi dock not allowed function hub.handle_IncomingConnectionAdded() is called
-         Another bug could arise at deserializing when the connection order creation is not correct
-* (DONE) BUG hub not copied to correct coordinates underneath cursor
-* (DONE) Add external loading of hub types
-* (DONE) Improve loading of hub types
-* (DONE) Fix zoom on Windows
+* Hub library extension
+    * Load external libraries (subclasses and static methods)
+    * Load hubs through reflection
+    * Migrate existing hubs to external libraries
 
+* Bugs
+    * Fix align submenu of radial menu
 
-CREDITS<br>
-Based on Dominic Singer's C# WPF version (available at https://github.com/tumcms/TUM.CMS.VPLControl). For further attributions and licenses, see the license file.
+* Other
+    * Customization functionality through config file
+    * Comments
+    * Labels to radial menu
+    * Scripting hub
+    * Looping groups/areas
+    * Improve grouping
+    * BUG text and hubs are copied/pasted simultaneously

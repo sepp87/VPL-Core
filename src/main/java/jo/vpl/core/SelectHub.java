@@ -43,7 +43,7 @@ public class SelectHub extends Hub {
         listView.setMaxWidth(240);
         listView.setPrefHeight(127);
 
-        listView.setItems(VplGlobal.HUB_TYPE_LIST);
+        listView.setItems(HubLoader.HUB_TYPE_LIST);
 
         this.setOnMouseExited(this::selectHub_MouseExit);
         this.setOnMouseDragExited(this::selectHub_MouseExit);
@@ -112,7 +112,7 @@ public class SelectHub extends Hub {
              *
              * OPTION
              */
-            listView.setItems(VplGlobal.HUB_TYPE_LIST.stream()
+            listView.setItems(HubLoader.HUB_TYPE_LIST.stream()
                     .filter(x -> x.matches(regex))
                     .collect(toCollection(FXCollections::observableArrayList)));
 
@@ -121,7 +121,7 @@ public class SelectHub extends Hub {
             }
 
         } else {
-            listView.setItems(VplGlobal.HUB_TYPE_LIST);
+            listView.setItems(HubLoader.HUB_TYPE_LIST);
         }
     }
 
@@ -178,7 +178,7 @@ public class SelectHub extends Hub {
         }
 
         //Maybe move this to Hostcanvas
-        Class type = VplGlobal.HUB_TYPE_MAP.get(selectedType);
+        Class type = HubLoader.HUB_TYPE_MAP.get(selectedType);
 
         try {
             Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(hostCanvas);

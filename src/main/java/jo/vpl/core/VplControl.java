@@ -24,16 +24,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Control;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-//import javax.xml.bind.JAXBContext;
-//import javax.xml.bind.JAXBElement;
-//import javax.xml.bind.JAXBException;
-//import javax.xml.bind.Marshaller;
-//import javax.xml.bind.Unmarshaller;
 import jo.vpl.xml.*;
 
 /**
@@ -101,6 +99,7 @@ public class VplControl extends AnchorPane {
         zoomPane.setPrefSize(600, 600);
         zoomPane.relocate(0, 0);
         getChildren().add(zoomPane);
+        getChildren().add(getMenuBar());
 
         //Initialize eventblaster
         controlBlaster.set("scale", scale);
@@ -133,6 +132,32 @@ public class VplControl extends AnchorPane {
         //TODO improve listener removal because it doesn't work
         layoutBoundsProperty().addListener(this::init);
         return contentGroup;
+    }
+
+    public MenuBar getMenuBar() {
+        MenuBar menuBar = new MenuBar();
+//        menuBar.setUseSystemMenuBar(true);
+
+        Menu file = new Menu("File");
+        MenuItem newFile = new MenuItem("New file");
+        MenuItem openFile = new MenuItem("Open file");
+        MenuItem save = new MenuItem("Save");
+        file.getItems().addAll(newFile, openFile, save);
+
+        Menu edit = new Menu("Edit");
+        MenuItem copy = new MenuItem("Copy");
+        MenuItem paste = new MenuItem("Paste");
+        MenuItem delete = new MenuItem("Delete");
+        edit.getItems().addAll(copy, paste, delete);
+
+        Menu view = new Menu("View");
+        MenuItem zoomToFit = new MenuItem("Zoom to fit");
+        MenuItem zoomIn = new MenuItem("Zoom in");
+        MenuItem zoomOut = new MenuItem("Zoom out");
+        view.getItems().addAll(zoomToFit, zoomIn, zoomOut);
+        
+        menuBar.getMenus().addAll(file, edit, view);
+        return menuBar;
     }
 
     public double getScale() {
@@ -272,7 +297,7 @@ public class VplControl extends AnchorPane {
 
 //            double delta = 1.2;
             double delta = 1.05;
-            
+
             double scale = getScale(); // currently we only use Y, same value is used for X
             double oldScale = scale;
 
@@ -711,7 +736,7 @@ public class VplControl extends AnchorPane {
         Point2D pastePoint = screenToLocal(pastePointX, pastePointY);
 
         pastePoint = mousePosition;
-        
+
         Point2D delta = pastePoint.subtract(copyPoint);
 
         //First deselect selected hubs. Simply said, deselect copied hubs.
@@ -860,9 +885,9 @@ public class VplControl extends AnchorPane {
     }
 
     public void deserialize(File file) {
-        
+
         String errorMessage = "";
-        
+
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -880,7 +905,7 @@ public class VplControl extends AnchorPane {
                     != null) {
                 for (HubTag hubTag : hubTagList) {
                     errorMessage = "Hub type " + hubTag.getType() + " not found.";
-                    Class type = VplGlobal.HUB_TYPE_MAP.get(hubTag.getType());
+                    Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
 //                    Class type = Class.forName(hubTag.getType());
                     Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(this);
                     hub.deserialize(hubTag);

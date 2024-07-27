@@ -2,8 +2,11 @@ package jo.vpl.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,35 +39,23 @@ public class Util {
         return new File(sb.toString());
     }
 
-    /**
-     *
-     * @param files
-     * @param regex
-     * @return always returns an array of files, even if file is not a directory
-     */
-    public static List<File> filterFilesByRegex(File[] files, String regex) {
-        List<File> list = new ArrayList<>();
-        int length = files.length;
-        for (int i = 0; i < length; i++) {
-            File file = files[i];
-            String path = file.getAbsolutePath();
-            if (path.matches(regex)) {
-                list.add(file);
-            }
-        }
-        return list;
+   public static File[] getFilesByExtensionFrom(File directory, String extension) {
+        return directory.listFiles(getFileExtensionFilter(extension));
     }
 
-    /**
-     * Get the absolute path to the directory of the .jar
-     *
-     * @param any class within the project
-     * @return the parent directory of the .jar
-     */
-    public static String getPathOfJAR(Class<?> any) {
-        String jarPath = any.getProtectionDomain().getCodeSource().getLocation().getPath();
-        return jarPath.substring(0, jarPath.lastIndexOf('/') + 1);
+    // https://howtodoinjava.com/java/io/java-filefilter-example/
+    private static FileFilter getFileExtensionFilter(String extension) {
+        FileFilter filter = new FileFilter() {
+            //Override accept method
+            public boolean accept(File file) {
+                //if the file extension is .csv return true, else false
+                return file.getName().toLowerCase().endsWith(extension);
+            }
+        };
+        return filter;
     }
+
+
 
     public static final Map<String, String> DATE_REGEX = new HashMap<String, String>() {
         { //http://balusc.omnifaces.org/2007/09/dateutil.html
@@ -289,5 +280,45 @@ public class Util {
     public static <T> List<T> getList(Class<T> type) {
         List<T> arrayList = new ArrayList<>();
         return arrayList;
+    }
+    
+    
+    /**
+     *
+     * @param any
+     * @param fallbackPath
+     * @return the app root directory if any object is inside a .jar file
+     */
+    public static String getAppRootDirectory(Object any, String fallbackPath) {
+        try {
+            URI uri = any.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+            String path = new File(uri).getAbsolutePath();
+            String targetSeperatorCharClasses = "target" + File.separatorChar + "classes";
+            if (path.endsWith(targetSeperatorCharClasses)) {
+                fallbackPath = path.substring(0, path.length() - targetSeperatorCharClasses.length()) + fallbackPath;
+            }
+            return path.endsWith(".jar") ? path.substring(0, path.lastIndexOf(File.separatorChar) + 1) : fallbackPath;
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fallbackPath;
+    }
+
+    public static File createFile(File file) {
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return file;
+    }
+
+    public static File createDirectory(File file) {
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return file;
     }
 }

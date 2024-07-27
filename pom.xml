@@ -2,8 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>jo.vpl</groupId>
-    <name>jo.vpl</name>
-    <artifactId>jo.vpl</artifactId>
+    <artifactId>VPL-Core</artifactId>
     <version>2</version>
     <packaging>jar</packaging>
     
@@ -52,13 +51,6 @@
             <artifactId>google-api-services-sheets</artifactId>
             <version>v4-rev481-1.22.0</version>
         </dependency>
-        <!--        <dependency> //For checking ContentType/MimeType (but it is an extra jar)
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>1.12</version>
-        </dependency>-->
-        
-        <!--dependency of tp.vpl to send files to tpRest, should handle this differently in the future-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
@@ -85,6 +77,8 @@
     </properties>
     
     <build>
+        
+        <finalName>VPL-Core</finalName>
         <plugins>   
             
             <plugin>
@@ -100,12 +94,6 @@
                 </executions>
             </plugin> 
             
-            <!--
-<source>${basedir}/resources/schema/vplxml.xsd</source>
-        <packageName>jo.vpl.xml</packageName>
-            -->
-            
-
                   
             <!-- See https://maven.apache.org/plugins/ for more plugins -->    
             <!-- Set main class and add classplath -->
@@ -123,56 +111,50 @@
                     </archive>
                 </configuration>
             </plugin>
-                         
-            <!-- Copy project dependencies-->
+            
+            <!-- https://stackoverflow.com/questions/574594/how-can-i-create-an-executable-runnable-jar-with-dependencies-using-maven -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.5.1</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>jo.vpl.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <!-- exclude junit, we need runtime dependency only -->
-                            <includeScope>runtime</includeScope>
-                            <!--<outputDirectory>${project.build.directory}/lib/</outputDirectory>-->
-                            <outputDirectory>${basedir}/build/lib/</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
-            </plugin> 
+            </plugin>
             
-            <!-- Copy project jar build-->
-            <!-- https://stackoverflow.com/questions/586202/best-practices-for-copying-files-with-maven -->
+            <!-- https://stackoverflow.com/questions/3998596/renaming-resources-in-maven -->
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
                 <executions>
                     <execution>
-                        <id>copy-resource-one</id>
+                        <id>rename-file</id>
                         <phase>install</phase>
                         <goals>
-                            <goal>copy-resources</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/build</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target</directory>
-                                    <includes>
-                                        <include>jo.vpl-2.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
+                            <sourceFile>${basedir}/target/VPL-Core-jar-with-dependencies.jar</sourceFile>
+                            <destinationFile>${basedir}/build/VPL-Core.jar</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>    
-                                      
+            </plugin>              
                                                                 
         </plugins>        
     </build>

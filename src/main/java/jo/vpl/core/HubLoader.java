@@ -2,10 +2,16 @@ package jo.vpl.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -57,7 +63,6 @@ public class HubLoader {
      * Retrieve all hubs from external libraries
      */
     public static void loadExternalHubs() {
-
         File dir = new File(Config.get().getLibraryDirectory());
         File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
 
@@ -79,14 +84,18 @@ public class HubLoader {
     private static List<String> getClassNamesFromJarFile(File file) {
         List<String> result = new ArrayList<>();
         try (JarFile jarFile = new JarFile(file)) {
+
             Enumeration<JarEntry> e = jarFile.entries();
+            String packageName = jarFile.getManifest().getMainAttributes().getValue("package");
             while (e.hasMoreElements()) {
                 JarEntry jarEntry = e.nextElement();
                 if (jarEntry.getName().endsWith(".class")) {
                     String className = jarEntry.getName()
                             .replace("/", ".")
                             .replace(".class", "");
-                    result.add(className);
+                    if (className.startsWith(packageName)) {
+                        result.add(className);
+                    }
                 }
             }
         } catch (IOException ex) {
@@ -100,11 +109,11 @@ public class HubLoader {
         try {
             URL url = file.toURI().toURL();
             URL[] urls = new URL[]{url};
-            ClassLoader classLoader = new URLClassLoader(urls);
-
+            ClassLoader cl = new URLClassLoader(urls);
+            
             for (String className : classNames) {
                 try {
-                    result.add(classLoader.loadClass(className));
+                    result.add(cl.loadClass(className));
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(HubLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -112,6 +121,61 @@ public class HubLoader {
 
         } catch (MalformedURLException ex) {
             Logger.getLogger(HubLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public static void loadStaticMethodsAsHubs() {
+        List<Method> methods = getStaticMethodsFromClass(Math.class);
+        for (Method m : methods) {
+
+            System.out.println(m.getName());
+            for (Annotation a : m.getAnnotations()) {
+
+                System.out.println("\t" + a.toString());
+
+            }
+            for (Parameter p : m.getParameters()) {
+
+                System.out.println("\t" + p.isNamePresent() + " " + p.getType().getSimpleName());
+
+            }
+        }
+    }
+
+    public static void loadStaticFieldsAsHubs() {
+        List<Field> fields = getStaticFieldsFromClass(Math.class);
+        for (Field f : fields) {
+            try {
+
+                System.out.println(f.get(null));
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                Logger.getLogger(HubLoader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }
+
+    public static List<Method> getStaticMethodsFromClass(Class<?> c) {
+        List<Method> result = new ArrayList<>();
+        Method[] methods = c.getDeclaredMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method m = methods[i];
+            if (Modifier.isStatic(m.getModifiers())) {
+                result.add(m);
+            }
+        }
+        return result;
+    }
+
+    public static List<Field> getStaticFieldsFromClass(Class<?> c) {
+        List<Field> result = new ArrayList<>();
+        Field[] fields = c.getFields();
+        for (int i = 0; i < fields.length; i++) {
+            Field f = fields[i];
+            if (Modifier.isStatic(f.getModifiers())) {
+                result.add(f);
+            }
         }
         return result;
     }

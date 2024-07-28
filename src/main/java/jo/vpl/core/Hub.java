@@ -33,9 +33,9 @@ public abstract class Hub extends VplElement {
         super(vplControl);
         uuid = UUID.randomUUID();
 
-        inPorts = new ArrayList();
-        outPorts = new ArrayList();
-        controls = new ArrayList();
+        inPorts = new ArrayList<>();
+        outPorts = new ArrayList<>();
+        controls = new ArrayList<>();
 
         //Content Grid is the actual hub box without the buttons on top etc.
         contentGrid = new GridPane();

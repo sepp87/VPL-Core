@@ -99,7 +99,6 @@ public class VplControl extends AnchorPane {
         zoomPane.setPrefSize(600, 600);
         zoomPane.relocate(0, 0);
         getChildren().add(zoomPane);
-        getChildren().add(getMenuBar());
 
         //Initialize eventblaster
         controlBlaster.set("scale", scale);
@@ -134,31 +133,6 @@ public class VplControl extends AnchorPane {
         return contentGroup;
     }
 
-    public MenuBar getMenuBar() {
-        MenuBar menuBar = new MenuBar();
-//        menuBar.setUseSystemMenuBar(true);
-
-        Menu file = new Menu("File");
-        MenuItem newFile = new MenuItem("New file");
-        MenuItem openFile = new MenuItem("Open file");
-        MenuItem save = new MenuItem("Save");
-        file.getItems().addAll(newFile, openFile, save);
-
-        Menu edit = new Menu("Edit");
-        MenuItem copy = new MenuItem("Copy");
-        MenuItem paste = new MenuItem("Paste");
-        MenuItem delete = new MenuItem("Delete");
-        edit.getItems().addAll(copy, paste, delete);
-
-        Menu view = new Menu("View");
-        MenuItem zoomToFit = new MenuItem("Zoom to fit");
-        MenuItem zoomIn = new MenuItem("Zoom in");
-        MenuItem zoomOut = new MenuItem("Zoom out");
-        view.getItems().addAll(zoomToFit, zoomIn, zoomOut);
-        
-        menuBar.getMenus().addAll(file, edit, view);
-        return menuBar;
-    }
 
     public double getScale() {
         return scale.get();

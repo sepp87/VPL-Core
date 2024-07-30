@@ -6,9 +6,7 @@
     <version>2</version>
     <packaging>jar</packaging>
     
-    <dependencies>        
-        
-
+    <dependencies>      
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -35,29 +33,25 @@
             <artifactId>beansbinding</artifactId>
             <version>1.2.1</version>
         </dependency>
-
         <dependency>
             <groupId>javax.vecmath</groupId>
             <artifactId>vecmath</artifactId>
             <version>1.5.2</version>
         </dependency>
-
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.0</version>
         </dependency>
-        
     </dependencies>
    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
     
     <build>
-        
         <finalName>VPL-Core</finalName>
         <plugins>   
             
@@ -74,32 +68,16 @@
                 </executions>
             </plugin> 
             
-                  
-            <!-- See https://maven.apache.org/plugins/ for more plugins -->    
-            <!-- Set main class and add classplath -->
+            <!-- https://stackoverflow.com/questions/574594/how-can-i-create-an-executable-runnable-jar-with-dependencies-using-maven -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
                 <configuration>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>jo.vpl.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            
-            <!-- https://stackoverflow.com/questions/574594/how-can-i-create-an-executable-runnable-jar-with-dependencies-using-maven -->
-            <plugin>
-                
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>jo.vpl.Main</mainClass>
+                            <mainClass>jo.vpl.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -115,7 +93,6 @@
                         </goals>
                     </execution>
                 </executions>
-                
             </plugin>
             
             <!-- https://stackoverflow.com/questions/3998596/renaming-resources-in-maven -->
@@ -140,5 +117,4 @@
                                                                 
         </plugins>        
     </build>
-    
 </project>

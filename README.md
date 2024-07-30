@@ -65,6 +65,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
     * Fix align submenu of radial menu
 
 * Other
+    * Remove GPLv3 code
     * Customization functionality through config file
     * Comments
     * Labels to radial menu

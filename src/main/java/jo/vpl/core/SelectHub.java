@@ -27,7 +27,7 @@ public class SelectHub extends Hub {
      *
      * @param hostCanvas
      */
-    public SelectHub(VplControl hostCanvas) {
+    public SelectHub(Workspace hostCanvas) {
         super(hostCanvas);
 
         searchField = new TextField();
@@ -181,7 +181,7 @@ public class SelectHub extends Hub {
         Class type = HubLoader.HUB_TYPE_MAP.get(selectedType);
 
         try {
-            Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(hostCanvas);
+            Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(hostCanvas);
 
             double x = MouseInfo.getPointerInfo().getLocation().x;
             double y = MouseInfo.getPointerInfo().getLocation().y;

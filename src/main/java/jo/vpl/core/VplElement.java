@@ -21,14 +21,14 @@ public class VplElement extends GridPane {
     public HubButton resizeButton;
     public HBox menuBox;
 
-    public VplControl hostCanvas;
+    public Workspace hostCanvas;
     public final StringProperty name = new SimpleStringProperty(this, "name", "");
     public final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
     public final BooleanProperty deleted = new SimpleBooleanProperty(this, "deleted", false);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     public EventBlaster eventBlaster = new EventBlaster(this);
 
-    public VplElement(VplControl vplControl) {
+    public VplElement(Workspace vplControl) {
 
         hostCanvas = vplControl;
 

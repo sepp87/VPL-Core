@@ -27,7 +27,7 @@ public class HubGroup extends VplElement {
     private static int counter;
     public ObservableSet<Hub> childHubs;
 
-    public HubGroup(VplControl vplControl) {
+    public HubGroup(Workspace vplControl) {
         super(vplControl);
 
         getStyleClass().add("hub-group");

@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jo.vpl.core.Hub;
-import jo.vpl.core.VplControl;
+import jo.vpl.core.Workspace;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
@@ -33,7 +33,7 @@ public class ReflectionHub extends Hub {
     public final String description;
     public final String[] tags;
 
-    public ReflectionHub(VplControl hostCanvas, String name, String category, String description, String[] tags) {
+    public ReflectionHub(Workspace hostCanvas, String name, String category, String description, String[] tags) {
         super(hostCanvas);
         this.name = name;
         this.category = category;
@@ -41,7 +41,7 @@ public class ReflectionHub extends Hub {
         this.tags = tags;
     }
 
-    public static ReflectionHub create(Field field, VplControl hostCanvas) {
+    public static ReflectionHub create(Field field, Workspace hostCanvas) {
 
         String category = field.getDeclaringClass().getSimpleName();
         String name = category + "." + field.getName();
@@ -64,7 +64,7 @@ public class ReflectionHub extends Hub {
         return hub;
     }
 
-    public static ReflectionHub create(Method method, VplControl hostCanvas) {
+    public static ReflectionHub create(Method method, Workspace hostCanvas) {
 
         String category = method.getDeclaringClass().getSimpleName();
         String name = category + "." + method.getName();

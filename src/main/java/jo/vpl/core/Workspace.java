@@ -24,9 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Control;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
@@ -38,7 +35,7 @@ import jo.vpl.xml.*;
  *
  * @author JoostMeulenkamp
  */
-public class VplControl extends AnchorPane {
+public class Workspace extends AnchorPane {
 
     //STATIC VARIABLES
     //isSaved
@@ -853,7 +850,7 @@ public class VplControl extends AnchorPane {
             marshaller.marshal(document, file);
 
         } catch (JAXBException ex) {
-            Logger.getLogger(VplControl.class
+            Logger.getLogger(Workspace.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -881,7 +878,7 @@ public class VplControl extends AnchorPane {
                     errorMessage = "Hub type " + hubTag.getType() + " not found.";
                     Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
 //                    Class type = Class.forName(hubTag.getType());
-                    Hub hub = (Hub) type.getConstructor(VplControl.class).newInstance(this);
+                    Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(this);
                     hub.deserialize(hubTag);
                     hubSet.add(hub);
                     getChildren().add(hub);
@@ -918,7 +915,7 @@ public class VplControl extends AnchorPane {
                 }
             }
         } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(VplControl.class
+            Logger.getLogger(Workspace.class
                     .getName()).log(Level.SEVERE, errorMessage, ex);
         }
     }

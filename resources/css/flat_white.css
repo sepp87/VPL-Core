@@ -7,8 +7,23 @@
     src: url('fontawesome-webfont.ttf');
 }
 
+.new-radial-menu {
+    -fx-background-color: white;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+}
+
+.new-radial-menu-item {
+    -fx-background-color: white;
+}
+
+.new-radial-menu-item:hover {
+    -fx-background-color: salmon;
+}
+
+
+
 .radial-menu {
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
 }
 
 .text-area{
@@ -90,11 +105,11 @@
     -fx-text-fill: white;
 }
 
-.list-view .list-cell:even {  
+.list-view .list-cell:even {
     -fx-background-color: rgba(127,127,127,0.1);
 }
 
-.list-view .list-cell:odd { 
+.list-view .list-cell:odd {
     -fx-background-color: transparent;
 }
 
@@ -112,7 +127,7 @@
     -fx-padding:0;
 }
 
-.titled-pane > .title 
+.titled-pane > .title
 {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
@@ -120,7 +135,7 @@
     -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
 }
 
-.titled-pane > *.content 
+.titled-pane > *.content
 {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
@@ -177,17 +192,17 @@
     -fx-border-style: solid;
     -fx-border-radius: 0;
     -fx-padding: 10 0 10 0;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
 }
 
 .hub:hover {
     /*-fx-background-color: pink;*/
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
 }
 
 .hub-selected{
     -fx-background-color: lightblue;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
     /*-fx-border-color: #F8B516;*/
     /*-fx-border-color: #5F5F5F;*/
     /*    -fx-border-color: #6385c7;
@@ -230,13 +245,13 @@
     -fx-min-height: 24;
     -fx-max-width: 12;
     -fx-max-height: 24;
-    -fx-background-color: rgba(255,255,255,0.9);       
+    -fx-background-color: rgba(255,255,255,0.9);
     -fx-border-style: solid;
     -fx-border-color: lightgrey;
 }
 
 .port:hover{
-    -fx-background-color: salmon;    
+    -fx-background-color: salmon;
 }
 
 .port-active{
@@ -244,25 +259,25 @@
     -fx-min-height: 24;
     -fx-max-width: 12;
     -fx-max-height: 24;
-    -fx-background-color: #b5b5b5;          
+    -fx-background-color: #b5b5b5;
     -fx-border-style: solid;
     -fx-border-color: lightgrey;
 }
 
 .port-active:hover{
-    -fx-background-color: salmon;    
+    -fx-background-color: salmon;
 }
 
 .port-in{
     -fx-background-insets: 1 1 1 0;
-    -fx-background-radius: 0 4 4 0;   
+    -fx-background-radius: 0 4 4 0;
     -fx-border-radius: 0 2 2 0;
     -fx-border-width: 2 2 2 0;
 }
 
 .port-out{
     -fx-background-insets: 1 0 1 1;
-    -fx-background-radius: 4 0 0 4;   
+    -fx-background-radius: 4 0 0 4;
     -fx-border-radius: 2 0 0 2;
     -fx-border-width: 2 0 2 2;
 }

@@ -48,7 +48,7 @@ import jo.vpl.util.IconType;
 
 public class SpiffyMenu extends Group {
 
-    private VplControl hostCanvas;
+    private Workspace hostCanvas;
 
     private final Group itemsContainer = new Group();
     private Color baseColor = Color.web("e0e0e0");
@@ -73,7 +73,7 @@ public class SpiffyMenu extends Group {
     private final Group notSelectedItemEffect;
     private Transition openAnim;
 
-    public SpiffyMenu(VplControl vplControl) {
+    public SpiffyMenu(Workspace vplControl) {
         hostCanvas = vplControl;
 
         itemsContainer.getStyleClass().add("radial-menu");

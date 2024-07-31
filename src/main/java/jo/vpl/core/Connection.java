@@ -16,7 +16,7 @@ public class Connection {
 
     public final Port startPort;
     public final Port endPort;
-    public VplControl hostCanvas;
+    public Workspace hostCanvas;
     public CubicCurve curve;
     private final BindingPoint startBezierPoint;
     private final BindingPoint endBezierPoint;
@@ -29,7 +29,7 @@ public class Connection {
      * @param startPort the OUT port [ ]<
      * @param endPort the IN port >[ ]
      */
-    public Connection(VplControl hostCanvas, Port sPort, Port ePort) {
+    public Connection(Workspace hostCanvas, Port sPort, Port ePort) {
         this.hostCanvas = hostCanvas;
 
         this.startPort = sPort;

@@ -29,7 +29,7 @@ public abstract class Hub extends VplElement {
 
     public Point2D oldMousePosition;
 
-    public Hub(VplControl vplControl) {
+    public Hub(Workspace vplControl) {
         super(vplControl);
         uuid = UUID.randomUUID();
 

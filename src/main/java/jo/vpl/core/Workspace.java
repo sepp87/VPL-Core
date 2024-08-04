@@ -29,6 +29,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jo.vpl.radialmenu.RadialMenu;
 import jo.vpl.xml.*;
 
 /**
@@ -49,8 +50,9 @@ public class Workspace extends AnchorPane {
     ObservableSet<HubGroup> hubGroupSet;
 
     //Menu members
-    private SpiffyMenu radialMenu;
     private SelectHub selectHub;
+    private RadialMenu radialMenu;
+//    private SpiffyMenu radialMenu;
 
     //Create connection members
     Port tempStartPort;
@@ -103,7 +105,9 @@ public class Workspace extends AnchorPane {
         controlBlaster.set("translateY", translateYProperty());
 
         //Create spiffy menu
-        radialMenu = new SpiffyMenu(this);
+//        radialMenu = new SpiffyMenu(this);
+//        radialMenu.setVisible(false);
+        radialMenu = RadialMenu.get();
         radialMenu.setVisible(false);
 
         //Create content group
@@ -129,7 +133,6 @@ public class Workspace extends AnchorPane {
         layoutBoundsProperty().addListener(this::init);
         return contentGroup;
     }
-
 
     public double getScale() {
         return scale.get();
@@ -176,16 +179,19 @@ public class Workspace extends AnchorPane {
             Node node = e.getPickResult().getIntersectedNode();
             boolean onControl = checkParent(node, Control.class);
             boolean onViewer = checkParent(node, Shape3D.class);
+            boolean onRadialMenu = checkParent(node, RadialMenu.class);
+
             if (onViewer || onControl) {
                 return;
             }
 
-            // right mouse button => open menu
-            if (e.getButton() != MouseButton.SECONDARY) {
+            if (radialMenu.isVisible() && !onRadialMenu && e.getButton() == MouseButton.PRIMARY) {
+                radialMenu.hide();
                 return;
             }
-
-            if (radialMenu.isVisible()) {
+            
+            // right mouse button => open menu
+            if (e.getButton() != MouseButton.SECONDARY) {
                 return;
             }
 
@@ -193,7 +199,8 @@ public class Workspace extends AnchorPane {
                 return;
             }
 
-            radialMenu.toggleMenu(e.getSceneX(), e.getSceneY());
+//            radialMenu.toggleMenu(e.getSceneX(), e.getSceneY());
+            radialMenu.show(e.getSceneX(), e.getSceneY());
         }
     };
 
@@ -499,7 +506,8 @@ public class Workspace extends AnchorPane {
         // Check if mouse click was on a hub
         Node node = e.getPickResult().getIntersectedNode();
         boolean mouseUpOnHub = checkParent(node, Hub.class);
-        boolean mouseUpOnMenu = checkParent(node, SpiffyMenu.class);
+//        boolean mouseUpOnMenu = checkParent(node, SpiffyMenu.class);
+        boolean mouseUpOnMenu = checkParent(node, RadialMenu.class);
         /**
          * @TODO CHANGE FROM ORIGINAL CODE If there is already a select hub,
          * then remove that one first
@@ -778,7 +786,7 @@ public class Workspace extends AnchorPane {
      * @param type the type of node to check against
      * @return
      */
-    public boolean checkParent(Node node, Class type) {
+    public boolean checkParent(Node node, Class<?> type) {
 
         if (node == null) {
             return false;

@@ -22,6 +22,16 @@
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
 }
 
+.new-radial-sub-menu {
+    -fx-fill: white;
+    -fx-opacity: 0.8;
+}
+
+.new-radial-menu-label {
+    -fx-font-size: 18;
+    -fx-text-alignment: center;
+}
+
 .new-radial-menu-item {
     -fx-fill: white;
     -fx-stroke: null;
@@ -33,6 +43,22 @@
 }
 
 .new-radial-menu-item-icon{
+    -fx-font-family: FontAwesome;
+    -fx-font-size: 24;
+    -fx-text-fill: #000000;
+}
+
+.new-radial-sub-menu-item {
+    -fx-fill: white;
+    -fx-stroke: null;
+    -fx-stroke-width: 0px;
+}
+.new-radial-sub-menu-item-hover {
+    -fx-fill: salmon;
+    /*-fx-stroke: salmon;*/
+}
+
+.new-radial-sub-menu-item-icon{
     -fx-font-family: FontAwesome;
     -fx-font-size: 24;
     -fx-text-fill: #000000;

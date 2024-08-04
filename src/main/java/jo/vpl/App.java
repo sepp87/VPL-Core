@@ -1,5 +1,6 @@
 package jo.vpl;
 
+import jo.vpl.radialmenu.RadialMenu;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -33,7 +34,7 @@ public class App extends Application {
         MenuBar menuBar = getMenuBar();
         menuBar.prefWidthProperty().bind(pane.widthProperty());
 
-        Group menu = NewRadialMenu.getMenu();
+        RadialMenu menu = RadialMenu.get();
 
         pane.getChildren().addAll(vplContent, menuBar, menu);
 

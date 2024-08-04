@@ -27,19 +27,6 @@
 
 ...
 
-/jo/vpl/radialmenu/
-
-/jo/vpl/core/SpiffyMenu
-
-    Adapted from source available at https://github.com/MrLoNee/RadialFx,
-    written by Laurent Nicolas. Used under license GNU LGPLv3 available at 
-    https://www.gnu.org/licenses/lgpl-3.0.en.html
-
-    Code was modified to support labels instead of images as menu icons. 
-    Furthermore, large parts of the original code were removed.
-
-...
-
 /jo/vpl/watch3D/ObjViewer
 
 /jo/vpl/watch3D/Xform

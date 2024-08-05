@@ -39,6 +39,7 @@ public class ReflectionHub extends Hub {
         this.category = category;
         this.description = description;
         this.tags = tags;
+        setName(name);
     }
 
     public static ReflectionHub create(Field field, Workspace hostCanvas) {

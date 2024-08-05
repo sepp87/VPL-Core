@@ -1,6 +1,8 @@
 package jo.vpl.core;
 
 import java.awt.MouseInfo;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.logging.*;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
@@ -11,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
+import jo.vpl.hub.ReflectionHub;
 
 /**
  *
@@ -18,7 +21,7 @@ import javafx.scene.control.TextField;
  */
 public class SelectHub extends Hub {
 
-    private ListView listView;
+    private ListView<String> listView;
     private TextField searchField;
 
     /**
@@ -34,14 +37,15 @@ public class SelectHub extends Hub {
         searchField.setMaxWidth(140);
         searchField.setPromptText("Search...");
 
-        listView = new ListView();
+        listView = new ListView<>();
         listView.layoutBoundsProperty().addListener(e -> {
             ScrollBar scrollBarv = (ScrollBar) listView.lookup(".scroll-bar:vertical");
             scrollBarv.setDisable(true);
         });
 
         listView.setMaxWidth(240);
-        listView.setPrefHeight(127);
+//        listView.setPrefHeight(127);
+        listView.setPrefHeight(265);
 
         listView.setItems(HubLoader.HUB_TYPE_LIST);
 
@@ -171,35 +175,52 @@ public class SelectHub extends Hub {
      * Create a hub of the selected type and insert it at the mouse position
      */
     private void createHub() {
-        String selectedType = (String) listView.getSelectionModel().getSelectedItem();
+        String selectedType = listView.getSelectionModel().getSelectedItem();
 
         if (selectedType == null) {
             return;
         }
 
-        //Maybe move this to Hostcanvas
-        Class type = HubLoader.HUB_TYPE_MAP.get(selectedType);
+        Object type = HubLoader.HUB_LIBRARY.get(selectedType);
 
-        try {
-            Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(hostCanvas);
+        if (type.getClass().equals(Class.class)) {
+            try {
+                Class<?> cType = (Class<?>) type;
+                Hub hub = (Hub) cType.getConstructor(Workspace.class).newInstance(hostCanvas);
 
-            double x = MouseInfo.getPointerInfo().getLocation().x;
-            double y = MouseInfo.getPointerInfo().getLocation().y;
-            Point2D pt = hostCanvas.screenToLocal(x, y);
+                hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
+                hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
 
-//            hub.setLayoutX(pt.getX() - 20);
-//            hub.setLayoutY(pt.getY() - 20);
+                hostCanvas.getChildren().add(hub);
+                hostCanvas.hubSet.add(hub);
+                removed = true;
+                hostCanvas.getChildren().remove(this);
+            } catch (Exception e) {
+                Logger.getLogger(SelectHub.class.getName()).log(Level.SEVERE, null, e);
+            }
 
-            hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
-            hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
+        } else if (type.getClass().equals(Method.class)) {
+            try {
+                Method mType = (Method) type;
+                HubInfo info = mType.getAnnotation(HubInfo.class);
+                Hub hub = new ReflectionHub(hostCanvas, info.name(), info.category(), info.description(), info.tags());
+                hub.addOutPortToHub(mType.getReturnType().getSimpleName(), mType.getReturnType());
+                for (Parameter p : mType.getParameters()) {
+                    hub.addInPortToHub(p.getName(), p.getType());
+                }
 
-            hostCanvas.getChildren().add(hub);
-            hostCanvas.hubSet.add(hub);
-            removed = true;
-            hostCanvas.getChildren().remove(this);
-        } catch (Exception e) {
-            Logger.getLogger(SelectHub.class.getName()).log(Level.SEVERE, null, e);
+                hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
+                hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
+
+                hostCanvas.getChildren().add(hub);
+                hostCanvas.hubSet.add(hub);
+                removed = true;
+                hostCanvas.getChildren().remove(this);
+            } catch (Exception e) {
+                Logger.getLogger(SelectHub.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
+
     }
 
     boolean removed = false;

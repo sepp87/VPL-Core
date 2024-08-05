@@ -21,7 +21,7 @@ public class StringMethods {
             name = "String.length",
             category = "Core",
             description = "Returns the length of this string. The length is equal to the number of Unicode code units in the string.",
-            tags = {})
+            tags = {"size"})
     public static Integer getLength(String string) {
         return string.length();
     }

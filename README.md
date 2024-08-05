@@ -32,11 +32,11 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 
 ### CUSTOMIZE
 * Create custom hubs by copying TemplateHub.java and change its behaviour
-* Create your own library with hub types and add it to "build/ext/"
+* Create your own library with hub types and add it to "build/lib/"
 <br>
 
 ### STYLE
-* Change styles in VPLTester.java to either flat white, flat dark or default
+* Change styles in App.java to either flat white, flat dark or default
 * Customize your own style by using one of the above styles as template
 <br>
 
@@ -49,26 +49,33 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
     * Auto save/load
     * Save canvas size, position and zoom factor
     * Zoom controls
+<br>
 
 * Hub behaviour
     * Hints
     * Remove connections
     * Exceptions
     * Save hub size
+<br>
 
 * Hub library extension
     * Load external libraries (subclasses and static methods)
     * Load hubs through reflection
     * Migrate existing hubs to external libraries
+<br>
+
+* Select Hub
+    * Search through tags
+<br>
 
 * Bugs
     * Fix align submenu of radial menu
+<br>
 
 * Other
-    * Remove GPLv3 code
+    * Remove Obj library
     * Customization functionality through config file
     * Comments
-    * Labels to radial menu
     * Scripting hub
     * Looping groups/areas
     * Improve grouping

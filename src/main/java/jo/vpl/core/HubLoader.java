@@ -39,7 +39,7 @@ public class HubLoader {
     static final Map<String, Method> HUB_METHOD_MAP = new HashMap<>();
     static final Map<String, Class<?>> HUB_TYPE_MAP = new HashMap<>();
     static final ObservableList<String> HUB_TYPE_LIST = observableArrayList();
-    public static final ObservableMap<String, Object> TEST = javafx.collections.FXCollections.observableHashMap();
+    public static final ObservableMap<String, Object> HUB_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
     /**
      * Retrieve all hubs from jo.vpl.hub package
@@ -60,7 +60,7 @@ public class HubLoader {
             HubInfo info = hubType.getAnnotation(HubInfo.class);
             HUB_TYPE_MAP.put(info.name(), hubType);
             HUB_TYPE_LIST.add(info.name());
-            TEST.put(info.name(), hubType);
+            HUB_LIBRARY.put(info.name(), hubType);
         }
     }
 
@@ -168,7 +168,7 @@ public class HubLoader {
             HubInfo info = hubMethod.getAnnotation(HubInfo.class);
             HUB_METHOD_MAP.put(info.name(), hubMethod);
             HUB_TYPE_LIST.add(info.name());
-            TEST.put(info.name(), hubMethod);
+            HUB_LIBRARY.put(info.name(), hubMethod);
         }
     }
 

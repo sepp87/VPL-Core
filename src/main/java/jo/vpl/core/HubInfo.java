@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  *
  * @author JoostMeulenkamp
  */
-@Target(ElementType.TYPE) //On class level
+@Target({ElementType.TYPE, ElementType.METHOD}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HubInfo {
 

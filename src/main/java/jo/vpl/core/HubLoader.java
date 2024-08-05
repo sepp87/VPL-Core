@@ -24,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+
 import jo.vpl.Config;
 import org.reflections.Reflections;
 
@@ -34,8 +36,10 @@ import org.reflections.Reflections;
 public class HubLoader {
 
 //    static final Map<String, Class> HUB_PATH_MAP = new HashMap<>();
-    static final Map<String, Class> HUB_TYPE_MAP = new HashMap<>();
+    static final Map<String, Method> HUB_METHOD_MAP = new HashMap<>();
+    static final Map<String, Class<?>> HUB_TYPE_MAP = new HashMap<>();
     static final ObservableList<String> HUB_TYPE_LIST = observableArrayList();
+    public static final ObservableMap<String, Object> TEST = javafx.collections.FXCollections.observableHashMap();
 
     /**
      * Retrieve all hubs from jo.vpl.hub package
@@ -56,6 +60,7 @@ public class HubLoader {
             HubInfo info = hubType.getAnnotation(HubInfo.class);
             HUB_TYPE_MAP.put(info.name(), hubType);
             HUB_TYPE_LIST.add(info.name());
+            TEST.put(info.name(), hubType);
         }
     }
 
@@ -110,7 +115,7 @@ public class HubLoader {
             URL url = file.toURI().toURL();
             URL[] urls = new URL[]{url};
             ClassLoader cl = new URLClassLoader(urls);
-            
+
             for (String className : classNames) {
                 try {
                     result.add(cl.loadClass(className));
@@ -125,21 +130,45 @@ public class HubLoader {
         return result;
     }
 
+    /**
+     * Retrieve all hubs from static methods
+     */
     public static void loadStaticMethodsAsHubs() {
-        List<Method> methods = getStaticMethodsFromClass(Math.class);
+        List<Method> methods = getStaticMethodsFromClass(jo.vpl.hub.methods.StringMethods.class);
         for (Method m : methods) {
+            addHubMethod(m);
+            System.out.println(m.getName() + " " + Arrays.asList(m.getParameters()).toString());
+//            for (Annotation a : m.getAnnotations()) {
+//
+//                System.out.println("\t" + a.toString());
+//
+//            }
+//            for (Parameter p : m.getParameters()) {
+//
+//                System.out.println("\t" + p.isNamePresent() + " " + p.getType().getSimpleName());
+//
+//            }
+        }
+    }
 
-            System.out.println(m.getName());
-            for (Annotation a : m.getAnnotations()) {
-
-                System.out.println("\t" + a.toString());
-
+    public static List<Method> getStaticMethodsFromClass(Class<?> c) {
+        List<Method> result = new ArrayList<>();
+        Method[] methods = c.getDeclaredMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method m = methods[i];
+            if (Modifier.isStatic(m.getModifiers())) {
+                result.add(m);
             }
-            for (Parameter p : m.getParameters()) {
+        }
+        return result;
+    }
 
-                System.out.println("\t" + p.isNamePresent() + " " + p.getType().getSimpleName());
-
-            }
+    private static void addHubMethod(Method hubMethod) {
+        if (hubMethod.isAnnotationPresent(HubInfo.class)) {
+            HubInfo info = hubMethod.getAnnotation(HubInfo.class);
+            HUB_METHOD_MAP.put(info.name(), hubMethod);
+            HUB_TYPE_LIST.add(info.name());
+            TEST.put(info.name(), hubMethod);
         }
     }
 
@@ -154,18 +183,6 @@ public class HubLoader {
             }
 
         }
-    }
-
-    public static List<Method> getStaticMethodsFromClass(Class<?> c) {
-        List<Method> result = new ArrayList<>();
-        Method[] methods = c.getDeclaredMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method m = methods[i];
-            if (Modifier.isStatic(m.getModifiers())) {
-                result.add(m);
-            }
-        }
-        return result;
     }
 
     public static List<Field> getStaticFieldsFromClass(Class<?> c) {

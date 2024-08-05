@@ -20,7 +20,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println(Thread.currentThread().getName());
 
         AnchorPane pane = new AnchorPane();
         pane.getStylesheets().add("css/flat_white.css");

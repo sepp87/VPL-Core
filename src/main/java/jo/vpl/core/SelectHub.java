@@ -11,9 +11,11 @@ import javafx.scene.input.*;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
 import jo.vpl.hub.ReflectionHub;
+import jo.vpl.util.IconType;
 
 /**
  *
@@ -203,8 +205,27 @@ public class SelectHub extends Hub {
             try {
                 Method mType = (Method) type;
                 HubInfo info = mType.getAnnotation(HubInfo.class);
-                Hub hub = new ReflectionHub(hostCanvas, info.name(), info.category(), info.description(), info.tags());
+                Hub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
                 hub.addOutPortToHub(mType.getReturnType().getSimpleName(), mType.getReturnType());
+
+                if (!info.name().equals("") && info.icon().equals(IconType.NULL)) {
+                    hub.setName(info.name());
+                    Label label = new Label(info.name());
+                    label.getStyleClass().add("hub-text");
+                    hub.addControlToHub(label);
+                } else {
+                    String shortName = info.identifier().split("\\.")[1];
+                    hub.setName(shortName);
+                    Label label = new Label(shortName);
+                    label.getStyleClass().add("hub-text");
+                    hub.addControlToHub(label);
+                }
+
+                if (!info.icon().equals(IconType.NULL)) {
+                    Label label = hub.getAwesomeIcon(info.icon());
+                    hub.addControlToHub(label);
+                }
+
                 for (Parameter p : mType.getParameters()) {
                     hub.addInPortToHub(p.getName(), p.getType());
                 }

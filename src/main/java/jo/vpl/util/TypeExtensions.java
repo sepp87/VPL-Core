@@ -151,7 +151,9 @@ public class TypeExtensions {
         ));
     }
 
-    public static boolean isCastableTo(Class from, Class to) {
+
+
+    public static boolean isCastableTo(Class<?> from, Class<?> to) {
 
         if (to.isAssignableFrom(from)) {
             return true;

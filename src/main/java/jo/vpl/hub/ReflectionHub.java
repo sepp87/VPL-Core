@@ -1,20 +1,19 @@
 package jo.vpl.hub;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import jo.vpl.core.Hub;
 import jo.vpl.core.Workspace;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import jo.vpl.core.HubInfo;
 import jo.vpl.core.Port;
-import jo.vpl.util.IconType;
 import jo.vpl.xml.HubTag;
 
 /**
@@ -22,68 +21,28 @@ import jo.vpl.xml.HubTag;
  * @author JoostMeulenkamp
  */
 @HubInfo(
-        name = "Core.ReflectionHub",
+        identifier = "Core.ReflectionHub",
         category = "Core",
         description = "A generic hub used to convert static methods and fields to hubs",
         tags = {"core", "reflection", "hub"})
 public class ReflectionHub extends Hub {
 
-    public final String name;
     public final String category;
     public final String description;
     public final String[] tags;
+    public final Method method;
 
     public ReflectionHub(Workspace hostCanvas, String name, String category, String description, String[] tags) {
+        this(hostCanvas, name, category, description, tags, null);
+    }
+
+    public ReflectionHub(Workspace hostCanvas, String name, String category, String description, String[] tags, Method method) {
         super(hostCanvas);
-        this.name = name;
+        setName(name);
         this.category = category;
         this.description = description;
         this.tags = tags;
-        setName(name);
-    }
-
-    public static ReflectionHub create(Field field, Workspace hostCanvas) {
-
-        String category = field.getDeclaringClass().getSimpleName();
-        String name = category + "." + field.getName();
-        String description = "Variable " + field.getName();
-        String[] tags = {category, field.getName(), "variable"};
-
-        ReflectionHub hub = new ReflectionHub(hostCanvas, name, category, description, tags);
-
-        try {
-            hub.addOutPortToHub(field.getType().getSimpleName(), field.getType());
-            hub.outPorts.get(0).setData(field.get(null));
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        hub.setName(field.getName());
-        Label label = new Label(field.getName());
-        hub.addControlToHub(label);
-
-        return hub;
-    }
-
-    public static ReflectionHub create(Method method, Workspace hostCanvas) {
-
-        String category = method.getDeclaringClass().getSimpleName();
-        String name = category + "." + method.getName();
-        String description = method.getName();
-        String[] tags = {category, method.getName()};
-
-        ReflectionHub hub = new ReflectionHub(hostCanvas, name, category, description, tags);
-
-        for (Parameter p : method.getParameters()) {
-            hub.addInPortToHub(p.getName(), p.getClass());
-        }
-        hub.addOutPortToHub(method.getReturnType().getSimpleName(), method.getReturnType());
-
-        hub.setName(method.getName());
-        Label label = new Label(method.getName());
-        hub.addControlToHub(label);
-
-        return hub;
+        this.method = method;
     }
 
     /**
@@ -117,34 +76,91 @@ public class ReflectionHub extends Hub {
     @Override
     public void calculate() {
 
-        //Get incoming data
-        Object raw = inPorts.get(0).getData();
+        Object result = null;
 
-        //Finish calculate if there is no incoming data
-        if (raw == null) {
-            outPorts.get(0).setData(null);
-            return;
+        int count = inPorts.size();
+        if (count == 1) {
+            Object a = inPorts.get(0).getData();
+            result = invokeMethodArgs1(a);
+
+        } else if (count == 2) {
+            Object a = inPorts.get(0).getData();
+            Object b = inPorts.get(1).getData();
+            result = invokeMethodArgs2(a, b);
+
+        } else if (count == 3) {
+            // ToDo
+            
+        }
+        outPorts.get(0).setData(result);
+    }
+
+    private Object invokeMethodArgs1(Object a) {
+
+        // object a is a single value
+        if (!List.class.isAssignableFrom(a.getClass())) {
+            try {
+                return method.invoke(null, a);
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
-        //Process incoming data
-        if (raw instanceof List) {
-            List<Object> nodes = (List<Object>) raw;
+        // object a is a list
+        List<?> aList = (List<?>) a;
+        List<Object> list = new ArrayList<>();
 
-            //Example code to handle collections
-            List<String> strList = nodes.stream()
-                    .map(e -> e.toString())
-                    .collect(Collectors.toCollection(ArrayList<String>::new));
-
-            //Set outgoing data
-            outPorts.get(0).setData(strList);
-
-        } else {
-            //Example code to handle a single object instance
-            String str = ((Object) raw).toString();
-
-            //Set outgoing data
-            outPorts.get(0).setData(str);
+        for (Object ai : aList) {
+            Object result = invokeMethodArgs1(ai);
+            list.add(result);
         }
+        return list;
+    }
+
+    private Object invokeMethodArgs2(Object a, Object b) {
+
+        // both objects are single values
+        if (!List.class.isAssignableFrom(a.getClass()) && !List.class.isAssignableFrom(b.getClass())) {
+            try {
+                return method.invoke(null, a, b);
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // only object b is a list
+        if (!List.class.isAssignableFrom(a.getClass())) {
+            return laceArgs2(a, (List<?>) b);
+        }
+
+        // only object a is a list
+        if (!List.class.isAssignableFrom(b.getClass())) {
+            return laceArgs2(b, (List<?>) a);
+        }
+
+        // both objects are lists
+        List<?> aList = (List<?>) a;
+        List<?> bList = (List<?>) b;
+
+        int size = aList.size() < bList.size() ? aList.size() : bList.size();
+        List<Object> list = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            Object ai = aList.get(i);
+            Object bi = bList.get(i);
+            Object result = invokeMethodArgs2(ai, bi);
+            list.add(result);
+        }
+        return list;
+    }
+
+    private Object laceArgs2(Object a, List<?> bList) {
+        List<Object> list = new ArrayList<>();
+        for (Object b : bList) {
+            Object result = invokeMethodArgs2(a, b);
+            list.add(result);
+        }
+        return list;
     }
 
     @Override
@@ -169,4 +185,10 @@ public class ReflectionHub extends Hub {
         //Specify further copy statements here
         return hub;
     }
+}
+
+enum LacingMode {
+    SHORTEST,
+    LONGEST,
+    CROSS_PRODUCT
 }

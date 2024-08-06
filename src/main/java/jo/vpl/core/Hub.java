@@ -354,7 +354,7 @@ public abstract class Hub extends VplElement {
 
     public void serialize(HubTag xmlTag) {
 //        xmlTag.setType(getClass().getName());
-        xmlTag.setType(this.getClass().getAnnotation(HubInfo.class).name());
+        xmlTag.setType(this.getClass().getAnnotation(HubInfo.class).identifier());
         xmlTag.setUUID(uuid.toString());
         xmlTag.setX(getLayoutX());
         xmlTag.setY(getLayoutY());

@@ -699,7 +699,8 @@ public enum IconType {
     FA_YEN('\uf157'),
     FA_YOUTUBE('\uf167'),
     FA_YOUTUBE_PLAY('\uf16a'),
-    FA_YOUTUBE_SQUARE('\uf166');
+    FA_YOUTUBE_SQUARE('\uf166'),
+    NULL('\u0030');
 
     private final char unicode;
 

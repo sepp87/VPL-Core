@@ -58,9 +58,9 @@ public class HubLoader {
     private static void addHubType(Class<?> hubType) {
         if (hubType.isAnnotationPresent(HubInfo.class)) {
             HubInfo info = hubType.getAnnotation(HubInfo.class);
-            HUB_TYPE_MAP.put(info.name(), hubType);
-            HUB_TYPE_LIST.add(info.name());
-            HUB_LIBRARY.put(info.name(), hubType);
+            HUB_TYPE_MAP.put(info.identifier(), hubType);
+            HUB_TYPE_LIST.add(info.identifier());
+            HUB_LIBRARY.put(info.identifier(), hubType);
         }
     }
 
@@ -137,7 +137,7 @@ public class HubLoader {
         List<Method> methods = getStaticMethodsFromClass(jo.vpl.hub.methods.StringMethods.class);
         for (Method m : methods) {
             addHubMethod(m);
-            System.out.println(m.getName() + " " + Arrays.asList(m.getParameters()).toString());
+//            System.out.println(m.getName() + " " + Arrays.asList(m.getParameters()).toString());
 //            for (Annotation a : m.getAnnotations()) {
 //
 //                System.out.println("\t" + a.toString());
@@ -166,9 +166,9 @@ public class HubLoader {
     private static void addHubMethod(Method hubMethod) {
         if (hubMethod.isAnnotationPresent(HubInfo.class)) {
             HubInfo info = hubMethod.getAnnotation(HubInfo.class);
-            HUB_METHOD_MAP.put(info.name(), hubMethod);
-            HUB_TYPE_LIST.add(info.name());
-            HUB_LIBRARY.put(info.name(), hubMethod);
+            HUB_METHOD_MAP.put(info.identifier(), hubMethod);
+            HUB_TYPE_LIST.add(info.identifier());
+            HUB_LIBRARY.put(info.identifier(), hubMethod);
         }
     }
 

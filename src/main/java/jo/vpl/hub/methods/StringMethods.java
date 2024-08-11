@@ -7,7 +7,7 @@ import jo.vpl.core.HubInfo;
  * @author joostmeulenkamp
  */
 public class StringMethods {
-
+    
     @HubInfo(
             identifier = "String.fromObject",
             category = "Core",

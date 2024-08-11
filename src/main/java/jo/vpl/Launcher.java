@@ -1,7 +1,6 @@
 package jo.vpl;
 
 import jo.vpl.core.HubLoader;
-import jo.vpl.hub.methods.MathMethods;
 
 /**
  *
@@ -16,12 +15,6 @@ public class Launcher {
         HubLoader.loadExternalHubs();
         HubLoader.loadStaticMethodsAsHubs();
 
-        Object a = 1.;
-        System.out.println(a instanceof Integer);
-        
-        System.out.println(MathMethods.add(1., 2.).getClass().getSimpleName());
-        System.out.println(MathMethods.add(1, 2).getClass().getSimpleName());
-        
         if (true) {
             return;
         }

@@ -11,6 +11,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
+import static jo.vpl.radialmenu.RadialMenuAction.OPEN_FILE;
 import jo.vpl.util.IconType;
 
 /**
@@ -52,14 +53,14 @@ public class RadialMenu extends Group {
     private RadialMenu() {
 
         RadialSubMenu align = new RadialSubMenu(IconType.FA_SORT_AMOUNT_ASC, "Align");
-        items.add(new RadialMenuItem(IconType.FA_FOLDER_OPEN_O, "Open\nfile", Action.OPEN_FILE));
-        items.add(new RadialMenuItem(IconType.FA_FLOPPY_O, "Save\nfile", Action.SAVE_FILE));
-        items.add(new RadialMenuItem(IconType.FA_SEARCH, "Zoom\nto fit", Action.ZOOM_TO_FIT));
+        items.add(new RadialMenuItem(IconType.FA_FOLDER_OPEN_O, "Open\nfile", RadialMenuAction.OPEN_FILE));
+        items.add(new RadialMenuItem(IconType.FA_FLOPPY_O, "Save\nfile", RadialMenuAction.SAVE_FILE));
+        items.add(new RadialMenuItem(IconType.FA_SEARCH, "Zoom\nto fit", RadialMenuAction.ZOOM_TO_FIT));
         items.add(align);
-        items.add(new RadialMenuItem(IconType.FA_CLONE, "Copy", Action.COPY));
-        items.add(new RadialMenuItem(IconType.FA_CLIPBOARD, "Paste", Action.PASTE));
-        items.add(new RadialMenuItem(IconType.FA_OBJECT_GROUP, "Group", Action.GROUP));
-        items.add(new RadialMenuItem(IconType.FA_FILE_O, "New\nfile", Action.NEW_FILE));
+        items.add(new RadialMenuItem(IconType.FA_CLONE, "Copy", RadialMenuAction.COPY));
+        items.add(new RadialMenuItem(IconType.FA_CLIPBOARD, "Paste", RadialMenuAction.PASTE));
+        items.add(new RadialMenuItem(IconType.FA_OBJECT_GROUP, "Group", RadialMenuAction.GROUP));
+        items.add(new RadialMenuItem(IconType.FA_FILE_O, "New\nfile", RadialMenuAction.NEW_FILE));
 
         Circle outer = new Circle(0, 0, OUTER_RADIUS);
         Circle inner = new Circle(0, 0, INNER_RADIUS);
@@ -92,12 +93,12 @@ public class RadialMenu extends Group {
 
         // build align sub menu
         List<RadialMenuItem> alignItems = new ArrayList<>();
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_LEFT, "Align\ntop", Action.ALIGN_TOP, 90.));
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_CENTER, "Align\nvertically", Action.ALIGN_VERTICALLY));
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_RIGHT, "Align\nright", Action.ALIGN_RIGHT));
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_RIGHT, "Align\nbottom", Action.ALIGN_BOTTOM, 90.));
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_CENTER, "Align\nhorizontally", Action.ALIGN_HORIZONTALLY, 90.));
-        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_LEFT, "Align\nleft", Action.ALIGN_LEFT));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_LEFT, "Align\ntop", RadialMenuAction.ALIGN_TOP, 90.));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_CENTER, "Align\nvertically", RadialMenuAction.ALIGN_VERTICALLY));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_RIGHT, "Align\nright", RadialMenuAction.ALIGN_RIGHT));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_RIGHT, "Align\nbottom", RadialMenuAction.ALIGN_BOTTOM, 90.));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_CENTER, "Align\nhorizontally", RadialMenuAction.ALIGN_HORIZONTALLY, 90.));
+        alignItems.add(new RadialMenuItem(IconType.FA_ALIGN_LEFT, "Align\nleft", RadialMenuAction.ALIGN_LEFT));
         buildSubMenu(align, alignItems);
 
     }
@@ -134,7 +135,7 @@ public class RadialMenu extends Group {
         }
 
         // build exit button
-        RadialMenuItem exit = new RadialMenuItem(menu.icon, "Return\nto main", Action.RETURN_TO_MAIN);
+        RadialMenuItem exit = new RadialMenuItem(menu.icon, "Return\nto main", RadialMenuAction.RETURN_TO_MAIN);
         exit.index = menu.index;
         exit.length = menu.length;
         buildRadialMenuItem(exit, true);
@@ -245,40 +246,40 @@ public class RadialMenu extends Group {
         RadialMenuItem item = (RadialMenuItem) mouseEvent.getSource();
         System.out.println(item.action);
         switch (item.action) {
-            case Action.RETURN_TO_MAIN:
+            case RETURN_TO_MAIN:
                 returnToMain();
                 break;
-            case Action.OPEN_SUB_MENU:
+            case OPEN_SUB_MENU:
                 RadialSubMenu subMenu = (RadialSubMenu) item;
                 radialMenu.getChildren().add(radialSubMenuCircle);
                 radialMenu.getChildren().addAll(subMenu.items);
                 activeRadialSubMenu = subMenu;
                 break;
-            case Action.OPEN_FILE:
+            case OPEN_FILE:
                 break;
-            case Action.SAVE_FILE:
+            case SAVE_FILE:
                 break;
-            case Action.ALIGN_LEFT:
+            case ALIGN_LEFT:
                 break;
-            case Action.ALIGN_VERTICALLY:
+            case ALIGN_VERTICALLY:
                 break;
-            case Action.ALIGN_RIGHT:
+            case ALIGN_RIGHT:
                 break;
-            case Action.ALIGN_TOP:
+            case ALIGN_TOP:
                 break;
-            case Action.ALIGN_HORIZONTALLY:
+            case ALIGN_HORIZONTALLY:
                 break;
-            case Action.ALIGN_BOTTOM:
+            case ALIGN_BOTTOM:
                 break;
-            case Action.ZOOM_TO_FIT:
+            case ZOOM_TO_FIT:
                 break;
-            case Action.COPY:
+            case COPY:
                 break;
-            case Action.PASTE:
+            case PASTE:
                 break;
-            case Action.GROUP:
+            case GROUP:
                 break;
-            case Action.NEW_FILE:
+            case NEW_FILE:
                 break;
         }
     }
@@ -296,20 +297,20 @@ public class RadialMenu extends Group {
 
 class RadialMenuItem extends Group {
 
-    Action action;
+    RadialMenuAction action;
     IconType icon;
     double iconRotation = 0.;
     String name;
     int index;
     double length;
 
-    public RadialMenuItem(IconType icon, String name, Action action) {
+    public RadialMenuItem(IconType icon, String name, RadialMenuAction action) {
         this.action = action;
         this.icon = icon;
         this.name = name;
     }
 
-    public RadialMenuItem(IconType icon, String name, Action action, double iconRotation) {
+    public RadialMenuItem(IconType icon, String name, RadialMenuAction action, double iconRotation) {
         this(icon, name, action);
         this.iconRotation = iconRotation;
     }
@@ -321,28 +322,12 @@ class RadialSubMenu extends RadialMenuItem {
     final List<RadialMenuItem> items = new ArrayList<>();
 
     public RadialSubMenu(IconType icon, String name) {
-        super(icon, name, Action.OPEN_SUB_MENU);
+        super(icon, name, RadialMenuAction.OPEN_SUB_MENU);
     }
 
     public RadialSubMenu(IconType icon, String name, double iconRotation) {
-        super(icon, name, Action.OPEN_SUB_MENU, iconRotation);
+        super(icon, name, RadialMenuAction.OPEN_SUB_MENU, iconRotation);
     }
 }
 
-enum Action {
-    RETURN_TO_MAIN,
-    OPEN_SUB_MENU,
-    OPEN_FILE,
-    SAVE_FILE,
-    ALIGN_LEFT,
-    ALIGN_VERTICALLY,
-    ALIGN_RIGHT,
-    ALIGN_TOP,
-    ALIGN_HORIZONTALLY,
-    ALIGN_BOTTOM,
-    ZOOM_TO_FIT,
-    COPY,
-    PASTE,
-    GROUP,
-    NEW_FILE
-}
+

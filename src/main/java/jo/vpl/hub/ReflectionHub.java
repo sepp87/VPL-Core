@@ -5,7 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jo.vpl.core.Hub;
@@ -90,7 +92,7 @@ public class ReflectionHub extends Hub {
 
         } else if (count == 3) {
             // ToDo
-            
+
         }
         outPorts.get(0).setData(result);
     }
@@ -117,12 +119,17 @@ public class ReflectionHub extends Hub {
         return list;
     }
 
+//    Class returnType = null;
+//    Set<Class<?>> actualReturnType = new HashSet<>();
+
     private Object invokeMethodArgs2(Object a, Object b) {
 
         // both objects are single values
         if (!List.class.isAssignableFrom(a.getClass()) && !List.class.isAssignableFrom(b.getClass())) {
             try {
-                return method.invoke(null, a, b);
+                Object result = method.invoke(null, a, b);
+//                actualReturnType.add(result.getClass());
+                return result;
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
             }

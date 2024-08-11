@@ -1,9 +1,7 @@
 package jo.vpl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
 import jo.vpl.core.HubLoader;
+import jo.vpl.hub.methods.MathMethods;
 
 /**
  *
@@ -18,9 +16,15 @@ public class Launcher {
         HubLoader.loadExternalHubs();
         HubLoader.loadStaticMethodsAsHubs();
 
-//        if (true) {
-//            return;
-//        }
+        Object a = 1.;
+        System.out.println(a instanceof Integer);
+        
+        System.out.println(MathMethods.add(1., 2.).getClass().getSimpleName());
+        System.out.println(MathMethods.add(1, 2).getClass().getSimpleName());
+        
+        if (true) {
+            return;
+        }
         //Launch the UI
         App.launch(App.class);
     }

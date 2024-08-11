@@ -206,7 +206,13 @@ public class SelectHub extends Hub {
                 Method mType = (Method) type;
                 HubInfo info = mType.getAnnotation(HubInfo.class);
                 Hub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
-                hub.addOutPortToHub(mType.getReturnType().getSimpleName(), mType.getReturnType());
+
+                Class<?> returnType = mType.getReturnType();
+                if (returnType.equals(Number.class)) {
+                    hub.addOutPortToHub("double", double.class);
+                } else {
+                    hub.addOutPortToHub(returnType.getSimpleName(), returnType);
+                }
 
                 if (!info.name().equals("") && info.icon().equals(IconType.NULL)) {
                     hub.setName(info.name());

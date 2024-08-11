@@ -7,23 +7,115 @@ package jo.vpl.hub.methods;
 public class MathMethods {
 
     public static Number add(Number a, Number b) {
-
-        boolean isIntA = Integer.class.isAssignableFrom(a.getClass());
-        boolean isIntB = Integer.class.isAssignableFrom(b.getClass());
-
-        boolean isDoubleA = Double.class.isAssignableFrom(a.getClass());
-        boolean isDoubleB = Double.class.isAssignableFrom(b.getClass());
-
-        if (isIntA && isIntB) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
             return (int) a + (int) b;
         }
-
-        if ((isIntA || isDoubleA) && (isIntB || isDoubleB)) {
-            return (double) a + (double) b;
-        }
-
-        // If none of the above, throw an exception
-        throw new IllegalArgumentException("Unsupported types for Add operation. Both inputs must be integers or doubles.");
+        return (double) a + (double) b;
     }
 
+    public static Number substract(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return (int) a - (int) b;
+        }
+        return (double) a - (double) b;
+    }
+
+    public static Number multiply(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return (int) a * (int) b;
+        }
+        return (double) a * (double) b;
+    }
+
+    public static Number divide(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return (int) a / (int) b;
+        }
+        return (double) a / (double) b;
+    }
+
+    public static Number remainder(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return (int) a % (int) b;
+        }
+        return (double) a % (double) b;
+    }
+
+    public static Number max(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return Math.max((int) a, (int) b);
+        }
+        return Math.max((double) a, (double) b);
+    }
+
+    public static Number min(Number a, Number b) {
+        Boolean areIntegers = checkTypes(a, b);
+        if (areIntegers == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (areIntegers) {
+            return Math.min((int) a, (int) b);
+        }
+        return Math.min((double) a, (double) b);
+    }
+
+    public static Number abs(Number a) {
+        Boolean isInteger = checkType(a);
+        if (isInteger == null) {
+            throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
+        }
+        if (isInteger) {
+            return Math.abs((int) a);
+        }
+        return Math.abs((double) a);
+    }
+
+    /**
+     *
+     * @param a
+     * @return returns true when numbers is integer, false when double and null
+     * when none of both
+     */
+    public static Boolean checkType(Number a) {
+        return a instanceof Integer ? true : (a instanceof Double ? false : null);
+    }
+
+    /**
+     *
+     * @param a
+     * @param b
+     * @return returns true when numbers are integer, false when numbers are
+     * integer or double and returns null when they are none of both
+     */
+    public static Boolean checkTypes(Number a, Number b) {
+        Boolean isIntA = a instanceof Integer;
+        Boolean isIntB = b instanceof Integer;
+        Boolean isDoubleA = a instanceof Double;
+        Boolean isDoubleB = b instanceof Double;
+        return (isIntA && isIntB) ? true : ((isIntA || isDoubleA) && (isIntB || isDoubleB)) ? false : null;
+    }
 }

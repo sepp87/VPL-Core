@@ -225,7 +225,7 @@ public class Util {
         Integer newValue = null;
         //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
 //        String regExp = "^\\d+$";
-        String regExp = "^[\\d+]{1,10}$";
+        String regExp = "-?[0-9]{1,10}";
         boolean isInteger = rawValue.matches(regExp);
 
         if (isInteger) {
@@ -242,7 +242,7 @@ public class Util {
         Long newValue = null;
 
         //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
-        String regExp = "^(\\d+){1,19}$";
+        String regExp = "-?[0-9]{1,19}";
         boolean isLong = rawValue.matches(regExp);
 
         if (isLong) {

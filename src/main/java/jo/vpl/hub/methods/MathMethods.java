@@ -1,11 +1,17 @@
 package jo.vpl.hub.methods;
 
+import jo.vpl.core.HubInfo;
+
 /**
  *
  * @author joostmeulenkamp
  */
 public class MathMethods {
 
+    @HubInfo(
+            identifier = "Math.add",
+            category = "Core",
+            description = "")
     public static Number add(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -17,6 +23,10 @@ public class MathMethods {
         return (double) a + (double) b;
     }
 
+    @HubInfo(
+            identifier = "Math.substract",
+            category = "Core",
+            description = "")
     public static Number substract(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -28,6 +38,10 @@ public class MathMethods {
         return (double) a - (double) b;
     }
 
+    @HubInfo(
+            identifier = "Math.multiply",
+            category = "Core",
+            description = "")
     public static Number multiply(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -39,6 +53,10 @@ public class MathMethods {
         return (double) a * (double) b;
     }
 
+    @HubInfo(
+            identifier = "Math.divide",
+            category = "Core",
+            description = "")
     public static Number divide(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -50,6 +68,10 @@ public class MathMethods {
         return (double) a / (double) b;
     }
 
+    @HubInfo(
+            identifier = "Math.remainder",
+            category = "Core",
+            description = "")
     public static Number remainder(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -61,6 +83,10 @@ public class MathMethods {
         return (double) a % (double) b;
     }
 
+    @HubInfo(
+            identifier = "Math.max",
+            category = "Core",
+            description = "")
     public static Number max(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -72,6 +98,10 @@ public class MathMethods {
         return Math.max((double) a, (double) b);
     }
 
+    @HubInfo(
+            identifier = "Math.min",
+            category = "Core",
+            description = "")
     public static Number min(Number a, Number b) {
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
@@ -83,6 +113,10 @@ public class MathMethods {
         return Math.min((double) a, (double) b);
     }
 
+    @HubInfo(
+            identifier = "Math.abs",
+            category = "Core",
+            description = "")
     public static Number abs(Number a) {
         Boolean isInteger = checkType(a);
         if (isInteger == null) {

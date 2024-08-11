@@ -135,6 +135,11 @@ public class HubLoader {
      */
     public static void loadStaticMethodsAsHubs() {
         List<Method> methods = getStaticMethodsFromClass(jo.vpl.hub.methods.StringMethods.class);
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.hub.methods.JsonMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.hub.methods.MathMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.hub.methods.ObjectMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.hub.methods.ListMethods.class));
+
         for (Method m : methods) {
             addHubMethod(m);
 //            System.out.println(m.getName() + " " + Arrays.asList(m.getParameters()).toString());
@@ -149,6 +154,8 @@ public class HubLoader {
 //
 //            }
         }
+
+        Collections.sort(HUB_TYPE_LIST);
     }
 
     public static List<Method> getStaticMethodsFromClass(Class<?> c) {

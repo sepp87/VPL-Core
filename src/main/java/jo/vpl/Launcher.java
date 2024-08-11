@@ -1,8 +1,5 @@
 package jo.vpl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
 import jo.vpl.core.HubLoader;
 
 /**
@@ -18,9 +15,9 @@ public class Launcher {
         HubLoader.loadExternalHubs();
         HubLoader.loadStaticMethodsAsHubs();
 
-//        if (true) {
-//            return;
-//        }
+        if (true) {
+            return;
+        }
         //Launch the UI
         App.launch(App.class);
     }

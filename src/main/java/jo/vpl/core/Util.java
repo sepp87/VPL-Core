@@ -39,7 +39,7 @@ public class Util {
         return new File(sb.toString());
     }
 
-   public static File[] getFilesByExtensionFrom(File directory, String extension) {
+    public static File[] getFilesByExtensionFrom(File directory, String extension) {
         return directory.listFiles(getFileExtensionFilter(extension));
     }
 
@@ -54,8 +54,6 @@ public class Util {
         };
         return filter;
     }
-
-
 
     public static final Map<String, String> DATE_REGEX = new HashMap<String, String>() {
         { //http://balusc.omnifaces.org/2007/09/dateutil.html
@@ -190,7 +188,7 @@ public class Util {
     public static List<String> readFile(File file) {
         List<String> stringList = new ArrayList<>();
 
-        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
+        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -281,8 +279,7 @@ public class Util {
         List<T> arrayList = new ArrayList<>();
         return arrayList;
     }
-    
-    
+
     /**
      *
      * @param any

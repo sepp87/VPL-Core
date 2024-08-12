@@ -80,19 +80,23 @@ public class ReflectionHub extends Hub {
 
         Object result = null;
 
-        int count = inPorts.size();
-        if (count == 1) {
-            Object a = inPorts.get(0).getData();
-            result = invokeMethodArgs1(a);
+        try {
+            int count = inPorts.size();
+            if (count == 1) {
+                Object a = inPorts.get(0).getData();
+                result = invokeMethodArgs1(a);
 
-        } else if (count == 2) {
-            Object a = inPorts.get(0).getData();
-            Object b = inPorts.get(1).getData();
-            result = invokeMethodArgs2(a, b);
+            } else if (count == 2) {
+                Object a = inPorts.get(0).getData();
+                Object b = inPorts.get(1).getData();
+                result = invokeMethodArgs2(a, b);
 
-        } else if (count == 3) {
-            // ToDo
+            } else if (count == 3) {
+                // ToDo
 
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         outPorts.get(0).setData(result);
     }
@@ -100,11 +104,12 @@ public class ReflectionHub extends Hub {
     private Object invokeMethodArgs1(Object a) {
 
         // object a is a single value
-        if (!List.class.isAssignableFrom(a.getClass())) {
+        if (!isList(a)) {
             try {
                 return method.invoke(null, a);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("TEST ARGS 1");
             }
         }
 
@@ -119,29 +124,37 @@ public class ReflectionHub extends Hub {
         return list;
     }
 
+    public boolean isList(Object o) {
+        if (o == null) {
+            return false;
+        } else {
+            return List.class.isAssignableFrom(o.getClass());
+        }
+    }
+    
 //    Class returnType = null;
 //    Set<Class<?>> actualReturnType = new HashSet<>();
-
     private Object invokeMethodArgs2(Object a, Object b) {
 
         // both objects are single values
-        if (!List.class.isAssignableFrom(a.getClass()) && !List.class.isAssignableFrom(b.getClass())) {
+        if (!isList(a) && !isList(b)) {
             try {
                 Object result = method.invoke(null, a, b);
 //                actualReturnType.add(result.getClass());
                 return result;
             } catch (IllegalAccessException | InvocationTargetException ex) {
-                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("TEST ARGS 2");
             }
         }
 
         // only object b is a list
-        if (!List.class.isAssignableFrom(a.getClass())) {
+        if (!isList(a)) {
             return laceArgs2(a, (List<?>) b);
         }
 
         // only object a is a list
-        if (!List.class.isAssignableFrom(b.getClass())) {
+        if (!isList(b)) {
             return laceArgs2(b, (List<?>) a);
         }
 

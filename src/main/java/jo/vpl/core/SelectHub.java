@@ -3,6 +3,7 @@ package jo.vpl.core;
 import java.awt.MouseInfo;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.logging.*;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
@@ -233,7 +234,11 @@ public class SelectHub extends Hub {
                 }
 
                 for (Parameter p : mType.getParameters()) {
-                    hub.addInPortToHub(p.getName(), p.getType());
+                    if (List.class.isAssignableFrom(p.getType())) {
+                        hub.addInPortToHub("Object : List", Object.class);
+                    } else {
+                        hub.addInPortToHub(p.getName(), p.getType());
+                    }
                 }
 
                 hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);

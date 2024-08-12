@@ -13,6 +13,8 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number add(Number a, Number b) {
+        a = a == null ? 0 : a;
+        b = b == null ? 0 : b;
         Boolean areIntegers = checkTypes(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");

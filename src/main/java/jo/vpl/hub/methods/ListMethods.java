@@ -14,7 +14,7 @@ public class ListMethods {
             identifier = "List.create",
             category = "Core",
             description = "")
-    public static <T> List<?> create(T t) {
+    public static <T> List<T> create(T t) {
         if (t == null) {
             return new ArrayList<>();
         }

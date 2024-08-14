@@ -72,6 +72,8 @@ public class ReflectionHub extends Hub {
         }
     }
 
+    public boolean isListOperator = false;
+
     /**
      * calculate function is called whenever new data is incoming
      */
@@ -79,17 +81,17 @@ public class ReflectionHub extends Hub {
     public void calculate() {
 
         Object result = null;
-
+        int count = inPorts.size();
         try {
-            int count = inPorts.size();
+
             if (count == 1) {
                 Object a = inPorts.get(0).getData();
-                result = invokeMethodArgs1(a);
+                result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs1(a);
 
             } else if (count == 2) {
                 Object a = inPorts.get(0).getData();
                 Object b = inPorts.get(1).getData();
-                result = invokeMethodArgs2(a, b);
+                result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs2(a, b);
 
             } else if (count == 3) {
                 // ToDo
@@ -101,6 +103,34 @@ public class ReflectionHub extends Hub {
         outPorts.get(0).setData(result);
     }
 
+    private Object invokeListMethodArgs1(Object a) throws Exception {
+        return method.invoke(null, a);
+    }
+
+    private Object invokeListMethodArgs2(Object a, Object b) throws Exception {
+        // both objects are single values
+        if (!isList(b)) {
+            try {
+                Object result = method.invoke(null, a, b);
+                return result;
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                return null;
+            }
+        }
+
+        // object b is a list
+        return laceListArgs2(a, (List<?>) b);
+    }
+
+    private Object laceListArgs2(Object a, List<?> bList) throws Exception {
+        List<Object> list = new ArrayList<>();
+        for (Object b : bList) {
+            Object result = invokeListMethodArgs2(a, b);
+            list.add(result);
+        }
+        return list;
+    }
+
     private Object invokeMethodArgs1(Object a) {
 
         // object a is a single value
@@ -110,6 +140,7 @@ public class ReflectionHub extends Hub {
             } catch (IllegalAccessException | InvocationTargetException ex) {
 //                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("TEST ARGS 1");
+                return null;
             }
         }
 
@@ -131,7 +162,7 @@ public class ReflectionHub extends Hub {
             return List.class.isAssignableFrom(o.getClass());
         }
     }
-    
+
 //    Class returnType = null;
 //    Set<Class<?>> actualReturnType = new HashSet<>();
     private Object invokeMethodArgs2(Object a, Object b) {
@@ -145,6 +176,7 @@ public class ReflectionHub extends Hub {
             } catch (IllegalAccessException | InvocationTargetException ex) {
 //                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("TEST ARGS 2");
+                return null;
             }
         }
 

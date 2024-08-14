@@ -1,7 +1,13 @@
 package jo.vpl;
 
+import java.util.ArrayList;
+import java.util.List;
 import jo.vpl.core.HubLoader;
 import jo.vpl.core.Util;
+
+// Copy reflection hub
+// Cast Json.asList to typed list
+// List methods output cant be used in further operations
 
 /**
  *
@@ -19,7 +25,6 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();
 //        TestGetLongValue();
-
         if (false) {
             return;
         }

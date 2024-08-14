@@ -33,7 +33,7 @@ public class ListMethods {
             identifier = "List.get",
             category = "Core",
             description = "Returns the element at the specified position in this list.")
-    public static <T> T get(List<T> list, int index) {
+    public static <T> T get(List<T> list, Integer index) {
         return list.get(index);
     }
 

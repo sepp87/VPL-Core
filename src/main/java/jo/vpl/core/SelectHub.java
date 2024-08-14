@@ -206,7 +206,7 @@ public class SelectHub extends Hub {
             try {
                 Method mType = (Method) type;
                 HubInfo info = mType.getAnnotation(HubInfo.class);
-                Hub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
+                ReflectionHub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
 
                 Class<?> returnType = mType.getReturnType();
                 if (returnType.equals(Number.class)) {
@@ -233,6 +233,11 @@ public class SelectHub extends Hub {
                     hub.addControlToHub(label);
                 }
 
+                // If first input parameter is of type list, then this is a list operator hub
+                if(List.class.isAssignableFrom(mType.getParameters()[0].getType())) {
+                    hub.isListOperator = true;
+                }
+                
                 for (Parameter p : mType.getParameters()) {
                     if (List.class.isAssignableFrom(p.getType())) {
                         hub.addInPortToHub("Object : List", Object.class);

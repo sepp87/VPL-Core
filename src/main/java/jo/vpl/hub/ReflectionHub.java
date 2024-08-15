@@ -73,6 +73,7 @@ public class ReflectionHub extends Hub {
     }
 
     public boolean isListOperator = false;
+    public boolean isListOperatorListReturnType = false;
 
     /**
      * calculate function is called whenever new data is incoming
@@ -100,6 +101,21 @@ public class ReflectionHub extends Hub {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+        if (isListOperatorListReturnType) {
+            Set<Class> classes = new HashSet<>();
+            List<?> list = (List) result;
+            for (Object i : list) {
+                classes.add(i.getClass());
+            }
+            if (classes.size() == 1) {
+                Port port = this.outPorts.get(0);
+                Class type = classes.iterator().next();
+                port.dataType = type;
+                port.setName(type.getSimpleName());
+            }
+        }
+
         outPorts.get(0).setData(result);
     }
 

@@ -211,6 +211,9 @@ public class SelectHub extends Hub {
                 Class<?> returnType = mType.getReturnType();
                 if (returnType.equals(Number.class)) {
                     hub.addOutPortToHub("double", double.class);
+                } else if (List.class.isAssignableFrom(returnType)) {
+                    hub.isListOperatorListReturnType = true;
+                    hub.addOutPortToHub(Object.class.getSimpleName(), Object.class);
                 } else {
                     hub.addOutPortToHub(returnType.getSimpleName(), returnType);
                 }
@@ -234,10 +237,10 @@ public class SelectHub extends Hub {
                 }
 
                 // If first input parameter is of type list, then this is a list operator hub
-                if(List.class.isAssignableFrom(mType.getParameters()[0].getType())) {
+                if (List.class.isAssignableFrom(mType.getParameters()[0].getType())) {
                     hub.isListOperator = true;
                 }
-                
+
                 for (Parameter p : mType.getParameters()) {
                     if (List.class.isAssignableFrom(p.getType())) {
                         hub.addInPortToHub("Object : List", Object.class);

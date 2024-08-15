@@ -7,7 +7,7 @@ import jo.vpl.core.Util;
 
 // Copy reflection hub
 // Cast Json.asList to typed list
-// List methods output cant be used in further operations
+// List methods output cant be used in further operations - TODO TEST FIX
 
 /**
  *

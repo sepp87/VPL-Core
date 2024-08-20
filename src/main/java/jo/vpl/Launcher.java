@@ -1,14 +1,17 @@
 package jo.vpl;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jo.vpl.core.HubLoader;
 import jo.vpl.core.Util;
+import jo.vpl.hub.methods.JsonMethods;
+import jo.vpl.hub.methods.MathMethods;
 
 // Copy reflection hub
-// Cast Json.asList to typed list
 // List methods output cant be used in further operations - TODO TEST FIX
-
 /**
  *
  * @author JoostMeulenkamp
@@ -30,6 +33,13 @@ public class Launcher {
         }
         //Launch the UI
         App.launch(App.class);
+    }
+
+    static void TestJsonAsList() {
+        JsonMethods.asList("[\"str\",6,7]");
+        JsonMethods.asList("[1,6,7]");
+        JsonMethods.asList("[1.0,6,7]");
+        JsonMethods.asList("[1.1,6,7]");
     }
 
     static void TestGetIntegerValue() {

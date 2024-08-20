@@ -155,7 +155,7 @@ public class ReflectionHub extends Hub {
                 return method.invoke(null, a);
             } catch (IllegalAccessException | InvocationTargetException ex) {
 //                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("TEST ARGS 1");
+//                System.out.println("TEST ARGS 1");
                 return null;
             }
         }
@@ -191,7 +191,7 @@ public class ReflectionHub extends Hub {
                 return result;
             } catch (IllegalAccessException | InvocationTargetException ex) {
 //                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("TEST ARGS 2");
+//                System.out.println("TEST ARGS 2");
                 return null;
             }
         }

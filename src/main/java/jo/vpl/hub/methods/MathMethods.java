@@ -13,14 +13,14 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number add(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
         if (areIntegers) {
-            return (int) a + (int) b;
+            return a.longValue() + b.longValue();
         }
-        return (double) a + (double) b;
+        return a.doubleValue() + b.doubleValue();
     }
 
     @HubInfo(
@@ -28,14 +28,14 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number substract(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
         if (areIntegers) {
-            return (int) a - (int) b;
+            return a.longValue() - b.longValue();
         }
-        return (double) a - (double) b;
+        return a.doubleValue() - b.doubleValue();
     }
 
     @HubInfo(
@@ -43,14 +43,14 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number multiply(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
         if (areIntegers) {
-            return (int) a * (int) b;
+            return a.longValue() * b.longValue();
         }
-        return (double) a * (double) b;
+        return a.doubleValue() * b.doubleValue();
     }
 
     @HubInfo(
@@ -58,7 +58,7 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number divide(Number a, Number b) {
-        return  a.doubleValue() /  b.doubleValue();
+        return a.doubleValue() / b.doubleValue();
     }
 
     @HubInfo(
@@ -66,14 +66,14 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number remainder(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
         if (areIntegers) {
-            return (int) a % (int) b;
+            return a.longValue() % b.longValue();
         }
-        return (double) a % (double) b;
+        return a.doubleValue() % b.doubleValue();
     }
 
     @HubInfo(
@@ -81,7 +81,7 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number max(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
@@ -96,7 +96,7 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number min(Number a, Number b) {
-        Boolean areIntegers = checkTypes(a, b);
+        Boolean areIntegers = areIntegers(a, b);
         if (areIntegers == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
@@ -111,7 +111,7 @@ public class MathMethods {
             category = "Core",
             description = "")
     public static Number abs(Number a) {
-        Boolean isInteger = checkType(a);
+        Boolean isInteger = isInteger(a);
         if (isInteger == null) {
             throw new IllegalArgumentException("Unsupported types for operation. Both inputs must be integers or doubles.");
         }
@@ -127,8 +127,11 @@ public class MathMethods {
      * @return returns true when numbers is integer, false when double and null
      * when none of both
      */
-    public static Boolean checkType(Number a) {
-        return a instanceof Integer ? true : (a instanceof Double ? false : null);
+    public static Boolean isInteger(Number a) {
+        if (a == null) {
+            return null;
+        }
+        return a.doubleValue() % 1 == 0;
     }
 
     /**
@@ -138,11 +141,13 @@ public class MathMethods {
      * @return returns true when numbers are integer, false when numbers are
      * integer or double and returns null when they are none of both
      */
-    public static Boolean checkTypes(Number a, Number b) {
-        Boolean isIntA = a instanceof Integer;
-        Boolean isIntB = b instanceof Integer;
-        Boolean isDoubleA = a instanceof Double;
-        Boolean isDoubleB = b instanceof Double;
-        return (isIntA && isIntB) ? true : ((isIntA || isDoubleA) && (isIntB || isDoubleB)) ? false : null;
+    public static Boolean areIntegers(Number a, Number b) {
+        if (a == null || b == null) {
+            return null;
+        }
+        Boolean isIntA = a.doubleValue() % 1 == 0;
+        Boolean isIntB = b.doubleValue() % 1 == 0;
+
+        return isIntA && isIntB;
     }
 }

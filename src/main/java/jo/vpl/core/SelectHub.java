@@ -212,6 +212,7 @@ public class SelectHub extends Hub {
                 if (returnType.equals(Number.class)) {
                     hub.addOutPortToHub("double", double.class);
                 } else if (List.class.isAssignableFrom(returnType)) {
+                    
                     hub.isListOperatorListReturnType = true;
                     hub.addOutPortToHub(Object.class.getSimpleName(), Object.class);
                 } else {

@@ -2,10 +2,12 @@ package jo.vpl.core;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.CubicCurve;
-import javax.vecmath.Vector2d;
 import jo.vpl.xml.ConnectionTag;
 
 /**
@@ -18,8 +20,9 @@ public class Connection {
     public final Port endPort;
     public Workspace hostCanvas;
     public CubicCurve curve;
-    private final BindingPoint startBezierPoint;
-    private final BindingPoint endBezierPoint;
+
+    public final DoubleProperty startBezierXProperty = new SimpleDoubleProperty();
+    public final DoubleProperty endBezierXProperty = new SimpleDoubleProperty();
 
     /**
      * A connection contains a reference to an in- and outport. Its visual
@@ -29,29 +32,16 @@ public class Connection {
      * @param startPort the OUT port [ ]<
      * @param endPort the IN port >[ ]
      */
-    public Connection(Workspace hostCanvas, Port sPort, Port ePort) {
+    public Connection(Workspace hostCanvas, Port startPort, Port endPort) {
         this.hostCanvas = hostCanvas;
 
-        this.startPort = sPort;
-        this.endPort = ePort;
+        this.startPort = startPort;
+        this.endPort = endPort;
 
         this.startPort.setActive(true);
         this.endPort.setActive(true);
 
-        startBezierPoint = new BindingPoint(startPort.origin.getX(), startPort.origin.getY());
-        endBezierPoint = new BindingPoint(endPort.origin.getX(), endPort.origin.getY());
-
-        //Use of 'real listeners' that support removeListener()
-        startPort.dataProperty().addListener(endPort.startPort_DataChangeListener);
-
-        startPort.origin.propertyChanged.add(origin_PropertyChangeListener);
-        endPort.origin.propertyChanged.add(origin_PropertyChangeListener);
-
-        startPort.parentHub.eventBlaster.add(origin_PropertyChangeListener);
-        endPort.parentHub.eventBlaster.add(origin_PropertyChangeListener);
-
-        startPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
-        endPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
+        addChangeListeners();
 
         startPort.connectedConnections.add(this);
         endPort.connectedConnections.add(this);
@@ -59,7 +49,7 @@ public class Connection {
         //A single incoming connection was made, handle it in the hub
         //to forward incoming data type to out port e.g. in getFirstItemOfList
         endPort.parentHub.handle_IncomingConnectionAdded(endPort, startPort);
-        
+
         endPort.calculateData(startPort.getData());
 
         /**
@@ -67,34 +57,57 @@ public class Connection {
          * exist within the connectionCollection
          */
         defineCurve();
-
         hostCanvas.getChildren().add(0, curve);
     }
+
+    private void addChangeListeners() {
+        //Use of 'real listeners' that support removeListener()
+        startPort.dataProperty().addListener(endPort.startPort_DataChangeListener);
+
+        // new listeners
+        startPort.centerXProperty.addListener(coordinatesChangeListener);
+        startPort.centerYProperty.addListener(coordinatesChangeListener);
+        endPort.centerXProperty.addListener(coordinatesChangeListener);
+        endPort.centerYProperty.addListener(coordinatesChangeListener);
+
+        startPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
+        endPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
+    }
+
+    private ChangeListener coordinatesChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue ov, Object t, Object t1) {
+            calculateBezierPoints();
+        }
+    };
 
     private void defineCurve() {
         calculateBezierPoints();
 
         curve = new CubicCurve();
-        curve.startXProperty().bind(startPort.origin.x());
-        curve.startYProperty().bind(startPort.origin.y());
-        curve.controlX1Property().bind(startBezierPoint.x());
-        curve.controlY1Property().bind(startPort.origin.y());
+        curve.controlX1Property().bind(startBezierXProperty);
+        curve.controlY1Property().bind(startPort.centerYProperty);
+        curve.startXProperty().bind(startPort.centerXProperty);
+        curve.startYProperty().bind(startPort.centerYProperty);
 
-        curve.controlX2Property().bind(endBezierPoint.x());
-        curve.controlY2Property().bind(endPort.origin.y());
-        curve.endXProperty().bind(endPort.origin.x());
-        curve.endYProperty().bind(endPort.origin.y());
+        curve.controlX2Property().bind(endBezierXProperty);
+        curve.controlY2Property().bind(endPort.centerYProperty);
+        curve.endXProperty().bind(endPort.centerXProperty);
+        curve.endYProperty().bind(endPort.centerYProperty);
 
         curve.getStyleClass().add("connection");
 
     }
 
     private void calculateBezierPoints() {
-        Double distance = new Vector2d((endPort.origin.getX() - startPort.origin.getX()),
-                (endPort.origin.getY() - startPort.origin.getY())).length() / 2;
+        Double dX = endPort.centerXProperty.get() - startPort.centerXProperty.get();
+        Double dY = endPort.centerYProperty.get() - startPort.centerYProperty.get();
+        Point2D vector = new Point2D(dX, dY);
+        double distance = vector.magnitude() / 2;
 
-        startBezierPoint.setX(startPort.origin.getX() + distance);
-        endBezierPoint.setX(endPort.origin.getX() - distance);
+        startBezierXProperty.set(startPort.centerXProperty.get() + distance);
+        endBezierXProperty.set(endPort.centerXProperty.get() - distance);
+
     }
 
     public Port getStartPort() {
@@ -106,11 +119,8 @@ public class Connection {
     }
 
     public void removeFromCanvas() {
-
         hostCanvas.getChildren().remove(curve);
         hostCanvas.connectionSet.remove(this);
-
-        startPort.dataProperty().removeListener(endPort.startPort_DataChangeListener);
         if (!endPort.multiDockAllowed) {
             endPort.parentHub.handle_IncomingConnectionRemoved(endPort);
         }
@@ -136,19 +146,10 @@ public class Connection {
         @Override
         public void changed(ObservableValue arg0, Object arg1, Object arg2) {
             removeFromCanvas();
+            removeChangeListeners();
 
             startPort.connectedConnections.remove(Connection.this);
             endPort.connectedConnections.remove(Connection.this);
-
-            //Remove listeners although with object references gone they ought to be collected automatically
-            startPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
-            endPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
-
-            startPort.origin.propertyChanged.remove(origin_PropertyChangeListener);
-            endPort.origin.propertyChanged.remove(origin_PropertyChangeListener);
-
-            startPort.parentHub.eventBlaster.remove(origin_PropertyChangeListener);
-            endPort.parentHub.eventBlaster.remove(origin_PropertyChangeListener);
 
             //Deactivate ports if they have no more connections
             if (startPort.connectedConnections.isEmpty()) {
@@ -162,4 +163,18 @@ public class Connection {
             endPort.calculateData();
         }
     };
+
+    private void removeChangeListeners() {
+
+        startPort.dataProperty().removeListener(endPort.startPort_DataChangeListener);
+        //Remove listeners although with object references gone they ought to be collected automatically
+        startPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
+        endPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
+
+        // new listeners
+        startPort.centerXProperty.removeListener(coordinatesChangeListener);
+        startPort.centerYProperty.removeListener(coordinatesChangeListener);
+        endPort.centerXProperty.removeListener(coordinatesChangeListener);
+        endPort.centerYProperty.removeListener(coordinatesChangeListener);
+    }
 }

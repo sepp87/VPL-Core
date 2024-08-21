@@ -12,6 +12,7 @@ import jo.vpl.hub.methods.MathMethods;
 
 // Copy reflection hub
 // List methods output cant be used in further operations - TODO TEST FIX
+// Fix bug where hub is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new hub
 /**
  *
  * @author JoostMeulenkamp

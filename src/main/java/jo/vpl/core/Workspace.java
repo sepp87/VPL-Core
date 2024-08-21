@@ -432,8 +432,10 @@ public class Workspace extends AnchorPane {
                     getChildren().add(0, tempLine);
                 }
 
-                tempLine.startXProperty().bind(tempStartPort.origin.x());
-                tempLine.startYProperty().bind(tempStartPort.origin.y());
+                tempLine.startXProperty().bind(tempStartPort.centerXProperty);
+                tempLine.startYProperty().bind(tempStartPort.centerYProperty);
+//                tempLine.startXProperty().bind(tempStartPort.origin.x());
+//                tempLine.startYProperty().bind(tempStartPort.origin.y());
                 tempLine.setEndX(sceneToLocal(e.getSceneX(), e.getSceneY()).getX());
                 tempLine.setEndY(sceneToLocal(e.getSceneX(), e.getSceneY()).getY());
 

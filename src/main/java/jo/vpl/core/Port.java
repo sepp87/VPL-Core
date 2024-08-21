@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import jo.vpl.util.TypeExtensions;
@@ -19,16 +20,20 @@ import jo.vpl.util.TypeExtensions;
  */
 public class Port extends VBox {
 
+//    private final Point2D center = new Point2D(0, 0);
     private final ObjectProperty data = new SimpleObjectProperty(this, "data", null);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     private final StringProperty name = new SimpleStringProperty(this, "name", null);
+
+    public final DoubleProperty centerXProperty = new SimpleDoubleProperty();
+    public final DoubleProperty centerYProperty = new SimpleDoubleProperty();
 
     public ObservableList<Connection> connectedConnections;
     public Class dataType;
     public PortTypes portType;
     public Hub parentHub;
     public boolean multiDockAllowed;
-    public BindingPoint origin;
+//    public BindingPoint origin;
     public int index;
 
     public Port(String name, Hub parent, PortTypes portType, Class type) {
@@ -40,8 +45,8 @@ public class Port extends VBox {
         this.dataType = type;
         this.portType = portType;
         this.setName(name);
-        
-        if(portType == PortTypes.IN){
+
+        if (portType == PortTypes.IN) {
             index = parent.inPorts.size();
         } else {
             index = parent.outPorts.size();
@@ -53,16 +58,14 @@ public class Port extends VBox {
         connectedConnections = FXCollections.observableArrayList();
         connectedConnections.addListener(this::handle_ConnectionChange);
 
-        origin = new BindingPoint(0, 0);
-
         setOnMousePressed(this::port_MousePress);
         setOnMouseDragged(this::port_MouseDrag);
 
-        boundsInParentProperty().addListener(this::handle_SizeChange);
-        parentHub.eventBlaster.add(this::parentHub_PropertyChanged);
-
         active.addListener(this::handle_Active);
 
+        parentHub.layoutXProperty().addListener(coordinatesChangeListener);
+        parentHub.layoutYProperty().addListener(coordinatesChangeListener);
+        boundsInParentProperty().addListener(coordinatesChangeListener);
     }
 
     private void handle_ConnectionChange(ListChangeListener.Change change) {
@@ -74,18 +77,19 @@ public class Port extends VBox {
     }
 
     private void calcOrigin() {
-        origin.x().setValue(parentHub.hostCanvas.sceneToLocal(localToScene(getWidth() / 2, getHeight() / 2)).getX());
-        origin.y().setValue(parentHub.hostCanvas.sceneToLocal(localToScene(getWidth() / 2, getHeight() / 2)).getY());
+        Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
+        Point2D centerInLocal = parentHub.hostCanvas.sceneToLocal(centerInScene);
 
+        centerXProperty.set(centerInLocal.getX());
+        centerYProperty.set(centerInLocal.getY());
     }
 
-    private void handle_SizeChange(Object obj, Object oldVal, Object newVal) {
-        calcOrigin();
-    }
-
-    private void parentHub_PropertyChanged(PropertyChangeEvent e) {
-        calcOrigin();
-    }
+    ChangeListener coordinatesChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue ov, Object t, Object t1) {
+            calcOrigin();
+        }
+    };
 
     /**
      * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent hub from moving

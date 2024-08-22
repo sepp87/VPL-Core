@@ -52,7 +52,6 @@ public class Workspace extends AnchorPane {
     //Menu members
     private SelectHub selectHub;
     private RadialMenu radialMenu;
-//    private SpiffyMenu radialMenu;
 
     //Create connection members
     Port tempStartPort;
@@ -105,8 +104,6 @@ public class Workspace extends AnchorPane {
         controlBlaster.set("translateY", translateYProperty());
 
         //Create spiffy menu
-//        radialMenu = new SpiffyMenu(this);
-//        radialMenu.setVisible(false);
         radialMenu = RadialMenu.get();
         radialMenu.setVisible(false);
 
@@ -189,7 +186,7 @@ public class Workspace extends AnchorPane {
                 radialMenu.hide();
                 return;
             }
-            
+
             // right mouse button => open menu
             if (e.getButton() != MouseButton.SECONDARY) {
                 return;
@@ -199,7 +196,6 @@ public class Workspace extends AnchorPane {
                 return;
             }
 
-//            radialMenu.toggleMenu(e.getSceneX(), e.getSceneY());
             radialMenu.show(e.getSceneX(), e.getSceneY());
         }
     };
@@ -303,66 +299,6 @@ public class Workspace extends AnchorPane {
         }
     };
 
-    public void zoomToFit() {
-
-//        Bounds bLayout = getParent().getParent().getLayoutBounds();
-        Scene bScene = getScene();
-        Bounds localBBox = Hub.getBoundingBoxOfHubs(hubSet);
-        if (localBBox == null) {
-            return;
-        }
-
-        //Zoom to fit        
-        Bounds bBox = localToParent(localBBox);
-        double ratioX = bBox.getWidth() / bScene.getWidth();
-        double ratioY = bBox.getHeight() / bScene.getHeight();
-        double ratio = Math.max(ratioX, ratioY);
-        setScale((getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
-
-        //Pan to fit
-        bBox = localToParent(Hub.getBoundingBoxOfHubs(hubSet));
-        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
-        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
-        setTranslateX(getTranslateX() - deltaX);
-        setTranslateY(getTranslateY() - deltaY);
-    }
-
-    public void align(AlignType type) {
-        Bounds bBox = Hub.getBoundingBoxOfHubs(selectedHubSet);
-        switch (type) {
-            case LEFT:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMinX());
-                }
-                break;
-            case RIGHT:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - hub.getWidth());
-                }
-                break;
-            case TOP:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMinY());
-                }
-                break;
-            case BOTTOM:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - hub.getHeight());
-                }
-                break;
-            case V_CENTER:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - hub.getWidth());
-                }
-                break;
-            case H_CENTER:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - hub.getHeight());
-                }
-                break;
-        }
-    }
-
     private void handle_MousePress(MouseEvent e) {
 
 //        System.out.println(e.getPickResult().getIntersectedNode().getClass());
@@ -382,28 +318,9 @@ public class Workspace extends AnchorPane {
 
                         splineMode = SplineMode.NOTHING;
 
-//                          if (radialMenu != null){
-//                              radialMenu.IsOpen = false;
-//                              radialMenu.delete();
-//                              radialMenu = null;
-//                          }
                     }
                 } else if (e.isSecondaryButtonDown()) {
-//            if (radialMenu == null) {
-//                radialMenu = new RadialContentMenu(this);
-//                getChildren().add(radialMenu);
-//            }
-//
-//            if (radialMenu.isOpen) {
-//                radialMenu.isOpen = false;
-//                await Task
-//                .Delay(400);
-//            }
-//
-//            radialMenu.SetValue(LeftProperty, Mouse.GetPosition(this).x - 150);
-//            radialMenu.SetValue(TopProperty, Mouse.GetPosition(this).Y - 150);
-//
-//            radialMenu.isOpen = true;
+
                 }
 
                 break;
@@ -434,8 +351,6 @@ public class Workspace extends AnchorPane {
 
                 tempLine.startXProperty().bind(tempStartPort.centerXProperty);
                 tempLine.startYProperty().bind(tempStartPort.centerYProperty);
-//                tempLine.startXProperty().bind(tempStartPort.origin.x());
-//                tempLine.startYProperty().bind(tempStartPort.origin.y());
                 tempLine.setEndX(sceneToLocal(e.getSceneX(), e.getSceneY()).getX());
                 tempLine.setEndY(sceneToLocal(e.getSceneX(), e.getSceneY()).getY());
 
@@ -649,12 +564,69 @@ public class Workspace extends AnchorPane {
         }
     }
 
+    public void zoomToFit() {
+
+        Scene bScene = getScene();
+        Bounds localBBox = Hub.getBoundingBoxOfHubs(hubSet);
+        if (localBBox == null) {
+            return;
+        }
+
+        //Zoom to fit        
+        Bounds bBox = localToParent(localBBox);
+        double ratioX = bBox.getWidth() / bScene.getWidth();
+        double ratioY = bBox.getHeight() / bScene.getHeight();
+        double ratio = Math.max(ratioX, ratioY);
+        setScale((getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
+
+        //Pan to fit
+        bBox = localToParent(Hub.getBoundingBoxOfHubs(hubSet));
+        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
+        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
+        setTranslateX(getTranslateX() - deltaX);
+        setTranslateY(getTranslateY() - deltaY);
+    }
+
+    public void align(AlignType type) {
+        Bounds bBox = Hub.getBoundingBoxOfHubs(selectedHubSet);
+        switch (type) {
+            case LEFT:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutX(bBox.getMinX());
+                }
+                break;
+            case RIGHT:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutX(bBox.getMaxX() - hub.getWidth());
+                }
+                break;
+            case TOP:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutY(bBox.getMinY());
+                }
+                break;
+            case BOTTOM:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutY(bBox.getMaxY() - hub.getHeight());
+                }
+                break;
+            case V_CENTER:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - hub.getWidth());
+                }
+                break;
+            case H_CENTER:
+                for (Hub hub : selectedHubSet) {
+                    hub.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - hub.getHeight());
+                }
+                break;
+        }
+    }
+
     public void newFile() {
         hubSet.clear();
         connectionSet.clear();
         getChildren().clear();
-//            if (radialMenu != null) radialMenu.Dispose();
-//            radialMenu = null;
     }
 
     public void openFile() {
@@ -671,7 +643,8 @@ public class Workspace extends AnchorPane {
         File file = chooser.showOpenDialog(stage);
 
         if (file != null) {
-            deserialize(file);
+//            deserialize(file);
+            GraphLoader.deserialize(file, this);
         }
     }
 
@@ -683,7 +656,8 @@ public class Workspace extends AnchorPane {
         File file = chooser.showSaveDialog(stage);
 
         if (file != null) {
-            serialize(file);
+//            serialize(file);
+            GraphSaver.serialize(file, this);
         }
     }
 
@@ -821,114 +795,114 @@ public class Workspace extends AnchorPane {
         }
     }
 
-    public void serialize(File file) {
-        try {
-
-            ObjectFactory factory = new ObjectFactory();
-
-            HubsTag hubsTag = factory.createHubsTag();
-
-            for (Hub hub : hubSet) {
-                HubTag hubTag = factory.createHubTag();
-                hub.serialize(hubTag);
-                hubsTag.getHub().add(hubTag);
-            }
-
-            ConnectionsTag connectionsTag = factory.createConnectionsTag();
-
-            for (Connection connection : connectionSet) {
-                ConnectionTag connectionTag = factory.createConnectionTag();
-                connection.serialize(connectionTag);
-                connectionsTag.getConnection().add(connectionTag);
-            }
-
-            DocumentTag documentTag = factory.createDocumentTag();
-            documentTag.setScale(getScale());
-            documentTag.setTranslateX(getTranslateX());
-            documentTag.setTranslateY(getTranslateY());
-
-            documentTag.setHubs(hubsTag);
-            documentTag.setConnections(connectionsTag);
-
-            JAXBElement<DocumentTag> document = factory.createDocument(documentTag);
-
-            JAXBContext context = JAXBContext.newInstance("jo.vpl.xml");
-            Marshaller marshaller = context.createMarshaller();
-
-            //Pretty output
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(document, file);
-
-        } catch (JAXBException ex) {
-            Logger.getLogger(Workspace.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void deserialize(File file) {
-
-        String errorMessage = "";
-
-        try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
-            DocumentTag documentTag = document.getValue();
-
-            setScale(documentTag.getScale());
-            setTranslateX(documentTag.getTranslateX());
-            setTranslateY(documentTag.getTranslateY());
-
-            HubsTag hubsTag = documentTag.getHubs();
-            List<HubTag> hubTagList = hubsTag.getHub();
-            if (hubTagList
-                    != null) {
-                for (HubTag hubTag : hubTagList) {
-                    errorMessage = "Hub type " + hubTag.getType() + " not found.";
-                    Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
-//                    Class type = Class.forName(hubTag.getType());
-                    Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(this);
-                    hub.deserialize(hubTag);
-                    hubSet.add(hub);
-                    getChildren().add(hub);
-                }
-            }
-
-            ConnectionsTag connectionsTag = documentTag.getConnections();
-            List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
-            if (connectionTagList
-                    != null) {
-                for (ConnectionTag connectionTag : connectionTagList) {
-
-                    UUID startHubUUID = UUID.fromString(connectionTag.getStartHub());
-                    int startPortIndex = connectionTag.getStartIndex();
-                    UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
-                    int endPortIndex = connectionTag.getEndIndex();
-
-                    Hub startHub = null;
-                    Hub endHub = null;
-                    for (Hub hub : hubSet) {
-                        if (hub.uuid.compareTo(startHubUUID) == 0) {
-                            startHub = hub;
-                        } else if (hub.uuid.compareTo(endHubUUID) == 0) {
-                            endHub = hub;
-                        }
-                    }
-
-                    if (startHub != null && endHub != null) {
-                        Port startPort = startHub.outPorts.get(startPortIndex);
-                        Port endPort = endHub.inPorts.get(endPortIndex);
-                        Connection connection = new Connection(this, startPort, endPort);
-                        connectionSet.add(connection);
-                    }
-                }
-            }
-        } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(Workspace.class
-                    .getName()).log(Level.SEVERE, errorMessage, ex);
-        }
-    }
+//    public void serialize(File file) {
+//        try {
+//
+//            ObjectFactory factory = new ObjectFactory();
+//
+//            HubsTag hubsTag = factory.createHubsTag();
+//
+//            for (Hub hub : hubSet) {
+//                HubTag hubTag = factory.createHubTag();
+//                hub.serialize(hubTag);
+//                hubsTag.getHub().add(hubTag);
+//            }
+//
+//            ConnectionsTag connectionsTag = factory.createConnectionsTag();
+//
+//            for (Connection connection : connectionSet) {
+//                ConnectionTag connectionTag = factory.createConnectionTag();
+//                connection.serialize(connectionTag);
+//                connectionsTag.getConnection().add(connectionTag);
+//            }
+//
+//            DocumentTag documentTag = factory.createDocumentTag();
+//            documentTag.setScale(getScale());
+//            documentTag.setTranslateX(getTranslateX());
+//            documentTag.setTranslateY(getTranslateY());
+//
+//            documentTag.setHubs(hubsTag);
+//            documentTag.setConnections(connectionsTag);
+//
+//            JAXBElement<DocumentTag> document = factory.createDocument(documentTag);
+//
+//            JAXBContext context = JAXBContext.newInstance("jo.vpl.xml");
+//            Marshaller marshaller = context.createMarshaller();
+//
+//            //Pretty output
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//            marshaller.marshal(document, file);
+//
+//        } catch (JAXBException ex) {
+//            Logger.getLogger(Workspace.class
+//                    .getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+//
+//    public void deserialize(File file) {
+//
+//        String errorMessage = "";
+//
+//        try {
+//            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//
+//            JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
+//            DocumentTag documentTag = document.getValue();
+//
+//            setScale(documentTag.getScale());
+//            setTranslateX(documentTag.getTranslateX());
+//            setTranslateY(documentTag.getTranslateY());
+//
+//            HubsTag hubsTag = documentTag.getHubs();
+//            List<HubTag> hubTagList = hubsTag.getHub();
+//            if (hubTagList
+//                    != null) {
+//                for (HubTag hubTag : hubTagList) {
+//                    errorMessage = "Hub type " + hubTag.getType() + " not found.";
+//                    Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
+////                    Class type = Class.forName(hubTag.getType());
+//                    Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(this);
+//                    hub.deserialize(hubTag);
+//                    hubSet.add(hub);
+//                    getChildren().add(hub);
+//                }
+//            }
+//
+//            ConnectionsTag connectionsTag = documentTag.getConnections();
+//            List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
+//            if (connectionTagList
+//                    != null) {
+//                for (ConnectionTag connectionTag : connectionTagList) {
+//
+//                    UUID startHubUUID = UUID.fromString(connectionTag.getStartHub());
+//                    int startPortIndex = connectionTag.getStartIndex();
+//                    UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
+//                    int endPortIndex = connectionTag.getEndIndex();
+//
+//                    Hub startHub = null;
+//                    Hub endHub = null;
+//                    for (Hub hub : hubSet) {
+//                        if (hub.uuid.compareTo(startHubUUID) == 0) {
+//                            startHub = hub;
+//                        } else if (hub.uuid.compareTo(endHubUUID) == 0) {
+//                            endHub = hub;
+//                        }
+//                    }
+//
+//                    if (startHub != null && endHub != null) {
+//                        Port startPort = startHub.outPorts.get(startPortIndex);
+//                        Port endPort = endHub.inPorts.get(endPortIndex);
+//                        Connection connection = new Connection(this, startPort, endPort);
+//                        connectionSet.add(connection);
+//                    }
+//                }
+//            }
+//        } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+//            Logger.getLogger(Workspace.class
+//                    .getName()).log(Level.SEVERE, errorMessage, ex);
+//        }
+//    }
 }
 
 enum MouseMode {

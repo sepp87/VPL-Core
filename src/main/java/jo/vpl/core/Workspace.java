@@ -1,16 +1,5 @@
 package jo.vpl.core;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import java.awt.MouseInfo;
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
@@ -21,16 +10,12 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Control;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import jo.vpl.radialmenu.RadialMenu;
-import jo.vpl.xml.*;
 
 /**
  *
@@ -482,7 +467,7 @@ public class Workspace extends AnchorPane {
                 break;
             case C:
                 if (e.isControlDown()) {
-                    copyHubs();
+                    Actions.copyHubs(Workspace.this);
                 }
                 break;
 
@@ -494,32 +479,32 @@ public class Workspace extends AnchorPane {
                     if (tempHubSet.isEmpty()) {
                         return;
                     }
-                    pasteHubs();
+                    Actions.pasteHubs(Workspace.this);
                 }
                 break;
 
             case G:
                 if (e.isControlDown()) {
-                    groupHubs();
+                    Actions.groupHubs(Workspace.this);
                 }
                 break;
 
             case N:
                 if (e.isControlDown()) {
-                    newFile();
+                    Actions.newFile(Workspace.this);
                 }
                 break;
 
             case S:
 
                 if (e.isControlDown()) {
-                    saveFile();
+                    Actions.saveFile(Workspace.this);
                 }
                 break;
 
             case O:
                 if (e.isControlDown()) {
-                    openFile();
+                    Actions.openFile(Workspace.this);
                 }
                 break;
 
@@ -559,201 +544,11 @@ public class Workspace extends AnchorPane {
 
         switch (e.getCode()) {
             case SPACE:
-                zoomToFit();
+                Actions.zoomToFit(Workspace.this);
                 break;
         }
     }
 
-    public void zoomToFit() {
-
-        Scene bScene = getScene();
-        Bounds localBBox = Hub.getBoundingBoxOfHubs(hubSet);
-        if (localBBox == null) {
-            return;
-        }
-
-        //Zoom to fit        
-        Bounds bBox = localToParent(localBBox);
-        double ratioX = bBox.getWidth() / bScene.getWidth();
-        double ratioY = bBox.getHeight() / bScene.getHeight();
-        double ratio = Math.max(ratioX, ratioY);
-        setScale((getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
-
-        //Pan to fit
-        bBox = localToParent(Hub.getBoundingBoxOfHubs(hubSet));
-        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
-        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
-        setTranslateX(getTranslateX() - deltaX);
-        setTranslateY(getTranslateY() - deltaY);
-    }
-
-    public void align(AlignType type) {
-        Bounds bBox = Hub.getBoundingBoxOfHubs(selectedHubSet);
-        switch (type) {
-            case LEFT:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMinX());
-                }
-                break;
-            case RIGHT:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - hub.getWidth());
-                }
-                break;
-            case TOP:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMinY());
-                }
-                break;
-            case BOTTOM:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - hub.getHeight());
-                }
-                break;
-            case V_CENTER:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - hub.getWidth());
-                }
-                break;
-            case H_CENTER:
-                for (Hub hub : selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - hub.getHeight());
-                }
-                break;
-        }
-    }
-
-    public void newFile() {
-        hubSet.clear();
-        connectionSet.clear();
-        getChildren().clear();
-    }
-
-    public void openFile() {
-        //Clear Layout
-        hubSet.clear();
-        connectionSet.clear();
-        getChildren().clear();
-
-        //Open File
-        Stage stage = (Stage) getScene().getWindow();
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open a vplXML...");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showOpenDialog(stage);
-
-        if (file != null) {
-//            deserialize(file);
-            GraphLoader.deserialize(file, this);
-        }
-    }
-
-    public void saveFile() {
-        Stage stage = (Stage) getScene().getWindow();
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Save as vplXML...");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showSaveDialog(stage);
-
-        if (file != null) {
-//            serialize(file);
-            GraphSaver.serialize(file, this);
-        }
-    }
-
-    public void groupHubs() {
-        if (selectedHubSet.size() <= 1) {
-            return;
-        }
-
-        HubGroup hubGroup = new HubGroup(this);
-        hubGroup.setChildHubs(selectedHubSet);
-    }
-
-    public void copyHubs() {
-        tempHubSet = FXCollections.observableSet();
-
-        for (Hub hub : selectedHubSet) {
-            tempHubSet.add(hub);
-        }
-    }
-
-    public void pasteHubs() {
-        Bounds bBox = Hub.getBoundingBoxOfHubs(tempHubSet);
-
-        if (bBox == null) {
-            return;
-        }
-
-        Point2D copyPoint = new Point2D(bBox.getMinX() + bBox.getWidth() / 2, bBox.getMinY() + bBox.getHeight() / 2);
-        double pastePointX = MouseInfo.getPointerInfo().getLocation().x;
-        double pastePointY = MouseInfo.getPointerInfo().getLocation().y;
-        Point2D pastePoint = screenToLocal(pastePointX, pastePointY);
-
-        pastePoint = mousePosition;
-
-        Point2D delta = pastePoint.subtract(copyPoint);
-
-        //First deselect selected hubs. Simply said, deselect copied hubs.
-        for (Hub hub : selectedHubSet) {
-            hub.setSelected(false);
-        }
-        selectedHubSet.clear();
-
-        List<Connection> alreadyClonedConnectors = new ArrayList<>();
-        List<CopyConnection> copyConnections = new ArrayList<>();
-
-        // copy hub from clipboard to canvas
-        for (Hub hub : tempHubSet) {
-            Hub newHub = hub.clone();
-
-            newHub.setLayoutX(hub.getLayoutX() + delta.getX());
-            newHub.setLayoutY(hub.getLayoutY() + delta.getY());
-
-            getChildren().add(newHub);
-            hubSet.add(newHub);
-
-            //Set pasted hub(s) as selected
-            selectedHubSet.add(newHub);
-            newHub.setSelected(true);
-
-            copyConnections.add(new CopyConnection(hub, newHub));
-        }
-
-        for (CopyConnection cc : copyConnections) {
-            int counter = 0;
-
-            for (Port port : cc.oldHub.inPorts) {
-                for (Connection connection : port.connectedConnections) {
-                    if (!alreadyClonedConnectors.contains(connection)) {
-                        Connection newConnection = null;
-
-                        // start and end hub are contained in selection
-                        if (tempHubSet.contains(connection.startPort.parentHub)) {
-                            CopyConnection cc2 = copyConnections
-                                    .stream()
-                                    .filter(i -> i.oldHub == connection.startPort.parentHub)
-                                    .findFirst()
-                                    .orElse(null);
-
-                            if (cc2 != null) {
-                                newConnection = new Connection(this, cc2.newHub.outPorts.get(0), cc.newHub.inPorts.get(counter));
-                            }
-                        } else {
-                            // only end hub is contained in selection
-                            newConnection = new Connection(this, connection.startPort, cc.newHub.inPorts.get(counter));
-                        }
-
-                        if (newConnection != null) {
-                            alreadyClonedConnectors.add(connection);
-                            connectionSet.add(newConnection);
-                        }
-                    }
-                }
-                counter++;
-            }
-        }
-    }
 
     /**
      * Check if the node of the same type or if it is embedded in the type
@@ -794,115 +589,6 @@ public class Workspace extends AnchorPane {
             return checkParent(parent, checkNode);
         }
     }
-
-//    public void serialize(File file) {
-//        try {
-//
-//            ObjectFactory factory = new ObjectFactory();
-//
-//            HubsTag hubsTag = factory.createHubsTag();
-//
-//            for (Hub hub : hubSet) {
-//                HubTag hubTag = factory.createHubTag();
-//                hub.serialize(hubTag);
-//                hubsTag.getHub().add(hubTag);
-//            }
-//
-//            ConnectionsTag connectionsTag = factory.createConnectionsTag();
-//
-//            for (Connection connection : connectionSet) {
-//                ConnectionTag connectionTag = factory.createConnectionTag();
-//                connection.serialize(connectionTag);
-//                connectionsTag.getConnection().add(connectionTag);
-//            }
-//
-//            DocumentTag documentTag = factory.createDocumentTag();
-//            documentTag.setScale(getScale());
-//            documentTag.setTranslateX(getTranslateX());
-//            documentTag.setTranslateY(getTranslateY());
-//
-//            documentTag.setHubs(hubsTag);
-//            documentTag.setConnections(connectionsTag);
-//
-//            JAXBElement<DocumentTag> document = factory.createDocument(documentTag);
-//
-//            JAXBContext context = JAXBContext.newInstance("jo.vpl.xml");
-//            Marshaller marshaller = context.createMarshaller();
-//
-//            //Pretty output
-//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//            marshaller.marshal(document, file);
-//
-//        } catch (JAXBException ex) {
-//            Logger.getLogger(Workspace.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-//
-//    public void deserialize(File file) {
-//
-//        String errorMessage = "";
-//
-//        try {
-//            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-//            Unmarshaller unmarshaller = context.createUnmarshaller();
-//
-//            JAXBElement<DocumentTag> document = (JAXBElement<DocumentTag>) unmarshaller.unmarshal(file);
-//            DocumentTag documentTag = document.getValue();
-//
-//            setScale(documentTag.getScale());
-//            setTranslateX(documentTag.getTranslateX());
-//            setTranslateY(documentTag.getTranslateY());
-//
-//            HubsTag hubsTag = documentTag.getHubs();
-//            List<HubTag> hubTagList = hubsTag.getHub();
-//            if (hubTagList
-//                    != null) {
-//                for (HubTag hubTag : hubTagList) {
-//                    errorMessage = "Hub type " + hubTag.getType() + " not found.";
-//                    Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
-////                    Class type = Class.forName(hubTag.getType());
-//                    Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(this);
-//                    hub.deserialize(hubTag);
-//                    hubSet.add(hub);
-//                    getChildren().add(hub);
-//                }
-//            }
-//
-//            ConnectionsTag connectionsTag = documentTag.getConnections();
-//            List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
-//            if (connectionTagList
-//                    != null) {
-//                for (ConnectionTag connectionTag : connectionTagList) {
-//
-//                    UUID startHubUUID = UUID.fromString(connectionTag.getStartHub());
-//                    int startPortIndex = connectionTag.getStartIndex();
-//                    UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
-//                    int endPortIndex = connectionTag.getEndIndex();
-//
-//                    Hub startHub = null;
-//                    Hub endHub = null;
-//                    for (Hub hub : hubSet) {
-//                        if (hub.uuid.compareTo(startHubUUID) == 0) {
-//                            startHub = hub;
-//                        } else if (hub.uuid.compareTo(endHubUUID) == 0) {
-//                            endHub = hub;
-//                        }
-//                    }
-//
-//                    if (startHub != null && endHub != null) {
-//                        Port startPort = startHub.outPorts.get(startPortIndex);
-//                        Port endPort = endHub.inPorts.get(endPortIndex);
-//                        Connection connection = new Connection(this, startPort, endPort);
-//                        connectionSet.add(connection);
-//                    }
-//                }
-//            }
-//        } catch (JAXBException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-//            Logger.getLogger(Workspace.class
-//                    .getName()).log(Level.SEVERE, errorMessage, ex);
-//        }
-//    }
 }
 
 enum MouseMode {

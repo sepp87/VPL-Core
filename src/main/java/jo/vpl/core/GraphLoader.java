@@ -1,4 +1,3 @@
-
 package jo.vpl.core;
 
 import jakarta.xml.bind.JAXBContext;
@@ -23,7 +22,7 @@ import jo.vpl.xml.ObjectFactory;
  * @author joostmeulenkamp
  */
 public class GraphLoader {
-    
+
     public static void deserialize(File file, Workspace workspace) {
 
         String errorMessage = "";

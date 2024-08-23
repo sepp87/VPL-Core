@@ -1,4 +1,3 @@
-
 package jo.vpl.core;
 
 import jakarta.xml.bind.JAXBContext;
@@ -20,7 +19,7 @@ import jo.vpl.xml.ObjectFactory;
  * @author joostmeulenkamp
  */
 public class GraphSaver {
-    
+
     public static void serialize(File file, Workspace workspace) {
         try {
 

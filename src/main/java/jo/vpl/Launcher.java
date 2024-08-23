@@ -12,7 +12,10 @@ import jo.vpl.hub.methods.MathMethods;
 
 // Copy reflection hub
 // List methods output cant be used in further operations - TODO TEST FIX
-// Fix bug where hub is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new hub
+// BUG where hub is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new hub
+// BUG when opening a file and cancelling the action, everything is removed as if a new file was created
+// IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
+// IMPROVEMENT select hub should stay the same size regardless of the zoom (probably needs to be on a different pane)
 /**
  *
  * @author JoostMeulenkamp

@@ -27,7 +27,7 @@ public class GraphSaver {
 
             HubsTag hubsTag = factory.createHubsTag();
 
-            for (Hub hub : workspace.hubSet) {
+            for (Block hub : workspace.hubSet) {
                 HubTag hubTag = factory.createHubTag();
                 hub.serialize(hubTag);
                 hubsTag.getHub().add(hubTag);

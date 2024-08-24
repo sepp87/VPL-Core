@@ -1,6 +1,6 @@
-package jo.vpl.hub.methods;
+package jo.vpl.block.methods;
 
-import jo.vpl.core.HubInfo;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
@@ -8,7 +8,7 @@ import jo.vpl.core.HubInfo;
  */
 public class ObjectMethods {
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Object.getClass",
             category = "Core",
             description = "Returns the runtime class of this Object.")
@@ -16,7 +16,7 @@ public class ObjectMethods {
         return object.getClass();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Object.toString",
             category = "Core",
             description = "Returns a string representation of the object.")

@@ -1,6 +1,6 @@
-package jo.vpl.hub.methods;
+package jo.vpl.block.methods;
 
-import jo.vpl.core.HubInfo;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
@@ -8,7 +8,7 @@ import jo.vpl.core.HubInfo;
  */
 public class StringMethods {
     
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.fromObject",
             category = "Core",
             description = "Returns a string representation of the object.",
@@ -17,7 +17,7 @@ public class StringMethods {
         return object.toString();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.length",
             category = "Core",
             description = "Returns the length of this string. The length is equal to the number of Unicode code units in the string.",
@@ -26,7 +26,7 @@ public class StringMethods {
         return string.length();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.toUpperCase",
             category = "Core",
             description = "Converts all of the characters in this String to upper case using the rules of the default locale.",
@@ -35,7 +35,7 @@ public class StringMethods {
         return string.toUpperCase();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.toLowerCase",
             category = "Core",
             description = "Converts all of the characters in this String to lower case using the rules of the default locale.",
@@ -44,7 +44,7 @@ public class StringMethods {
         return string.toLowerCase();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.stripLeading",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading white space removed.",
@@ -53,7 +53,7 @@ public class StringMethods {
         return string.stripLeading();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.stripTrailing",
             category = "Core",
             description = "Returns a string whose value is this string, with all trailing white space removed.",
@@ -62,7 +62,7 @@ public class StringMethods {
         return string.stripTrailing();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.strip",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading and trailing white space removed.",
@@ -71,7 +71,7 @@ public class StringMethods {
         return string.strip();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.substring",
             category = "Core",
             description = "Returns a string that is a substring of this string. The substring begins at the specified beginIndex and extends to the character at index endIndex - 1. Thus the length of the substring is endIndex-beginIndex.",
@@ -84,7 +84,7 @@ public class StringMethods {
         return string.substring(beginIndex, endIndex);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.contains",
             category = "Core",
             description = "Returns true if and only if this string contains the specified sequence of char values.",
@@ -93,7 +93,7 @@ public class StringMethods {
         return string.contains(sequence);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.endsWith",
             category = "Core",
             description = "Tests if this string ends with the specified suffix.",
@@ -102,7 +102,7 @@ public class StringMethods {
         return string.endsWith(suffix);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.startsWith",
             category = "Core",
             description = "Tests if the substring of this string beginning at the specified index starts with the specified prefix. By default the offset is set to zero.",
@@ -112,7 +112,7 @@ public class StringMethods {
         return string.startsWith(prefix, offset);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.equals",
             category = "Core",
             description = "Compares this string to the specified object. The result is true if and only if the argument is not null and is a String object that represents the same sequence of characters as this object.")
@@ -120,7 +120,7 @@ public class StringMethods {
         return string.equals(anotherString);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.indexOf",
             category = "Core",
             description = "Returns the index within this string of the first occurrence of the specified substring.")
@@ -128,7 +128,7 @@ public class StringMethods {
         return string.indexOf(str);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.lastIndexOf",
             category = "Core",
             description = "Returns the index within this string of the last occurrence of the specified substring.")
@@ -136,7 +136,7 @@ public class StringMethods {
         return string.lastIndexOf(str);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.replace",
             category = "Core",
             description = "Replaces each substring of this string that matches the literal target sequence with the specified literal replacement sequence. The replacement proceeds from the beginning of the string to the end, for example, replacing \"aa\" with \"b\" in the string \"aaa\" will result in \"ba\" rather than \"ab\".")
@@ -144,7 +144,7 @@ public class StringMethods {
         return string.replace(target, replacement);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.replaceAll",
             category = "Core",
             description = "Replaces each substring of this string that matches the given regular expression with the given replacement.")
@@ -152,7 +152,7 @@ public class StringMethods {
         return string.replaceAll(regex, replacement);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "String.replaceFirst",
             category = "Core",
             description = "Replaces the first substring of this string that matches the given regular expression with the given replacement.")

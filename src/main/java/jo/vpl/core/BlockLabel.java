@@ -14,13 +14,13 @@ import javafx.scene.layout.Priority;
  *
  * @author JoostMeulenkamp
  */
-public class HubLabel extends Button {
+public class BlockLabel extends Button {
 
     HBox hostElement;
     TextField field;
     String tempText;
 
-    public HubLabel(HBox box) {
+    public BlockLabel(HBox box) {
         hostElement = box;
         field = new TextField();
 

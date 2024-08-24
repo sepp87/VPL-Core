@@ -15,7 +15,7 @@ import jo.vpl.util.IconType;
  *
  * @author JoostMeulenkamp
  */
-public abstract class Hub extends VplElement {
+public abstract class Block extends VplElement {
 
     public UUID uuid;
     public Pane inPortBox;
@@ -29,7 +29,7 @@ public abstract class Hub extends VplElement {
 
     public Point2D oldMousePosition;
 
-    public Hub(Workspace vplControl) {
+    public Block(Workspace vplControl) {
         super(vplControl);
         uuid = UUID.randomUUID();
 
@@ -114,7 +114,7 @@ public abstract class Hub extends VplElement {
 
     public void setResizable(boolean resizable) {
         if (resizable) {
-            resizeButton = new HubButton(IconType.FA_PLUS_SQUARE_O);
+            resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
             contentGrid.add(resizeButton, 2, 3);
 
             resizeButton.setOnMousePressed(this::resizeButton_MousePress);
@@ -153,7 +153,7 @@ public abstract class Hub extends VplElement {
                 setSelected(false);
             } else {
                 // Subscribe multiselection to MouseMove event
-                for (Hub hub : hostCanvas.selectedHubSet) {
+                for (Block hub : hostCanvas.selectedHubSet) {
                     hub.setOnMouseDragged(hub::handle_MouseDrag);
 
                     hub.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
@@ -167,7 +167,7 @@ public abstract class Hub extends VplElement {
                 setSelected(true);
             } else {
                 // Deselect all hubs that are selected
-                for (Hub hub : hostCanvas.selectedHubSet) {
+                for (Block hub : hostCanvas.selectedHubSet) {
                     hub.setSelected(false);
                 }
 
@@ -175,7 +175,7 @@ public abstract class Hub extends VplElement {
                 hostCanvas.selectedHubSet.add(this);
                 // Select this hub as selected
                 setSelected(true);
-                for (Hub hub : hostCanvas.selectedHubSet) {
+                for (Block hub : hostCanvas.selectedHubSet) {
                     //Add mouse dragged event handler so the hub will move
                     //when the user starts dragging it
                     this.setOnMouseDragged(hub::handle_MouseDrag);
@@ -196,7 +196,7 @@ public abstract class Hub extends VplElement {
         double deltaX = (e.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (e.getSceneY() - oldMousePosition.getY()) / scale;
 
-        for (Hub hub : hostCanvas.selectedHubSet) {
+        for (Block hub : hostCanvas.selectedHubSet) {
 
             hub.setLayoutX(hub.getLayoutX() + deltaX);
             hub.setLayoutY(hub.getLayoutY() + deltaY);
@@ -350,11 +350,11 @@ public abstract class Hub extends VplElement {
 
     public abstract void calculate();
 
-    protected abstract Hub clone();
+    protected abstract Block clone();
 
     public void serialize(HubTag xmlTag) {
 //        xmlTag.setType(getClass().getName());
-        xmlTag.setType(this.getClass().getAnnotation(HubInfo.class).identifier());
+        xmlTag.setType(this.getClass().getAnnotation(BlockInfo.class).identifier());
         xmlTag.setUUID(uuid.toString());
         xmlTag.setX(getLayoutX());
         xmlTag.setY(getLayoutY());
@@ -364,14 +364,14 @@ public abstract class Hub extends VplElement {
         uuid = UUID.fromString(xmlTag.getUUID());
         setLayoutX(xmlTag.getX());
         setLayoutY(xmlTag.getY());
-        List<Hub> hubs = new ArrayList<>();
+        List<Block> hubs = new ArrayList<>();
     }
 
-    public <type extends Hub> void testList(type... hubs) {
+    public <type extends Block> void testList(type... hubs) {
 
     }
 
-    public static Bounds getBoundingBoxOfHubs(Collection<? extends Hub> hubs) {
+    public static Bounds getBoundingBoxOfHubs(Collection<? extends Block> hubs) {
         if (hubs == null || hubs.isEmpty()) {
             return null;
         }
@@ -380,7 +380,7 @@ public abstract class Hub extends VplElement {
         double maxLeft = Double.MIN_VALUE;
         double maxTop = Double.MIN_VALUE;
 
-        for (Hub hub : hubs) {
+        for (Block hub : hubs) {
             if (hub.getLayoutX() < minLeft) {
                 minLeft = hub.getLayoutX();
             }
@@ -403,8 +403,8 @@ public abstract class Hub extends VplElement {
 
         @Override
         public void handle(MouseEvent e) {
-            Hub.this.setActive(true);
-            Hub.this.updateStyle();
+            Block.this.setActive(true);
+            Block.this.updateStyle();
         }
     };
     private final EventHandler<MouseEvent> onMouseExitEventHandler = new EventHandler<MouseEvent>() {
@@ -412,9 +412,9 @@ public abstract class Hub extends VplElement {
         @Override
         public void handle(MouseEvent e) {
             //Change focus on exit to host canvas so controls do not interrupt key events
-            Hub.this.hostCanvas.requestFocus();
-            Hub.this.setActive(false);
-            Hub.this.updateStyle();
+            Block.this.hostCanvas.requestFocus();
+            Block.this.setActive(false);
+            Block.this.updateStyle();
         }
     };
     private final EventHandler<MouseEvent> onMousePressEventHandler = new EventHandler<MouseEvent>() {

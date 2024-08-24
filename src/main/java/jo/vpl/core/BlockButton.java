@@ -8,13 +8,13 @@ import jo.vpl.util.IconType;
  *
  * @author JoostMeulenkamp
  */
-public class HubButton extends Button {
+public class BlockButton extends Button {
 
     IconType icon;
     IconType iconClicked;
     boolean clicked = false;
 
-    public HubButton(IconType type) {
+    public BlockButton(IconType type) {
         icon = type;
         getStyleClass().add("vpl-button");
 

@@ -31,12 +31,12 @@ public class Port extends VBox {
     public ObservableList<Connection> connectedConnections;
     public Class dataType;
     public PortTypes portType;
-    public Hub parentHub;
+    public Block parentHub;
     public boolean multiDockAllowed;
 //    public BindingPoint origin;
     public int index;
 
-    public Port(String name, Hub parent, PortTypes portType, Class type) {
+    public Port(String name, Block parent, PortTypes portType, Class type) {
         Tooltip tip = new Tooltip();
         Tooltip.install(this, tip);
         tip.textProperty().bind(this.nameProperty());

@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.SubScene;
 import javafx.scene.control.Control;
 import javafx.scene.input.*;
+import static javafx.scene.input.KeyCode.SPACE;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import jo.vpl.radialmenu.RadialMenu;
@@ -29,13 +30,13 @@ public class Workspace extends AnchorPane {
     public static boolean isCSS = true;
 
     ObservableSet<Connection> connectionSet;
-    public ObservableSet<Hub> hubSet;
-    ObservableSet<Hub> tempHubSet;
-    ObservableSet<Hub> selectedHubSet;
-    ObservableSet<HubGroup> hubGroupSet;
+    public ObservableSet<Block> hubSet;
+    ObservableSet<Block> tempHubSet;
+    ObservableSet<Block> selectedHubSet;
+    ObservableSet<BlockGroup> hubGroupSet;
 
     //Menu members
-    private SelectHub selectHub;
+    private SelectBlock selectHub;
     private RadialMenu radialMenu;
 
     //Create connection members
@@ -293,7 +294,7 @@ public class Workspace extends AnchorPane {
 
                     // Check if mouse click was on a hub
                     Node node = e.getPickResult().getIntersectedNode();
-                    boolean mouseUpOnHub = checkParent(node, Hub.class);
+                    boolean mouseUpOnHub = checkParent(node, Block.class);
 
                     if (!mouseUpOnHub) {
 
@@ -380,7 +381,7 @@ public class Workspace extends AnchorPane {
 
                 selectionRectangle.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
 
-                for (Hub hub : hubSet) {
+                for (Block hub : hubSet) {
                     selectedHubSet.remove(hub);
                     hub.setSelected(false);
 
@@ -407,7 +408,7 @@ public class Workspace extends AnchorPane {
 
         // Check if mouse click was on a hub
         Node node = e.getPickResult().getIntersectedNode();
-        boolean mouseUpOnHub = checkParent(node, Hub.class);
+        boolean mouseUpOnHub = checkParent(node, Block.class);
 //        boolean mouseUpOnMenu = checkParent(node, SpiffyMenu.class);
         boolean mouseUpOnMenu = checkParent(node, RadialMenu.class);
         /**
@@ -421,7 +422,7 @@ public class Workspace extends AnchorPane {
             if (selectHub != null) {
                 getChildren().remove(selectHub);
             }
-            selectHub = new SelectHub(this);
+            selectHub = new SelectBlock(this);
             selectHub.setLayoutX(sceneToLocal(e.getX(), e.getY()).getX() - 20);
             selectHub.setLayoutY(sceneToLocal(e.getX(), e.getY()).getY() - 20);
             getChildren().add(selectHub);
@@ -433,7 +434,7 @@ public class Workspace extends AnchorPane {
 
                 // if mouse up in empty space unselect all hubs
                 if (!mouseUpOnHub && !mouseUpOnMenu && e.getButton() != MouseButton.SECONDARY) {
-                    for (Hub hub : selectedHubSet) {
+                    for (Block hub : selectedHubSet) {
                         hub.setSelected(false);
                     }
                     selectedHubSet.clear();
@@ -459,7 +460,7 @@ public class Workspace extends AnchorPane {
         switch (e.getCode()) {
             case DELETE:
 
-                for (Hub hub : selectedHubSet) {
+                for (Block hub : selectedHubSet) {
                     hub.delete();
                 }
 
@@ -512,7 +513,7 @@ public class Workspace extends AnchorPane {
                 if (e.isControlDown()) {
                     selectedHubSet.clear();
 
-                    for (Hub hub : hubSet) {
+                    for (Block hub : hubSet) {
                         hub.setSelected(true);
                         selectedHubSet.add(hub);
                     }
@@ -520,19 +521,6 @@ public class Workspace extends AnchorPane {
             }
             break;
         }
-    }
-
-    public static double clamp(double value, double min, double max) {
-
-        if (Double.compare(value, min) < 0) {
-            return min;
-        }
-
-        if (Double.compare(value, max) > 0) {
-            return max;
-        }
-
-        return value;
     }
 
     /**
@@ -549,6 +537,18 @@ public class Workspace extends AnchorPane {
         }
     }
 
+    public static double clamp(double value, double min, double max) {
+
+        if (Double.compare(value, min) < 0) {
+            return min;
+        }
+
+        if (Double.compare(value, max) > 0) {
+            return max;
+        }
+
+        return value;
+    }
 
     /**
      * Check if the node of the same type or if it is embedded in the type

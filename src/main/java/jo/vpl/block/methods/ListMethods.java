@@ -1,8 +1,8 @@
-package jo.vpl.hub.methods;
+package jo.vpl.block.methods;
 
 import java.util.ArrayList;
 import java.util.List;
-import jo.vpl.core.HubInfo;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
@@ -10,7 +10,7 @@ import jo.vpl.core.HubInfo;
  */
 public class ListMethods {
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.create",
             category = "Core",
             description = "")
@@ -21,7 +21,7 @@ public class ListMethods {
         return new ArrayList<T>();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.clear",
             category = "Core",
             description = "Removes all of the elements from this list. The list will be empty after this call returns.")
@@ -29,7 +29,7 @@ public class ListMethods {
         return new ArrayList<>();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.get",
             category = "Core",
             description = "Returns the element at the specified position in this list.")
@@ -37,7 +37,7 @@ public class ListMethods {
         return list.get(index);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.getFirst",
             category = "Core",
             description = "Gets the first element of this collection.")
@@ -45,7 +45,7 @@ public class ListMethods {
         return list.getFirst();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.getLast",
             category = "Core",
             description = "Gets the last element of this collection.")
@@ -53,7 +53,7 @@ public class ListMethods {
         return list.getLast();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.isEmpty",
             category = "Core",
             description = "Returns true if this list contains no elements.")
@@ -61,7 +61,7 @@ public class ListMethods {
         return list.isEmpty();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.reversed",
             category = "Core",
             description = "Returns a reverse-ordered view of this collection.")
@@ -69,7 +69,7 @@ public class ListMethods {
         return list.reversed();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.size",
             category = "Core",
             description = "Returns the number of elements in this list.")
@@ -78,7 +78,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.remove",
             category = "Core",
             description = "Removes the element at the specified position in this list. ")
@@ -89,7 +89,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.removeFirst",
             category = "Core",
             description = "Removes the first element of this collection.")
@@ -100,7 +100,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.removeLast",
             category = "Core",
             description = "Removes the last element of this collection.")
@@ -110,7 +110,7 @@ public class ListMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.flatten",
             category = "Core",
             description = "Removes all nested lists and adds all leaf items to the root list.")
@@ -131,7 +131,7 @@ public class ListMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.add",
             category = "Core",
             description = "Appends the specified element to the end of this list.")
@@ -145,7 +145,7 @@ public class ListMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.addFirst",
             category = "Core",
             description = "Adds an element as the first element of this collection.")
@@ -155,7 +155,7 @@ public class ListMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.addLast",
             category = "Core",
             description = "Adds an element as the last element of this collection.")
@@ -165,7 +165,7 @@ public class ListMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "List.addAll",
             category = "Core",
             description = "Inserts all of the elements in the specified collection into this list at the specified position. If no index is specified, all items are appended to the end of the list.")

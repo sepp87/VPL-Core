@@ -1,27 +1,27 @@
-package jo.vpl.hub;
+package jo.vpl.block;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import jo.vpl.core.Hub;
+import jo.vpl.core.Block;
 import jo.vpl.core.Workspace;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
-import jo.vpl.core.HubInfo;
 import jo.vpl.core.Port;
 import jo.vpl.util.IconType;
 import jo.vpl.xml.HubTag;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@HubInfo(
+@BlockInfo(
         identifier = "Util.Template",
         category = "General",
         description = "A template hub for further customization",
         tags = {"template", "dummy", "example"})
-public class TemplateHub extends Hub {
+public class TemplateHub extends Block {
 
     public TemplateHub(Workspace hostCanvas) {
         super(hostCanvas);
@@ -114,7 +114,7 @@ public class TemplateHub extends Hub {
     }
 
     @Override
-    public Hub clone() {
+    public Block clone() {
         TemplateHub hub = new TemplateHub(hostCanvas);
         //Specify further copy statements here
         return hub;

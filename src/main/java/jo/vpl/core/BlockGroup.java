@@ -20,14 +20,14 @@ import javafx.scene.paint.Color;
  *
  * @author JoostMeulenkamp
  */
-public class HubGroup extends VplElement {
+public class BlockGroup extends VplElement {
 
     public int id;
 
     private static int counter;
-    public ObservableSet<Hub> childHubs;
+    public ObservableSet<Block> childHubs;
 
-    public HubGroup(Workspace vplControl) {
+    public BlockGroup(Workspace vplControl) {
         super(vplControl);
 
         getStyleClass().add("hub-group");
@@ -47,7 +47,7 @@ public class HubGroup extends VplElement {
 //        SetZIndex(Border, 0);
     }
 
-    public void setChildHubs(ObservableSet<Hub> hubSet) {
+    public void setChildHubs(ObservableSet<Block> hubSet) {
         childHubs.addAll(hubSet);
 //        childHubs = hubSet;
         childHubs.addListener(this::handle_CollectionChange);
@@ -56,7 +56,7 @@ public class HubGroup extends VplElement {
     }
 
     private void handle_MousePress(MouseEvent e) {
-        for (Hub hub : childHubs) {
+        for (Block hub : childHubs) {
 
             hub.setOnMouseDragged(hub::handle_MouseDrag);
 
@@ -88,11 +88,11 @@ public class HubGroup extends VplElement {
     private void handle_CollectionChange(SetChangeListener.Change change) {
 
         if (change.wasAdded()) {
-            Hub hub = (Hub) change.getElementAdded();
+            Block hub = (Block) change.getElementAdded();
             hub.eventBlaster.add("deleted", this::hub_DeletedInHubSet);
             hub.eventBlaster.add(this::hub_PropertyChanged);
         } else {
-            Hub hub = (Hub) change.getElementRemoved();
+            Block hub = (Block) change.getElementRemoved();
             hub.eventBlaster.remove("deleted", this::hub_DeletedInHubSet);
             hub.eventBlaster.remove(this::hub_PropertyChanged);
         }
@@ -106,21 +106,21 @@ public class HubGroup extends VplElement {
     }
 
     private void observeAllChildHub() {
-        for (Hub hub : childHubs) {
+        for (Block hub : childHubs) {
             hub.eventBlaster.add("deleted", this::hub_DeletedInHubSet);
             hub.eventBlaster.add(this::hub_PropertyChanged);
         }
     }
 
     private void unObserveAllChildHub() {
-        for (Hub hub : childHubs) {
+        for (Block hub : childHubs) {
             hub.eventBlaster.remove("deleted", this::hub_DeletedInHubSet);
             hub.eventBlaster.remove(this::hub_PropertyChanged);
         }
     }
 
     private void hub_DeletedInHubSet(PropertyChangeEvent e) {
-        Hub hub = (Hub) e.getSource();
+        Block hub = (Block) e.getSource();
         if (hub == null) {
             return;
         }
@@ -141,7 +141,7 @@ public class HubGroup extends VplElement {
         double maxX = -Double.MAX_VALUE;
         double maxY = -Double.MAX_VALUE;
 
-        for (Hub hub : childHubs) {
+        for (Block hub : childHubs) {
 
             if (hub.getLayoutX() < minX) {
                 minX = hub.getLayoutX();

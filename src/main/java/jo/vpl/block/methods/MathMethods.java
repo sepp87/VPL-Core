@@ -1,6 +1,6 @@
-package jo.vpl.hub.methods;
+package jo.vpl.block.methods;
 
-import jo.vpl.core.HubInfo;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
@@ -8,7 +8,7 @@ import jo.vpl.core.HubInfo;
  */
 public class MathMethods {
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.add",
             category = "Core",
             description = "")
@@ -23,7 +23,7 @@ public class MathMethods {
         return a.doubleValue() + b.doubleValue();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.substract",
             category = "Core",
             description = "")
@@ -38,7 +38,7 @@ public class MathMethods {
         return a.doubleValue() - b.doubleValue();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.multiply",
             category = "Core",
             description = "")
@@ -53,7 +53,7 @@ public class MathMethods {
         return a.doubleValue() * b.doubleValue();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.divide",
             category = "Core",
             description = "")
@@ -61,7 +61,7 @@ public class MathMethods {
         return a.doubleValue() / b.doubleValue();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.remainder",
             category = "Core",
             description = "")
@@ -76,7 +76,7 @@ public class MathMethods {
         return a.doubleValue() % b.doubleValue();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.max",
             category = "Core",
             description = "")
@@ -91,7 +91,7 @@ public class MathMethods {
         return Math.max((double) a, (double) b);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.min",
             category = "Core",
             description = "")
@@ -106,7 +106,7 @@ public class MathMethods {
         return Math.min((double) a, (double) b);
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Math.abs",
             category = "Core",
             description = "")

@@ -1,4 +1,4 @@
-package jo.vpl.hub;
+package jo.vpl.block;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -10,24 +10,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jo.vpl.core.Hub;
+import jo.vpl.core.Block;
 import jo.vpl.core.Workspace;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
-import jo.vpl.core.HubInfo;
 import jo.vpl.core.Port;
 import jo.vpl.xml.HubTag;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@HubInfo(
+@BlockInfo(
         identifier = "Core.ReflectionHub",
         category = "Core",
         description = "A generic hub used to convert static methods and fields to hubs",
         tags = {"core", "reflection", "hub"})
-public class ReflectionHub extends Hub {
+public class ReflectionHub extends Block {
 
     public final String category;
     public final String description;
@@ -248,7 +248,7 @@ public class ReflectionHub extends Hub {
     }
 
     @Override
-    public Hub clone() {
+    public Block clone() {
         TemplateHub hub = new TemplateHub(hostCanvas);
         //Specify further copy statements here
         return hub;

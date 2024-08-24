@@ -14,11 +14,11 @@ import javafx.scene.layout.*;
  */
 public class VplElement extends GridPane {
 
-    public HubButton autoCheckBox;
-    public HubButton binButton;
-    public HubLabel captionLabel;
-    public HubButton questionButton;
-    public HubButton resizeButton;
+    public BlockButton autoCheckBox;
+    public BlockButton binButton;
+    public BlockLabel captionLabel;
+    public BlockButton questionButton;
+    public BlockButton resizeButton;
     public HBox menuBox;
 
     public Workspace hostCanvas;
@@ -51,20 +51,20 @@ public class VplElement extends GridPane {
 //        setOnMouseEntered(this::handle_MouseEnter);
 //        setOnMouseExited(this::handle_MouseExit);
 
-        if (this instanceof SelectHub) {
+        if (this instanceof SelectBlock) {
             return;
         }
 
         menuBox = new HBox(5);
 
-        captionLabel = new HubLabel(menuBox);
+        captionLabel = new BlockLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.textProperty().bindBidirectional(name);
-        questionButton = new HubButton(IconType.FA_QUESTION_CIRCLE);
-        resizeButton = new HubButton(IconType.FA_PLUS_SQUARE_O);
-        binButton = new HubButton(IconType.FA_MINUS_CIRCLE);
+        questionButton = new BlockButton(IconType.FA_QUESTION_CIRCLE);
+        resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
+        binButton = new BlockButton(IconType.FA_MINUS_CIRCLE);
         binButton.setOnMouseClicked(this::binButton_MouseClick);
-        autoCheckBox = new HubButton(IconType.FA_CHECK_CIRCLE);
+        autoCheckBox = new BlockButton(IconType.FA_CHECK_CIRCLE);
         autoCheckBox.setClickedType(IconType.FA_CIRCLE_O);
 
         captionLabel.setVisible(false);
@@ -96,7 +96,7 @@ public class VplElement extends GridPane {
         @Override
         public void handle(MouseEvent e) {
             //Point to this by calling VPL Element
-            if (VplElement.this instanceof SelectHub) {
+            if (VplElement.this instanceof SelectBlock) {
                 return;
             }
 
@@ -111,7 +111,7 @@ public class VplElement extends GridPane {
 
         @Override
         public void handle(MouseEvent e) {
-            if (VplElement.this instanceof SelectHub) {
+            if (VplElement.this instanceof SelectBlock) {
                 return;
             }
 

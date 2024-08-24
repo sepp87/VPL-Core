@@ -15,14 +15,14 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
-import jo.vpl.hub.ReflectionHub;
+import jo.vpl.block.ReflectionHub;
 import jo.vpl.util.IconType;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class SelectHub extends Hub {
+public class SelectBlock extends Block {
 
     private ListView<String> listView;
     private TextField searchField;
@@ -33,7 +33,7 @@ public class SelectHub extends Hub {
      *
      * @param hostCanvas
      */
-    public SelectHub(Workspace hostCanvas) {
+    public SelectBlock(Workspace hostCanvas) {
         super(hostCanvas);
 
         searchField = new TextField();
@@ -50,7 +50,7 @@ public class SelectHub extends Hub {
 //        listView.setPrefHeight(127);
         listView.setPrefHeight(265);
 
-        listView.setItems(HubLoader.HUB_TYPE_LIST);
+        listView.setItems(BlockLoader.HUB_TYPE_LIST);
 
         this.setOnMouseExited(this::selectHub_MouseExit);
         this.setOnMouseDragExited(this::selectHub_MouseExit);
@@ -119,7 +119,7 @@ public class SelectHub extends Hub {
              *
              * OPTION
              */
-            listView.setItems(HubLoader.HUB_TYPE_LIST.stream()
+            listView.setItems(BlockLoader.HUB_TYPE_LIST.stream()
                     .filter(x -> x.matches(regex))
                     .collect(toCollection(FXCollections::observableArrayList)));
 
@@ -128,7 +128,7 @@ public class SelectHub extends Hub {
             }
 
         } else {
-            listView.setItems(HubLoader.HUB_TYPE_LIST);
+            listView.setItems(BlockLoader.HUB_TYPE_LIST);
         }
     }
 
@@ -184,12 +184,12 @@ public class SelectHub extends Hub {
             return;
         }
 
-        Object type = HubLoader.HUB_LIBRARY.get(selectedType);
+        Object type = BlockLoader.HUB_LIBRARY.get(selectedType);
 
         if (type.getClass().equals(Class.class)) {
             try {
                 Class<?> cType = (Class<?>) type;
-                Hub hub = (Hub) cType.getConstructor(Workspace.class).newInstance(hostCanvas);
+                Block hub = (Block) cType.getConstructor(Workspace.class).newInstance(hostCanvas);
 
                 hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
                 hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
@@ -199,13 +199,13 @@ public class SelectHub extends Hub {
                 removed = true;
                 hostCanvas.getChildren().remove(this);
             } catch (Exception e) {
-                Logger.getLogger(SelectHub.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(SelectBlock.class.getName()).log(Level.SEVERE, null, e);
             }
 
         } else if (type.getClass().equals(Method.class)) {
             try {
                 Method mType = (Method) type;
-                HubInfo info = mType.getAnnotation(HubInfo.class);
+                BlockInfo info = mType.getAnnotation(BlockInfo.class);
                 ReflectionHub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
 
                 Class<?> returnType = mType.getReturnType();
@@ -258,7 +258,7 @@ public class SelectHub extends Hub {
                 removed = true;
                 hostCanvas.getChildren().remove(this);
             } catch (Exception e) {
-                Logger.getLogger(SelectHub.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(SelectBlock.class.getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -299,7 +299,7 @@ public class SelectHub extends Hub {
     }
 
     @Override
-    public Hub clone() {
+    public Block clone() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

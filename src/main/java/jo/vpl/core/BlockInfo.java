@@ -12,7 +12,7 @@ import jo.vpl.util.IconType;
  */
 @Target({ElementType.TYPE, ElementType.METHOD}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HubInfo {
+public @interface BlockInfo {
 
     String identifier() default "";
 

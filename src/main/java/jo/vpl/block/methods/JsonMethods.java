@@ -1,4 +1,4 @@
-package jo.vpl.hub.methods;
+package jo.vpl.block.methods;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import jo.vpl.core.HubInfo;
+import jo.vpl.core.BlockInfo;
 
 /**
  *
@@ -19,7 +19,7 @@ public class JsonMethods {
 
     public static final JsonParser PARSER = new JsonParser();
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
@@ -81,7 +81,7 @@ public class JsonMethods {
         return result;
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Json.getKey",
             category = "Core",
             description = "Returns the element with the specified key in this JSON object.")
@@ -89,7 +89,7 @@ public class JsonMethods {
         return PARSER.parse(json).getAsJsonObject().get(key).toString();
     }
 
-    @HubInfo(
+    @BlockInfo(
             identifier = "Json.getIndex",
             category = "Core",
             description = "Returns the element as string at the specified position in this JSON array.")

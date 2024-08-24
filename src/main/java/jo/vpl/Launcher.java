@@ -1,21 +1,26 @@
 package jo.vpl;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jo.vpl.core.HubLoader;
+import jo.vpl.core.BlockLoader;
 import jo.vpl.core.Util;
-import jo.vpl.hub.methods.JsonMethods;
-import jo.vpl.hub.methods.MathMethods;
+import jo.vpl.block.methods.JsonMethods;
 
-// Copy reflection hub
 // List methods output cant be used in further operations - TODO TEST FIX
-// BUG where hub is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new hub
-// BUG when opening a file and cancelling the action, everything is removed as if a new file was created
-// IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
-// IMPROVEMENT select hub should stay the same size regardless of the zoom (probably needs to be on a different pane)
+// 1 IMPROVEMENT rename hubs to blocks
+// 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
+// 2 IMPROVEMENT create elaborate tests TBD what to test
+// 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
+// 2 IMPROVEMENT Copy reflection hub
+// 2 IMPROVEMENT refactor select hub so the hub creation is delegated to a hub factory
+// 2 IMPROVEMENT improve package structure e.g. hub stuff put together, workspace stuff together, base input hubs in vpl-core, etc.
+// 3 BUG where hub is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new hub
+// 3 BUG when opening a file and cancelling the action, everything is removed as if a new file was created
+// 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
+// 3 IMPROVEMENT select hub should stay the same size regardless of the zoom (probably needs to be on a different pane)
+// 3 IMPROVEMENT isolate RadialMenu to a standalone library
+// 3 IMPROVEMENT remove external OBJ code, due to enforcing unnecessary GPL license
+// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
+// 3 IMPROVEMENT sift through jo.vpl.util package and consolidate
+
 /**
  *
  * @author JoostMeulenkamp
@@ -25,9 +30,9 @@ public class Launcher {
     public static void main(String[] args) {
 
         //Load all Hub types
-        HubLoader.loadInternalHubs();
-        HubLoader.loadExternalHubs();
-        HubLoader.loadStaticMethodsAsHubs();
+        BlockLoader.loadInternalBlocks();
+        BlockLoader.loadExternalBlocks();
+        BlockLoader.loadStaticMethodsAsBlocks();
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();

@@ -44,9 +44,9 @@ public class GraphLoader {
                     != null) {
                 for (HubTag hubTag : hubTagList) {
                     errorMessage = "Hub type " + hubTag.getType() + " not found.";
-                    Class type = HubLoader.HUB_TYPE_MAP.get(hubTag.getType());
+                    Class type = BlockLoader.HUB_TYPE_MAP.get(hubTag.getType());
 //                    Class type = Class.forName(hubTag.getType());
-                    Hub hub = (Hub) type.getConstructor(Workspace.class).newInstance(workspace);
+                    Block hub = (Block) type.getConstructor(Workspace.class).newInstance(workspace);
                     hub.deserialize(hubTag);
                     workspace.hubSet.add(hub);
                     workspace.getChildren().add(hub);
@@ -64,9 +64,9 @@ public class GraphLoader {
                     UUID endHubUUID = UUID.fromString(connectionTag.getEndHub());
                     int endPortIndex = connectionTag.getEndIndex();
 
-                    Hub startHub = null;
-                    Hub endHub = null;
-                    for (Hub hub : workspace.hubSet) {
+                    Block startHub = null;
+                    Block endHub = null;
+                    for (Block hub : workspace.hubSet) {
                         if (hub.uuid.compareTo(startHubUUID) == 0) {
                             startHub = hub;
                         } else if (hub.uuid.compareTo(endHubUUID) == 0) {

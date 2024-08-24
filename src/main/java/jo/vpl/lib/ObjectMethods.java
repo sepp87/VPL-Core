@@ -1,4 +1,4 @@
-package jo.vpl.block.methods;
+package jo.vpl.lib;
 
 import jo.vpl.core.BlockInfo;
 

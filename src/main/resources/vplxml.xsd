@@ -3,8 +3,8 @@
             elementFormDefault="qualified"
             targetNamespace="http://www.vpl.jo/xml"
             xmlns:vpl="http://www.vpl.jo/xml"
-            xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
-            jxb:version="2.0">    
+            xmlns:jxb="https://jakarta.ee/xml/ns/jaxb" 
+            jxb:version="3.0">    
     
     <!-- definition of simple elements -->
     <xsd:simpleType name="String">
@@ -20,14 +20,15 @@
     </xsd:simpleType>
 
     <!-- definition of complex elements -->
-    <xsd:complexType name="HubsTag">
+    <xsd:complexType name="BlocksTag">
         <xsd:sequence>
-            <xsd:element name="Hub" maxOccurs="unbounded" type="vpl:HubTag"/>
+            <xsd:element name="Block" maxOccurs="unbounded" type="vpl:BlockTag"/>
         </xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="HubTag">
+    <xsd:complexType name="BlockTag">
         <xsd:attribute name="Type" type="vpl:String" use="required"/>
+        <xsd:attribute name="Method" type="vpl:String" use="optional"/>
         <xsd:attribute name="UUID" type="vpl:String" use="required"/>
         <xsd:attribute name="X" type="vpl:Double" use="required"/>
         <xsd:attribute name="Y" type="vpl:Double" use="required"/>    
@@ -41,9 +42,9 @@
     </xsd:complexType>
     
     <xsd:complexType name="ConnectionTag">
-        <xsd:attribute name="StartHub" type="vpl:String" use="required"/>
+        <xsd:attribute name="StartBlock" type="vpl:String" use="required"/>
         <xsd:attribute name="StartIndex" type="vpl:Integer" use="required"/>
-        <xsd:attribute name="EndHub" type="vpl:String" use="required"/>    
+        <xsd:attribute name="EndBlock" type="vpl:String" use="required"/>    
         <xsd:attribute name="EndIndex" type="vpl:Integer" use="required"/> 
     </xsd:complexType>
     
@@ -60,7 +61,7 @@
 
     <xsd:complexType name="DocumentTag">
         <xsd:sequence>
-            <xsd:element name="Hubs" maxOccurs="1" type="vpl:HubsTag"/>
+            <xsd:element name="Blocks" maxOccurs="1" type="vpl:BlocksTag"/>
             <xsd:element name="Connections" maxOccurs="1" type="vpl:ConnectionsTag"/>
             <xsd:element name="Groups" maxOccurs="1" type="vpl:GroupsTag"/>
         </xsd:sequence>

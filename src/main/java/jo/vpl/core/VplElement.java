@@ -45,11 +45,9 @@ public class VplElement extends GridPane {
         eventBlaster.set("deleted", deleted);
 
         //Event handlers replace anonymous handlers otherwise they conflict with the
-        //ones created within a Hub, which leads to missing VPL Element buttons
+        //ones created within a block, which leads to missing VPL Element buttons
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
         this.addEventFilter(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
-//        setOnMouseEntered(this::handle_MouseEnter);
-//        setOnMouseExited(this::handle_MouseExit);
 
         if (this instanceof SelectBlock) {
             return;

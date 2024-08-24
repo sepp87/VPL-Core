@@ -8,7 +8,7 @@ import javafx.geometry.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
-import jo.vpl.xml.HubTag;
+import jo.vpl.xml.BlockTag;
 import jo.vpl.util.IconType;
 
 /**
@@ -37,10 +37,8 @@ public abstract class Block extends VplElement {
         outPorts = new ArrayList<>();
         controls = new ArrayList<>();
 
-        //Content Grid is the actual hub box without the buttons on top etc.
+        //Content Grid is the actual block box without the buttons on top etc.
         contentGrid = new GridPane();
-//        contentGrid.getStyleClass().add("hub");
-
         contentGrid.setAlignment(Pos.CENTER);
         contentGrid.addEventFilter(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
         contentGrid.addEventFilter(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
@@ -139,50 +137,50 @@ public abstract class Block extends VplElement {
     }
 
     /**
-     * Event handler for selection of hubs and possible followed up dragging of
+     * Event handler for selection of blocks and possible followed up dragging of
      * them by the user.
      *
      * @param e
      */
     private void handle_MousePress(MouseEvent e) {
 
-        if (hostCanvas.selectedHubSet.contains(this)) {
+        if (hostCanvas.selectedBlockSet.contains(this)) {
             if (e.isControlDown()) {
                 // Remove this node from selection
-                hostCanvas.selectedHubSet.remove(this);
+                hostCanvas.selectedBlockSet.remove(this);
                 setSelected(false);
             } else {
                 // Subscribe multiselection to MouseMove event
-                for (Block hub : hostCanvas.selectedHubSet) {
-                    hub.setOnMouseDragged(hub::handle_MouseDrag);
+                for (Block block : hostCanvas.selectedBlockSet) {
+                    block.setOnMouseDragged(block::handle_MouseDrag);
 
-                    hub.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+                    block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
                 }
             }
         } else {
             if (e.isControlDown()) {
                 // add this node to selection
-                hostCanvas.selectedHubSet.add(this);
+                hostCanvas.selectedBlockSet.add(this);
 
                 setSelected(true);
             } else {
-                // Deselect all hubs that are selected
-                for (Block hub : hostCanvas.selectedHubSet) {
-                    hub.setSelected(false);
+                // Deselect all blocks that are selected
+                for (Block block : hostCanvas.selectedBlockSet) {
+                    block.setSelected(false);
                 }
 
-                hostCanvas.selectedHubSet.clear();
-                hostCanvas.selectedHubSet.add(this);
-                // Select this hub as selected
+                hostCanvas.selectedBlockSet.clear();
+                hostCanvas.selectedBlockSet.add(this);
+                // Select this block as selected
                 setSelected(true);
-                for (Block hub : hostCanvas.selectedHubSet) {
-                    //Add mouse dragged event handler so the hub will move
+                for (Block block : hostCanvas.selectedBlockSet) {
+                    //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
-                    this.setOnMouseDragged(hub::handle_MouseDrag);
+                    this.setOnMouseDragged(block::handle_MouseDrag);
 
                     //Get mouse position so there is a value to calculate 
                     //in the mouse dragged event
-                    hub.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+                    block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
                 }
             }
         }
@@ -196,35 +194,35 @@ public abstract class Block extends VplElement {
         double deltaX = (e.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (e.getSceneY() - oldMousePosition.getY()) / scale;
 
-        for (Block hub : hostCanvas.selectedHubSet) {
+        for (Block block : hostCanvas.selectedBlockSet) {
 
-            hub.setLayoutX(hub.getLayoutX() + deltaX);
-            hub.setLayoutY(hub.getLayoutY() + deltaY);
+            block.setLayoutX(block.getLayoutX() + deltaX);
+            block.setLayoutY(block.getLayoutY() + deltaY);
         }
 
         oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
     }
 
     /**
-     * Add a port to the hub, multiple connections are not allowed by default
+     * Add a port to the block, multiple connections are not allowed by default
      *
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
      * @return the Port
      */
-    public Port addInPortToHub(String name, Class type) {
-        return addInPortToHub(name, type, false);
+    public Port addInPortToBlock(String name, Class type) {
+        return Block.this.addInPortToBlock(name, type, false);
     }
 
     /**
-     * Add a port to the hub
+     * Add a port to the block
      *
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
      * @param multiDockAllowed if multiple connections are allowed
      * @return the Port
      */
-    public Port addInPortToHub(String name, Class type, boolean multiDockAllowed) {
+    public Port addInPortToBlock(String name, Class type, boolean multiDockAllowed) {
         Port port = new Port(name, this, PortTypes.IN, type);
         port.multiDockAllowed = multiDockAllowed;
         inPortBox.getChildren().add(port);
@@ -234,12 +232,12 @@ public abstract class Block extends VplElement {
     }
 
     /**
-     * Add a port to the hub
+     * Add a port to the block
      *
      * @param port the port to add
      * @return the Port
      */
-    public Port addInPortToHub(Port port) {
+    public Port addInPortToBlock(Port port) {
         inPortBox.getChildren().add(port.index, port);
         port.dataProperty().addListener(port_DataChangeListener);
         inPorts.add(port.index, port);
@@ -247,11 +245,11 @@ public abstract class Block extends VplElement {
     }
 
     /**
-     * Remove a port from the hub
+     * Remove a port from the block
      *
      * @param port the port to remove
      */
-    public void removeInPortFromHub(Port port) {
+    public void removeInPortFromBlock(Port port) {
         for (Connection connector : port.connectedConnections) {
             connector.removeFromCanvas();
         }
@@ -282,13 +280,13 @@ public abstract class Block extends VplElement {
     };
 
     /**
-     * Add a port to the hub, multiple outgoing connections are allowed
+     * Add a port to the block, multiple outgoing connections are allowed
      *
      * @param name the string that shows up as comment
      * @param type the dataProperty type it will be handling
      * @return the Port
      */
-    public Port addOutPortToHub(String name, Class type) {
+    public Port addOutPortToBlock(String name, Class type) {
         Port port = new Port(name, this, PortTypes.OUT, type);
         port.multiDockAllowed = true;
         outPortBox.getChildren().add(port);
@@ -297,12 +295,12 @@ public abstract class Block extends VplElement {
     }
 
     /**
-     * Add control to the hub. A control extends region so it can be a layout,
+     * Add control to the block. A control extends region so it can be a layout,
      * but also a simple control like a button.
      *
      * @param control the control to add
      */
-    public void addControlToHub(Region control) {
+    public void addControlToBlock(Region control) {
         mainContentGrid.add(control, 0, mainContentGrid.getChildren().size());
         RowConstraints row = new RowConstraints();
         row.setVgrow(Priority.ALWAYS);
@@ -316,16 +314,16 @@ public abstract class Block extends VplElement {
     }
 
     /**
-     * Remove this hub from the host canvas
+     * Remove this block from the host canvas
      */
     public void delete() {
-        hostCanvas.hubSet.remove(this);
+        hostCanvas.blockSet.remove(this);
         super.delete();
     }
 
     /**
      * Called when a new connection is incoming. Ideal for forwarding a data
-     * type to an out port e.g. hubs operating on collections. Its removed
+     * type to an out port e.g. blocks operating on collections. Its removed
      * counterpart is used to set the data type of the out port back to its
      * initial state. Only called when multi dock is not allowed!
      *
@@ -338,7 +336,7 @@ public abstract class Block extends VplElement {
 
     /**
      * Called when an incoming connection is removed. Ideal for forwarding a
-     * data type to an out port e.g. hubs operating on collections. Its removed
+     * data type to an out port e.g. blocks operating on collections. Its removed
      * counterpart is used to set the data type of the out port back to its
      * initial state. Only called when multi dock is not allowed!
      *
@@ -352,7 +350,7 @@ public abstract class Block extends VplElement {
 
     protected abstract Block clone();
 
-    public void serialize(HubTag xmlTag) {
+    public void serialize(BlockTag xmlTag) {
 //        xmlTag.setType(getClass().getName());
         xmlTag.setType(this.getClass().getAnnotation(BlockInfo.class).identifier());
         xmlTag.setUUID(uuid.toString());
@@ -360,19 +358,19 @@ public abstract class Block extends VplElement {
         xmlTag.setY(getLayoutY());
     }
 
-    public void deserialize(HubTag xmlTag) {
+    public void deserialize(BlockTag xmlTag) {
         uuid = UUID.fromString(xmlTag.getUUID());
         setLayoutX(xmlTag.getX());
         setLayoutY(xmlTag.getY());
-        List<Block> hubs = new ArrayList<>();
+        List<Block> blocks = new ArrayList<>();
     }
 
-    public <type extends Block> void testList(type... hubs) {
+    public <type extends Block> void testList(type... blocks) {
 
     }
 
-    public static Bounds getBoundingBoxOfHubs(Collection<? extends Block> hubs) {
-        if (hubs == null || hubs.isEmpty()) {
+    public static Bounds getBoundingBoxOfBlocks(Collection<? extends Block> blocks) {
+        if (blocks == null || blocks.isEmpty()) {
             return null;
         }
         double minLeft = Double.MAX_VALUE;
@@ -380,19 +378,19 @@ public abstract class Block extends VplElement {
         double maxLeft = Double.MIN_VALUE;
         double maxTop = Double.MIN_VALUE;
 
-        for (Block hub : hubs) {
-            if (hub.getLayoutX() < minLeft) {
-                minLeft = hub.getLayoutX();
+        for (Block block : blocks) {
+            if (block.getLayoutX() < minLeft) {
+                minLeft = block.getLayoutX();
             }
-            if (hub.getLayoutY() < minTop) {
-                minTop = hub.getLayoutY();
+            if (block.getLayoutY() < minTop) {
+                minTop = block.getLayoutY();
             }
 
-            if ((hub.getLayoutX() + hub.getWidth()) > maxLeft) {
-                maxLeft = hub.getLayoutX() + hub.getWidth();
+            if ((block.getLayoutX() + block.getWidth()) > maxLeft) {
+                maxLeft = block.getLayoutX() + block.getWidth();
             }
-            if ((hub.getLayoutY() + hub.getHeight()) > maxTop) {
-                maxTop = hub.getLayoutY() + hub.getHeight();
+            if ((block.getLayoutY() + block.getHeight()) > maxTop) {
+                maxTop = block.getLayoutY() + block.getHeight();
             }
         }
 

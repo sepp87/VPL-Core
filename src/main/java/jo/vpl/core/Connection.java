@@ -46,9 +46,9 @@ public class Connection {
         startPort.connectedConnections.add(this);
         endPort.connectedConnections.add(this);
 
-        //A single incoming connection was made, handle it in the hub
+        //A single incoming connection was made, handle it in the block
         //to forward incoming data type to out port e.g. in getFirstItemOfList
-        endPort.parentHub.handle_IncomingConnectionAdded(endPort, startPort);
+        endPort.parentBlock.handle_IncomingConnectionAdded(endPort, startPort);
 
         endPort.calculateData(startPort.getData());
 
@@ -70,8 +70,8 @@ public class Connection {
         endPort.centerXProperty.addListener(coordinatesChangeListener);
         endPort.centerYProperty.addListener(coordinatesChangeListener);
 
-        startPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
-        endPort.parentHub.deleted.addListener(hub_DeletedInHubSetListener);
+        startPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
+        endPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
     }
 
     private ChangeListener coordinatesChangeListener = new ChangeListener() {
@@ -122,15 +122,15 @@ public class Connection {
         hostCanvas.getChildren().remove(curve);
         hostCanvas.connectionSet.remove(this);
         if (!endPort.multiDockAllowed) {
-            endPort.parentHub.handle_IncomingConnectionRemoved(endPort);
+            endPort.parentBlock.handle_IncomingConnectionRemoved(endPort);
         }
     }
 
     public void serialize(ConnectionTag xmlTag) {
-        xmlTag.setStartHub(startPort.parentHub.uuid.toString());
-        xmlTag.setStartIndex(startPort.parentHub.outPorts.indexOf(startPort));
-        xmlTag.setEndHub(endPort.parentHub.uuid.toString());
-        xmlTag.setEndIndex(endPort.parentHub.inPorts.indexOf(endPort));
+        xmlTag.setStartBlock(startPort.parentBlock.uuid.toString());
+        xmlTag.setStartIndex(startPort.parentBlock.outPorts.indexOf(startPort));
+        xmlTag.setEndBlock(endPort.parentBlock.uuid.toString());
+        xmlTag.setEndIndex(endPort.parentBlock.inPorts.indexOf(endPort));
     }
 
     PropertyChangeListener origin_PropertyChangeListener = new PropertyChangeListener() {
@@ -141,7 +141,7 @@ public class Connection {
         }
     };
 
-    ChangeListener hub_DeletedInHubSetListener = new ChangeListener() {
+    ChangeListener block_DeletedInBlockSetListener = new ChangeListener() {
 
         @Override
         public void changed(ObservableValue arg0, Object arg1, Object arg2) {
@@ -168,8 +168,8 @@ public class Connection {
 
         startPort.dataProperty().removeListener(endPort.startPort_DataChangeListener);
         //Remove listeners although with object references gone they ought to be collected automatically
-        startPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
-        endPort.parentHub.deleted.removeListener(hub_DeletedInHubSetListener);
+        startPort.parentBlock.deleted.removeListener(block_DeletedInBlockSetListener);
+        endPort.parentBlock.deleted.removeListener(block_DeletedInBlockSetListener);
 
         // new listeners
         startPort.centerXProperty.removeListener(coordinatesChangeListener);

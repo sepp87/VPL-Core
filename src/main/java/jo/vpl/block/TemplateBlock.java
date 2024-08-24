@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import jo.vpl.core.Port;
 import jo.vpl.util.IconType;
-import jo.vpl.xml.HubTag;
+import jo.vpl.xml.BlockTag;
 import jo.vpl.core.BlockInfo;
 
 /**
@@ -19,21 +19,21 @@ import jo.vpl.core.BlockInfo;
 @BlockInfo(
         identifier = "Util.Template",
         category = "General",
-        description = "A template hub for further customization",
+        description = "A template block for further customization",
         tags = {"template", "dummy", "example"})
-public class TemplateHub extends Block {
+public class TemplateBlock extends Block {
 
-    public TemplateHub(Workspace hostCanvas) {
+    public TemplateBlock(Workspace hostCanvas) {
         super(hostCanvas);
 
         setName("Template");
 
-        addInPortToHub("Object", Object.class);
+        addInPortToBlock("Object", Object.class);
 
-        addOutPortToHub("String", String.class);
+        addOutPortToBlock("String", String.class);
 
         Label label = getAwesomeIcon(IconType.FA_PAPER_PLANE);
-        addControlToHub(label);
+        addControlToBlock(label);
     }
 
     /**
@@ -98,14 +98,14 @@ public class TemplateHub extends Block {
     }
 
     @Override
-    public void serialize(HubTag xmlTag) {
+    public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         //Retrieval of custom attribute
         xmlTag.getOtherAttributes().put(QName.valueOf("key"), "value");
     }
 
     @Override
-    public void deserialize(HubTag xmlTag) {
+    public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         //Retrieval of custom attribute
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("key"));
@@ -115,8 +115,8 @@ public class TemplateHub extends Block {
 
     @Override
     public Block clone() {
-        TemplateHub hub = new TemplateHub(hostCanvas);
+        TemplateBlock block = new TemplateBlock(hostCanvas);
         //Specify further copy statements here
-        return hub;
+        return block;
     }
 }

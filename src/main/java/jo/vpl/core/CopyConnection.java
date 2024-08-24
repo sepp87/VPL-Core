@@ -6,11 +6,11 @@ package jo.vpl.core;
  */
 public class CopyConnection {
 
-    public Block oldHub;
-    public Block newHub;
+    public Block oldBlock;
+    public Block newBlock;
     
-    public CopyConnection(Block oldHub, Block newHub){
-        this.oldHub = oldHub;
-        this.newHub = newHub;
+    public CopyConnection(Block oldBlock, Block newBlock){
+        this.oldBlock = oldBlock;
+        this.newBlock = newBlock;
     }
 }

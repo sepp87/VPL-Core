@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import jo.vpl.xml.ConnectionTag;
 import jo.vpl.xml.ConnectionsTag;
 import jo.vpl.xml.DocumentTag;
-import jo.vpl.xml.HubTag;
-import jo.vpl.xml.HubsTag;
+import jo.vpl.xml.BlockTag;
+import jo.vpl.xml.BlocksTag;
 import jo.vpl.xml.ObjectFactory;
 
 /**
@@ -25,12 +25,12 @@ public class GraphSaver {
 
             ObjectFactory factory = new ObjectFactory();
 
-            HubsTag hubsTag = factory.createHubsTag();
+            BlocksTag blocksTag = factory.createBlocksTag();
 
-            for (Block hub : workspace.hubSet) {
-                HubTag hubTag = factory.createHubTag();
-                hub.serialize(hubTag);
-                hubsTag.getHub().add(hubTag);
+            for (Block block : workspace.blockSet) {
+                BlockTag blockTag = factory.createBlockTag();
+                block.serialize(blockTag);
+                blocksTag.getBlock().add(blockTag);
             }
 
             ConnectionsTag connectionsTag = factory.createConnectionsTag();
@@ -46,7 +46,7 @@ public class GraphSaver {
             documentTag.setTranslateX(workspace.getTranslateX());
             documentTag.setTranslateY(workspace.getTranslateY());
 
-            documentTag.setHubs(hubsTag);
+            documentTag.setBlocks(blocksTag);
             documentTag.setConnections(connectionsTag);
 
             JAXBElement<DocumentTag> document = factory.createDocument(documentTag);

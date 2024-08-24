@@ -15,7 +15,7 @@ import jo.vpl.core.Workspace;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import jo.vpl.core.Port;
-import jo.vpl.xml.HubTag;
+import jo.vpl.xml.BlockTag;
 import jo.vpl.core.BlockInfo;
 
 /**
@@ -23,28 +23,31 @@ import jo.vpl.core.BlockInfo;
  * @author JoostMeulenkamp
  */
 @BlockInfo(
-        identifier = "Core.ReflectionHub",
+        identifier = "Core.ReflectionBlock",
         category = "Core",
-        description = "A generic hub used to convert static methods and fields to hubs",
-        tags = {"core", "reflection", "hub"})
-public class ReflectionHub extends Block {
+        description = "A generic block used to convert static methods and fields to blocks",
+        tags = {"core", "reflection", "block"})
+public class ReflectionBlock extends Block {
 
-    public final String category;
-    public final String description;
-    public final String[] tags;
-    public final Method method;
+    public String identifier;
+    public String category;
+    public String description;
+    public String[] tags;
+    public Method method;
 
-    public ReflectionHub(Workspace hostCanvas, String name, String category, String description, String[] tags) {
-        this(hostCanvas, name, category, description, tags, null);
+    public ReflectionBlock(Workspace hostCanvas, String identifier, String category, String description, String[] tags) {
+        this(hostCanvas, identifier, category, description, tags, null);
     }
 
-    public ReflectionHub(Workspace hostCanvas, String name, String category, String description, String[] tags, Method method) {
+    public ReflectionBlock(Workspace hostCanvas, String identifier, String category, String description, String[] tags, Method method) {
         super(hostCanvas);
-        setName(name);
+        setName(identifier);
+        this.identifier = identifier;
         this.category = category;
         this.description = description;
         this.tags = tags;
         this.method = method;
+        System.out.println(identifier);
     }
 
     /**
@@ -103,14 +106,14 @@ public class ReflectionHub extends Block {
         }
 
         if (isListOperatorListReturnType) {
-            Set<Class> classes = new HashSet<>();
+            Set<Class<?>> classes = new HashSet<>();
             List<?> list = (List) result;
             for (Object i : list) {
                 classes.add(i.getClass());
             }
             if (classes.size() == 1) {
                 Port port = this.outPorts.get(0);
-                Class type = classes.iterator().next();
+                Class<?> type = classes.iterator().next();
                 port.dataType = type;
                 port.setName(type.getSimpleName());
             }
@@ -154,7 +157,7 @@ public class ReflectionHub extends Block {
             try {
                 return method.invoke(null, a);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-//                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
 //                System.out.println("TEST ARGS 1");
                 return null;
             }
@@ -190,7 +193,7 @@ public class ReflectionHub extends Block {
 //                actualReturnType.add(result.getClass());
                 return result;
             } catch (IllegalAccessException | InvocationTargetException ex) {
-//                Logger.getLogger(ReflectionHub.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
 //                System.out.println("TEST ARGS 2");
                 return null;
             }
@@ -232,26 +235,24 @@ public class ReflectionHub extends Block {
     }
 
     @Override
-    public void serialize(HubTag xmlTag) {
+    public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        //Retrieval of custom attribute
-        xmlTag.getOtherAttributes().put(QName.valueOf("key"), "value");
+        xmlTag.setMethod(identifier);
     }
 
     @Override
-    public void deserialize(HubTag xmlTag) {
+    public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
-        //Retrieval of custom attribute
-        String value = xmlTag.getOtherAttributes().get(QName.valueOf("key"));
-        //Specify further initialization statements here
-        this.calculate();
+//        this.calculate();
     }
 
+
+    
     @Override
     public Block clone() {
-        TemplateHub hub = new TemplateHub(hostCanvas);
+        ReflectionBlock block = new ReflectionBlock(hostCanvas, identifier, category, description, tags, method);
         //Specify further copy statements here
-        return hub;
+        return block;
     }
 }
 

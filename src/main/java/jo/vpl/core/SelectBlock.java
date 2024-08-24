@@ -15,7 +15,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextField;
-import jo.vpl.block.ReflectionHub;
+import jo.vpl.block.ReflectionBlock;
 import jo.vpl.util.IconType;
 
 /**
@@ -28,7 +28,7 @@ public class SelectBlock extends Block {
     private TextField searchField;
 
     /**
-     * Select hub is used to pick a hub type and place it on the host canvas. It
+     * Select block is used to pick a block type and place it on the host canvas. It
      * reads out classes inside the package and adds them to a list view.
      *
      * @param hostCanvas
@@ -50,11 +50,11 @@ public class SelectBlock extends Block {
 //        listView.setPrefHeight(127);
         listView.setPrefHeight(265);
 
-        listView.setItems(BlockLoader.HUB_TYPE_LIST);
+        listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
 
-        this.setOnMouseExited(this::selectHub_MouseExit);
-        this.setOnMouseDragExited(this::selectHub_MouseExit);
-        this.setOnMouseEntered(this::selectHub_MouseEnter);
+        this.setOnMouseExited(this::selectBlock_MouseExit);
+        this.setOnMouseDragExited(this::selectBlock_MouseExit);
+        this.setOnMouseEntered(this::selectBlock_MouseEnter);
         listView.setOnMousePressed(this::listView_MousePress);
         searchField.setOnKeyPressed(this::searchField_KeyPress);
         searchField.setOnKeyReleased(this::searchField_KeyRelease);
@@ -67,7 +67,7 @@ public class SelectBlock extends Block {
 
         mainContentGrid.setStyle("-fx-padding: 0;");
 
-        addControlToHub(searchBox);
+        addControlToBlock(searchBox);
     }
 
     /**
@@ -84,12 +84,12 @@ public class SelectBlock extends Block {
         }
 
         if (e.getClickCount() == 2) {
-            createHub();
+            createBlock();
         }
     }
 
     /**
-     * Search for a particular hub type matching the search phrase
+     * Search for a particular block type matching the search phrase
      *
      * @param e
      */
@@ -107,19 +107,19 @@ public class SelectBlock extends Block {
             String regex = "(?si).*\\Q" + keyWord + "\\E.*";
 
             /**
-             * OPTION List<String> list = hubList.stream() .filter(x ->
+             * OPTION List<String> list = blockList.stream() .filter(x ->
              * x.matches(regex)) .collect(Collectors.toList());
              * ObservableList<String> tempList = observableArrayList(); for
              * (String s : list) { tempList.add(s); }
              * listView.setItems(tempList);
              *
-             * OPTION listView.setItems(hubList.stream() .filter(x ->
+             * OPTION listView.setItems(blockList.stream() .filter(x ->
              * x.matches(regex)) .collect(collectingAndThen(toList(), l ->
              * FXCollections.observableArrayList(l))));
              *
              * OPTION
              */
-            listView.setItems(BlockLoader.HUB_TYPE_LIST.stream()
+            listView.setItems(BlockLoader.BLOCK_TYPE_LIST.stream()
                     .filter(x -> x.matches(regex))
                     .collect(toCollection(FXCollections::observableArrayList)));
 
@@ -128,13 +128,13 @@ public class SelectBlock extends Block {
             }
 
         } else {
-            listView.setItems(BlockLoader.HUB_TYPE_LIST);
+            listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
         }
     }
 
     /**
      * Handle key events in text field. Up and down changes the selected list
-     * index. Enter confirms choice of selection and generates a type of hub.
+     * index. Enter confirms choice of selection and generates a type of block.
      *
      * @param e
      */
@@ -148,7 +148,7 @@ public class SelectBlock extends Block {
         if (key == KeyCode.ENTER && listSize > 0) {
             if ((!searchField.getText().equals(""))
                     || (listIndex > -1 && listIndex < listSize)) {
-                createHub();
+                createBlock();
 
             } else {
 //                Dispose();
@@ -175,27 +175,27 @@ public class SelectBlock extends Block {
     }
 
     /**
-     * Create a hub of the selected type and insert it at the mouse position
+     * Create a block of the selected type and insert it at the mouse position
      */
-    private void createHub() {
+    private void createBlock() {
         String selectedType = listView.getSelectionModel().getSelectedItem();
 
         if (selectedType == null) {
             return;
         }
 
-        Object type = BlockLoader.HUB_LIBRARY.get(selectedType);
+        Object type = BlockLoader.BLOCK_LIBRARY.get(selectedType);
 
         if (type.getClass().equals(Class.class)) {
             try {
                 Class<?> cType = (Class<?>) type;
-                Block hub = (Block) cType.getConstructor(Workspace.class).newInstance(hostCanvas);
+                Block block = (Block) cType.getConstructor(Workspace.class).newInstance(hostCanvas);
 
-                hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
-                hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
+                block.setLayoutX(hostCanvas.mousePosition.getX() - 20);
+                block.setLayoutY(hostCanvas.mousePosition.getY() - 20);
 
-                hostCanvas.getChildren().add(hub);
-                hostCanvas.hubSet.add(hub);
+                hostCanvas.getChildren().add(block);
+                hostCanvas.blockSet.add(block);
                 removed = true;
                 hostCanvas.getChildren().remove(this);
             } catch (Exception e) {
@@ -206,55 +206,55 @@ public class SelectBlock extends Block {
             try {
                 Method mType = (Method) type;
                 BlockInfo info = mType.getAnnotation(BlockInfo.class);
-                ReflectionHub hub = new ReflectionHub(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
+                ReflectionBlock block = new ReflectionBlock(hostCanvas, info.identifier(), info.category(), info.description(), info.tags(), mType);
 
                 Class<?> returnType = mType.getReturnType();
                 if (returnType.equals(Number.class)) {
-                    hub.addOutPortToHub("double", double.class);
+                    block.addOutPortToBlock("double", double.class);
                 } else if (List.class.isAssignableFrom(returnType)) {
                     
-                    hub.isListOperatorListReturnType = true;
-                    hub.addOutPortToHub(Object.class.getSimpleName(), Object.class);
+                    block.isListOperatorListReturnType = true;
+                    block.addOutPortToBlock(Object.class.getSimpleName(), Object.class);
                 } else {
-                    hub.addOutPortToHub(returnType.getSimpleName(), returnType);
+                    block.addOutPortToBlock(returnType.getSimpleName(), returnType);
                 }
 
                 if (!info.name().equals("") && info.icon().equals(IconType.NULL)) {
-                    hub.setName(info.name());
+                    block.setName(info.name());
                     Label label = new Label(info.name());
                     label.getStyleClass().add("hub-text");
-                    hub.addControlToHub(label);
+                    block.addControlToBlock(label);
                 } else {
                     String shortName = info.identifier().split("\\.")[1];
-                    hub.setName(shortName);
+                    block.setName(shortName);
                     Label label = new Label(shortName);
                     label.getStyleClass().add("hub-text");
-                    hub.addControlToHub(label);
+                    block.addControlToBlock(label);
                 }
 
                 if (!info.icon().equals(IconType.NULL)) {
-                    Label label = hub.getAwesomeIcon(info.icon());
-                    hub.addControlToHub(label);
+                    Label label = block.getAwesomeIcon(info.icon());
+                    block.addControlToBlock(label);
                 }
 
-                // If first input parameter is of type list, then this is a list operator hub
+                // If first input parameter is of type list, then this is a list operator block
                 if (List.class.isAssignableFrom(mType.getParameters()[0].getType())) {
-                    hub.isListOperator = true;
+                    block.isListOperator = true;
                 }
 
                 for (Parameter p : mType.getParameters()) {
                     if (List.class.isAssignableFrom(p.getType())) {
-                        hub.addInPortToHub("Object : List", Object.class);
+                        block.addInPortToBlock("Object : List", Object.class);
                     } else {
-                        hub.addInPortToHub(p.getName(), p.getType());
+                        block.addInPortToBlock(p.getName(), p.getType());
                     }
                 }
 
-                hub.setLayoutX(hostCanvas.mousePosition.getX() - 20);
-                hub.setLayoutY(hostCanvas.mousePosition.getY() - 20);
+                block.setLayoutX(hostCanvas.mousePosition.getX() - 20);
+                block.setLayoutY(hostCanvas.mousePosition.getY() - 20);
 
-                hostCanvas.getChildren().add(hub);
-                hostCanvas.hubSet.add(hub);
+                hostCanvas.getChildren().add(block);
+                hostCanvas.blockSet.add(block);
                 removed = true;
                 hostCanvas.getChildren().remove(this);
             } catch (Exception e) {
@@ -267,15 +267,15 @@ public class SelectBlock extends Block {
     boolean removed = false;
 
     /**
-     * Remove hub from host canvas if user move his mouse outside of the panel.
+     * Remove block from host canvas if user move his mouse outside of the panel.
      * Event also gets fired when deleted by other means, which will lead to a
-     * Duplicate Children Added Exception when from createHub() and a Array Out
+     * Duplicate Children Added Exception when from createBlock() and a Array Out
      * Of Bounds Exception in searchField_KeyPress(). Check against the removed
      * boolean prevents this from happening.
      *
      * @param e
      */
-    private void selectHub_MouseExit(MouseEvent e) {
+    private void selectBlock_MouseExit(MouseEvent e) {
         if (!removed) {
             hostCanvas.getChildren().remove(this);
         }
@@ -284,12 +284,12 @@ public class SelectBlock extends Block {
     }
 
     /**
-     * Search field requests focus on opening of select hub so user can start
+     * Search field requests focus on opening of select block so user can start
      * typing
      *
      * @param e
      */
-    private void selectHub_MouseEnter(MouseEvent e) {
+    private void selectBlock_MouseEnter(MouseEvent e) {
         TextField text = (TextField) controls.get(0).getChildrenUnmodifiable().get(0);
         text.requestFocus();
     }

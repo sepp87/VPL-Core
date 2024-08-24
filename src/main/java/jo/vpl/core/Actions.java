@@ -26,7 +26,7 @@ public class Actions {
     public static void zoomToFit(Workspace workspace) {
 
         Scene bScene = workspace.getScene();
-        Bounds localBBox = Block.getBoundingBoxOfHubs(workspace.hubSet);
+        Bounds localBBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
         if (localBBox == null) {
             return;
         }
@@ -39,7 +39,7 @@ public class Actions {
         workspace.setScale((workspace.getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
 
         //Pan to fit
-        bBox = workspace.localToParent(Block.getBoundingBoxOfHubs(workspace.hubSet));
+        bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
         double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
         double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
         workspace.setTranslateX(workspace.getTranslateX() - deltaX);
@@ -47,50 +47,50 @@ public class Actions {
     }
 
     public static void align(AlignType type, Workspace workspace) {
-        Bounds bBox = Block.getBoundingBoxOfHubs(workspace.selectedHubSet);
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
         switch (type) {
             case LEFT:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutX(bBox.getMinX());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutX(bBox.getMinX());
                 }
                 break;
             case RIGHT:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - hub.getWidth());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutX(bBox.getMaxX() - block.getWidth());
                 }
                 break;
             case TOP:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutY(bBox.getMinY());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutY(bBox.getMinY());
                 }
                 break;
             case BOTTOM:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - hub.getHeight());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutY(bBox.getMaxY() - block.getHeight());
                 }
                 break;
             case V_CENTER:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - hub.getWidth());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - block.getWidth());
                 }
                 break;
             case H_CENTER:
-                for (Block hub : workspace.selectedHubSet) {
-                    hub.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - hub.getHeight());
+                for (Block block : workspace.selectedBlockSet) {
+                    block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
                 }
                 break;
         }
     }
 
     public static void newFile(Workspace workspace) {
-        workspace.hubSet.clear();
+        workspace.blockSet.clear();
         workspace.connectionSet.clear();
         workspace.getChildren().clear();
     }
 
     public static void openFile(Workspace workspace) {
         //Clear Layout
-        workspace.hubSet.clear();
+        workspace.blockSet.clear();
         workspace.connectionSet.clear();
         workspace.getChildren().clear();
 
@@ -118,25 +118,25 @@ public class Actions {
         }
     }
 
-    public static void groupHubs(Workspace workspace) {
-        if (workspace.selectedHubSet.size() <= 1) {
+    public static void groupBlocks(Workspace workspace) {
+        if (workspace.selectedBlockSet.size() <= 1) {
             return;
         }
 
-        BlockGroup hubGroup = new BlockGroup(workspace);
-        hubGroup.setChildHubs(workspace.selectedHubSet);
+        BlockGroup blockGroup = new BlockGroup(workspace);
+        blockGroup.setChildBlocks(workspace.selectedBlockSet);
     }
 
-    public static void copyHubs(Workspace workspace) {
-        workspace.tempHubSet = FXCollections.observableSet();
+    public static void copyBlocks(Workspace workspace) {
+        workspace.tempBlockSet = FXCollections.observableSet();
 
-        for (Block hub : workspace.selectedHubSet) {
-            workspace.tempHubSet.add(hub);
+        for (Block block : workspace.selectedBlockSet) {
+            workspace.tempBlockSet.add(block);
         }
     }
 
-    public static void pasteHubs(Workspace workspace) {
-        Bounds bBox = Block.getBoundingBoxOfHubs(workspace.tempHubSet);
+    public static void pasteBlocks(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.tempBlockSet);
 
         if (bBox == null) {
             return;
@@ -151,54 +151,54 @@ public class Actions {
 
         Point2D delta = pastePoint.subtract(copyPoint);
 
-        //First deselect selected hubs. Simply said, deselect copied hubs.
-        for (Block hub : workspace.selectedHubSet) {
-            hub.setSelected(false);
+        //First deselect selected blocks. Simply said, deselect copied blocks.
+        for (Block block : workspace.selectedBlockSet) {
+            block.setSelected(false);
         }
-        workspace.selectedHubSet.clear();
+        workspace.selectedBlockSet.clear();
 
         List<Connection> alreadyClonedConnectors = new ArrayList<>();
         List<CopyConnection> copyConnections = new ArrayList<>();
 
-        // copy hub from clipboard to canvas
-        for (Block hub : workspace.tempHubSet) {
-            Block newHub = hub.clone();
+        // copy block from clipboard to canvas
+        for (Block block : workspace.tempBlockSet) {
+            Block newBlock = block.clone();
 
-            newHub.setLayoutX(hub.getLayoutX() + delta.getX());
-            newHub.setLayoutY(hub.getLayoutY() + delta.getY());
+            newBlock.setLayoutX(block.getLayoutX() + delta.getX());
+            newBlock.setLayoutY(block.getLayoutY() + delta.getY());
 
-            workspace.getChildren().add(newHub);
-            workspace.hubSet.add(newHub);
+            workspace.getChildren().add(newBlock);
+            workspace.blockSet.add(newBlock);
 
-            //Set pasted hub(s) as selected
-            workspace.selectedHubSet.add(newHub);
-            newHub.setSelected(true);
+            //Set pasted block(s) as selected
+            workspace.selectedBlockSet.add(newBlock);
+            newBlock.setSelected(true);
 
-            copyConnections.add(new CopyConnection(hub, newHub));
+            copyConnections.add(new CopyConnection(block, newBlock));
         }
 
         for (CopyConnection cc : copyConnections) {
             int counter = 0;
 
-            for (Port port : cc.oldHub.inPorts) {
+            for (Port port : cc.oldBlock.inPorts) {
                 for (Connection connection : port.connectedConnections) {
                     if (!alreadyClonedConnectors.contains(connection)) {
                         Connection newConnection = null;
 
-                        // start and end hub are contained in selection
-                        if (workspace.tempHubSet.contains(connection.startPort.parentHub)) {
+                        // start and end block are contained in selection
+                        if (workspace.tempBlockSet.contains(connection.startPort.parentBlock)) {
                             CopyConnection cc2 = copyConnections
                                     .stream()
-                                    .filter(i -> i.oldHub == connection.startPort.parentHub)
+                                    .filter(i -> i.oldBlock == connection.startPort.parentBlock)
                                     .findFirst()
                                     .orElse(null);
 
                             if (cc2 != null) {
-                                newConnection = new Connection(workspace, cc2.newHub.outPorts.get(0), cc.newHub.inPorts.get(counter));
+                                newConnection = new Connection(workspace, cc2.newBlock.outPorts.get(0), cc.newBlock.inPorts.get(counter));
                             }
                         } else {
-                            // only end hub is contained in selection
-                            newConnection = new Connection(workspace, connection.startPort, cc.newHub.inPorts.get(counter));
+                            // only end block is contained in selection
+                            newConnection = new Connection(workspace, connection.startPort, cc.newBlock.inPorts.get(counter));
                         }
 
                         if (newConnection != null) {

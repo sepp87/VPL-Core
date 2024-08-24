@@ -30,13 +30,13 @@ public class Workspace extends AnchorPane {
     public static boolean isCSS = true;
 
     ObservableSet<Connection> connectionSet;
-    public ObservableSet<Block> hubSet;
-    ObservableSet<Block> tempHubSet;
-    ObservableSet<Block> selectedHubSet;
-    ObservableSet<BlockGroup> hubGroupSet;
+    public ObservableSet<Block> blockSet;
+    ObservableSet<Block> tempBlockSet;
+    ObservableSet<Block> selectedBlockSet;
+    ObservableSet<BlockGroup> blockGroupSet;
 
     //Menu members
-    private SelectBlock selectHub;
+    private SelectBlock selectBlock;
     private RadialMenu radialMenu;
 
     //Create connection members
@@ -72,9 +72,9 @@ public class Workspace extends AnchorPane {
 
         //Initialize members
         connectionSet = FXCollections.observableSet();
-        hubSet = FXCollections.observableSet();
-        selectedHubSet = FXCollections.observableSet();
-        hubGroupSet = FXCollections.observableSet();
+        blockSet = FXCollections.observableSet();
+        selectedBlockSet = FXCollections.observableSet();
+        blockGroupSet = FXCollections.observableSet();
 
         //Zooming functionality
         scaleXProperty().bind(scale);
@@ -99,14 +99,14 @@ public class Workspace extends AnchorPane {
 
         //Testing
 //        deserialize(new File("src/main/resources/SampleParseObj.vplxml"));
-//        Hub add = new DoubleSlider(this);
+//        Block add = new DoubleSlider(this);
 //        add.relocate(100, 100);
 //        getChildren().add(add);
-//        hubSet.add(add);
-//        System.out.println(add.getClass().isAnnotationPresent(HubInfo.class));
+//        blockSet.add(add);
+//        System.out.println(add.getClass().isAnnotationPresent(BlockInfo.class));
 //        Button button = new Button();
 //        ObjectProperty<Color> value = new SimpleObjectProperty();
-//        HubStyle.bindBackgroundColor(value);
+//        BlockStyle.bindBackgroundColor(value);
 //        button.setBackground(new Background(new BackgroundFill(value.getValue(), CornerRadii.EMPTY, Insets.EMPTY)));
 //        button.setOnMouseClicked(e -> {
 //            value.setValue(Color.AQUA);
@@ -292,11 +292,11 @@ public class Workspace extends AnchorPane {
             case NOTHING:
                 if (e.isPrimaryButtonDown()) {
 
-                    // Check if mouse click was on a hub
+                    // Check if mouse click was on a block
                     Node node = e.getPickResult().getIntersectedNode();
-                    boolean mouseUpOnHub = checkParent(node, Block.class);
+                    boolean mouseUpOnBlock = checkParent(node, Block.class);
 
-                    if (!mouseUpOnHub) {
+                    if (!mouseUpOnBlock) {
 
                         startSelectionPoint = sceneToLocal(e.getSceneX(), e.getSceneY());
 
@@ -381,16 +381,16 @@ public class Workspace extends AnchorPane {
 
                 selectionRectangle.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
 
-                for (Block hub : hubSet) {
-                    selectedHubSet.remove(hub);
-                    hub.setSelected(false);
+                for (Block block : blockSet) {
+                    selectedBlockSet.remove(block);
+                    block.setSelected(false);
 
-                    if ((hub.getLayoutX() >= selectionRectangle.getLayoutX())
-                            && hub.getLayoutX() + hub.getWidth() <= selectionRectangle.getLayoutX() + selectionRectangle.getWidth()
-                            && (hub.getLayoutY() >= selectionRectangle.getLayoutY()
-                            && hub.getLayoutY() + hub.getHeight() <= selectionRectangle.getLayoutY() + selectionRectangle.getHeight())) {
-                        selectedHubSet.add(hub);
-                        hub.setSelected(true);
+                    if ((block.getLayoutX() >= selectionRectangle.getLayoutX())
+                            && block.getLayoutX() + block.getWidth() <= selectionRectangle.getLayoutX() + selectionRectangle.getWidth()
+                            && (block.getLayoutY() >= selectionRectangle.getLayoutY()
+                            && block.getLayoutY() + block.getHeight() <= selectionRectangle.getLayoutY() + selectionRectangle.getHeight())) {
+                        selectedBlockSet.add(block);
+                        block.setSelected(true);
                     }
                 }
             }
@@ -406,38 +406,38 @@ public class Workspace extends AnchorPane {
             mouseMode = MouseMode.NOTHING;
         }
 
-        // Check if mouse click was on a hub
+        // Check if mouse click was on a block
         Node node = e.getPickResult().getIntersectedNode();
-        boolean mouseUpOnHub = checkParent(node, Block.class);
+        boolean mouseUpOnBlock = checkParent(node, Block.class);
 //        boolean mouseUpOnMenu = checkParent(node, SpiffyMenu.class);
         boolean mouseUpOnMenu = checkParent(node, RadialMenu.class);
         /**
-         * @TODO CHANGE FROM ORIGINAL CODE If there is already a select hub,
+         * @TODO CHANGE FROM ORIGINAL CODE If there is already a select block,
          * then remove that one first
          * @TODO BUG when user clicks for the second time, but it happens to be
-         * a drag. Then the select hub stays open, although mouse is not on the
-         * hub itself.
+         * a drag. Then the select block stays open, although mouse is not on the
+         * block itself.
          */
-        if (e.getClickCount() == 2 && e.isDragDetect() && !mouseUpOnHub) {
-            if (selectHub != null) {
-                getChildren().remove(selectHub);
+        if (e.getClickCount() == 2 && e.isDragDetect() && !mouseUpOnBlock) {
+            if (selectBlock != null) {
+                getChildren().remove(selectBlock);
             }
-            selectHub = new SelectBlock(this);
-            selectHub.setLayoutX(sceneToLocal(e.getX(), e.getY()).getX() - 20);
-            selectHub.setLayoutY(sceneToLocal(e.getX(), e.getY()).getY() - 20);
-            getChildren().add(selectHub);
+            selectBlock = new SelectBlock(this);
+            selectBlock.setLayoutX(sceneToLocal(e.getX(), e.getY()).getX() - 20);
+            selectBlock.setLayoutY(sceneToLocal(e.getX(), e.getY()).getY() - 20);
+            getChildren().add(selectBlock);
         }
 
         switch (mouseMode) {
 
             case NOTHING:
 
-                // if mouse up in empty space unselect all hubs
-                if (!mouseUpOnHub && !mouseUpOnMenu && e.getButton() != MouseButton.SECONDARY) {
-                    for (Block hub : selectedHubSet) {
-                        hub.setSelected(false);
+                // if mouse up in empty space unselect all blocks
+                if (!mouseUpOnBlock && !mouseUpOnMenu && e.getButton() != MouseButton.SECONDARY) {
+                    for (Block block : selectedBlockSet) {
+                        block.setSelected(false);
                     }
-                    selectedHubSet.clear();
+                    selectedBlockSet.clear();
                 }
                 break;
 
@@ -460,33 +460,33 @@ public class Workspace extends AnchorPane {
         switch (e.getCode()) {
             case DELETE:
 
-                for (Block hub : selectedHubSet) {
-                    hub.delete();
+                for (Block block : selectedBlockSet) {
+                    block.delete();
                 }
 
-                selectedHubSet.clear();
+                selectedBlockSet.clear();
                 break;
             case C:
                 if (e.isControlDown()) {
-                    Actions.copyHubs(Workspace.this);
+                    Actions.copyBlocks(Workspace.this);
                 }
                 break;
 
             case V:
                 if (e.isControlDown()) {
-                    if (tempHubSet == null) {
+                    if (tempBlockSet == null) {
                         return;
                     }
-                    if (tempHubSet.isEmpty()) {
+                    if (tempBlockSet.isEmpty()) {
                         return;
                     }
-                    Actions.pasteHubs(Workspace.this);
+                    Actions.pasteBlocks(Workspace.this);
                 }
                 break;
 
             case G:
                 if (e.isControlDown()) {
-                    Actions.groupHubs(Workspace.this);
+                    Actions.groupBlocks(Workspace.this);
                 }
                 break;
 
@@ -511,11 +511,11 @@ public class Workspace extends AnchorPane {
 
             case A: {
                 if (e.isControlDown()) {
-                    selectedHubSet.clear();
+                    selectedBlockSet.clear();
 
-                    for (Block hub : hubSet) {
-                        hub.setSelected(true);
-                        selectedHubSet.add(hub);
+                    for (Block block : blockSet) {
+                        block.setSelected(true);
+                        selectedBlockSet.add(block);
                     }
                 }
             }

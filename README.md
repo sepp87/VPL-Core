@@ -8,19 +8,19 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 * Left drag: selection rectangle
 * Right drag: pan
 * Right click: radial menu
-* Double click: open hub search box
+* Double click: open block search box
 * Mouse wheel: zoom
 <br>
 
 ### SHORTCUTS
-* CTRL-C: copy selected hubs
-* CTRL-V: paste copied hubs
-* CTRL-G: group selected hubs
+* CTRL-C: copy selected blocks
+* CTRL-V: paste copied blocks
+* CTRL-G: group selected blocks
 * CTRL-O: load graph
 * CTRL-S: save graph
 * CTRL-N: new graph
 * Space: zoom to fit
-* Del: delete selected hubs
+* Del: delete selected blocks
 <br>
 
 ### FUNCTIONALITIES
@@ -31,8 +31,8 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 ### CUSTOMIZE
-* Create custom hubs by copying TemplateHub.java and change its behaviour
-* Create your own library with hub types and add it to "build/lib/"
+* Create custom blocks by copying TemplateBlock.java and change its behaviour
+* Create your own library with block types and add it to "build/lib/"
 <br>
 
 ### STYLE
@@ -51,20 +51,20 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
     * Zoom controls
 <br>
 
-* Hub behaviour
+* Block behaviour
     * Hints
     * Remove connections
     * Exceptions
-    * Save hub size
+    * Save block size
 <br>
 
-* Hub library extension
+* Block library extension
     * Load external libraries (subclasses and static methods)
-    * Load hubs through reflection
-    * Migrate existing hubs to external libraries
+    * Load blocks through reflection
+    * Migrate existing blocks to external libraries
 <br>
 
-* Select Hub
+* Select Block
     * Search through tags
 <br>
 
@@ -76,7 +76,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
     * Remove Obj library
     * Customization functionality through config file
     * Comments
-    * Scripting hub
+    * Scripting block
     * Looping groups/areas
     * Improve grouping
-    * BUG text and hubs are copied/pasted simultaneously
+    * BUG text and blocks are copied/pasted simultaneously

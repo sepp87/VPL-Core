@@ -31,7 +31,7 @@ public class Port extends VBox {
     public ObservableList<Connection> connectedConnections;
     public Class dataType;
     public PortTypes portType;
-    public Block parentHub;
+    public Block parentBlock;
     public boolean multiDockAllowed;
 //    public BindingPoint origin;
     public int index;
@@ -41,7 +41,7 @@ public class Port extends VBox {
         Tooltip.install(this, tip);
         tip.textProperty().bind(this.nameProperty());
 
-        this.parentHub = parent;
+        this.parentBlock = parent;
         this.dataType = type;
         this.portType = portType;
         this.setName(name);
@@ -63,8 +63,8 @@ public class Port extends VBox {
 
         active.addListener(this::handle_Active);
 
-        parentHub.layoutXProperty().addListener(coordinatesChangeListener);
-        parentHub.layoutYProperty().addListener(coordinatesChangeListener);
+        parentBlock.layoutXProperty().addListener(coordinatesChangeListener);
+        parentBlock.layoutYProperty().addListener(coordinatesChangeListener);
         boundsInParentProperty().addListener(coordinatesChangeListener);
     }
 
@@ -78,7 +78,7 @@ public class Port extends VBox {
 
     private void calcOrigin() {
         Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
-        Point2D centerInLocal = parentHub.hostCanvas.sceneToLocal(centerInScene);
+        Point2D centerInLocal = parentBlock.hostCanvas.sceneToLocal(centerInScene);
 
         centerXProperty.set(centerInLocal.getX());
         centerYProperty.set(centerInLocal.getY());
@@ -92,7 +92,7 @@ public class Port extends VBox {
     };
 
     /**
-     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent hub from moving
+     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from moving
      * around.
      *
      * @param e
@@ -108,10 +108,10 @@ public class Port extends VBox {
          */
         calcOrigin();
 
-        switch (parentHub.hostCanvas.splineMode) {
+        switch (parentBlock.hostCanvas.splineMode) {
             case NOTHING:
-                parentHub.hostCanvas.tempStartPort = this;
-                parentHub.hostCanvas.splineMode = SplineMode.SECOND;
+                parentBlock.hostCanvas.tempStartPort = this;
+                parentBlock.hostCanvas.splineMode = SplineMode.SECOND;
                 break;
 
             case SECOND:
@@ -119,16 +119,16 @@ public class Port extends VBox {
                  * Check if the data type from the sending port is the same or a
                  * sub class of the receiving port.
                  */
-                if (((TypeExtensions.isCastableTo(parentHub.hostCanvas.tempStartPort.dataType, dataType)
-                        && parentHub.hostCanvas.typeSensitive && portType == PortTypes.IN)
-                        || (TypeExtensions.isCastableTo(dataType, parentHub.hostCanvas.tempStartPort.dataType)
-                        && parentHub.hostCanvas.typeSensitive && portType == PortTypes.OUT)
+                if (((TypeExtensions.isCastableTo(parentBlock.hostCanvas.tempStartPort.dataType, dataType)
+                        && parentBlock.hostCanvas.typeSensitive && portType == PortTypes.IN)
+                        || (TypeExtensions.isCastableTo(dataType, parentBlock.hostCanvas.tempStartPort.dataType)
+                        && parentBlock.hostCanvas.typeSensitive && portType == PortTypes.OUT)
                         // IN case dataProperty type does not matter
-                        || (!parentHub.hostCanvas.typeSensitive))
+                        || (!parentBlock.hostCanvas.typeSensitive))
                         // Cannot be the same port type; IN > OUT or OUT > IN
-                        && portType != parentHub.hostCanvas.tempStartPort.portType
-                        // Cannot be the same hub
-                        && !parentHub.equals(parentHub.hostCanvas.tempStartPort.parentHub)) {
+                        && portType != parentBlock.hostCanvas.tempStartPort.portType
+                        // Cannot be the same block
+                        && !parentBlock.equals(parentBlock.hostCanvas.tempStartPort.parentBlock)) {
 
                     Connection connection;
 
@@ -137,15 +137,15 @@ public class Port extends VBox {
                      * connections Where is multi connect?
                      */
                     if (portType == PortTypes.OUT) {
-                        if (parentHub.hostCanvas.tempStartPort.connectedConnections.size() > 0) {
+                        if (parentBlock.hostCanvas.tempStartPort.connectedConnections.size() > 0) {
 
-                            if (!parentHub.hostCanvas.tempStartPort.multiDockAllowed) {
-                                for (Connection c : parentHub.hostCanvas.tempStartPort.connectedConnections) {
+                            if (!parentBlock.hostCanvas.tempStartPort.multiDockAllowed) {
+                                for (Connection c : parentBlock.hostCanvas.tempStartPort.connectedConnections) {
                                     c.removeFromCanvas();
                                 }
                             }
                         }
-                        connection = new Connection(parentHub.hostCanvas, this, parentHub.hostCanvas.tempStartPort);
+                        connection = new Connection(parentBlock.hostCanvas, this, parentBlock.hostCanvas.tempStartPort);
 
                     } else {
                         if (connectedConnections.size() > 0) {
@@ -158,17 +158,17 @@ public class Port extends VBox {
                                 connectedConnections.clear();
                             }
                         }
-                        connection = new Connection(parentHub.hostCanvas, parentHub.hostCanvas.tempStartPort, this);
+                        connection = new Connection(parentBlock.hostCanvas, parentBlock.hostCanvas.tempStartPort, this);
                     }
-                    parentHub.hostCanvas.connectionSet.add(connection);
+                    parentBlock.hostCanvas.connectionSet.add(connection);
 
                 }
                 /**
                  * Return values back to default state in which no connection is
                  * being made.
                  */
-                parentHub.hostCanvas.splineMode = SplineMode.NOTHING;
-                parentHub.hostCanvas.clearTempLine();
+                parentBlock.hostCanvas.splineMode = SplineMode.NOTHING;
+                parentBlock.hostCanvas.clearTempLine();
                 break;
 
         }
@@ -211,7 +211,7 @@ public class Port extends VBox {
 
         boolean fxThread = Thread.currentThread().getName().equals("JavaFX Application Thread");
         if (!fxThread) {
-            System.out.println(this.parentHub.getName());
+            System.out.println(this.parentBlock.getName());
         }
 
         if (portType == PortTypes.IN) {

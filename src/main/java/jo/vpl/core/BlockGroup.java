@@ -25,7 +25,7 @@ public class BlockGroup extends VplElement {
     public int id;
 
     private static int counter;
-    public ObservableSet<Block> childHubs;
+    public ObservableSet<Block> childBlocks;
 
     public BlockGroup(Workspace vplControl) {
         super(vplControl);
@@ -34,37 +34,32 @@ public class BlockGroup extends VplElement {
 
         id = counter++;
 
-        childHubs = FXCollections.observableSet();
+        childBlocks = FXCollections.observableSet();
         setOnMousePressed(this::handle_MousePress);
         setOnMouseReleased(this::handle_MouseRelease);
 
-//        CaptionLabel.Width = 200;
         setName("Name group here...");
 
-        hostCanvas.hubGroupSet.add(this);
+        hostCanvas.blockGroupSet.add(this);
         hostCanvas.getChildren().add(1, this);
-//        SetZIndex(this, 0);
-//        SetZIndex(Border, 0);
     }
 
-    public void setChildHubs(ObservableSet<Block> hubSet) {
-        childHubs.addAll(hubSet);
-//        childHubs = hubSet;
-        childHubs.addListener(this::handle_CollectionChange);
-        observeAllChildHub();
+    public void setChildBlocks(ObservableSet<Block> blockSet) {
+        childBlocks.addAll(blockSet);
+        childBlocks.addListener(this::handle_CollectionChange);
+        observeAllChildBlocks();
         calculateSize();
     }
 
     private void handle_MousePress(MouseEvent e) {
-        for (Block hub : childHubs) {
+        for (Block block : childBlocks) {
 
-            hub.setOnMouseDragged(hub::handle_MouseDrag);
+            block.setOnMouseDragged(block::handle_MouseDrag);
 
-//            HostCanvas.MouseUp += node.Node_MouseUp; FOR RESIZE EVENT
-            hub.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+            block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
 
-            hub.setSelected(true);
-            hostCanvas.selectedHubSet.add(hub);
+            block.setSelected(true);
+            hostCanvas.selectedBlockSet.add(block);
         }
         hostCanvas.mouseMode = MouseMode.GROUP_SELECT;
     }
@@ -80,24 +75,24 @@ public class BlockGroup extends VplElement {
     }
 
     private void deleteGroup() {
-        unObserveAllChildHub();
-        hostCanvas.hubGroupSet.remove(this);
+        unObserveAllChildBlocks();
+        hostCanvas.blockGroupSet.remove(this);
         super.delete();
     }
 
     private void handle_CollectionChange(SetChangeListener.Change change) {
 
         if (change.wasAdded()) {
-            Block hub = (Block) change.getElementAdded();
-            hub.eventBlaster.add("deleted", this::hub_DeletedInHubSet);
-            hub.eventBlaster.add(this::hub_PropertyChanged);
+            Block block = (Block) change.getElementAdded();
+            block.eventBlaster.add("deleted", this::block_DeletedInBlockSet);
+            block.eventBlaster.add(this::block_PropertyChanged);
         } else {
-            Block hub = (Block) change.getElementRemoved();
-            hub.eventBlaster.remove("deleted", this::hub_DeletedInHubSet);
-            hub.eventBlaster.remove(this::hub_PropertyChanged);
+            Block block = (Block) change.getElementRemoved();
+            block.eventBlaster.remove("deleted", this::block_DeletedInBlockSet);
+            block.eventBlaster.remove(this::block_PropertyChanged);
         }
 
-        if (childHubs.size() < 2) {
+        if (childBlocks.size() < 2) {
 //            binButton_Click(null, null);
             deleteGroup();
         } else {
@@ -105,34 +100,34 @@ public class BlockGroup extends VplElement {
         }
     }
 
-    private void observeAllChildHub() {
-        for (Block hub : childHubs) {
-            hub.eventBlaster.add("deleted", this::hub_DeletedInHubSet);
-            hub.eventBlaster.add(this::hub_PropertyChanged);
+    private void observeAllChildBlocks() {
+        for (Block block : childBlocks) {
+            block.eventBlaster.add("deleted", this::block_DeletedInBlockSet);
+            block.eventBlaster.add(this::block_PropertyChanged);
         }
     }
 
-    private void unObserveAllChildHub() {
-        for (Block hub : childHubs) {
-            hub.eventBlaster.remove("deleted", this::hub_DeletedInHubSet);
-            hub.eventBlaster.remove(this::hub_PropertyChanged);
+    private void unObserveAllChildBlocks() {
+        for (Block block : childBlocks) {
+            block.eventBlaster.remove("deleted", this::block_DeletedInBlockSet);
+            block.eventBlaster.remove(this::block_PropertyChanged);
         }
     }
 
-    private void hub_DeletedInHubSet(PropertyChangeEvent e) {
-        Block hub = (Block) e.getSource();
-        if (hub == null) {
+    private void block_DeletedInBlockSet(PropertyChangeEvent e) {
+        Block block = (Block) e.getSource();
+        if (block == null) {
             return;
         }
-        childHubs.remove(hub);
+        childBlocks.remove(block);
     }
 
-    private void hub_PropertyChanged(PropertyChangeEvent e) {
+    private void block_PropertyChanged(PropertyChangeEvent e) {
         calculateSize();
     }
 
     private void calculateSize() {
-        if (childHubs.isEmpty()) {
+        if (childBlocks.isEmpty()) {
             return;
         }
 
@@ -141,19 +136,19 @@ public class BlockGroup extends VplElement {
         double maxX = -Double.MAX_VALUE;
         double maxY = -Double.MAX_VALUE;
 
-        for (Block hub : childHubs) {
+        for (Block block : childBlocks) {
 
-            if (hub.getLayoutX() < minX) {
-                minX = hub.getLayoutX();
+            if (block.getLayoutX() < minX) {
+                minX = block.getLayoutX();
             }
-            if (hub.getLayoutY() < minY) {
-                minY = hub.getLayoutY();
+            if (block.getLayoutY() < minY) {
+                minY = block.getLayoutY();
             }
-            if ((hub.getLayoutX() + hub.getWidth()) > maxX) {
-                maxX = hub.getLayoutX() + hub.getWidth();
+            if ((block.getLayoutX() + block.getWidth()) > maxX) {
+                maxX = block.getLayoutX() + block.getWidth();
             }
-            if ((hub.getLayoutY() + hub.getHeight()) > maxY) {
-                maxY = hub.getLayoutY() + hub.getHeight();
+            if ((block.getLayoutY() + block.getHeight()) > maxY) {
+                maxY = block.getLayoutY() + block.getHeight();
             }
         }
 
@@ -164,25 +159,25 @@ public class BlockGroup extends VplElement {
     }
 
     private void bindStyle() {
-        //Hub Passive Style
-        Insets hubGroupBackgroundInsets = new Insets(4);
-        CornerRadii hubGroupBackgroundRadius = new CornerRadii(8);
-        Color hubGroupBackgroundColor = Color.web("#d35f5f");
-        BackgroundFill hubGroupBackgroundFill = new BackgroundFill(
-                hubGroupBackgroundColor,
-                hubGroupBackgroundRadius,
-                hubGroupBackgroundInsets);
-        Background hubGroupBackground = new Background(hubGroupBackgroundFill);
+        //Block Passive Style
+        Insets blockGroupBackgroundInsets = new Insets(4);
+        CornerRadii blockGroupBackgroundRadius = new CornerRadii(8);
+        Color blockGroupBackgroundColor = Color.web("#d35f5f");
+        BackgroundFill blockGroupBackgroundFill = new BackgroundFill(
+                blockGroupBackgroundColor,
+                blockGroupBackgroundRadius,
+                blockGroupBackgroundInsets);
+        Background blockGroupBackground = new Background(blockGroupBackgroundFill);
 
-        BorderWidths hubGroupBorderWidth = new BorderWidths(1);
-        CornerRadii hubGroupBorderRadius = new CornerRadii(12);
-        Color hubGroupBorderColor = Color.LIGHTGREY;
-        BorderStroke hubBorderStroke = new BorderStroke(
-                hubGroupBorderColor,
+        BorderWidths blockGroupBorderWidth = new BorderWidths(1);
+        CornerRadii blockGroupBorderRadius = new CornerRadii(12);
+        Color blockGroupBorderColor = Color.LIGHTGREY;
+        BorderStroke blockBorderStroke = new BorderStroke(
+                blockGroupBorderColor,
                 BorderStrokeStyle.SOLID,
-                hubGroupBorderRadius,
-                hubGroupBorderWidth);
-        Border hubBorder = new Border(hubBorderStroke);
-        Insets hubPadding = new Insets(10);
+                blockGroupBorderRadius,
+                blockGroupBorderWidth);
+        Border blockBorder = new Border(blockBorderStroke);
+        Insets blockPadding = new Insets(10);
     }
 }

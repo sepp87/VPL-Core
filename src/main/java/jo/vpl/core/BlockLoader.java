@@ -35,37 +35,37 @@ import org.reflections.Reflections;
  */
 public class BlockLoader {
 
-//    static final Map<String, Class> HUB_PATH_MAP = new HashMap<>();
-    static final Map<String, Method> HUB_METHOD_MAP = new HashMap<>();
-    static final Map<String, Class<?>> HUB_TYPE_MAP = new HashMap<>();
-    static final ObservableList<String> HUB_TYPE_LIST = observableArrayList();
-    public static final ObservableMap<String, Object> HUB_LIBRARY = javafx.collections.FXCollections.observableHashMap();
+//    static final Map<String, Class> BLOCK_PATH_MAP = new HashMap<>();
+    static final Map<String, Method> BLOCK_METHOD_MAP = new HashMap<>();
+    static final Map<String, Class<?>> BLOCK_TYPE_MAP = new HashMap<>();
+    static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
+    public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
     /**
-     * Retrieve all hubs from jo.vpl.hub package
+     * Retrieve all blocks from jo.vpl.block package
      */
     public static void loadInternalBlocks() {
         Reflections reflections = new Reflections("jo.vpl.block");
-        Set<Class<? extends Block>> hubTypes = reflections.getSubTypesOf(Block.class);
+        Set<Class<? extends Block>> blockTypes = reflections.getSubTypesOf(Block.class);
 
-        for (Class<?> type : hubTypes) {
+        for (Class<?> type : blockTypes) {
             addBlockType(type);
         }
 
-        Collections.sort(HUB_TYPE_LIST);
+        Collections.sort(BLOCK_TYPE_LIST);
     }
 
-    private static void addBlockType(Class<?> hubType) {
-        if (hubType.isAnnotationPresent(BlockInfo.class)) {
-            BlockInfo info = hubType.getAnnotation(BlockInfo.class);
-            HUB_TYPE_MAP.put(info.identifier(), hubType);
-            HUB_TYPE_LIST.add(info.identifier());
-            HUB_LIBRARY.put(info.identifier(), hubType);
+    private static void addBlockType(Class<?> blockType) {
+        if (blockType.isAnnotationPresent(BlockInfo.class)) {
+            BlockInfo info = blockType.getAnnotation(BlockInfo.class);
+            BLOCK_TYPE_MAP.put(info.identifier(), blockType);
+            BLOCK_TYPE_LIST.add(info.identifier());
+            BLOCK_LIBRARY.put(info.identifier(), blockType);
         }
     }
 
     /**
-     * Retrieve all hubs from external libraries
+     * Retrieve all blocks from external libraries
      */
     public static void loadExternalBlocks() {
         File dir = new File(Config.get().getLibraryDirectory());
@@ -76,14 +76,14 @@ public class BlockLoader {
             List<Class<?>> classes = getClassesFromJarFile(lib, classNames);
 
             for (Class<?> type : classes) {
-                if (!type.getSuperclass().getName().equals("jo.vpl.core.Hub")) {
+                if (!type.getSuperclass().getName().equals("jo.vpl.core.Block")) {
                     continue;
                 }
                 addBlockType(type);
             }
         }
 
-        Collections.sort(HUB_TYPE_LIST);
+        Collections.sort(BLOCK_TYPE_LIST);
     }
 
     private static List<String> getClassNamesFromJarFile(File file) {
@@ -131,14 +131,14 @@ public class BlockLoader {
     }
 
     /**
-     * Retrieve all hubs from static methods
+     * Retrieve all blocks from static methods
      */
     public static void loadStaticMethodsAsBlocks() {
-        List<Method> methods = getStaticMethodsFromClass(jo.vpl.block.methods.StringMethods.class);
-        methods.addAll(getStaticMethodsFromClass(jo.vpl.block.methods.JsonMethods.class));
-        methods.addAll(getStaticMethodsFromClass(jo.vpl.block.methods.MathMethods.class));
-        methods.addAll(getStaticMethodsFromClass(jo.vpl.block.methods.ObjectMethods.class));
-        methods.addAll(getStaticMethodsFromClass(jo.vpl.block.methods.ListMethods.class));
+        List<Method> methods = getStaticMethodsFromClass(jo.vpl.lib.StringMethods.class);
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.lib.JsonMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.lib.MathMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.lib.ObjectMethods.class));
+        methods.addAll(getStaticMethodsFromClass(jo.vpl.lib.ListMethods.class));
 
         for (Method m : methods) {
             addBlockMethod(m);
@@ -155,7 +155,7 @@ public class BlockLoader {
 //            }
         }
 
-        Collections.sort(HUB_TYPE_LIST);
+        Collections.sort(BLOCK_TYPE_LIST);
     }
 
     public static List<Method> getStaticMethodsFromClass(Class<?> c) {
@@ -170,12 +170,12 @@ public class BlockLoader {
         return result;
     }
 
-    private static void addBlockMethod(Method hubMethod) {
-        if (hubMethod.isAnnotationPresent(BlockInfo.class)) {
-            BlockInfo info = hubMethod.getAnnotation(BlockInfo.class);
-            HUB_METHOD_MAP.put(info.identifier(), hubMethod);
-            HUB_TYPE_LIST.add(info.identifier());
-            HUB_LIBRARY.put(info.identifier(), hubMethod);
+    private static void addBlockMethod(Method blockMethod) {
+        if (blockMethod.isAnnotationPresent(BlockInfo.class)) {
+            BlockInfo info = blockMethod.getAnnotation(BlockInfo.class);
+            BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
+            BLOCK_TYPE_LIST.add(info.identifier());
+            BLOCK_LIBRARY.put(info.identifier(), blockMethod);
         }
     }
 

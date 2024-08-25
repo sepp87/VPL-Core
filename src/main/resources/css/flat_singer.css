@@ -1,57 +1,10 @@
 @font-face {
-    font-family: 'Source Code Pro';
-    src: url('SourceCodePro-Regular.otf');
-}
-
-@font-face {
     src: url('fontawesome-webfont.ttf');
 }
 
-.radial-menu {
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
-}
-
-.text-area{
-    -fx-background-color: transparent;
-    -fx-font-family:'Source Code Pro';
-    -fx-pref-column-count: 22;
-    -fx-pref-row-count: 10;
-    -fx-wrap-text: true;
-    -fx-text-fill: white;
-}
-
-.text-area .scroll-pane {
-    -fx-background-color: transparent;
-}
-
-.text-area .scroll-bar:vertical:disabled {
-    -fx-opacity: 0;
-}
-
-.text-area .scroll-pane .viewport{
-    -fx-background-color: transparent;
-}
-
-
-.text-area .scroll-pane .content{
-    -fx-background-color: transparent,
-        linear-gradient(from 0px 3.5px to 0px 12px, repeat, white 0%, transparent 10%);
-    /*linear-gradient(from 0px 3.5px to 0px 12px, repeat, #b5b5b5 0%, transparent 10%);*/
-    -fx-background-insets: 16 0 0 0;
-}
-
-
-.text-area .scroll-pane .content .text {
-    /*-fx-line-spacing: 7;*/
-}
-
-.text-field{
-    -fx-background-color: transparent;
-    -fx-font-family: 'Source Code Pro';
-    -fx-pref-column-count: 22;
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: white;
-    -fx-highlight-fill: salmon;
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('SourceCodePro-Regular.otf');
 }
 
 .label{
@@ -65,7 +18,7 @@
 }
 
 .vpl {
-    -fx-background-color: #efefef;
+    -fx-background-color: white;
 }
 
 .list-view {
@@ -75,9 +28,8 @@
 }
 
 .list-view .list-cell {
-    -fx-text-fill: white;
+    -fx-text-fill: #5F5F5F;
 }
-
 
 .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected, .list-cell:filled:hover {
     -fx-background-color: salmon;
@@ -91,9 +43,8 @@
 
 .list-view .list-cell:even {  
     -fx-background-color: rgba(127,127,127,0.5);
-
-
 }
+
 .list-view .list-cell:odd { 
     -fx-background-color: transparent;
 }
@@ -140,23 +91,18 @@
     -fx-border-width: 0;
     -fx-font-family: FontAwesome;
     -fx-font-size: 24;
-    -fx-text-fill: white;
-}
-
-.vpl-button:hover{
-    -fx-text-fill: salmon;
+    -fx-text-fill: #6385c7;
 }
 
 .vpl-tag{
     -fx-padding: 0;
-    -fx-alignment: center-left;
     -fx-background-color: transparent;
     -fx-border-insets: 0;
     -fx-border-width: 0;
     -fx-font-family: Arial;
     -fx-font-size: 18;
-    -fx-text-fill: #5F5F5F;
-    -fx-highlight-fill: salmon;
+    -fx-text-fill: #6385c7;
+    -fx-highlight-fill: #6385c7;
 }
 
 .selection-rectangle {
@@ -167,42 +113,33 @@
 }
 
 .block {
-    -fx-background-color: #5F5F5F;
-    -fx-background-insets: 0;
-    -fx-background-radius: 4;
-    -fx-border-color: #5F5F5F;
-    -fx-border-insets: 0 0 0 0;
-    -fx-border-width: 0;
+    -fx-background-color: white;
+    -fx-background-insets: 6 1 6 1;
+    -fx-background-radius: 12;
+    -fx-border-color: lightgrey;
+    -fx-border-insets: 5 0 5 0;
+    -fx-border-width: 2;
     -fx-border-style: solid;
-    -fx-border-radius: 0;
-    -fx-padding: 10 0 10 0;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 ); 
+    -fx-border-radius: 12;
+    -fx-padding: 10;
+}
+
+.block-selected {
+    -fx-border-color: black;
 }
 
 .block:hover {
-    /*-fx-background-color: pink;*/
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
-}
-
-.block-selected{
-    -fx-background-color: slategrey;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 ); 
-    /*-fx-border-color: #F8B516;*/
-    /*-fx-border-color: #5F5F5F;*/
-    /*    -fx-border-color: #6385c7;
-        -fx-border-width: 2;
-        -fx-border-radius: 6;
-        -fx-border-insets: -5;*/
+    -fx-border-color: black;
 }
 
 .block-header{
-    -fx-padding: 0 0 5 0;
+
 }
 
 .block-awesome-icon{
     -fx-font-family: FontAwesome;
     -fx-font-size: 30;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }
 
 .block-awesome-icon:hover{
@@ -210,8 +147,8 @@
 }
 
 .block-text{
-    -fx-text-fill: white;
     -fx-font-size: 30;
+    -fx-text-fill: #5F5F5F;
     -fx-font-weight: bold;
 }
 
@@ -225,45 +162,33 @@
 }
 
 .port{
-    -fx-min-width: 10;
+    -fx-min-width: 24;
     -fx-min-height: 24;
-    -fx-max-width: 12;
-    -fx-max-height: 24;
-    -fx-background-color: #5F5F5F;       
+    -fx-background-radius: 12;              
     -fx-border-style: solid;
+    -fx-border-radius: 12;
     -fx-border-color: lightgrey;
-}
-
-.port:hover{
-    -fx-background-color: salmon;  
+    -fx-border-width: 1;
 }
 
 .port-active{
-    -fx-min-width: 10;
+    -fx-min-width: 24;
     -fx-min-height: 24;
-    -fx-max-width: 12;
-    -fx-max-height: 24;
-    -fx-background-color: grey;          
+    -fx-background-color: #d35f5f;
+    -fx-background-insets: 4;
+    -fx-background-radius: 8;              
     -fx-border-style: solid;
+    -fx-border-radius: 12;
     -fx-border-color: lightgrey;
-}
-
-.port-active:hover{
-    -fx-background-color: salmon;    
+    -fx-border-width: 1;
 }
 
 .port-in{
-    -fx-background-insets: 1 1 1 0;
-    -fx-background-radius: 0 4 4 0;   
-    -fx-border-radius: 0 2 2 0;
-    -fx-border-width: 2 2 2 0;
+
 }
 
 .port-out{
-    -fx-background-insets: 1 0 1 1;
-    -fx-background-radius: 4 0 0 4;   
-    -fx-border-radius: 2 0 0 2;
-    -fx-border-width: 2 0 2 2;
+
 }
 
 .in-port-box{
@@ -280,13 +205,13 @@
 
 .connection{
     -fx-fill: null;
-    -fx-stroke: #b5b5b5;
+    -fx-stroke: #6385c7;
     -fx-stroke-width: 2;
     -fx-stroke-style: solid;
 }
 
 .temp-line{
-    -fx-stroke: #b5b5b5;
+    -fx-stroke: lightgrey;
     -fx-stroke-width: 2;
     -fx-stroke-dash-array: 0 6;
     -fx-stroke-dash-offset: 6;

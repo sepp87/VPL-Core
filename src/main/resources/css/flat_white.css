@@ -216,7 +216,7 @@
     -fx-border-radius: 10;
 }
 
-.hub {
+.block {
     -fx-background-color: white;
     -fx-background-insets: 0;
     -fx-background-radius: 4;
@@ -229,12 +229,12 @@
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
 }
 
-.hub:hover {
+.block:hover {
     /*-fx-background-color: pink;*/
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
 }
 
-.hub-selected{
+.block-selected{
     -fx-background-color: lightblue;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
     /*-fx-border-color: #F8B516;*/
@@ -245,27 +245,27 @@
         -fx-border-insets: -5;*/
 }
 
-.hub-header{
+.block-header{
     -fx-padding: 0 0 5 0;
 }
 
-.hub-awesome-icon{
+.block-awesome-icon{
     -fx-font-family: FontAwesome;
     -fx-font-size: 30;
     -fx-text-fill: #5F5F5F;
 }
 
-.hub-awesome-icon:hover{
+.block-awesome-icon:hover{
     -fx-text-fill: salmon;
 }
 
-.hub-text{
+.block-text{
     -fx-font-size: 30;
     -fx-text-fill: #5F5F5F;
     -fx-font-weight: bold;
 }
 
-.hub-group {
+.block-group {
     -fx-background-color: transparent;
     -fx-border-color: lightblue;
     -fx-border-insets: -10;

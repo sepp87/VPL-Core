@@ -25,7 +25,7 @@ import vplcore.workspace.Workspace;
  * @author JoostMeulenkamp
  */
 @BlockInfo(
-        identifier = "Core.ReflectionBlock",
+        identifier = "Core.reflectionBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "reflection", "block"})

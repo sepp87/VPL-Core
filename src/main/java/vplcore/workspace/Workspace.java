@@ -21,6 +21,7 @@ import javafx.scene.shape.*;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.SplineMode;
 import vplcore.workspace.radialmenu.RadialMenu;
+import vplcore.workspace.radialmenu.RadialMenuConfigurator;
 
 /**
  *
@@ -44,6 +45,9 @@ public class Workspace extends AnchorPane {
     //Menu members
     public SelectBlock selectBlock;
     public RadialMenu radialMenu;
+
+    //Actions
+    public Actions actions;
 
     //Create connection members
     public Port tempStartPort;
@@ -73,6 +77,9 @@ public class Workspace extends AnchorPane {
 
     //Radial menu
     public Group Go() {
+        //Actions
+        actions = new Actions(this);
+
         //Must set due to funky resize, which messes up zooming
         setMinSize(600, 600);
         setMaxSize(600, 600);
@@ -97,9 +104,9 @@ public class Workspace extends AnchorPane {
         controlBlaster.set("translateY", translateYProperty());
 
         //Create spiffy menu
-        radialMenu = RadialMenu.get();
+        radialMenu = new RadialMenuConfigurator(this).configure();
         radialMenu.setVisible(false);
-        
+
         //Create content group, elements within this group get added to the scene and are not by the zooming of the workspace (this)
         Group contentGroup = new Group();
         contentGroup.getChildren().addAll(this, radialMenu);
@@ -122,7 +129,6 @@ public class Workspace extends AnchorPane {
         //TODO improve listener removal because it doesn't work
         keyboard = new KeyboardInputHandler(this);
         mouse = new MouseInputHandler(this);
-
         return contentGroup;
     }
 

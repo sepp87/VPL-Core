@@ -48,7 +48,7 @@ public class BlockLoader {
      * Retrieve all blocks from jo.vpl.block package
      */
     public static void loadInternalBlocks() {
-        Reflections reflections = new Reflections("jo.vpl.input");
+        Reflections reflections = new Reflections("vpllib.input");
         Set<Class<? extends Block>> blockTypes = reflections.getSubTypesOf(Block.class);
 
         for (Class<?> type : blockTypes) {
@@ -141,6 +141,9 @@ public class BlockLoader {
      * Retrieve all blocks from static methods
      */
     public static void loadStaticMethodsAsBlocks() {
+        BlockInfo info = ReflectionBlock.class.getAnnotation(BlockInfo.class);
+        BLOCK_TYPE_MAP.put(info.identifier(), ReflectionBlock.class);
+
         List<Method> methods = getStaticMethodsFromClass(vpllib.method.StringMethods.class);
         methods.addAll(getStaticMethodsFromClass(vpllib.method.JsonMethods.class));
         methods.addAll(getStaticMethodsFromClass(vpllib.method.MathMethods.class));

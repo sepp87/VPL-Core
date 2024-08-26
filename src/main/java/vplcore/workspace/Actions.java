@@ -12,9 +12,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -23,6 +25,62 @@ import javafx.stage.Stage;
  * @author joostmeulenkamp
  */
 public class Actions {
+
+    private final Workspace workspace;
+
+    public Actions(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public void perform(ActionType actionType) {
+        switch (actionType) {
+            case ALIGN_BOTTOM:
+                alignBottom(workspace);
+                break;
+            case ALIGN_HORIZONTALLY:
+                alignHorizontally(workspace);
+                break;
+            case ALIGN_LEFT:
+                alignLeft(workspace);
+                break;
+            case ALIGN_RIGHT:
+                alignRight(workspace);
+                break;
+            case ALIGN_TOP:
+                alignTop(workspace);
+                break;
+            case ALIGN_VERTICALLY:
+                alignVertically(workspace);
+                break;
+            case COPY_BLOCKS:
+                copyBlocks(workspace);
+                break;
+            case DELETE_BLOCKS:
+                break;
+            case GROUP_BLOCKS:
+                groupBlocks(workspace);
+                break;
+            case NEW_FILE:
+                newFile(workspace);
+                break;
+            case OPEN_FILE:
+                openFile(workspace);
+                break;
+            case PASTE_BLOCKS:
+                pasteBlocks(workspace);
+                break;
+            case SAVE_FILE:
+                saveFile(workspace);
+                break;
+            case ZOOM_IN:
+                break;
+            case ZOOM_OUT:
+                break;
+            case ZOOM_TO_FIT:
+                zoomToFit(workspace);
+                break;
+        }
+    }
 
     public static void zoomToFit(Workspace workspace) {
 
@@ -47,39 +105,45 @@ public class Actions {
         workspace.setTranslateY(workspace.getTranslateY() - deltaY);
     }
 
-    public static void align(AlignType type, Workspace workspace) {
+    public static void alignBottom(Workspace workspace) {
         Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
-        switch (type) {
-            case LEFT:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutX(bBox.getMinX());
-                }
-                break;
-            case RIGHT:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutX(bBox.getMaxX() - block.getWidth());
-                }
-                break;
-            case TOP:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutY(bBox.getMinY());
-                }
-                break;
-            case BOTTOM:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutY(bBox.getMaxY() - block.getHeight());
-                }
-                break;
-            case V_CENTER:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - block.getWidth());
-                }
-                break;
-            case H_CENTER:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
-                }
-                break;
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutY(bBox.getMaxY() - block.getHeight());
+        }
+    }
+
+    public static void alignHorizontally(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
+        }
+    }
+
+    public static void alignLeft(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutX(bBox.getMinX());
+        }
+    }
+
+    public static void alignRight(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutX(bBox.getMaxX() - block.getWidth());
+        }
+    }
+
+    public static void alignTop(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutY(bBox.getMinY());
+        }
+    }
+
+    public static void alignVertically(Workspace workspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - block.getWidth());
         }
     }
 
@@ -212,14 +276,4 @@ public class Actions {
             }
         }
     }
-}
-
-enum AlignType {
-
-    LEFT,
-    RIGHT,
-    TOP,
-    BOTTOM,
-    V_CENTER,
-    H_CENTER
 }

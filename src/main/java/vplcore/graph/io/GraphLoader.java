@@ -56,6 +56,7 @@ public class GraphLoader {
 
                 for (BlockTag blockTag : blockTagList) {
                     errorMessage = "Block type " + blockTag.getType() + " not found.";
+                    System.out.println("Loading " + blockTag.getType());
                     Class<?> type = BlockLoader.BLOCK_TYPE_MAP.get(blockTag.getType());
                     Block block = null;
 

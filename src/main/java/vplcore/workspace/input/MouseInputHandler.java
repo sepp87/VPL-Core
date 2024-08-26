@@ -17,11 +17,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape3D;
 import vplcore.graph.util.SelectBlock;
+import vplcore.workspace.ActionType;
+import vplcore.workspace.Actions;
+import vplcore.workspace.AlignType;
 import vplcore.workspace.Workspace;
 import static vplcore.workspace.Workspace.clamp;
 import static vplcore.workspace.input.MouseMode.*;
 import static vplcore.workspace.input.SplineMode.*;
 import vplcore.workspace.radialmenu.RadialMenu;
+import vplcore.workspace.radialmenu.RadialMenuItem;
 
 /**
  *
@@ -33,7 +37,7 @@ public class MouseInputHandler {
 
     public MouseInputHandler(Workspace workspace) {
         this.workspace = workspace;
-        
+
         //TODO this method listener should be removed, use real listeners instead of method references
         this.workspace.sceneProperty().addListener(this::addInputHandlers);
     }

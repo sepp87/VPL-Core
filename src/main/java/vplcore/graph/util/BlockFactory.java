@@ -53,7 +53,7 @@ public class BlockFactory {
                 block.addOutPortToBlock("double", double.class);
             } else if (List.class.isAssignableFrom(returnType)) {
 
-                block.isListOperatorListReturnType = true;
+                block.isListReturnType = true;
                 block.addOutPortToBlock(Object.class.getSimpleName(), Object.class);
             } else {
                 block.addOutPortToBlock(returnType.getSimpleName(), returnType);

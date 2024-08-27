@@ -1,21 +1,13 @@
 package vplcore.graph.util;
 
-import vplcore.graph.model.Port;
 import vplcore.graph.model.BlockInfo;
 import vplcore.graph.model.Block;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import vplcore.workspace.Workspace;
-import javafx.scene.control.Label;
-import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.Port;
 import vplcore.workspace.Workspace;
@@ -36,7 +28,6 @@ public class ReflectionBlock extends Block {
     public String description;
     public String[] tags;
     public Method method;
-
 
     public ReflectionBlock(Workspace hostCanvas, Method method) {
         super(hostCanvas);
@@ -78,7 +69,7 @@ public class ReflectionBlock extends Block {
     }
 
     public boolean isListOperator = false;
-    public boolean isListOperatorListReturnType = false;
+    public boolean isListReturnType = false;
 
     /**
      * calculate function is called whenever new data is incoming
@@ -107,21 +98,25 @@ public class ReflectionBlock extends Block {
             System.out.println(e.getMessage());
         }
 
-        if (isListOperatorListReturnType) {
-            Set<Class<?>> classes = new HashSet<>();
+        if (isListReturnType) {
             List<?> list = (List) result;
-            for (Object i : list) {
-                classes.add(i.getClass());
-            }
-            if (classes.size() == 1) {
-                Port port = this.outPorts.get(0);
-                Class<?> type = classes.iterator().next();
-                port.dataType = type;
-                port.setName(type.getSimpleName());
-            }
+            determineOutPortDataTypeFromList(list);
         }
 
         outPorts.get(0).setData(result);
+    }
+
+    private void determineOutPortDataTypeFromList(List<?> list) {
+        Set<Class<?>> classes = new HashSet<>();
+        for (Object i : list) {
+            classes.add(i.getClass());
+        }
+        if (classes.size() == 1) {
+            Port port = this.outPorts.get(0);
+            Class<?> type = classes.iterator().next();
+            port.dataType = type;
+            port.setName(type.getSimpleName());
+        }
     }
 
     private Object invokeListMethodArgs1(Object a) throws Exception {

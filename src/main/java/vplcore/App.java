@@ -25,6 +25,8 @@ public class App extends Application {
         pane.getStyleClass().add("vpl");
 
         Workspace workspace = new Workspace();
+        // get selection hub
+        // get radial menu
         Group workspaceAndRadialMenu = workspace.Go();
 
         MenuBar menuBar = new MenuBarConfigurator(workspace).configure();

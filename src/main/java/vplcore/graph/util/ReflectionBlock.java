@@ -37,19 +37,19 @@ public class ReflectionBlock extends Block {
     public String[] tags;
     public Method method;
 
-    public ReflectionBlock(Workspace hostCanvas, String identifier, String category, String description, String[] tags) {
-        this(hostCanvas, identifier, category, description, tags, null);
-    }
 
-    public ReflectionBlock(Workspace hostCanvas, String identifier, String category, String description, String[] tags, Method method) {
+    public ReflectionBlock(Workspace hostCanvas, Method method) {
         super(hostCanvas);
-        setName(identifier);
-        this.identifier = identifier;
-        this.category = category;
-        this.description = description;
-        this.tags = tags;
+
+        BlockInfo info = method.getAnnotation(BlockInfo.class);
+        this.identifier = info.identifier();
+        this.category = info.category();
+        this.description = info.description();
+        this.tags = info.tags();
         this.method = method;
-        System.out.println(identifier);
+
+        String blockName = !info.name().equals("") ? info.name() : info.identifier();
+        setName(blockName);
     }
 
     /**
@@ -248,11 +248,9 @@ public class ReflectionBlock extends Block {
 //        this.calculate();
     }
 
-
-    
     @Override
     public Block clone() {
-        ReflectionBlock block = new ReflectionBlock(workspace, identifier, category, description, tags, method);
+        ReflectionBlock block = new ReflectionBlock(workspace, method);
         //Specify further copy statements here
         return block;
     }

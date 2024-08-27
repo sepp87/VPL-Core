@@ -1,5 +1,6 @@
 package vplcore.workspace;
 
+import vplcore.workspace.radialmenu.RadialMenuConfigurator;
 import vplcore.graph.model.Port;
 import vplcore.graph.model.Connection;
 import vplcore.graph.util.SelectBlock;
@@ -21,7 +22,6 @@ import javafx.scene.shape.*;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.SplineMode;
 import vplcore.workspace.radialmenu.RadialMenu;
-import vplcore.workspace.radialmenu.RadialMenuConfigurator;
 
 /**
  *

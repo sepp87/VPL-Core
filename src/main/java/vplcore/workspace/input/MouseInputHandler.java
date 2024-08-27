@@ -1,8 +1,6 @@
 package vplcore.workspace.input;
 
 import vplcore.graph.model.Block;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Bounds;
@@ -17,15 +15,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape3D;
 import vplcore.graph.util.SelectBlock;
-import vplcore.workspace.ActionType;
-import vplcore.workspace.Actions;
-import vplcore.workspace.AlignType;
 import vplcore.workspace.Workspace;
 import static vplcore.workspace.Workspace.clamp;
-import static vplcore.workspace.input.MouseMode.*;
-import static vplcore.workspace.input.SplineMode.*;
 import vplcore.workspace.radialmenu.RadialMenu;
-import vplcore.workspace.radialmenu.RadialMenuItem;
 
 /**
  *

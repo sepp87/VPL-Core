@@ -154,10 +154,6 @@ public class Actions {
     }
 
     public static void openFile(Workspace workspace) {
-        //Clear Layout
-        workspace.blockSet.clear();
-        workspace.connectionSet.clear();
-        workspace.getChildren().clear();
 
         //Open File
         Stage stage = (Stage) workspace.getScene().getWindow();
@@ -166,9 +162,17 @@ public class Actions {
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
         File file = chooser.showOpenDialog(stage);
 
-        if (file != null) {
-            GraphLoader.deserialize(file, workspace);
+        if (file == null) {
+            return;
         }
+
+        //Clear Layout
+        workspace.blockSet.clear();
+        workspace.connectionSet.clear();
+        workspace.getChildren().clear();
+
+        //Load file
+        GraphLoader.deserialize(file, workspace);
     }
 
     public static void saveFile(Workspace workspace) {

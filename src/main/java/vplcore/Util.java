@@ -3,14 +3,18 @@ package vplcore;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -298,6 +302,16 @@ public class Util {
         return file;
     }
 
+    public static Properties loadProperties(File file) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = new FileInputStream(file)) {
+            properties.load(inputStream);
+        } catch (IOException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return properties;
+    }
+
     // get the FontAwesome unicodes as ENUM types from the Cheatsheet
     public static void getFontAwesomeUnicodeENUM() {
         //How it somewhat looks like, but then a whole page full
@@ -338,7 +352,6 @@ public class Util {
     /////////////////////////////// SYSTEM UTILS ///////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    
     /**
      *
      * @param any

@@ -18,7 +18,11 @@
     <xsd:simpleType name="Double">
         <xsd:restriction base="xsd:double"/>
     </xsd:simpleType>
-
+    
+    <xsd:simpleType name="Boolean">
+        <xsd:restriction base="xsd:boolean"/>
+    </xsd:simpleType>
+    
     <!-- definition of complex elements -->
     <xsd:complexType name="BlocksTag">
         <xsd:sequence>
@@ -28,7 +32,7 @@
     
     <xsd:complexType name="BlockTag">
         <xsd:attribute name="Type" type="vpl:String" use="required"/>
-        <xsd:attribute name="Method" type="vpl:String" use="optional"/>
+        <xsd:attribute name="Method" type="vpl:Boolean" use="optional"/>
         <xsd:attribute name="UUID" type="vpl:String" use="required"/>
         <xsd:attribute name="X" type="vpl:Double" use="required"/>
         <xsd:attribute name="Y" type="vpl:Double" use="required"/>    

@@ -33,7 +33,7 @@ public class Workspace extends AnchorPane {
     //isSaved
     //styleFile
     public static boolean isCSS = true;
-    public static final double MAX_SCALE = 5.0d;
+    public static final double MAX_SCALE = 1.5d;
     public static final double MIN_SCALE = .25d;
 
     public ObservableSet<Connection> connectionSet;
@@ -80,9 +80,9 @@ public class Workspace extends AnchorPane {
         //Actions
         actions = new Actions(this);
 
-        //Must set due to funky resize, which messes up zooming
-        setMinSize(600, 600);
-        setMaxSize(600, 600);
+        //Must set due to funky resize, which messes up zooming (must be the same as the zoompane
+        setMinSize(0, 0);
+        setMaxSize(0, 0);
 
         //Initialize members
         connectionSet = FXCollections.observableSet();
@@ -94,8 +94,11 @@ public class Workspace extends AnchorPane {
         scaleXProperty().bind(scale);
         scaleYProperty().bind(scale);
         zoomPane = new Pane();
-        zoomPane.setPrefSize(600, 600);
+        zoomPane.setPrefSize(0, 0);
+        zoomPane.setStyle("-fx-background-color: red;");
         zoomPane.relocate(0, 0);
+        
+        this.setStyle("-fx-background-color: green;");
         getChildren().add(zoomPane);
 
         //Initialize eventblaster

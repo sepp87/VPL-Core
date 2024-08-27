@@ -21,7 +21,7 @@ public class MenuBarConfigurator {
 
     public MenuBar configure() {
         menuBar = new MenuBar();
-        menuBar.setUseSystemMenuBar(true);
+        menuBar.setUseSystemMenuBar(false);
 
         Menu file = new Menu("File");
         MenuBarItem newFile = new MenuBarItem(ActionType.NEW_FILE, "New file");

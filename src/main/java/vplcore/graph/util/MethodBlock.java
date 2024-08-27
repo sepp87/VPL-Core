@@ -21,7 +21,7 @@ import vplcore.workspace.Workspace;
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "reflection", "block"})
-public class ReflectionBlock extends Block {
+public class MethodBlock extends Block {
 
     public String identifier;
     public String category;
@@ -29,7 +29,7 @@ public class ReflectionBlock extends Block {
     public String[] tags;
     public Method method;
 
-    public ReflectionBlock(Workspace hostCanvas, Method method) {
+    public MethodBlock(Workspace hostCanvas, Method method) {
         super(hostCanvas);
 
         BlockInfo info = method.getAnnotation(BlockInfo.class);
@@ -234,7 +234,8 @@ public class ReflectionBlock extends Block {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setMethod(identifier);
+        xmlTag.setType(method.getAnnotation(BlockInfo.class).identifier());
+        xmlTag.setMethod(true);
     }
 
     @Override
@@ -245,7 +246,7 @@ public class ReflectionBlock extends Block {
 
     @Override
     public Block clone() {
-        ReflectionBlock block = new ReflectionBlock(workspace, method);
+        MethodBlock block = new MethodBlock(workspace, method);
         //Specify further copy statements here
         return block;
     }

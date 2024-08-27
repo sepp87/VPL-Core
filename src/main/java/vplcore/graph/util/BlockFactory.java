@@ -43,10 +43,10 @@ public class BlockFactory {
     }
 
     public static Block createBlockFromMethod(Method method, Workspace workspace) {
-        ReflectionBlock block = null;
+        MethodBlock block = null;
         try {
             BlockInfo info = method.getAnnotation(BlockInfo.class);
-            block = new ReflectionBlock(workspace, method);
+            block = new MethodBlock(workspace, method);
 
             Class<?> returnType = method.getReturnType();
             if (returnType.equals(Number.class)) {

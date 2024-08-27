@@ -11,6 +11,8 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.SPACE;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
+import vplcore.Config;
+import static vplcore.Util.OperatingSystem.WINDOWS;
 import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
 
@@ -36,62 +38,52 @@ public class KeyboardInputHandler {
     }
 
     public void handle_KeyRelease(KeyEvent e) {
+
+        boolean isModifierDown = isModifierDown(e);
+
         switch (e.getCode()) {
             case DELETE:
-
                 for (Block block : workspace.selectedBlockSet) {
                     block.delete();
                 }
-
                 workspace.selectedBlockSet.clear();
                 break;
             case C:
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     Actions.copyBlocks(workspace);
                 }
                 break;
-
             case V:
-                if (e.isControlDown()) {
-                    if (workspace.tempBlockSet == null) {
-                        return;
-                    }
-                    if (workspace.tempBlockSet.isEmpty()) {
+                if (isModifierDown) {
+                    if (workspace.tempBlockSet == null || workspace.tempBlockSet.isEmpty()) {
                         return;
                     }
                     Actions.pasteBlocks(workspace);
                 }
                 break;
-
             case G:
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     Actions.groupBlocks(workspace);
                 }
                 break;
-
             case N:
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     Actions.newFile(workspace);
                 }
                 break;
-
             case S:
-
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     Actions.saveFile(workspace);
                 }
                 break;
-
             case O:
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     Actions.openFile(workspace);
                 }
                 break;
-
             case A: {
-                if (e.isControlDown()) {
+                if (isModifierDown) {
                     workspace.selectedBlockSet.clear();
-
                     for (Block block : workspace.blockSet) {
                         block.setSelected(true);
                         workspace.selectedBlockSet.add(block);
@@ -99,6 +91,19 @@ public class KeyboardInputHandler {
                 }
             }
             break;
+        }
+    }
+
+    private boolean isModifierDown(KeyEvent e) {
+        switch (Config.get().operatingSystem()) {
+            case WINDOWS:
+                return e.isControlDown();
+            case MACOS:
+                return e.isMetaDown();
+            case LINUX:
+                return e.isMetaDown();
+            default:
+                return e.isControlDown();
         }
     }
 

@@ -11,9 +11,11 @@ import javafx.scene.control.Control;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape3D;
+import vplcore.graph.model.VplElement;
 import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 import static vplcore.workspace.Workspace.clamp;
@@ -51,33 +53,26 @@ public class MouseInputHandler {
 
     private EventHandler<MouseEvent> onMouseClickedEventHandler = new EventHandler<MouseEvent>() {
 
-        public void handle(MouseEvent e) {
+        @Override
+        public void handle(MouseEvent event) {
 
-            // Check if mouse was on Controls
-            Node node = e.getPickResult().getIntersectedNode();
-            boolean onControl = workspace.checkParent(node, Control.class);
-            boolean onViewer = workspace.checkParent(node, Shape3D.class);
+            Node node = event.getPickResult().getIntersectedNode();
+            boolean onBlock = workspace.checkParent(node, Block.class);
             boolean onRadialMenu = workspace.checkParent(node, RadialMenu.class);
+            boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
+            boolean isNotDragged = event.isStillSincePress();
 
-            if (onViewer || onControl) {
-                return;
-            }
+//            System.out.println(node.getClass().getSimpleName());
+//            boolean onControl = workspace.checkParent(node, Control.class);
+//            boolean onViewer = workspace.checkParent(node, Shape3D.class);
 
-            if (workspace.radialMenu.isVisible() && !onRadialMenu && e.getButton() == MouseButton.PRIMARY) {
+            if (isSecondary && isNotDragged && !onRadialMenu && !onBlock) {
+                workspace.radialMenu.show(event.getSceneX(), event.getSceneY());
+            } else if (onRadialMenu) {  
+                // keep radial menu shown if it is clicked on
+            } else {
                 workspace.radialMenu.hide();
-                return;
             }
-
-            // right mouse button => open menu
-            if (e.getButton() != MouseButton.SECONDARY) {
-                return;
-            }
-
-            if (!e.isStillSincePress()) {
-                return;
-            }
-
-            workspace.radialMenu.show(e.getSceneX(), e.getSceneY());
         }
     };
 

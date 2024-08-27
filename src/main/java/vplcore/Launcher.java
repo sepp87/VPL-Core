@@ -13,10 +13,12 @@ import vpllib.method.JsonMethods;
 // 2 IMPROVEMENT create elaborate tests TBD what to test
 // 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
 // 3 BUG where block is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new block
-// 3 BUG selection rectangle offset when directly dragging directly after being on a block before, does not always trigger
+// 3 BUG selection rectangle offset when selection rectangle last rectangle was not removed (can be observed by a small rectangle artifact), this tiny rectangle can be created by a tiny drag (does not always occur)
 // 3 IMPROVEMENT select block should stay the same size regardless of the zoom (probably needs to be on the contentGroup and not on the workspace, just like the radial menu)
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
+// 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
+// 3 IMPROVEMENT Add MACOS shortcuts e.g. replace CTRL by CMD
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file

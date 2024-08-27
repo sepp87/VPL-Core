@@ -353,7 +353,6 @@ public abstract class Block extends VplElement {
     public abstract Block clone();
 
     public void serialize(BlockTag xmlTag) {
-//        xmlTag.setType(getClass().getName());
         xmlTag.setType(this.getClass().getAnnotation(BlockInfo.class).identifier());
         xmlTag.setUUID(uuid.toString());
         xmlTag.setX(getLayoutX());

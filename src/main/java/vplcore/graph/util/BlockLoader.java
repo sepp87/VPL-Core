@@ -71,7 +71,7 @@ public class BlockLoader {
      * Retrieve all blocks from external libraries
      */
     public static void loadExternalBlocks() {
-        File dir = new File(Config.get().getLibraryDirectory());
+        File dir = new File(Config.get().libraryDirectory());
         File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
 
         for (File lib : libraries) {
@@ -141,8 +141,8 @@ public class BlockLoader {
      * Retrieve all blocks from static methods
      */
     public static void loadStaticMethodsAsBlocks() {
-        BlockInfo info = ReflectionBlock.class.getAnnotation(BlockInfo.class);
-        BLOCK_TYPE_MAP.put(info.identifier(), ReflectionBlock.class);
+        BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
+        BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
 
         List<Method> methods = getStaticMethodsFromClass(vpllib.method.StringMethods.class);
         methods.addAll(getStaticMethodsFromClass(vpllib.method.JsonMethods.class));

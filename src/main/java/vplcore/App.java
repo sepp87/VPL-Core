@@ -19,10 +19,9 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
 
         AnchorPane pane = new AnchorPane();
-        pane.getStylesheets().add("css/flat_white.css");
-//        pane.getStylesheets().add("css/flat_dark.css");
-//        pane.getStylesheets().add("css/flat_singer.css");
+        pane.getStylesheets().add(Config.get().stylesheets());
         pane.getStyleClass().add("vpl");
+        pane.setStyle("-fx-background-color: blue;");
 
         Workspace workspace = new Workspace();
         // get selection hub
@@ -33,6 +32,7 @@ public class App extends Application {
         menuBar.prefWidthProperty().bind(pane.widthProperty());
 
         pane.getChildren().addAll(workspaceAndRadialMenu, menuBar);
+//
 
         Scene scene = new Scene(pane, 1600, 1200);
         stage.setScene(scene);

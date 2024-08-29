@@ -18,7 +18,7 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
-// 3 IMPROVEMENT Add MACOS shortcuts e.g. replace CTRL by CMD
+
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
@@ -34,6 +34,7 @@ import vpllib.method.JsonMethods;
 // 3 BUG when opening a file and cancelling the action, everything is removed as if a new file was created
 // 2 IMPROVEMENT refactor select block so the block creation is delegated to a block factory
 // 3 IMPROVEMENT remove external OBJ code, due to enforcing unnecessary GPL license
+// 3 IMPROVEMENT Add MACOS shortcuts e.g. replace CTRL by CMD
 
 
 /**

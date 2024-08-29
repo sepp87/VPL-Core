@@ -11,11 +11,9 @@ import javafx.scene.control.Control;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape3D;
-import vplcore.graph.model.VplElement;
 import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 import static vplcore.workspace.Workspace.clamp;
@@ -51,6 +49,47 @@ public class MouseInputHandler {
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, onScrollEventHandler);
     }
 
+    private EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseMovedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseScrollHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseScrollStartedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+    private EventHandler<MouseEvent> mouseScrollFinishedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+        }
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     private EventHandler<MouseEvent> onMouseClickedEventHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -65,10 +104,9 @@ public class MouseInputHandler {
 //            System.out.println(node.getClass().getSimpleName());
 //            boolean onControl = workspace.checkParent(node, Control.class);
 //            boolean onViewer = workspace.checkParent(node, Shape3D.class);
-
             if (isSecondary && isNotDragged && !onRadialMenu && !onBlock) {
                 workspace.radialMenu.show(event.getSceneX(), event.getSceneY());
-            } else if (onRadialMenu) {  
+            } else if (onRadialMenu) {
                 // keep radial menu shown if it is clicked on
             } else {
                 workspace.radialMenu.hide();
@@ -91,6 +129,41 @@ public class MouseInputHandler {
         }
     };
 
+    private void handle_MousePress(MouseEvent e) {
+
+//        System.out.println(e.getPickResult().getIntersectedNode().getClass());
+        switch (workspace.mouseMode) {
+            case MouseMode.NOTHING:
+                if (e.isPrimaryButtonDown()) {
+
+                    // Check if mouse click was on a block
+                    Node node = e.getPickResult().getIntersectedNode();
+                    boolean mouseUpOnBlock = workspace.checkParent(node, Block.class);
+
+                    if (!mouseUpOnBlock) {
+
+                        workspace.startSelectionPoint = workspace.sceneToLocal(e.getSceneX(), e.getSceneY());
+
+                        workspace.mouseMode = MouseMode.SELECT;
+
+                        workspace.splineMode = SplineMode.NOTHING;
+
+                    }
+                } else if (e.isSecondaryButtonDown()) {
+
+                }
+
+                break;
+        }
+    }
+
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    
     private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -174,34 +247,6 @@ public class MouseInputHandler {
             e.consume();
         }
     };
-
-    private void handle_MousePress(MouseEvent e) {
-
-//        System.out.println(e.getPickResult().getIntersectedNode().getClass());
-        switch (workspace.mouseMode) {
-            case MouseMode.NOTHING:
-                if (e.isPrimaryButtonDown()) {
-
-                    // Check if mouse click was on a block
-                    Node node = e.getPickResult().getIntersectedNode();
-                    boolean mouseUpOnBlock = workspace.checkParent(node, Block.class);
-
-                    if (!mouseUpOnBlock) {
-
-                        workspace.startSelectionPoint = workspace.sceneToLocal(e.getSceneX(), e.getSceneY());
-
-                        workspace.mouseMode = MouseMode.SELECT;
-
-                        workspace.splineMode = SplineMode.NOTHING;
-
-                    }
-                } else if (e.isSecondaryButtonDown()) {
-
-                }
-
-                break;
-        }
-    }
 
     public Point2D mousePosition = new Point2D(0, 0);
 

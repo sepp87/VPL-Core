@@ -26,6 +26,25 @@ import javafx.stage.Stage;
  */
 public class Actions {
 
+    public enum ActionType {
+        ALIGN_BOTTOM,
+        ALIGN_HORIZONTALLY,
+        ALIGN_LEFT,
+        ALIGN_RIGHT,
+        ALIGN_TOP,
+        ALIGN_VERTICALLY,
+        COPY_BLOCKS,
+        DELETE_BLOCKS,
+        GROUP_BLOCKS,
+        NEW_FILE,
+        OPEN_FILE,
+        PASTE_BLOCKS,
+        SAVE_FILE,
+        ZOOM_IN,
+        ZOOM_OUT,
+        ZOOM_TO_FIT,
+    }
+
     private final Workspace workspace;
 
     public Actions(Workspace workspace) {
@@ -82,29 +101,6 @@ public class Actions {
         }
     }
 
-    public static void zoomToFit(Workspace workspace) {
-
-        Scene bScene = workspace.getScene();
-        Bounds localBBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
-        if (localBBox == null) {
-            return;
-        }
-
-        //Zoom to fit        
-        Bounds bBox = workspace.localToParent(localBBox);
-        double ratioX = bBox.getWidth() / bScene.getWidth();
-        double ratioY = bBox.getHeight() / bScene.getHeight();
-        double ratio = Math.max(ratioX, ratioY);
-        workspace.setScale((workspace.getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
-
-        //Pan to fit
-        bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
-        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
-        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
-        workspace.setTranslateX(workspace.getTranslateX() - deltaX);
-        workspace.setTranslateY(workspace.getTranslateY() - deltaY);
-    }
-
     public static void alignBottom(Workspace workspace) {
         Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
         for (Block block : workspace.selectedBlockSet) {
@@ -147,6 +143,30 @@ public class Actions {
         }
     }
 
+    public static void copyBlocks(Workspace workspace) {
+        workspace.tempBlockSet = FXCollections.observableSet();
+
+        for (Block block : workspace.selectedBlockSet) {
+            workspace.tempBlockSet.add(block);
+        }
+    }
+
+    public static void deleteSelectedBlocks(Workspace workspace) {
+        for (Block block : workspace.selectedBlockSet) {
+            block.delete();
+        }
+        workspace.selectedBlockSet.clear();
+    }
+
+    public static void groupBlocks(Workspace workspace) {
+        if (workspace.selectedBlockSet.size() <= 1) {
+            return;
+        }
+
+        BlockGroup blockGroup = new BlockGroup(workspace);
+        blockGroup.setChildBlocks(workspace.selectedBlockSet);
+    }
+
     public static void newFile(Workspace workspace) {
         workspace.blockSet.clear();
         workspace.connectionSet.clear();
@@ -175,36 +195,11 @@ public class Actions {
         GraphLoader.deserialize(file, workspace);
     }
 
-    public static void saveFile(Workspace workspace) {
-        Stage stage = (Stage) workspace.getScene().getWindow();
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Save as vplXML...");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showSaveDialog(stage);
-
-        if (file != null) {
-            GraphSaver.serialize(file, workspace);
-        }
-    }
-
-    public static void groupBlocks(Workspace workspace) {
-        if (workspace.selectedBlockSet.size() <= 1) {
+    public static void pasteBlocks(Workspace workspace) {
+        if (workspace.tempBlockSet == null || workspace.tempBlockSet.isEmpty()) {
             return;
         }
 
-        BlockGroup blockGroup = new BlockGroup(workspace);
-        blockGroup.setChildBlocks(workspace.selectedBlockSet);
-    }
-
-    public static void copyBlocks(Workspace workspace) {
-        workspace.tempBlockSet = FXCollections.observableSet();
-
-        for (Block block : workspace.selectedBlockSet) {
-            workspace.tempBlockSet.add(block);
-        }
-    }
-
-    public static void pasteBlocks(Workspace workspace) {
         Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.tempBlockSet);
 
         if (bBox == null) {
@@ -280,4 +275,49 @@ public class Actions {
             }
         }
     }
+
+    public static void saveFile(Workspace workspace) {
+        Stage stage = (Stage) workspace.getScene().getWindow();
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save as vplXML...");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
+        File file = chooser.showSaveDialog(stage);
+
+        if (file != null) {
+            GraphSaver.serialize(file, workspace);
+        }
+    }
+
+    public static void selectAllBlocks(Workspace workspace) {
+        workspace.selectedBlockSet.clear();
+        for (Block block : workspace.blockSet) {
+            block.setSelected(true);
+            workspace.selectedBlockSet.add(block);
+        }
+
+    }
+
+    public static void zoomToFit(Workspace workspace) {
+
+        Scene bScene = workspace.getScene();
+        Bounds localBBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
+        if (localBBox == null) {
+            return;
+        }
+
+        //Zoom to fit        
+        Bounds bBox = workspace.localToParent(localBBox);
+        double ratioX = bBox.getWidth() / bScene.getWidth();
+        double ratioY = bBox.getHeight() / bScene.getHeight();
+        double ratio = Math.max(ratioX, ratioY);
+        workspace.setScale((workspace.getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
+
+        //Pan to fit
+        bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
+        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
+        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
+        workspace.setTranslateX(workspace.getTranslateX() - deltaX);
+        workspace.setTranslateY(workspace.getTranslateY() - deltaY);
+    }
+
 }

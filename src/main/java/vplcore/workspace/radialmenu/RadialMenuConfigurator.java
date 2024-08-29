@@ -5,13 +5,8 @@ import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import vplcore.IconType;
-import vplcore.workspace.ActionType;
-import vplcore.workspace.ActionType;
+import vplcore.workspace.Actions.ActionType;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.Workspace;
-import vplcore.workspace.radialmenu.RadialMenu;
-import vplcore.workspace.radialmenu.RadialMenuItem;
-import vplcore.workspace.radialmenu.RadialSubMenu;
 
 /**
  *
@@ -32,7 +27,7 @@ public class RadialMenuConfigurator {
         RadialMenuItem<ActionType> openFileItem = new RadialMenuItem<>(ActionType.OPEN_FILE, IconType.FA_FOLDER_OPEN_O, "Open\nfile");
         RadialMenuItem<ActionType> saveFileItem = new RadialMenuItem<>(ActionType.SAVE_FILE, IconType.FA_FLOPPY_O, "Save\nfile");
         RadialMenuItem<ActionType> zoomToFitItem = new RadialMenuItem<>(ActionType.ZOOM_TO_FIT, IconType.FA_SEARCH, "Zoom\nto fit");
-        RadialSubMenu alignItem = new RadialSubMenu(IconType.FA_SORT_AMOUNT_ASC, "Align");
+        RadialSubMenu<?> alignItem = new RadialSubMenu<>(IconType.FA_SORT_AMOUNT_ASC, "Align");
         RadialMenuItem<ActionType> copyItem = new RadialMenuItem<>(ActionType.COPY_BLOCKS, IconType.FA_CLONE, "Copy");
         RadialMenuItem<ActionType> pasteItem = new RadialMenuItem<>(ActionType.PASTE_BLOCKS, IconType.FA_CLIPBOARD, "Paste");
         RadialMenuItem<ActionType> groupItem = new RadialMenuItem<>(ActionType.GROUP_BLOCKS, IconType.FA_OBJECT_GROUP, "Group");

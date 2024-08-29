@@ -1,5 +1,7 @@
 package vplcore.workspace.input;
 
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import vplcore.graph.model.Block;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.C;
@@ -33,66 +35,62 @@ public class KeyboardInputHandler {
     }
 
     private void addInputHandlers(Object obj, Object oldVal, Object newVal) {
-        workspace.getScene().setOnKeyPressed(this::handle_KeyPress);
-        workspace.getScene().setOnKeyReleased(this::handle_KeyRelease);
+        workspace.getScene().setOnKeyPressed(handleKeyPressed);
+
     }
 
-    public void handle_KeyRelease(KeyEvent e) {
+    private final EventHandler<KeyEvent> handleKeyPressed = new EventHandler<>() {
 
-        boolean isModifierDown = isModifierDown(e);
+        @Override
+        public void handle(KeyEvent event) {
+            
+            boolean isModifierDown = isModifierDown(event);
 
-        switch (e.getCode()) {
-            case DELETE:
-                for (Block block : workspace.selectedBlockSet) {
-                    block.delete();
-                }
-                workspace.selectedBlockSet.clear();
-                break;
-            case C:
-                if (isModifierDown) {
-                    Actions.copyBlocks(workspace);
-                }
-                break;
-            case V:
-                if (isModifierDown) {
-                    if (workspace.tempBlockSet == null || workspace.tempBlockSet.isEmpty()) {
-                        return;
+            switch (event.getCode()) {
+                case DELETE:
+                    Actions.deleteSelectedBlocks(workspace);
+                    break;
+                case C:
+                    if (isModifierDown) {
+                        Actions.copyBlocks(workspace);
                     }
-                    Actions.pasteBlocks(workspace);
-                }
-                break;
-            case G:
-                if (isModifierDown) {
-                    Actions.groupBlocks(workspace);
-                }
-                break;
-            case N:
-                if (isModifierDown) {
-                    Actions.newFile(workspace);
-                }
-                break;
-            case S:
-                if (isModifierDown) {
-                    Actions.saveFile(workspace);
-                }
-                break;
-            case O:
-                if (isModifierDown) {
-                    Actions.openFile(workspace);
-                }
-                break;
-            case A: {
-                if (isModifierDown) {
-                    workspace.selectedBlockSet.clear();
-                    for (Block block : workspace.blockSet) {
-                        block.setSelected(true);
-                        workspace.selectedBlockSet.add(block);
+                    break;
+                case V:
+                    if (isModifierDown) {
+                        Actions.pasteBlocks(workspace);
                     }
-                }
+                    break;
+                case G:
+                    if (isModifierDown) {
+                        Actions.groupBlocks(workspace);
+                    }
+                    break;
+                case N:
+                    if (isModifierDown) {
+                        Actions.newFile(workspace);
+                    }
+                    break;
+                case S:
+                    if (isModifierDown) {
+                        Actions.saveFile(workspace);
+                    }
+                    break;
+                case O:
+                    if (isModifierDown) {
+                        Actions.openFile(workspace);
+                    }
+                    break;
+                case A:
+                    if (isModifierDown) {
+                        Actions.selectAllBlocks(workspace);
+                    }
+                    break;
+                case SPACE:
+                    Actions.zoomToFit(workspace);
+                    break;
             }
-            break;
         }
-    }
+    };
 
     private boolean isModifierDown(KeyEvent e) {
         switch (Config.get().operatingSystem()) {
@@ -104,20 +102,6 @@ public class KeyboardInputHandler {
                 return e.isMetaDown();
             default:
                 return e.isControlDown();
-        }
-    }
-
-    /**
-     * Move all the with a press on the arrow keys. A form of panning.
-     *
-     * @param e
-     */
-    public void handle_KeyPress(KeyEvent e) {
-
-        switch (e.getCode()) {
-            case SPACE:
-                Actions.zoomToFit(workspace);
-                break;
         }
     }
 

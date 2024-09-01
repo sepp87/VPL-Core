@@ -62,7 +62,7 @@ public class Workspace extends AnchorPane {
     EventBlaster controlBlaster = new EventBlaster(this);
 
     //Pan members
-    public DragContext panContext = new DragContext();
+    public DragContext panContext;
 
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);

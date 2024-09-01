@@ -3,6 +3,7 @@ package vplcore.graph.util;
 import vplcore.graph.model.Block;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
+import javafx.scene.control.ListCell;
 
 import javafx.scene.input.*;
 import javafx.scene.control.ListView;
@@ -49,6 +50,7 @@ public class SelectBlock extends Block {
         this.setOnMouseDragExited(this::selectBlock_MouseExit);
         this.setOnMouseEntered(this::selectBlock_MouseEnter);
         listView.setOnMousePressed(this::listView_MousePress);
+        listView.setOnMouseMoved(this::listView_MouseMove);
         searchField.setOnKeyPressed(this::searchField_KeyPress);
         searchField.setOnKeyReleased(this::searchField_KeyRelease);
 
@@ -76,6 +78,27 @@ public class SelectBlock extends Block {
         if (e.getClickCount() == 2) {
             createBlock();
         }
+    }
+
+    private void listView_MouseMove(MouseEvent event) {
+
+        // Get the Y position of the mouse event relative to the ListView
+        double yPos = event.getY();
+
+        // Calculate the index of the item under the mouse
+        int index = (int) (yPos / getCellHeight(listView));
+
+        // Ensure the index is within the bounds of the ListView's items
+        if (index >= 0 && index < listView.getItems().size()) {
+            // Get the item at the calculated index
+            String hoveredItem = listView.getItems().get(index);
+            listView.getSelectionModel().select(index);
+        }
+    }
+
+    // Method to determine the height of a cell in the ListView
+    private double getCellHeight(ListView<String> listView) {
+        return listView.getFixedCellSize() > 0 ? listView.getFixedCellSize() : 24; // Default to 24 if height is 0
     }
 
     /**
@@ -162,12 +185,12 @@ public class SelectBlock extends Block {
         }
 
         Block block = BlockFactory.createBlock(blockIdentifier, workspace);
-        
+
         if (block == null) {
             System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
             return;
         }
-        
+
         block.setLayoutX(workspace.mouse.mousePosition.getX() - 20);
         block.setLayoutY(workspace.mouse.mousePosition.getY() - 20);
 

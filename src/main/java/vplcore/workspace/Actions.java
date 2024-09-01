@@ -35,11 +35,13 @@ public class Actions {
         ALIGN_VERTICALLY,
         COPY_BLOCKS,
         DELETE_BLOCKS,
+        DESELECT_ALL_BLOCKS,
         GROUP_BLOCKS,
         NEW_FILE,
         OPEN_FILE,
         PASTE_BLOCKS,
         SAVE_FILE,
+        SELECT_ALL_BLOCKS,
         ZOOM_IN,
         ZOOM_OUT,
         ZOOM_TO_FIT,
@@ -154,6 +156,13 @@ public class Actions {
     public static void deleteSelectedBlocks(Workspace workspace) {
         for (Block block : workspace.selectedBlockSet) {
             block.delete();
+        }
+        workspace.selectedBlockSet.clear();
+    }
+
+    public static void deselectAllBlocks(Workspace workspace) {
+        for (Block block : workspace.selectedBlockSet) {
+            block.setSelected(false);
         }
         workspace.selectedBlockSet.clear();
     }

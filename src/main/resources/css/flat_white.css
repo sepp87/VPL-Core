@@ -129,15 +129,20 @@
     -fx-text-fill: #5F5F5F;
 }
 
-.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected, .list-cell:filled:hover {
+.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
     -fx-background-color: salmon;
     -fx-text-fill: white;
 }
+/*.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}*/
 
+/*
 .list-view .list-cell:filled:hover {
     -fx-background-color: salmon;
     -fx-text-fill: white;
-}
+}*/
 
 .list-view .list-cell:even {
     -fx-background-color: rgba(127,127,127,0.1);

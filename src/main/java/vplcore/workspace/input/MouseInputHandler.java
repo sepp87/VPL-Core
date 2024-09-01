@@ -1,5 +1,6 @@
 package vplcore.workspace.input;
 
+import javafx.event.Event;
 import vplcore.graph.model.Block;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape3D;
 import vplcore.graph.util.SelectBlock;
+import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
 import static vplcore.workspace.Workspace.clamp;
 import vplcore.workspace.radialmenu.RadialMenu;
@@ -25,6 +27,10 @@ import vplcore.workspace.radialmenu.RadialMenu;
  */
 public class MouseInputHandler {
 
+    // mouse: right click > radial menu
+    // mouse: left double cick > select block
+    // mouse: left press, drag and release > selection rectangle
+    // mouse: right press, drag and release > pan
     private final Workspace workspace;
 
     public MouseInputHandler(Workspace workspace) {
@@ -36,52 +42,206 @@ public class MouseInputHandler {
 
     private void addInputHandlers(Object obj, Object oldVal, Object newVal) {
 
-        workspace.getScene().setOnMouseReleased(this::handle_MouseRelease);
-        workspace.getScene().setOnMousePressed(this::handle_MousePress);
-        workspace.getScene().setOnMouseDragged(this::handle_MouseDrag);
         workspace.getScene().setOnMouseMoved(this::handle_MouseMove);
 
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
+//        workspace.getScene().setOnMouseReleased(this::handle_MouseRelease);
+//        workspace.getScene().setOnMousePressed(this::handle_MousePress);
+//        workspace.getScene().setOnMouseDragged(this::handle_MouseDrag);
+//        workspace.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
+//        workspace.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
+//
         workspace.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED, onMouseClickedEventHandler);
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL, onScrollEventHandler);
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, onScrollEventHandler);
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, onScrollEventHandler);
-    }
 
-    private EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent t) {
-        }
-    };
-    private EventHandler<MouseEvent> mouseMovedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent t) {
-        }
-    };
-    private EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent t) {
-        }
-    };
+        workspace.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
+        workspace.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
+        workspace.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
+
+//        workspace.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler);
+//        workspace.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
+//        workspace.getScene().addEventFilter(ScrollEvent.SCROLL, mouseScrollHandler);
+//        workspace.getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, mouseScrollStartedHandler);
+//        workspace.getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, mouseScrollFinishedHandler);
+    }
     private EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<>() {
         @Override
-        public void handle(MouseEvent t) {
+        public void handle(MouseEvent event) {
+
         }
     };
-    private EventHandler<MouseEvent> mouseScrollHandler = new EventHandler<>() {
+    private EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
         @Override
-        public void handle(MouseEvent t) {
+        public void handle(MouseEvent event) {
+
+            // register mouse position
+            mousePosition = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
+            
+            if (event.isPrimaryButtonDown() && !onBlock(event)) {
+                prepareSelectionRectangle(event);
+
+            } else if (event.isSecondaryButtonDown() && !onBlock(event)) {
+                preparePan(event);
+
+            }
         }
     };
-    private EventHandler<MouseEvent> mouseScrollStartedHandler = new EventHandler<>() {
+
+    private EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<>() {
         @Override
-        public void handle(MouseEvent t) {
+        public void handle(MouseEvent event) {
+
+            boolean isSelecting = workspace.startSelectionPoint != null;
+            if (event.isPrimaryButtonDown() && isSelecting) {
+                startSelectionRectangleIfNull();
+                updateSelectionRectangle(event);
+                updateSelection();
+
+            } else if (event.isSecondaryButtonDown()) {
+                pan(event);
+            }
         }
     };
-    private EventHandler<MouseEvent> mouseScrollFinishedHandler = new EventHandler<>() {
+
+    private EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<>() {
         @Override
-        public void handle(MouseEvent t) {
+        public void handle(MouseEvent event) {
+            workspace.startSelectionPoint = null;
+
+            if (event.getButton() == MouseButton.PRIMARY) {
+                
+                boolean wasSelecting = workspace.selectionRectangle != null;
+                if (wasSelecting) {
+                    removeSelectionRectangle();
+
+                } else {
+                    Actions.deselectAllBlocks(workspace);
+                }
+
+                if (event.getClickCount() == 2 && !onBlock(event) && event.isDragDetect()) {
+                    showSelectBlock(event);
+                }
+            } else if (event.getButton() == MouseButton.SECONDARY) {
+                boolean wasPanning = workspace.panContext != null;
+                if (wasPanning) {
+                    removePan();
+                }
+
+            }
+        }
+    };
+
+    private boolean onBlock(MouseEvent event) {
+        Node node = event.getPickResult().getIntersectedNode();
+        return workspace.checkParent(node, Block.class);
+    }
+
+    private void prepareSelectionRectangle(MouseEvent event) {
+        workspace.startSelectionPoint = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
+    }
+
+    private void startSelectionRectangleIfNull() {
+        if (workspace.selectionRectangle != null) {
+            return;
+        }
+        workspace.selectionRectangle = new Region();
+        workspace.selectionRectangle.setLayoutX(workspace.startSelectionPoint.getX());
+        workspace.selectionRectangle.setLayoutY(workspace.startSelectionPoint.getY());
+        workspace.selectionRectangle.setMinSize(0, 0);
+
+        workspace.selectionRectangle.getStyleClass().add("selection-rectangle");
+        workspace.getChildren().add(workspace.selectionRectangle);
+    }
+
+    private void updateSelectionRectangle(MouseEvent event) {
+
+        Point2D currentPosition = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
+        Point2D delta = currentPosition.subtract(workspace.startSelectionPoint);
+
+        if (delta.getX() < 0) {
+            workspace.selectionRectangle.setLayoutX(currentPosition.getX());
+        }
+
+        if (delta.getY() < 0) {
+            workspace.selectionRectangle.setLayoutY(currentPosition.getY());
+        }
+
+        workspace.selectionRectangle.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
+
+    }
+
+    private void updateSelection() {
+        for (Block block : workspace.blockSet) {
+            if ((block.getLayoutX() >= workspace.selectionRectangle.getLayoutX())
+                    && block.getLayoutX() + block.getWidth() <= workspace.selectionRectangle.getLayoutX() + workspace.selectionRectangle.getWidth()
+                    && (block.getLayoutY() >= workspace.selectionRectangle.getLayoutY()
+                    && block.getLayoutY() + block.getHeight() <= workspace.selectionRectangle.getLayoutY() + workspace.selectionRectangle.getHeight())) {
+                workspace.selectedBlockSet.add(block);
+                block.setSelected(true);
+            } else {
+                workspace.selectedBlockSet.remove(block);
+                block.setSelected(false);
+            }
+        }
+    }
+
+    private void removeSelectionRectangle() {
+        workspace.getChildren().remove(workspace.selectionRectangle);
+        workspace.selectionRectangle = null;
+        workspace.startSelectionPoint = null;
+    }
+
+    private void preparePan(MouseEvent event) {
+        workspace.panContext = new DragContext();
+        workspace.panContext.setX(event.getSceneX());
+        workspace.panContext.setY(event.getSceneY());
+        workspace.panContext.setTranslateX(workspace.getTranslateX());
+        workspace.panContext.setTranslateY(workspace.getTranslateY());
+    }
+
+    private void pan(MouseEvent event) {
+        workspace.setTranslateX(workspace.panContext.getTranslateX() + event.getSceneX() - workspace.panContext.getX());
+        workspace.setTranslateY(workspace.panContext.getTranslateY() + event.getSceneY() - workspace.panContext.getY());
+    }
+
+    private void removePan() {
+        workspace.panContext = null;
+    }
+
+    private void showSelectBlock(MouseEvent event) {
+        if (workspace.selectBlock != null) {
+            workspace.getChildren().remove(workspace.selectBlock);
+        }
+        workspace.selectBlock = new SelectBlock(workspace);
+        workspace.selectBlock.setLayoutX(workspace.sceneToLocal(event.getX(), event.getY()).getX() - 20);
+        workspace.selectBlock.setLayoutY(workspace.sceneToLocal(event.getX(), event.getY()).getY() - 20);
+        workspace.getChildren().add(workspace.selectBlock);
+    }
+
+    private EventHandler<MouseEvent> mouseMovedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+
+        }
+    };
+
+    private EventHandler<ScrollEvent> mouseScrollHandler = new EventHandler<>() {
+        @Override
+        public void handle(ScrollEvent event) {
+
+        }
+    };
+    private EventHandler<ScrollEvent> mouseScrollStartedHandler = new EventHandler<>() {
+        @Override
+        public void handle(ScrollEvent event) {
+
+        }
+    };
+    private EventHandler<ScrollEvent> mouseScrollFinishedHandler = new EventHandler<>() {
+        @Override
+        public void handle(ScrollEvent event) {
+
         }
     };
 
@@ -114,80 +274,12 @@ public class MouseInputHandler {
         }
     };
 
-    private EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
 
-        public void handle(MouseEvent e) {
-
-            // right mouse button => panning
-            if (!e.isSecondaryButtonDown()) {
-                return;
-            }
-            workspace.panContext.setX(e.getSceneX());
-            workspace.panContext.setY(e.getSceneY());
-            workspace.panContext.setTranslateX(workspace.getTranslateX());
-            workspace.panContext.setTranslateY(workspace.getTranslateY());
-        }
-    };
-
-    private void handle_MousePress(MouseEvent e) {
-
-//        System.out.println(e.getPickResult().getIntersectedNode().getClass());
-        switch (workspace.mouseMode) {
-            case MouseMode.NOTHING:
-                if (e.isPrimaryButtonDown()) {
-
-                    // Check if mouse click was on a block
-                    Node node = e.getPickResult().getIntersectedNode();
-                    boolean mouseUpOnBlock = workspace.checkParent(node, Block.class);
-
-                    if (!mouseUpOnBlock) {
-
-                        workspace.startSelectionPoint = workspace.sceneToLocal(e.getSceneX(), e.getSceneY());
-
-                        workspace.mouseMode = MouseMode.SELECT;
-
-                        workspace.splineMode = SplineMode.NOTHING;
-
-                    }
-                } else if (e.isSecondaryButtonDown()) {
-
-                }
-
-                break;
-        }
-    }
-
-    
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    
-    private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-
-        @Override
-        public void handle(MouseEvent e) {
-//            System.out.println("fire Go");
-            // right mouse button => panning
-            if (!e.isSecondaryButtonDown()) {
-                return;
-            }
-
-            // Check if mouse was on Controls
-            Node node = e.getPickResult().getIntersectedNode();
-            boolean onControl = workspace.checkParent(node, Control.class);
-            boolean onViewer = workspace.checkParent(node, SubScene.class);
-            boolean onModel = workspace.checkParent(node, Shape3D.class);
-            if (onViewer || onControl || onModel) {
-                return;
-            }
-
-            workspace.setTranslateX(workspace.panContext.getTranslateX() + e.getSceneX() - workspace.panContext.getX());
-            workspace.setTranslateY(workspace.panContext.getTranslateY() + e.getSceneY() - workspace.panContext.getY());
-            e.consume();
-        }
-    };
 
     private EventHandler<ScrollEvent> onScrollEventHandler = new EventHandler<ScrollEvent>() {
         boolean doScroll = false;
@@ -278,102 +370,6 @@ public class MouseInputHandler {
 
             default:
                 throw new IndexOutOfBoundsException("Argument out of range.");
-
-        }
-    }
-
-    private void handle_MouseDrag(MouseEvent e) {
-
-        // click and drag mouse button => selection
-        if (workspace.mouseMode == MouseMode.SELECT) {
-
-            if (e.isPrimaryButtonDown()) {
-                if (workspace.selectionRectangle == null) {
-
-                    workspace.selectionRectangle = new Region();
-                    workspace.selectionRectangle.setLayoutX(workspace.startSelectionPoint.getX());
-                    workspace.selectionRectangle.setLayoutY(workspace.startSelectionPoint.getY());
-                    workspace.selectionRectangle.setMinSize(
-                            workspace.sceneToLocal(e.getSceneX(), e.getSceneY()).getX(),
-                            workspace.sceneToLocal(e.getSceneX(), e.getSceneY()).getY());
-
-                    workspace.selectionRectangle.getStyleClass().add("selection-rectangle");
-
-                    workspace.getChildren().add(workspace.selectionRectangle);
-                }
-
-                Point2D currentPosition = workspace.sceneToLocal(e.getSceneX(), e.getSceneY());
-                Point2D delta = currentPosition.subtract(workspace.startSelectionPoint);
-
-                if (delta.getX() < 0) {
-                    workspace.selectionRectangle.setLayoutX(currentPosition.getX());
-                }
-
-                if (delta.getY() < 0) {
-                    workspace.selectionRectangle.setLayoutY(currentPosition.getY());
-                }
-
-                workspace.selectionRectangle.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
-
-                for (Block block : workspace.blockSet) {
-                    workspace.selectedBlockSet.remove(block);
-                    block.setSelected(false);
-
-                    if ((block.getLayoutX() >= workspace.selectionRectangle.getLayoutX())
-                            && block.getLayoutX() + block.getWidth() <= workspace.selectionRectangle.getLayoutX() + workspace.selectionRectangle.getWidth()
-                            && (block.getLayoutY() >= workspace.selectionRectangle.getLayoutY()
-                            && block.getLayoutY() + block.getHeight() <= workspace.selectionRectangle.getLayoutY() + workspace.selectionRectangle.getHeight())) {
-                        workspace.selectedBlockSet.add(block);
-                        block.setSelected(true);
-                    }
-                }
-            }
-        }
-    }
-
-    private void handle_MouseRelease(MouseEvent e) {
-
-//        System.out.println(mouseMode);
-        //if mouse was not dragged, mouseMode was actually nothing instead of selection
-        //if mouse was on a group, then selection should not be canceled
-        if (e.isDragDetect()) {
-            workspace.mouseMode = MouseMode.NOTHING;
-        }
-
-        // Check if mouse click was on a block
-        Node node = e.getPickResult().getIntersectedNode();
-        boolean mouseUpOnBlock = workspace.checkParent(node, Block.class);
-        boolean mouseUpOnMenu = workspace.checkParent(node, RadialMenu.class);
-
-        if (e.getClickCount() == 2 && e.isDragDetect() && !mouseUpOnBlock) {
-            if (workspace.selectBlock != null) {
-                workspace.getChildren().remove(workspace.selectBlock);
-            }
-            workspace.selectBlock = new SelectBlock(workspace);
-            workspace.selectBlock.setLayoutX(workspace.sceneToLocal(e.getX(), e.getY()).getX() - 20);
-            workspace.selectBlock.setLayoutY(workspace.sceneToLocal(e.getX(), e.getY()).getY() - 20);
-            workspace.getChildren().add(workspace.selectBlock);
-        }
-
-        switch (workspace.mouseMode) {
-
-            case MouseMode.NOTHING:
-
-                // if mouse up in empty space unselect all blocks
-                if (!mouseUpOnBlock && !mouseUpOnMenu && e.getButton() != MouseButton.SECONDARY) {
-                    for (Block block : workspace.selectedBlockSet) {
-                        block.setSelected(false);
-                    }
-                    workspace.selectedBlockSet.clear();
-                }
-                break;
-
-            case MouseMode.SELECT:
-                //Get mouse mode out of selection rectangle so UI can deselect nodes
-                workspace.getChildren().remove(workspace.selectionRectangle);
-                workspace.selectionRectangle = null;
-                workspace.mouseMode = MouseMode.NOTHING;
-                break;
 
         }
     }

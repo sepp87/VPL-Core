@@ -220,7 +220,7 @@ public class Actions {
         double pastePointY = MouseInfo.getPointerInfo().getLocation().y;
         Point2D pastePoint = workspace.screenToLocal(pastePointX, pastePointY);
 
-        pastePoint = workspace.mouse.mousePosition;
+        pastePoint = workspace.mouse.getPosition();
 
         Point2D delta = pastePoint.subtract(copyPoint);
 

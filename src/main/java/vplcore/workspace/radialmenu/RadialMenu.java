@@ -36,11 +36,6 @@ public class RadialMenu extends Group {
         returnToMain();
     }
 
-    public void hide() {
-        this.setVisible(false);
-
-    }
-
     public RadialMenu(List<RadialMenuItem<?>> items) {
 
         this.items = items;
@@ -58,7 +53,7 @@ public class RadialMenu extends Group {
         radialMenuLabel.layoutXProperty().bind(radialMenuLabel.widthProperty().divide(2).negate());
         radialMenuLabel.layoutYProperty().bind(radialMenuLabel.heightProperty().divide(2).negate());
         radialMenuLabel.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            hide();
+            RadialMenu.this.setVisible(false);
         });
 
         this.getChildren().addAll(radialMenuCircle, radialMenuLabel);

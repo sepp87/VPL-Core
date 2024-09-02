@@ -96,6 +96,7 @@ public class MenuBarConfigurator {
             @SuppressWarnings("unchecked")
             MenuBarItem item = (MenuBarItem) event.getSource();
             workspace.actions.perform(item.getAction());
+  
         }
     };
 }

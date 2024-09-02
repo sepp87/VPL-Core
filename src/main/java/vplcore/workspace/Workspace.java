@@ -1,26 +1,35 @@
 package vplcore.workspace;
 
-import vplcore.workspace.radialmenu.RadialMenuConfigurator;
 import vplcore.graph.model.Port;
 import vplcore.graph.model.Connection;
 import vplcore.graph.util.SelectBlock;
-import vplcore.workspace.input.MouseInputHandler;
+import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
 import vplcore.workspace.input.DragContext;
 import vplcore.EventBlaster;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
+import vplcore.workspace.input.ConnectionHandler;
 import vplcore.workspace.input.MouseMode;
+import vplcore.workspace.input.PanHandler;
+import vplcore.workspace.input.SelectBlockHandler;
+import vplcore.workspace.input.SelectionHandler;
 import vplcore.workspace.input.SplineMode;
+import vplcore.workspace.input.ZoomHandler;
 import vplcore.workspace.radialmenu.RadialMenu;
 
 /**
@@ -42,16 +51,10 @@ public class Workspace extends AnchorPane {
     public ObservableSet<Block> selectedBlockSet;
     public ObservableSet<BlockGroup> blockGroupSet;
 
-    //Menu members
-    public SelectBlock selectBlock;
-    public RadialMenu radialMenu;
-
     //Actions
     public Actions actions;
 
     //Create connection members
-    public Port tempStartPort;
-    public Line tempLine;
     public boolean typeSensitive = true;
 
     //Selection rectangle members
@@ -67,13 +70,6 @@ public class Workspace extends AnchorPane {
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
     public Pane zoomPane;
-
-    //Initial modi members
-    public SplineMode splineMode = SplineMode.NOTHING;
-    public MouseMode mouseMode = MouseMode.NOTHING;
-
-    public KeyboardInputHandler keyboard;
-    public MouseInputHandler mouse;
 
     //Radial menu
     public Group Go() {
@@ -97,7 +93,7 @@ public class Workspace extends AnchorPane {
         zoomPane.setPrefSize(0, 0);
         zoomPane.setStyle("-fx-background-color: red;");
         zoomPane.relocate(0, 0);
-        
+
         this.setStyle("-fx-background-color: green;");
         getChildren().add(zoomPane);
 
@@ -106,9 +102,8 @@ public class Workspace extends AnchorPane {
         controlBlaster.set("translateX", translateXProperty());
         controlBlaster.set("translateY", translateYProperty());
 
-        //Create spiffy menu
-        radialMenu = new RadialMenuConfigurator(this).configure();
-        radialMenu.setVisible(false);
+        //Create radial menu
+        RadialMenu radialMenu = new RadialMenuConfigurator(this).getRadialMenu();
 
         //Create content group, elements within this group get added to the scene and are not by the zooming of the workspace (this)
         Group contentGroup = new Group();
@@ -130,9 +125,48 @@ public class Workspace extends AnchorPane {
 //        });
 //        contentGroup.getChildren().addAll(button);
         //TODO improve listener removal because it doesn't work
-        keyboard = new KeyboardInputHandler(this);
-        mouse = new MouseInputHandler(this);
+        this.sceneProperty().addListener(initializationHandler);
+
         return contentGroup;
+    }
+    //Initial modi members
+    public SplineMode splineMode = SplineMode.NOTHING;
+    public KeyboardInputHandler keyboard;
+    public MousePositionHandler mouse;
+
+    private ZoomHandler zoomHandler;
+    private SelectionHandler selectHandler;
+    private PanHandler panHandler;
+    public ConnectionHandler connectionHandler;
+    private SelectBlockHandler selectBlockHandler;
+
+    private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
+        @Override
+        public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
+
+            mouse = new MousePositionHandler(Workspace.this);
+            keyboard = new KeyboardInputHandler(Workspace.this);
+
+            zoomHandler = new ZoomHandler(Workspace.this);
+            selectHandler = new SelectionHandler(Workspace.this);
+            panHandler = new PanHandler(Workspace.this);
+            connectionHandler = new ConnectionHandler(Workspace.this);
+            selectBlockHandler = new SelectBlockHandler(Workspace.this);
+        }
+    };
+
+    private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
+
+    public MouseMode getMouseMode() {
+        return mouseModeProperty.get();
+    }
+
+    public void setMouseMode(MouseMode mode) {
+        mouseModeProperty.set(mode);
+    }
+    
+    public ObjectProperty<MouseMode> mouseModeProperty() {
+        return mouseModeProperty;
     }
 
     public double getScale() {
@@ -148,10 +182,6 @@ public class Workspace extends AnchorPane {
         setTranslateY(getTranslateY() - y);
     }
 
-    public void clearTempLine() {
-        this.getChildren().remove(tempLine);
-        tempLine = null;
-    }
 
     public static double clamp(double value, double min, double max) {
 
@@ -166,6 +196,11 @@ public class Workspace extends AnchorPane {
         return value;
     }
 
+    public boolean onBlock(MouseEvent event) {
+        Node node = event.getPickResult().getIntersectedNode();
+        return checkParents(node, Block.class);
+    }
+
     /**
      * Check if the node of the same type or if it is embedded in the type
      *
@@ -173,8 +208,7 @@ public class Workspace extends AnchorPane {
      * @param type the type of node to check against
      * @return
      */
-    public boolean checkParent(Node node, Class<?> type) {
-
+    public boolean checkParents(Node node, Class<?> type) {
         if (node == null) {
             return false;
         }
@@ -182,27 +216,7 @@ public class Workspace extends AnchorPane {
             return true;
         } else {
             Node parent = node.getParent();
-            return checkParent(parent, type);
-        }
-    }
-
-    /**
-     * Check if the node is embedded in this object
-     *
-     * @param node the node to check
-     * @param checkNode the object to check against
-     * @return
-     */
-    public boolean checkParent(Node node, Node checkNode) {
-
-        if (node == null) {
-            return false;
-        }
-        Node parent = node.getParent();
-        if (parent != null && parent == checkNode) {
-            return true;
-        } else {
-            return checkParent(parent, checkNode);
+            return checkParents(parent, type);
         }
     }
 }

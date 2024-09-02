@@ -38,8 +38,7 @@ public class BlockGroup extends VplElement {
 
         childBlocks = FXCollections.observableSet();
         setOnMousePressed(this::handle_MousePress);
-        setOnMouseReleased(this::handle_MouseRelease);
-
+        
         setName("Name group here...");
 
         workspace.blockGroupSet.add(this);
@@ -63,12 +62,6 @@ public class BlockGroup extends VplElement {
             block.setSelected(true);
             workspace.selectedBlockSet.add(block);
         }
-        workspace.mouseMode = MouseMode.GROUP_SELECT;
-    }
-
-    private void handle_MouseRelease(MouseEvent e) {
-        workspace.mouseMode = MouseMode.NOTHING;
-        e.consume();
     }
 
     @Override

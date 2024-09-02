@@ -9,6 +9,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 // List methods output cant be used in further operations - TODO TEST FIX
+// 2 IMPROVEMENT create connection handler
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT create elaborate tests TBD what to test
 // 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 

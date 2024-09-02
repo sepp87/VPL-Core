@@ -6,8 +6,11 @@ package vplcore.workspace.input;
  */
 public enum MouseMode {
 
-    NOTHING,
+    MOUSE_IDLE,
     PANNING,
-    SELECT,
-    GROUP_SELECT
+    SELECTING,
+    ZOOMING,
+    AWAITING_RADIAL_MENU,
+    AWAITING_SELECT_BLOCK
+    
 }

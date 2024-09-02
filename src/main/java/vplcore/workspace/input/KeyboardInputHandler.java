@@ -1,8 +1,6 @@
 package vplcore.workspace.input;
 
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import vplcore.graph.model.Block;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.C;
 import static javafx.scene.input.KeyCode.DELETE;
@@ -29,24 +27,24 @@ public class KeyboardInputHandler {
 
     public KeyboardInputHandler(Workspace workspace) {
         this.workspace = workspace;
-
-        //TODO this method listener should be removed, use real listeners instead of method references
-        this.workspace.sceneProperty().addListener(this::addInputHandlers);
+        addInputHandlers();
     }
 
-    private void addInputHandlers(Object obj, Object oldVal, Object newVal) {
+    private void addInputHandlers() {
         workspace.getScene().setOnKeyPressed(handleKeyPressed);
-
     }
 
     private final EventHandler<KeyEvent> handleKeyPressed = new EventHandler<>() {
 
         @Override
         public void handle(KeyEvent event) {
-            
+
             boolean isModifierDown = isModifierDown(event);
 
             switch (event.getCode()) {
+                case BACK_SPACE:
+                    Actions.deleteSelectedBlocks(workspace);
+                    break;
                 case DELETE:
                     Actions.deleteSelectedBlocks(workspace);
                     break;

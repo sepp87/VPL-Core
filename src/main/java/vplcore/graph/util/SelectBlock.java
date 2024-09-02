@@ -3,6 +3,7 @@ package vplcore.graph.util;
 import vplcore.graph.model.Block;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
+import javafx.geometry.Point2D;
 import javafx.scene.control.ListCell;
 
 import javafx.scene.input.*;
@@ -191,16 +192,14 @@ public class SelectBlock extends Block {
             return;
         }
 
-        block.setLayoutX(workspace.mouse.mousePosition.getX() - 20);
-        block.setLayoutY(workspace.mouse.mousePosition.getY() - 20);
+        Point2D position = workspace.mouse.getPosition();
+        block.setLayoutX(position.getX() - 20);
+        block.setLayoutY(position.getY() - 20);
 
         workspace.getChildren().add(block);
         workspace.blockSet.add(block);
-        removed = true;
-        workspace.getChildren().remove(this);
+        hide();
     }
-
-    boolean removed = false;
 
     /**
      * Remove block from host canvas if user move his mouse outside of the
@@ -212,11 +211,15 @@ public class SelectBlock extends Block {
      * @param e
      */
     private void selectBlock_MouseExit(MouseEvent e) {
-        if (!removed) {
-            workspace.getChildren().remove(this);
-        }
+        hide();
         e.consume();
+    }
 
+    private void hide() {
+        this.setVisible(false);
+        searchField.setText(null);
+        listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
+        listView.getSelectionModel().select(null);
     }
 
     /**

@@ -11,10 +11,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import vplcore.graph.util.TypeExtensions;
+import vplcore.workspace.input.ConnectionHandler;
 import vplcore.workspace.input.SplineMode;
 
 /**
@@ -61,6 +63,7 @@ public class Port extends VBox {
         connectedConnections = FXCollections.observableArrayList();
         connectedConnections.addListener(this::handle_ConnectionChange);
 
+        setOnMousePressed(mousePressedHandler);
         setOnMousePressed(this::port_MousePress);
         setOnMouseDragged(this::port_MouseDrag);
 
@@ -70,6 +73,13 @@ public class Port extends VBox {
         parentBlock.layoutYProperty().addListener(coordinatesChangeListener);
         boundsInParentProperty().addListener(coordinatesChangeListener);
     }
+    
+    private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent t) {
+            parentBlock.workspace.connectionHandler.startConnection(Port.this);
+        }
+    };
 
     private void handle_ConnectionChange(ListChangeListener.Change change) {
         if (connectedConnections.size() == 0) {
@@ -113,7 +123,7 @@ public class Port extends VBox {
 
         switch (parentBlock.workspace.splineMode) {
             case NOTHING:
-                parentBlock.workspace.tempStartPort = this;
+                parentBlock.workspace.connectionHandler.tempStartPort = this;
                 parentBlock.workspace.splineMode = SplineMode.SECOND;
                 break;
 
@@ -122,16 +132,16 @@ public class Port extends VBox {
                  * Check if the data type from the sending port is the same or a
                  * sub class of the receiving port.
                  */
-                if (((TypeExtensions.isCastableTo(parentBlock.workspace.tempStartPort.dataType, dataType)
+                if (((TypeExtensions.isCastableTo(parentBlock.workspace.connectionHandler.tempStartPort.dataType, dataType)
                         && parentBlock.workspace.typeSensitive && portType == PortTypes.IN)
-                        || (TypeExtensions.isCastableTo(dataType, parentBlock.workspace.tempStartPort.dataType)
+                        || (TypeExtensions.isCastableTo(dataType, parentBlock.workspace.connectionHandler.tempStartPort.dataType)
                         && parentBlock.workspace.typeSensitive && portType == PortTypes.OUT)
                         // IN case dataProperty type does not matter
                         || (!parentBlock.workspace.typeSensitive))
                         // Cannot be the same port type; IN > OUT or OUT > IN
-                        && portType != parentBlock.workspace.tempStartPort.portType
+                        && portType != parentBlock.workspace.connectionHandler.tempStartPort.portType
                         // Cannot be the same block
-                        && !parentBlock.equals(parentBlock.workspace.tempStartPort.parentBlock)) {
+                        && !parentBlock.equals(parentBlock.workspace.connectionHandler.tempStartPort.parentBlock)) {
 
                     Connection connection;
 
@@ -140,15 +150,15 @@ public class Port extends VBox {
                      * connections Where is multi connect?
                      */
                     if (portType == PortTypes.OUT) {
-                        if (parentBlock.workspace.tempStartPort.connectedConnections.size() > 0) {
+                        if (parentBlock.workspace.connectionHandler.tempStartPort.connectedConnections.size() > 0) {
 
-                            if (!parentBlock.workspace.tempStartPort.multiDockAllowed) {
-                                for (Connection c : parentBlock.workspace.tempStartPort.connectedConnections) {
+                            if (!parentBlock.workspace.connectionHandler.tempStartPort.multiDockAllowed) {
+                                for (Connection c : parentBlock.workspace.connectionHandler.tempStartPort.connectedConnections) {
                                     c.removeFromCanvas();
                                 }
                             }
                         }
-                        connection = new Connection(parentBlock.workspace, this, parentBlock.workspace.tempStartPort);
+                        connection = new Connection(parentBlock.workspace, this, parentBlock.workspace.connectionHandler.tempStartPort);
 
                     } else {
                         if (connectedConnections.size() > 0) {
@@ -161,7 +171,7 @@ public class Port extends VBox {
                                 connectedConnections.clear();
                             }
                         }
-                        connection = new Connection(parentBlock.workspace, parentBlock.workspace.tempStartPort, this);
+                        connection = new Connection(parentBlock.workspace, parentBlock.workspace.connectionHandler.tempStartPort, this);
                     }
                     parentBlock.workspace.connectionSet.add(connection);
 
@@ -171,7 +181,7 @@ public class Port extends VBox {
                  * being made.
                  */
                 parentBlock.workspace.splineMode = SplineMode.NOTHING;
-                parentBlock.workspace.clearTempLine();
+                parentBlock.workspace.connectionHandler.clearTempLine();
                 break;
 
         }

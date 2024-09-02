@@ -91,7 +91,8 @@ public class Connection {
     private final EventHandler<MouseEvent> disconnectButtonHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            System.out.println("ON LINE");
+            startPort.parentBlock.workspace.portDisconnector.showRemoveButton(event);
+
         }
     };
 

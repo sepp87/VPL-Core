@@ -21,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.graph.util.PortConnector;
+import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectBlockHandler;
@@ -132,7 +133,8 @@ public class Workspace extends AnchorPane {
     private ZoomHandler zoomHandler;
     private SelectionHandler selectHandler;
     private PanHandler panHandler;
-    public PortConnector connectionHandler;
+    public PortConnector portConnector;
+    public PortDisconnector portDisconnector;
     private SelectBlockHandler selectBlockHandler;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
@@ -145,7 +147,8 @@ public class Workspace extends AnchorPane {
             zoomHandler = new ZoomHandler(Workspace.this);
             selectHandler = new SelectionHandler(Workspace.this);
             panHandler = new PanHandler(Workspace.this);
-            connectionHandler = new PortConnector(Workspace.this);
+            portConnector = new PortConnector(Workspace.this);
+            portDisconnector = new PortDisconnector(Workspace.this);
             selectBlockHandler = new SelectBlockHandler(Workspace.this);
             mouseModeProperty().addListener(mouseModeListener);
         }

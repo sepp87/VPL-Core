@@ -59,9 +59,9 @@ public class SelectionHandler {
     private final EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
+            // Reset the start selection point
+            workspace.startSelectionPoint = null;
             if (event.getButton() == MouseButton.PRIMARY) {
-                // Reset the start selection point
-                workspace.startSelectionPoint = null;
 
                 if (workspace.getMouseMode() == MouseMode.SELECTING) {
                     // Reset the mouse mode back to idle

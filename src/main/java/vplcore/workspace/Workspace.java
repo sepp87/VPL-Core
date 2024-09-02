@@ -1,8 +1,6 @@
 package vplcore.workspace;
 
-import vplcore.graph.model.Port;
 import vplcore.graph.model.Connection;
-import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
 import vplcore.workspace.input.DragContext;
@@ -22,13 +20,11 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.shape.*;
-import vplcore.workspace.input.ConnectionHandler;
+import vplcore.graph.util.PortConnector;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectBlockHandler;
 import vplcore.workspace.input.SelectionHandler;
-import vplcore.workspace.input.SplineMode;
 import vplcore.workspace.input.ZoomHandler;
 import vplcore.workspace.radialmenu.RadialMenu;
 
@@ -130,14 +126,13 @@ public class Workspace extends AnchorPane {
         return contentGroup;
     }
     //Initial modi members
-    public SplineMode splineMode = SplineMode.NOTHING;
     public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
 
     private ZoomHandler zoomHandler;
     private SelectionHandler selectHandler;
     private PanHandler panHandler;
-    public ConnectionHandler connectionHandler;
+    public PortConnector connectionHandler;
     private SelectBlockHandler selectBlockHandler;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
@@ -150,12 +145,17 @@ public class Workspace extends AnchorPane {
             zoomHandler = new ZoomHandler(Workspace.this);
             selectHandler = new SelectionHandler(Workspace.this);
             panHandler = new PanHandler(Workspace.this);
-            connectionHandler = new ConnectionHandler(Workspace.this);
+            connectionHandler = new PortConnector(Workspace.this);
             selectBlockHandler = new SelectBlockHandler(Workspace.this);
+            mouseModeProperty().addListener(mouseModeListener);
         }
     };
 
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
+    
+    private ChangeListener<Object> mouseModeListener = (ov, t, t1) -> {
+        System.out.println(t1);
+    };
 
     public MouseMode getMouseMode() {
         return mouseModeProperty.get();

@@ -1,8 +1,5 @@
 package vplcore.graph.model;
 
-import vplcore.graph.model.Block;
-import vplcore.graph.model.PortTypes;
-import java.beans.PropertyChangeEvent;
 import javafx.scene.layout.VBox;
 import java.util.*;
 import javafx.beans.property.*;
@@ -16,8 +13,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.*;
 import vplcore.graph.util.TypeExtensions;
-import vplcore.workspace.input.ConnectionHandler;
-import vplcore.workspace.input.SplineMode;
 
 /**
  *
@@ -25,8 +20,13 @@ import vplcore.workspace.input.SplineMode;
  */
 public class Port extends VBox {
 
+    public enum Type {
+        IN,
+        OUT
+    }
+
 //    private final Point2D center = new Point2D(0, 0);
-    private final ObjectProperty data = new SimpleObjectProperty(this, "data", null);
+    private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     private final StringProperty name = new SimpleStringProperty(this, "name", null);
 
@@ -34,14 +34,14 @@ public class Port extends VBox {
     public final DoubleProperty centerYProperty = new SimpleDoubleProperty();
 
     public ObservableList<Connection> connectedConnections;
-    public Class dataType;
-    public PortTypes portType;
+    public Class<?> dataType;
+    public Type portType;
     public Block parentBlock;
     public boolean multiDockAllowed;
 //    public BindingPoint origin;
     public int index;
 
-    public Port(String name, Block parent, PortTypes portType, Class type) {
+    public Port(String name, Block parent, Type portType, Class type) {
         Tooltip tip = new Tooltip();
         Tooltip.install(this, tip);
         tip.textProperty().bind(this.nameProperty());
@@ -51,7 +51,7 @@ public class Port extends VBox {
         this.portType = portType;
         this.setName(name);
 
-        if (portType == PortTypes.IN) {
+        if (portType == Type.IN) {
             index = parent.inPorts.size();
         } else {
             index = parent.outPorts.size();
@@ -63,8 +63,8 @@ public class Port extends VBox {
         connectedConnections = FXCollections.observableArrayList();
         connectedConnections.addListener(this::handle_ConnectionChange);
 
-        setOnMousePressed(mousePressedHandler);
-        setOnMousePressed(this::port_MousePress);
+        setOnMouseClicked(createConnectionHandler);
+        setOnMousePressed(consumePressHandler);
         setOnMouseDragged(this::port_MouseDrag);
 
         active.addListener(this::handle_Active);
@@ -73,11 +73,20 @@ public class Port extends VBox {
         parentBlock.layoutYProperty().addListener(coordinatesChangeListener);
         boundsInParentProperty().addListener(coordinatesChangeListener);
     }
-    
-    private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
+
+    private final EventHandler<MouseEvent> createConnectionHandler = new EventHandler<>() {
         @Override
-        public void handle(MouseEvent t) {
-            parentBlock.workspace.connectionHandler.startConnection(Port.this);
+        public void handle(MouseEvent event) {
+            if (event.isStillSincePress()) {
+                parentBlock.workspace.connectionHandler.createConnection(Port.this);
+            }
+            event.consume();
+        }
+    };
+    private final EventHandler<MouseEvent> consumePressHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            event.consume();
         }
     };
 
@@ -97,7 +106,7 @@ public class Port extends VBox {
         centerYProperty.set(centerInLocal.getY());
     }
 
-    ChangeListener coordinatesChangeListener = new ChangeListener() {
+    ChangeListener<Object> coordinatesChangeListener = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue ov, Object t, Object t1) {
             calcOrigin();
@@ -105,86 +114,12 @@ public class Port extends VBox {
     };
 
     /**
-     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from moving
-     * around.
+     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from
+     * moving around.
      *
      * @param e
      */
     private void port_MouseDrag(MouseEvent e) {
-        e.consume();
-    }
-
-    private void port_MousePress(MouseEvent e) {
-        /**
-         * @TODO CHANGE FROM ORIGINAL CODE Origin is only calculated on size-
-         * and property changed
-         */
-        calcOrigin();
-
-        switch (parentBlock.workspace.splineMode) {
-            case NOTHING:
-                parentBlock.workspace.connectionHandler.tempStartPort = this;
-                parentBlock.workspace.splineMode = SplineMode.SECOND;
-                break;
-
-            case SECOND:
-                /**
-                 * Check if the data type from the sending port is the same or a
-                 * sub class of the receiving port.
-                 */
-                if (((TypeExtensions.isCastableTo(parentBlock.workspace.connectionHandler.tempStartPort.dataType, dataType)
-                        && parentBlock.workspace.typeSensitive && portType == PortTypes.IN)
-                        || (TypeExtensions.isCastableTo(dataType, parentBlock.workspace.connectionHandler.tempStartPort.dataType)
-                        && parentBlock.workspace.typeSensitive && portType == PortTypes.OUT)
-                        // IN case dataProperty type does not matter
-                        || (!parentBlock.workspace.typeSensitive))
-                        // Cannot be the same port type; IN > OUT or OUT > IN
-                        && portType != parentBlock.workspace.connectionHandler.tempStartPort.portType
-                        // Cannot be the same block
-                        && !parentBlock.equals(parentBlock.workspace.connectionHandler.tempStartPort.parentBlock)) {
-
-                    Connection connection;
-
-                    /**
-                     * Make a new connection and remove all the existing
-                     * connections Where is multi connect?
-                     */
-                    if (portType == PortTypes.OUT) {
-                        if (parentBlock.workspace.connectionHandler.tempStartPort.connectedConnections.size() > 0) {
-
-                            if (!parentBlock.workspace.connectionHandler.tempStartPort.multiDockAllowed) {
-                                for (Connection c : parentBlock.workspace.connectionHandler.tempStartPort.connectedConnections) {
-                                    c.removeFromCanvas();
-                                }
-                            }
-                        }
-                        connection = new Connection(parentBlock.workspace, this, parentBlock.workspace.connectionHandler.tempStartPort);
-
-                    } else {
-                        if (connectedConnections.size() > 0) {
-
-                            if (!multiDockAllowed) {
-                                for (Connection c : connectedConnections) {
-                                    c.removeFromCanvas();
-                                    c.startPort.connectedConnections.remove(c);
-                                }
-                                connectedConnections.clear();
-                            }
-                        }
-                        connection = new Connection(parentBlock.workspace, parentBlock.workspace.connectionHandler.tempStartPort, this);
-                    }
-                    parentBlock.workspace.connectionSet.add(connection);
-
-                }
-                /**
-                 * Return values back to default state in which no connection is
-                 * being made.
-                 */
-                parentBlock.workspace.splineMode = SplineMode.NOTHING;
-                parentBlock.workspace.connectionHandler.clearTempLine();
-                break;
-
-        }
         e.consume();
     }
 
@@ -222,12 +157,11 @@ public class Port extends VBox {
 
     public void calculateData(Object value) {
 
-        boolean fxThread = Thread.currentThread().getName().equals("JavaFX Application Thread");
-        if (!fxThread) {
-            System.out.println(this.parentBlock.getName());
-        }
-
-        if (portType == PortTypes.IN) {
+//        boolean fxThread = Thread.currentThread().getName().equals("JavaFX Application Thread");
+//        if (!fxThread) {
+//            System.out.println(this.parentBlock.getName());
+//        }
+        if (portType == Type.IN) {
 
             if (multiDockAllowed && connectedConnections.size() > 1) {
 
@@ -320,4 +254,5 @@ public class Port extends VBox {
             getStyleClass().add("port");
         }
     }
+
 }

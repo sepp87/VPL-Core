@@ -9,7 +9,9 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 // List methods output cant be used in further operations - TODO TEST FIX
-// 2 IMPROVEMENT create connection handler
+
+
+// 1 IMPROVEMENT remove connections
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT create elaborate tests TBD what to test
 // 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
@@ -36,7 +38,7 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT Add MACOS shortcuts e.g. replace CTRL by CMD
 // 3 BUG where block is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new block
 // 3 BUG selection rectangle offset when selection rectangle last rectangle was not removed (can be observed by a small rectangle artifact), this tiny rectangle can be created by a tiny drag (does not always occur)
-
+// 2 IMPROVEMENT create connection handler
 
 
 /**

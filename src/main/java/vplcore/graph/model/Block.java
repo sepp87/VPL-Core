@@ -225,7 +225,7 @@ public abstract class Block extends VplElement {
      * @return the Port
      */
     public Port addInPortToBlock(String name, Class type, boolean multiDockAllowed) {
-        Port port = new Port(name, this, PortTypes.IN, type);
+        Port port = new Port(name, this, Port.Type.IN, type);
         port.multiDockAllowed = multiDockAllowed;
         inPortBox.getChildren().add(port);
         port.dataProperty().addListener(port_DataChangeListener);
@@ -289,7 +289,7 @@ public abstract class Block extends VplElement {
      * @return the Port
      */
     public Port addOutPortToBlock(String name, Class type) {
-        Port port = new Port(name, this, PortTypes.OUT, type);
+        Port port = new Port(name, this, Port.Type.OUT, type);
         port.multiDockAllowed = true;
         outPortBox.getChildren().add(port);
         outPorts.add(port);
@@ -457,8 +457,4 @@ public abstract class Block extends VplElement {
     }
 }
 
-enum PortTypes {
 
-    IN,
-    OUT
-}

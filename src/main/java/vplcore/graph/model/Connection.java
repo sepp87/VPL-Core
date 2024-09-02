@@ -6,7 +6,9 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
 import vplcore.workspace.Workspace;
 import jo.vpl.xml.ConnectionTag;
@@ -43,8 +45,6 @@ public class Connection {
         this.startPort.setActive(true);
         this.endPort.setActive(true);
 
-        addChangeListeners();
-
         startPort.connectedConnections.add(this);
         endPort.connectedConnections.add(this);
 
@@ -60,6 +60,8 @@ public class Connection {
          */
         defineCurve();
         hostCanvas.getChildren().add(0, curve);
+        addChangeListeners();
+
     }
 
     private void addChangeListeners() {
@@ -74,12 +76,22 @@ public class Connection {
 
         startPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
         endPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
+
+        curve.setOnMouseMoved(disconnectButtonHandler);
+
     }
 
-    private ChangeListener coordinatesChangeListener = new ChangeListener() {
+    private final ChangeListener<Object> coordinatesChangeListener = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue ov, Object t, Object t1) {
             calculateBezierPoints();
+        }
+    };
+
+    private final EventHandler<MouseEvent> disconnectButtonHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            System.out.println("ON LINE");
         }
     };
 

@@ -1,5 +1,6 @@
 package vplcore.workspace;
 
+import java.io.File;
 import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
@@ -20,6 +21,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import vplcore.graph.io.GraphLoader;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
@@ -107,7 +109,6 @@ public class Workspace extends AnchorPane {
         contentGroup.getChildren().addAll(this, radialMenu);
 
         //Testing
-//        deserialize(new File("src/main/resources/SampleParseObj.vplxml"));
 //        Block add = new DoubleSlider(this);
 //        add.relocate(100, 100);
 //        getChildren().add(add);
@@ -135,7 +136,7 @@ public class Workspace extends AnchorPane {
     private PanHandler panHandler;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
-    private SelectBlockHandler selectBlockHandler;
+    public SelectBlockHandler selectBlockHandler;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override
@@ -155,7 +156,7 @@ public class Workspace extends AnchorPane {
     };
 
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
-    
+
     private ChangeListener<Object> mouseModeListener = (ov, t, t1) -> {
         System.out.println(t1);
     };
@@ -167,7 +168,7 @@ public class Workspace extends AnchorPane {
     public void setMouseMode(MouseMode mode) {
         mouseModeProperty.set(mode);
     }
-    
+
     public ObjectProperty<MouseMode> mouseModeProperty() {
         return mouseModeProperty;
     }
@@ -184,7 +185,6 @@ public class Workspace extends AnchorPane {
         setTranslateX(getTranslateX() - x);
         setTranslateY(getTranslateY() - y);
     }
-
 
     public static double clamp(double value, double min, double max) {
 

@@ -179,7 +179,7 @@ public class Actions {
     public static void newFile(Workspace workspace) {
         workspace.blockSet.clear();
         workspace.connectionSet.clear();
-        workspace.getChildren().clear();
+        resetWorkspace(workspace);
     }
 
     public static void openFile(Workspace workspace) {
@@ -198,10 +198,17 @@ public class Actions {
         //Clear Layout
         workspace.blockSet.clear();
         workspace.connectionSet.clear();
-        workspace.getChildren().clear();
+        resetWorkspace(workspace);
 
         //Load file
         GraphLoader.deserialize(file, workspace);
+
+    }
+
+    private static void resetWorkspace(Workspace workspace) {
+        workspace.getChildren().clear();
+        workspace.getChildren().add(workspace.selectBlockHandler.getSelectBlock());
+        workspace.getChildren().add(workspace.portDisconnector.getRemoveButton());
     }
 
     public static void pasteBlocks(Workspace workspace) {

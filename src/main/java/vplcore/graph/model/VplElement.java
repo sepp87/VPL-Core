@@ -52,8 +52,8 @@ public class VplElement extends GridPane {
 
         //Event handlers replace anonymous handlers otherwise they conflict with the
         //ones created within a block, which leads to missing VPL Element buttons
-        this.addEventFilter(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        this.addEventFilter(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        this.addEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
+        this.addEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
 
         if (this instanceof SelectBlock) {
             return;

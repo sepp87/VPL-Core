@@ -34,6 +34,9 @@ public abstract class Block extends VplElement {
     public Block(Workspace workspace) {
         super(workspace);
         uuid = UUID.randomUUID();
+        
+        
+//this.setMouseTransparent(true);
 
         inPorts = new ArrayList<>();
         outPorts = new ArrayList<>();
@@ -42,8 +45,8 @@ public abstract class Block extends VplElement {
         //Content Grid is the actual block box without the buttons on top etc.
         contentGrid = new GridPane();
         contentGrid.setAlignment(Pos.CENTER);
-        contentGrid.addEventFilter(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        contentGrid.addEventFilter(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        contentGrid.addEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
+        contentGrid.addEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
         contentGrid.setOnMousePressed(this::handle_MousePress);
         selected.addListener(selectChangeListener);
 
@@ -402,6 +405,7 @@ public abstract class Block extends VplElement {
 
         @Override
         public void handle(MouseEvent e) {
+            workspace.portDisconnector.hideRemoveButton();
             Block.this.setActive(true);
             Block.this.updateStyle();
         }

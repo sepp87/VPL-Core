@@ -11,7 +11,10 @@ import vpllib.method.JsonMethods;
 // List methods output cant be used in further operations - TODO TEST FIX
 
 
-// 1 IMPROVEMENT remove connections
+// 1 BUG after new file > select block does not pop up
+// 1 BUG after open file > select block does not pop up
+// 2 IMPROVEMENT replace method references with event handlers
+// 2 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT create elaborate tests TBD what to test
 // 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
@@ -22,6 +25,7 @@ import vpllib.method.JsonMethods;
 
 //
 // WORK IN PROGRESS
+// 1 IMPROVEMENT remove connections
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
 //

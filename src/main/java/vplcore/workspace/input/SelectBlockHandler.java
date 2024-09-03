@@ -22,6 +22,10 @@ public class SelectBlockHandler {
         initializeSelectBlock();
         addInputHandlers();
     }
+    
+    public SelectBlock getSelectBlock() {
+        return selectBlock;
+    }
 
     private void initializeSelectBlock() {
         selectBlock = new SelectBlock(workspace);

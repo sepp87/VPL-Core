@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 import vplcore.workspace.Workspace;
 import jo.vpl.xml.ConnectionTag;
@@ -22,8 +23,9 @@ public class Connection {
 
     public final Port startPort;
     public final Port endPort;
-    public Workspace hostCanvas;
-    public CubicCurve curve;
+    public Workspace workspace;
+    public CubicCurve connectionCurve;
+    public CubicCurve snappingCurve;
 
     public final DoubleProperty startBezierXProperty = new SimpleDoubleProperty();
     public final DoubleProperty endBezierXProperty = new SimpleDoubleProperty();
@@ -32,12 +34,12 @@ public class Connection {
      * A connection contains a reference to an in- and outport. Its visual
      * representation is a cubic(bezier) curve between two ports.
      *
-     * @param hostCanvas
+     * @param workspace
      * @param startPort the OUT port [ ]<
      * @param endPort the IN port >[ ]
      */
-    public Connection(Workspace hostCanvas, Port startPort, Port endPort) {
-        this.hostCanvas = hostCanvas;
+    public Connection(Workspace workspace, Port startPort, Port endPort) {
+        this.workspace = workspace;
 
         this.startPort = startPort;
         this.endPort = endPort;
@@ -58,8 +60,17 @@ public class Connection {
          * @TODO::NEW CHANGE FROM ORIGINAL CODE Check if connection already
          * exist within the connectionCollection
          */
-        defineCurve();
-        hostCanvas.getChildren().add(0, curve);
+        connectionCurve = createCurve();
+        connectionCurve.getStyleClass().add("connection");
+
+        snappingCurve = createCurve();
+        snappingCurve.setFill(null);
+        snappingCurve.setStrokeWidth(50);
+        snappingCurve.setStroke(Color.TRANSPARENT);
+        snappingCurve.setUserData(this);
+
+        workspace.getChildren().add(0, snappingCurve);
+        workspace.getChildren().add(0, connectionCurve);
         addChangeListeners();
 
     }
@@ -77,7 +88,12 @@ public class Connection {
         startPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
         endPort.parentBlock.deleted.addListener(block_DeletedInBlockSetListener);
 
-        curve.setOnMouseMoved(disconnectButtonHandler);
+//        snappingCurve.setOnMouseMoved(workspace.portDisconnector.movedOnSnappingCurveHandler);
+//        snappingCurve.setOnMouseExited(workspace.portDisconnector.exitedSnappingCurveHandler);
+//        snappingCurve.setOnMouseEntered(workspace.portDisconnector.enteredSnappingCurveHandler);
+        snappingCurve.addEventFilter(MouseEvent.MOUSE_MOVED, workspace.portDisconnector.movedOnSnappingCurveHandler);
+        snappingCurve.addEventFilter(MouseEvent.MOUSE_EXITED, workspace.portDisconnector.exitedSnappingCurveHandler);
+        snappingCurve.addEventFilter(MouseEvent.MOUSE_ENTERED, workspace.portDisconnector.enteredSnappingCurveHandler);
 
     }
 
@@ -88,18 +104,10 @@ public class Connection {
         }
     };
 
-    private final EventHandler<MouseEvent> disconnectButtonHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            startPort.parentBlock.workspace.portDisconnector.showRemoveButton(event);
-
-        }
-    };
-
-    private void defineCurve() {
+    private CubicCurve createCurve() {
         calculateBezierPoints();
 
-        curve = new CubicCurve();
+        CubicCurve curve = new CubicCurve();
         curve.controlX1Property().bind(startBezierXProperty);
         curve.controlY1Property().bind(startPort.centerYProperty);
         curve.startXProperty().bind(startPort.centerXProperty);
@@ -110,8 +118,19 @@ public class Connection {
         curve.endXProperty().bind(endPort.centerXProperty);
         curve.endYProperty().bind(endPort.centerYProperty);
 
-        curve.getStyleClass().add("connection");
+        return curve;
+    }
 
+    private void unbindCurve(CubicCurve curve) {
+        curve.controlX1Property().unbind();
+        curve.controlY1Property().unbind();
+        curve.startXProperty().unbind();
+        curve.startYProperty().unbind();
+
+        curve.controlX2Property().unbind();
+        curve.controlY2Property().unbind();
+        curve.endXProperty().unbind();
+        curve.endYProperty().unbind();
     }
 
     private void calculateBezierPoints() {
@@ -134,8 +153,11 @@ public class Connection {
     }
 
     public void removeFromCanvas() {
-        hostCanvas.getChildren().remove(curve);
-        hostCanvas.connectionSet.remove(this);
+        workspace.getChildren().remove(connectionCurve);
+        workspace.getChildren().remove(snappingCurve);
+        unbindCurve(connectionCurve);
+        unbindCurve(snappingCurve);
+        workspace.connectionSet.remove(this);
         if (!endPort.multiDockAllowed) {
             endPort.parentBlock.handle_IncomingConnectionRemoved(endPort);
         }

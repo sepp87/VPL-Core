@@ -10,9 +10,7 @@ import vpllib.method.JsonMethods;
 
 // List methods output cant be used in further operations - TODO TEST FIX
 
-
-// 1 BUG after new file > select block does not pop up
-// 1 BUG after open file > select block does not pop up
+// 2 IMPROVEMENT prettify connection remove button
 // 2 IMPROVEMENT replace method references with event handlers
 // 2 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure

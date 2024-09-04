@@ -12,11 +12,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -177,9 +175,7 @@ public class Actions {
     }
 
     public static void newFile(Workspace workspace) {
-        workspace.blockSet.clear();
-        workspace.connectionSet.clear();
-        resetWorkspace(workspace);
+        workspace.reset();
     }
 
     public static void openFile(Workspace workspace) {
@@ -196,19 +192,11 @@ public class Actions {
         }
 
         //Clear Layout
-        workspace.blockSet.clear();
-        workspace.connectionSet.clear();
-        resetWorkspace(workspace);
+        workspace.reset();
 
         //Load file
         GraphLoader.deserialize(file, workspace);
 
-    }
-
-    private static void resetWorkspace(Workspace workspace) {
-        workspace.getChildren().clear();
-        workspace.getChildren().add(workspace.selectBlockHandler.getSelectBlock());
-        workspace.getChildren().add(workspace.portDisconnector.getRemoveButton());
     }
 
     public static void pasteBlocks(Workspace workspace) {

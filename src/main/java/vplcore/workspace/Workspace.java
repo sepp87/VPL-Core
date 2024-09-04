@@ -161,6 +161,18 @@ public class Workspace extends AnchorPane {
         System.out.println(t1);
     };
 
+    public void reset() {
+
+        setScale(1);
+        setTranslateX(0);
+        setTranslateY(0);
+        blockSet.clear();
+        connectionSet.clear();
+        getChildren().clear();
+        getChildren().add(selectBlockHandler.getSelectBlock());
+        getChildren().add(portDisconnector.getRemoveButton());
+    }
+
     public MouseMode getMouseMode() {
         return mouseModeProperty.get();
     }

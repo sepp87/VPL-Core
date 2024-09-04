@@ -45,7 +45,7 @@ public class TextBlock extends Block {
             ScrollPane pane = (ScrollPane) area.lookup(".scroll-pane");
             pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            
+
 //            Text text = (Text) area.lookup(".text");
 //            text.setLineSpacing(7);
         });
@@ -80,7 +80,7 @@ public class TextBlock extends Block {
         //Do Action
         if ((boolean) isActive) {
             area.setEditable(false);
-  //          calculate();
+            //          calculate();
         } else {
             area.setEditable(true);
 //            calculate();
@@ -114,14 +114,15 @@ public class TextBlock extends Block {
         }
         outPorts.get(0).setData(data);
     }
-    
+
     @Override
     public void handle_IncomingConnectionRemoved(Port source) {
+        TextArea area = (TextArea) controls.get(0);
+        area.setText("");
+        area.setEditable(true);
         outPorts.get(0).setData(null);
     }
 
-    
-    
     /**
      * Print whatever is incoming
      */

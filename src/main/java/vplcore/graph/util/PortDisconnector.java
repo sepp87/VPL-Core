@@ -21,6 +21,7 @@ public class PortDisconnector {
     private Workspace workspace;
     private Group removeButton;
     private Circle snapPoint;
+    private Connection removableConnection;
 
     public PortDisconnector(Workspace workspace) {
         this.workspace = workspace;
@@ -53,8 +54,9 @@ public class PortDisconnector {
     public final EventHandler<MouseEvent> enteredSnappingCurveHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-
             snapPoint.setVisible(true);
+            CubicCurve snappingCurve = (CubicCurve) event.getSource();
+            removableConnection = (Connection) snappingCurve.getUserData();
         }
     };
 
@@ -95,17 +97,19 @@ public class PortDisconnector {
     public void hideRemoveButton() {
         snapPoint.setVisible(false);
     }
-    
+
     public Circle getRemoveButton() {
         return snapPoint;
     }
 
     public void removeConnection() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Snap Point Clicked");
-        alert.setHeaderText(null);
-        alert.setContentText("You clicked on the snap point!");
-        alert.showAndWait();
+        removableConnection.removeFromCanvas();
+        snapPoint.setVisible(false);
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle("Snap Point Clicked");
+//        alert.setHeaderText(null);
+//        alert.setContentText("You clicked on the snap point!");
+//        alert.showAndWait();
     }
 
     // Helper method to calculate cubic Bezier point

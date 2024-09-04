@@ -336,7 +336,7 @@ public abstract class Block extends VplElement {
      * @param incoming port which sends the data
      */
     protected void handle_IncomingConnectionAdded(Port source, Port incoming) {
-
+        calculate();
     }
 
     /**
@@ -348,7 +348,7 @@ public abstract class Block extends VplElement {
      * @param source port the connection was removed from
      */
     protected void handle_IncomingConnectionRemoved(Port source) {
-
+        calculate();
     }
 
     public abstract void calculate();

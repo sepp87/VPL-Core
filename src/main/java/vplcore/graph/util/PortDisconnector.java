@@ -2,13 +2,18 @@ package vplcore.graph.util;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
+import javafx.scene.text.Font;
+import vplcore.IconType;
 import vplcore.graph.model.Connection;
 import vplcore.workspace.Workspace;
 
@@ -20,7 +25,8 @@ public class PortDisconnector {
 
     private Workspace workspace;
     private Group removeButton;
-    private Circle snapPoint;
+    private Label removeIcon;
+//    private Circle snapPoint;
     private Connection removableConnection;
 
     public PortDisconnector(Workspace workspace) {
@@ -29,10 +35,25 @@ public class PortDisconnector {
     }
 
     private void initializeRemoveButton() {
-        snapPoint = new Circle(0, 0, 10, Paint.valueOf("RED"));
-        snapPoint.setVisible(false);
-        snapPoint.setOnMouseClicked(event -> removeConnection());
-        workspace.getChildren().add(snapPoint);
+        removeButton = new Group();
+        removeIcon = new Label(IconType.FA_MINUS_CIRCLE.getUnicode() + "");
+//        removeButton.setTranslateX(-13);
+//        removeButton.setTranslateY(-16.5);
+        removeButton.setLayoutX(-13);
+        removeButton.setLayoutY(-16.5);
+//        removeIcon.setFont(Font.font(100));
+        removeIcon.getStyleClass().add("block-awesome-icon");
+        removeIcon.widthProperty().addListener((b, o, n) -> System.out.println("width " + n));
+        removeIcon.heightProperty().addListener((b, o, n) -> System.out.println("height " + n));
+        removeButton.getChildren().add(removeIcon);
+        removeButton.setVisible(false);
+        removeButton.setOnMouseClicked(event -> removeConnection());
+//        VBox container = new VBox(removeIcon);
+//        container.setAlignment(Pos.CENTER);
+//        snapPoint = new Circle(0, 0, 10, Paint.valueOf("RED"));
+//        snapPoint.setVisible(false);
+//        snapPoint.setOnMouseClicked(event -> removeConnection());
+        workspace.getChildren().add(removeButton);
     }
 
     public final EventHandler<MouseEvent> movedOnSnappingCurveHandler = new EventHandler<>() {
@@ -46,7 +67,9 @@ public class PortDisconnector {
     public final EventHandler<MouseEvent> exitedSnappingCurveHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            if (!event.getPickResult().getIntersectedNode().equals(snapPoint)) {
+//            System.out.println(event.getPickResult().getIntersectedNode().getClass());
+//            System.out.println();
+            if (!event.getPickResult().getIntersectedNode().getParent().equals(removeIcon)) {
                 hideRemoveButton();
             }
         }
@@ -54,16 +77,13 @@ public class PortDisconnector {
     public final EventHandler<MouseEvent> enteredSnappingCurveHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            snapPoint.setVisible(true);
+            removeButton.setVisible(true);
             CubicCurve snappingCurve = (CubicCurve) event.getSource();
             removableConnection = (Connection) snappingCurve.getUserData();
         }
     };
 
     public void showRemoveButton(MouseEvent event) {
-        if (!workspace.getChildren().contains(snapPoint)) {
-            workspace.getChildren().add(snapPoint);
-        }
 
         CubicCurve snappingCurve = (CubicCurve) event.getSource();
         Connection connection = (Connection) snappingCurve.getUserData();
@@ -90,21 +110,23 @@ public class PortDisconnector {
         }
 
         // Update the snap point position at the closest point on the visible curve
-        snapPoint.setCenterX(closestX);
-        snapPoint.setCenterY(closestY);
+//        removeButton.setCenterX(closestX);
+//        removeButton.setCenterY(closestY);
+        removeButton.setTranslateX(closestX);
+        removeButton.setTranslateY(closestY);
     }
 
     public void hideRemoveButton() {
-        snapPoint.setVisible(false);
+        removeButton.setVisible(false);
     }
 
-    public Circle getRemoveButton() {
-        return snapPoint;
+    public Group getRemoveButton() {
+        return removeButton;
     }
 
     public void removeConnection() {
         removableConnection.removeFromCanvas();
-        snapPoint.setVisible(false);
+        removeButton.setVisible(false);
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //        alert.setTitle("Snap Point Clicked");
 //        alert.setHeaderText(null);

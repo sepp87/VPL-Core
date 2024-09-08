@@ -36,7 +36,7 @@ public class App extends Application {
         pane.getChildren().addAll(workspaceAndRadialMenu, menuBar);
 
 
-        Scene scene = new Scene(pane, 800, 1200);
+        Scene scene = new Scene(pane, 800, 800);
         stage.setScene(scene);
         stage.setTitle("VPLTester");
         stage.show();

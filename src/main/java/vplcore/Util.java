@@ -204,6 +204,26 @@ public class Util {
         }
         return stringList;
     }
+    
+    
+    /**
+     * @param file to read from, e.g. a *.csv or *.txt
+     * @return a list of strings. Each string represents a line.
+     */
+    public static String readFileAsString(File file) {
+        String result = "";
+        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
+
+            String line = null;
+            while ((line = bf.readLine()) != null) {
+                result = result + line;
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 
     /**
      * @param rawValue the string to check

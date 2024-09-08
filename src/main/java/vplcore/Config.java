@@ -22,7 +22,8 @@ public class Config {
     private Properties settings;
 
     private Config() {
-
+//        this.appRootDirectory = Util.getAppRootDirectory(this, BUILD_DIRECTORY);
+//        this.operatingSystem = Util.determineOperatingSystem();
     }
 
     public static Config get() {
@@ -34,13 +35,13 @@ public class Config {
 
     private static void loadConfig() {
         config = new Config();
+        config.appRootDirectory = Util.getAppRootDirectory(config, BUILD_DIRECTORY);
 
         Util.createDirectory(new File(config.appRootDirectory + LIBRARY_DIRECTORY));
         Util.createDirectory(new File(config.appRootDirectory + CONFIG_DIRECTORY));;
         File settingsFile = new File(config.appRootDirectory + CONFIG_DIRECTORY + SETTINGS_FILE);
         Util.createFile(settingsFile);
 
-        config.appRootDirectory = Util.getAppRootDirectory(config, BUILD_DIRECTORY);
         config.operatingSystem = Util.determineOperatingSystem();
         config.settings = Util.loadProperties(settingsFile);
     }

@@ -264,6 +264,14 @@
     -fx-text-fill: salmon;
 }
 
+.connection-remove-icon{
+    -fx-fill: #5F5F5F;
+}
+
+.connection-remove-icon-hover{
+    -fx-fill: salmon;
+}
+
 .block-text{
     -fx-font-size: 30;
     -fx-text-fill: #5F5F5F;

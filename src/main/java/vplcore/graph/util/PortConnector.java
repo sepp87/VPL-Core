@@ -40,11 +40,11 @@ public class PortConnector {
         public void handle(MouseEvent event) {
 
             switch (state) {
-                case State.NOT_CONNECTING:
+                case NOT_CONNECTING:
                     clearTempLine();
                     break;
 
-                case State.IS_CONNECTING:
+                case IS_CONNECTING:
                     if (tempLine == null) {
                         tempLine = new Line();
                         tempLine.getStyleClass().add("temp-line");

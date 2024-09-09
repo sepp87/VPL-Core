@@ -123,7 +123,7 @@ public class Port extends VBox {
         e.consume();
     }
 
-    public final ObjectProperty dataProperty() {
+    public final ObjectProperty<Object> dataProperty() {
         return data;
     }
 
@@ -137,7 +137,7 @@ public class Port extends VBox {
 
     //Double point operators do NOT work when trying to remove listeners
     //USE THIS OTHERWISE THERE WILL BE MEMORY LEAKING
-    ChangeListener startPort_DataChangeListener = new ChangeListener() {
+    ChangeListener<Object> startPort_DataChangeListener = new ChangeListener<>() {
 
         @Override
         public void changed(ObservableValue obj, Object oldVal, Object newVal) {

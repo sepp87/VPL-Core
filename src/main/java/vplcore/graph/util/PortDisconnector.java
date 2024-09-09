@@ -20,7 +20,7 @@ import vplcore.workspace.Workspace;
 public class PortDisconnector {
 
     private final Workspace workspace;
-    
+
     private Group removeButton;
     private SVGPath removeIcon;
     private Circle circle;
@@ -33,7 +33,7 @@ public class PortDisconnector {
 
     private void initializeRemoveButton() {
 
-        String xml = vplcore.Util.readFileAsString(new File("D:\\VPL-Core\\src\\main\\resources\\fontawesome-svgs\\solid\\circle-xmark-solid.svg"));
+        String xml = vplcore.Util.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
         String svg = xml.split("path d=\"")[1].replace("\"/></svg>", "");
         removeIcon = new SVGPath();
         removeIcon.setContent(svg);

@@ -10,7 +10,11 @@ import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import vplcore.workspace.Workspace;
 import jo.vpl.xml.BlockTag;
+import vplcore.Config;
 import vplcore.IconType;
+import static vplcore.Util.OperatingSystem.LINUX;
+import static vplcore.Util.OperatingSystem.MACOS;
+import static vplcore.Util.OperatingSystem.WINDOWS;
 import vplcore.workspace.Workspace;
 
 /**
@@ -45,7 +49,7 @@ public abstract class Block extends VplElement {
         contentGrid.setAlignment(Pos.CENTER);
         contentGrid.addEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
         contentGrid.addEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
-        contentGrid.setOnMousePressed(this::handle_MousePress);
+        contentGrid.addEventHandler(MouseEvent.MOUSE_PRESSED, blockPressedHandler);
         selected.addListener(selectChangeListener);
 
         if (true) {
@@ -139,40 +143,46 @@ public abstract class Block extends VplElement {
     };
 
     private void resizeBlock(MouseEvent event) {
-//        double scale = workspace.getScale();
-        double deltaX = event.getSceneX() - oldMousePosition.getX();
-        double deltaY = event.getSceneY() - oldMousePosition.getY();
-        double newWidth = contentGrid.getPrefWidth() + deltaX;
-        double newHeight = contentGrid.getPrefHeight() + deltaY;
+        double scale = workspace.getScale();
+        double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
+        double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
+        double newWidth = Math.max(contentGrid.getPrefWidth() + deltaX, contentGrid.getMinWidth());
+        double newHeight = Math.max(contentGrid.getPrefHeight() + deltaY, contentGrid.getMinHeight());
         contentGrid.setPrefWidth(newWidth);
         contentGrid.setPrefHeight(newHeight);
         oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
         contentGrid.layout();
     }
 
+    private final EventHandler<MouseEvent> blockPressedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            updateSelection(event);
+        }
+    };
+
     /**
      * Event handler for selection of blocks and possible followed up dragging
      * of them by the user.
      *
-     * @param e
+     * @param event
      */
-    private void handle_MousePress(MouseEvent e) {
+    private void updateSelection(MouseEvent event) {
 
         if (workspace.selectedBlockSet.contains(this)) {
-            if (e.isControlDown()) {
+            if (isModifierDown(event)) {
                 // Remove this node from selection
                 workspace.selectedBlockSet.remove(this);
                 setSelected(false);
             } else {
                 // Subscribe multiselection to MouseMove event
                 for (Block block : workspace.selectedBlockSet) {
-//                    block.setOnMouseDragged(block::moveBlock);
                     block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
-                    block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
                 }
             }
         } else {
-            if (e.isControlDown()) {
+            if (isModifierDown(event)) {
                 // add this node to selection
                 workspace.selectedBlockSet.add(this);
                 setSelected(true);
@@ -189,17 +199,28 @@ public abstract class Block extends VplElement {
                 for (Block block : workspace.selectedBlockSet) {
                     //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
-//                    this.setOnMouseDragged(block::moveBlock);
-
                     this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
 
                     //Get mouse position so there is a value to calculate 
                     //in the mouse dragged event
-                    block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
                 }
             }
         }
-        e.consume();
+        event.consume();
+    }
+
+    private boolean isModifierDown(MouseEvent event) {
+        switch (Config.get().operatingSystem()) {
+            case WINDOWS:
+                return event.isControlDown();
+            case MACOS:
+                return event.isMetaDown();
+            case LINUX:
+                return event.isMetaDown();
+            default:
+                return event.isControlDown();
+        }
     }
 
     private final EventHandler<MouseEvent> blockDraggedHandler = new EventHandler<>() {
@@ -228,7 +249,7 @@ public abstract class Block extends VplElement {
      * @param type the dataProperty type it will be handling
      * @return the Port
      */
-    public Port addInPortToBlock(String name, Class type) {
+    public Port addInPortToBlock(String name, Class<?> type) {
         return Block.this.addInPortToBlock(name, type, false);
     }
 
@@ -240,7 +261,7 @@ public abstract class Block extends VplElement {
      * @param multiDockAllowed if multiple connections are allowed
      * @return the Port
      */
-    public Port addInPortToBlock(String name, Class type, boolean multiDockAllowed) {
+    public Port addInPortToBlock(String name, Class<?> type, boolean multiDockAllowed) {
         Port port = new Port(name, this, Port.Type.IN, type);
         port.multiDockAllowed = multiDockAllowed;
         inPortBox.getChildren().add(port);
@@ -278,7 +299,7 @@ public abstract class Block extends VplElement {
 
     //Double point operators do NOT work when trying to remove listeners
     //USE THIS OTHERWISE THERE WILL BE MEMORY LEAKING
-    ChangeListener port_DataChangeListener = new ChangeListener() {
+    private final ChangeListener<Object> port_DataChangeListener = new ChangeListener<>() {
 
         @Override
         public void changed(ObservableValue obj, Object oldVal, Object newVal) {
@@ -331,8 +352,20 @@ public abstract class Block extends VplElement {
      */
     @Override
     public void delete() {
-        workspace.blockSet.remove(this);
         super.delete();
+        if (resizable) {
+            resizeButton.removeEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
+            resizeButton.removeEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
+        }
+        contentGrid.removeEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
+        contentGrid.removeEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        contentGrid.removeEventHandler(MouseEvent.MOUSE_PRESSED, blockPressedHandler);
+        selected.addListener(selectChangeListener);
+        this.removeEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+        for (Port port : inPorts) {
+            port.dataProperty().removeListener(port_DataChangeListener);
+        }
+        workspace.blockSet.remove(this);
 
     }
 
@@ -439,7 +472,6 @@ public abstract class Block extends VplElement {
     };
 
     private final ChangeListener<Boolean> selectChangeListener = new ChangeListener<Boolean>() {
-
         @Override
         public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldVal, Boolean newVal) {
             updateStyle();

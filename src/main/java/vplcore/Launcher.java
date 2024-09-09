@@ -23,8 +23,7 @@ import vpllib.method.JsonMethods;
 
 //
 // WORK IN PROGRESS
-// 2 IMPROVEMENT replace method references with event handlers
-// 1 IMPROVEMENT remove connections
+// 2 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
 //
@@ -43,6 +42,7 @@ import vpllib.method.JsonMethods;
 // 3 BUG selection rectangle offset when selection rectangle last rectangle was not removed (can be observed by a small rectangle artifact), this tiny rectangle can be created by a tiny drag (does not always occur)
 // 2 IMPROVEMENT create connection handler
 // 2 IMPROVEMENT prettify connection remove button
+// 1 IMPROVEMENT remove connections
 
 
 /**

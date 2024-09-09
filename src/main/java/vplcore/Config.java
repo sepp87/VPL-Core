@@ -16,6 +16,8 @@ public class Config {
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
     private static final String CONFIG_DIRECTORY = "config" + File.separatorChar;
     private static final String SETTINGS_FILE = "settings.txt";
+    private static final String RESOURCES_DIRECTORY = "src" + File.separatorChar + "main" + File.separatorChar + "resources" + File.separatorChar;
+    private static final String ICONS_DIRECTORY = RESOURCES_DIRECTORY + "fontawesome-svg" + File.separatorChar;
 
     private String appRootDirectory;
     private OperatingSystem operatingSystem;
@@ -52,6 +54,14 @@ public class Config {
 
     public String libraryDirectory() {
         return appRootDirectory + LIBRARY_DIRECTORY;
+    }
+    
+    public String resourcesDirectory() {
+        return RESOURCES_DIRECTORY;
+    }
+    
+    public String iconsDirectory() {
+        return ICONS_DIRECTORY;
     }
 
     public OperatingSystem operatingSystem() {

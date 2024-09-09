@@ -34,10 +34,8 @@ public abstract class Block extends VplElement {
     public Block(Workspace workspace) {
         super(workspace);
         uuid = UUID.randomUUID();
-        
-        
-//this.setMouseTransparent(true);
 
+//this.setMouseTransparent(true);
         inPorts = new ArrayList<>();
         outPorts = new ArrayList<>();
         controls = new ArrayList<>();
@@ -119,31 +117,42 @@ public abstract class Block extends VplElement {
         if (resizable) {
             resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
             contentGrid.add(resizeButton, 2, 3);
-
-            resizeButton.setOnMousePressed(this::resizeButton_MousePress);
-            resizeButton.setOnMouseDragged(this::resizeButton_MouseDrag);
+            resizeButton.addEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
+            resizeButton.addEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
         }
     }
 
-    private void resizeButton_MousePress(MouseEvent e) {
-        oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
-    }
+    private final EventHandler<MouseEvent> resizeButtonPressedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+        }
 
-    private void resizeButton_MouseDrag(MouseEvent e) {
-        double scale = workspace.getScale();
+    };
 
-        double deltaX = (e.getSceneX() - oldMousePosition.getX()) / scale;
-        double deltaY = (e.getSceneY() - oldMousePosition.getY()) / scale;
+    private final EventHandler<MouseEvent> resizeButtonDraggedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            resizeBlock(event);
+        }
 
-        contentGrid.setMinWidth(contentGrid.getWidth() + deltaX);
-        contentGrid.setMinHeight(contentGrid.getHeight() + deltaY);
+    };
 
-        oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+    private void resizeBlock(MouseEvent event) {
+//        double scale = workspace.getScale();
+        double deltaX = event.getSceneX() - oldMousePosition.getX();
+        double deltaY = event.getSceneY() - oldMousePosition.getY();
+        double newWidth = contentGrid.getPrefWidth() + deltaX;
+        double newHeight = contentGrid.getPrefHeight() + deltaY;
+        contentGrid.setPrefWidth(newWidth);
+        contentGrid.setPrefHeight(newHeight);
+        oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+        contentGrid.layout();
     }
 
     /**
-     * Event handler for selection of blocks and possible followed up dragging of
-     * them by the user.
+     * Event handler for selection of blocks and possible followed up dragging
+     * of them by the user.
      *
      * @param e
      */
@@ -157,8 +166,8 @@ public abstract class Block extends VplElement {
             } else {
                 // Subscribe multiselection to MouseMove event
                 for (Block block : workspace.selectedBlockSet) {
-                    block.setOnMouseDragged(block::handle_MouseDrag);
-
+//                    block.setOnMouseDragged(block::moveBlock);
+                    block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
                     block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
                 }
             }
@@ -166,7 +175,6 @@ public abstract class Block extends VplElement {
             if (e.isControlDown()) {
                 // add this node to selection
                 workspace.selectedBlockSet.add(this);
-
                 setSelected(true);
             } else {
                 // Deselect all blocks that are selected
@@ -181,7 +189,9 @@ public abstract class Block extends VplElement {
                 for (Block block : workspace.selectedBlockSet) {
                     //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
-                    this.setOnMouseDragged(block::handle_MouseDrag);
+//                    this.setOnMouseDragged(block::moveBlock);
+
+                    this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
 
                     //Get mouse position so there is a value to calculate 
                     //in the mouse dragged event
@@ -192,20 +202,23 @@ public abstract class Block extends VplElement {
         e.consume();
     }
 
-    public void handle_MouseDrag(MouseEvent e) {
+    private final EventHandler<MouseEvent> blockDraggedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            moveBlock(event);
+        }
 
+    };
+
+    public void moveBlock(MouseEvent event) {
         double scale = workspace.getScale();
-
-        double deltaX = (e.getSceneX() - oldMousePosition.getX()) / scale;
-        double deltaY = (e.getSceneY() - oldMousePosition.getY()) / scale;
-
+        double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
+        double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
         for (Block block : workspace.selectedBlockSet) {
-
             block.setLayoutX(block.getLayoutX() + deltaX);
             block.setLayoutY(block.getLayoutY() + deltaY);
         }
-
-        oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+        oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
     }
 
     /**
@@ -313,17 +326,14 @@ public abstract class Block extends VplElement {
         controls.add(control);
     }
 
-    @Override
-    public void binButton_MouseClick(MouseEvent e) {
-        delete();
-    }
-
     /**
      * Remove this block from the host canvas
      */
+    @Override
     public void delete() {
         workspace.blockSet.remove(this);
         super.delete();
+
     }
 
     /**
@@ -341,9 +351,9 @@ public abstract class Block extends VplElement {
 
     /**
      * Called when an incoming connection is removed. Ideal for forwarding a
-     * data type to an out port e.g. blocks operating on collections. Its removed
-     * counterpart is used to set the data type of the out port back to its
-     * initial state. Only called when multi dock is not allowed!
+     * data type to an out port e.g. blocks operating on collections. Its
+     * removed counterpart is used to set the data type of the out port back to
+     * its initial state. Only called when multi dock is not allowed!
      *
      * @param source port the connection was removed from
      */
@@ -460,5 +470,3 @@ public abstract class Block extends VplElement {
         return label;
     }
 }
-
-

@@ -27,6 +27,7 @@ import vplcore.graph.model.BlockInfo;
 public class TextBlock extends Block {
 
     boolean editable = true;
+    TextArea area;
 
     public TextBlock(Workspace hostCanvas) {
         super(hostCanvas);
@@ -36,7 +37,7 @@ public class TextBlock extends Block {
         addInPortToBlock("Object", Object.class);
         addOutPortToBlock("String", String.class);
 
-        TextArea area = new TextArea();
+        area = new TextArea();
 
         area.layoutBoundsProperty().addListener(e -> {
             ScrollBar scrollBarv = (ScrollBar) area.lookup(".scroll-bar:vertical");
@@ -45,7 +46,6 @@ public class TextBlock extends Block {
             ScrollPane pane = (ScrollPane) area.lookup(".scroll-pane");
             pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
 //            Text text = (Text) area.lookup(".text");
 //            text.setLineSpacing(7);
         });
@@ -54,14 +54,16 @@ public class TextBlock extends Block {
 
         inPorts.get(0).activeProperty().addListener(this::handle_IncomingData);
 
+        contentGrid.setMinSize(220, 220);
+        contentGrid.setPrefSize(220, 220);
+        
         area.setOnKeyReleased(this::textArea_KeyRelease);
         this.setOnMouseEntered(this::textArea_MouseEnter);
         this.setOnMouseExited(this::textArea_MouseExit);
     }
 
     private void textArea_MouseEnter(MouseEvent e) {
-        TextArea text = (TextArea) controls.get(0);
-        text.requestFocus();
+        area.requestFocus();
     }
 
     private void textArea_MouseExit(MouseEvent e) {
@@ -74,9 +76,6 @@ public class TextBlock extends Block {
     }
 
     private void handle_IncomingData(ObservableValue obj, Object oldVal, Object isActive) {
-        //Get controls
-        TextArea area = (TextArea) controls.get(0);
-
         //Do Action
         if ((boolean) isActive) {
             area.setEditable(false);
@@ -88,13 +87,11 @@ public class TextBlock extends Block {
     }
 
     public String getText() {
-        TextArea area = (TextArea) controls.get(0);
         return area.getText();
     }
 
     public boolean setText(String text) {
         //Text can only be set when the text area is editable
-        TextArea area = (TextArea) controls.get(0);
         if (area.isEditable()) {
             area.setText(text);
             this.setTextToData(text);
@@ -117,7 +114,6 @@ public class TextBlock extends Block {
 
     @Override
     public void handle_IncomingConnectionRemoved(Port source) {
-        TextArea area = (TextArea) controls.get(0);
         area.setText("");
         area.setEditable(true);
         outPorts.get(0).setData(null);
@@ -129,7 +125,6 @@ public class TextBlock extends Block {
     @Override
     public void calculate() {
         //Get controls and data
-        TextArea area = (TextArea) controls.get(0);
         Object data = inPorts.get(0).getData();
         area.setText("");
 
@@ -172,7 +167,6 @@ public class TextBlock extends Block {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         String text = "";
-        TextArea area = (TextArea) controls.get(0);
         if (area.isEditable()) {
             text = getText();
         }
@@ -191,7 +185,6 @@ public class TextBlock extends Block {
     @Override
     public Block clone() {
         TextBlock block = new TextBlock(workspace);
-        TextArea area = (TextArea) controls.get(0);
         if (area.isEditable()) {
             block.setText(this.getText());
         }

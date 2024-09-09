@@ -44,9 +44,11 @@ public class ZoomHandler {
         }
     };
     private final EventHandler<ScrollEvent> mouseScrollHandler = new EventHandler<>() {
+
         @Override
         public void handle(ScrollEvent event) {
-            if (workspace.getMouseMode() == MouseMode.ZOOMING) {
+            boolean onWindows = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS;
+            if (workspace.getMouseMode() == MouseMode.ZOOMING || onWindows) {
                 zoom(event);
             }
         }

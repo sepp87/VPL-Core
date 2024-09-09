@@ -73,8 +73,6 @@
 .text-area{
     -fx-background-color: transparent;
     -fx-font-family:'Source Code Pro';
-    -fx-pref-column-count: 22;
-    -fx-pref-row-count: 10;
     /*    -fx-wrap-text: true;*/
 }
 
@@ -98,7 +96,7 @@
 
 .text-area .scroll-pane .content{
     -fx-background-color: transparent,
-        linear-gradient(from 0px 3.5px to 0px 11.5px, repeat, #5F5F5F 0%, transparent 10%);
+        linear-gradient(from 0px 3.5px to 0px 19.5px, repeat, #5F5F5F 0%, transparent 10%);
     /*linear-gradient(from 0px 3.5px to 0px 12px, repeat, #b5b5b5 0%, transparent 10%);*/
     -fx-background-insets: 16 0 0 0;
 }
@@ -264,13 +262,10 @@
     -fx-text-fill: salmon;
 }
 
-.connection-remove-icon{
-    -fx-fill: #5F5F5F;
-}
-
-.connection-remove-icon-hover{
+.connection-remove-icon {
     -fx-fill: salmon;
 }
+
 
 .block-text{
     -fx-font-size: 30;

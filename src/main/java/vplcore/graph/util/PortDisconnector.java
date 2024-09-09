@@ -19,7 +19,8 @@ import vplcore.workspace.Workspace;
  */
 public class PortDisconnector {
 
-    private Workspace workspace;
+    private final Workspace workspace;
+    
     private Group removeButton;
     private SVGPath removeIcon;
     private Circle circle;
@@ -36,12 +37,11 @@ public class PortDisconnector {
         String svg = xml.split("path d=\"")[1].replace("\"/></svg>", "");
         removeIcon = new SVGPath();
         removeIcon.setContent(svg);
-        removeIcon.setFill(Color.BLACK);
         removeIcon.getStyleClass().add("connection-remove-icon");
 
         double width = removeIcon.prefWidth(-1);
         double height = removeIcon.prefHeight(-1);
-        double desiredWidth = 25;
+        double desiredWidth = Connection.SNAPPING_WIDTH;
         double scale = desiredWidth / width;
 
         removeIcon.setLayoutX(-width / 2);
@@ -49,20 +49,14 @@ public class PortDisconnector {
         removeIcon.setScaleX(scale);
         removeIcon.setScaleY(scale);
 
-        circle = new Circle(0, 0, 12, Color.WHITE);
+        double radius = (desiredWidth - 1) / 2;
+        circle = new Circle(0, 0, radius, Color.WHITE);
 
         removeButton = new Group();
         removeButton.getChildren().add(circle);
         removeButton.getChildren().add(removeIcon);
         removeButton.setVisible(false);
-        removeButton.setOnMouseClicked(event -> removeConnection());
-        removeButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                removeIcon.getStyleClass().add("connection-remove-icon-hover");
-            } else {
-                removeIcon.getStyleClass().remove("connection-remove-icon-hover");
-            }
-        });
+        removeButton.setMouseTransparent(true);
         workspace.getChildren().add(removeButton);
     }
 
@@ -77,7 +71,6 @@ public class PortDisconnector {
     public final EventHandler<MouseEvent> exitedSnappingCurveHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            System.out.println(event.getPickResult().getIntersectedNode().getClass());
             Node node = event.getPickResult().getIntersectedNode();
             if (!node.equals(removeIcon) && !node.equals(circle)) {
                 hideRemoveButton();
@@ -90,6 +83,14 @@ public class PortDisconnector {
             removeButton.setVisible(true);
             CubicCurve snappingCurve = (CubicCurve) event.getSource();
             removableConnection = (Connection) snappingCurve.getUserData();
+            snappingCurve.addEventHandler(MouseEvent.MOUSE_CLICKED, clickedSnappingCurveHandler);
+        }
+    };
+
+    public final EventHandler<MouseEvent> clickedSnappingCurveHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            removeConnection();
         }
     };
 
@@ -126,6 +127,9 @@ public class PortDisconnector {
 
     public void hideRemoveButton() {
         removeButton.setVisible(false);
+        if (removableConnection != null) {
+            removableConnection.snappingCurve.removeEventHandler(MouseEvent.MOUSE_CLICKED, clickedSnappingCurveHandler);
+        }
     }
 
     public Group getRemoveButton() {

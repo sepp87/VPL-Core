@@ -1,8 +1,6 @@
 package vplcore.graph.model;
 
 import vplcore.graph.util.SelectBlock;
-import vplcore.graph.model.BlockButton;
-import vplcore.graph.model.BlockLabel;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -11,7 +9,6 @@ import vplcore.IconType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.EventBlaster;
-import vplcore.workspace.Workspace;
 import vplcore.workspace.Workspace;
 
 /**
@@ -67,7 +64,7 @@ public class VplElement extends GridPane {
         questionButton = new BlockButton(IconType.FA_QUESTION_CIRCLE);
         resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
         binButton = new BlockButton(IconType.FA_MINUS_CIRCLE);
-        binButton.setOnMouseClicked(this::binButton_MouseClick);
+        binButton.addEventHandler(MouseEvent.MOUSE_CLICKED, binButtonClickedHandler);
         autoCheckBox = new BlockButton(IconType.FA_CHECK_CIRCLE);
         autoCheckBox.setClickedType(IconType.FA_CIRCLE_O);
 
@@ -84,13 +81,17 @@ public class VplElement extends GridPane {
         add(menuBox, 1, 0);
     }
 
-    public void binButton_MouseClick(MouseEvent e) {
-        removeEventFilter(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        removeEventFilter(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
-        delete();
-    }
+    private final EventHandler<MouseEvent> binButtonClickedHandler = new EventHandler<>() {
+        @Override
+        public void handle(MouseEvent event) {
+            delete();
+        }
+    };
 
     public void delete() {
+        removeEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
+        removeEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        removeEventHandler(MouseEvent.MOUSE_CLICKED, binButtonClickedHandler);
         workspace.getChildren().remove(this);
         setDeleted(true);
     }

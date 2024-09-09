@@ -10,8 +10,7 @@ import vpllib.method.JsonMethods;
 
 // List methods output cant be used in further operations - TODO TEST FIX
 
-// 2 IMPROVEMENT prettify connection remove button
-// 2 IMPROVEMENT replace method references with event handlers
+// 2 BUG Zoom start and stop does not work on windows
 // 2 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT create elaborate tests TBD what to test
@@ -20,9 +19,11 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
+// 3 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 
 //
 // WORK IN PROGRESS
+// 2 IMPROVEMENT replace method references with event handlers
 // 1 IMPROVEMENT remove connections
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
@@ -41,6 +42,7 @@ import vpllib.method.JsonMethods;
 // 3 BUG where block is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new block
 // 3 BUG selection rectangle offset when selection rectangle last rectangle was not removed (can be observed by a small rectangle artifact), this tiny rectangle can be created by a tiny drag (does not always occur)
 // 2 IMPROVEMENT create connection handler
+// 2 IMPROVEMENT prettify connection remove button
 
 
 /**

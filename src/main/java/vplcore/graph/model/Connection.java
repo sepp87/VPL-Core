@@ -6,12 +6,10 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
-import vplcore.workspace.Workspace;
 import jo.vpl.xml.ConnectionTag;
 import vplcore.workspace.Workspace;
 
@@ -21,6 +19,7 @@ import vplcore.workspace.Workspace;
  */
 public class Connection {
 
+    public final static double SNAPPING_WIDTH = 22;
     public final Port startPort;
     public final Port endPort;
     public Workspace workspace;
@@ -65,7 +64,7 @@ public class Connection {
 
         snappingCurve = createCurve();
         snappingCurve.setFill(null);
-        snappingCurve.setStrokeWidth(50);
+        snappingCurve.setStrokeWidth(SNAPPING_WIDTH);
         snappingCurve.setStroke(Color.TRANSPARENT);
         snappingCurve.setUserData(this);
 

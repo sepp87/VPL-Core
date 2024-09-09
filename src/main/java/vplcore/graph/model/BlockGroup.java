@@ -38,7 +38,7 @@ public class BlockGroup extends VplElement {
 
         childBlocks = FXCollections.observableSet();
         setOnMousePressed(this::handle_MousePress);
-        
+
         setName("Name group here...");
 
         workspace.blockGroupSet.add(this);
@@ -55,7 +55,7 @@ public class BlockGroup extends VplElement {
     private void handle_MousePress(MouseEvent e) {
         for (Block block : childBlocks) {
 
-            block.setOnMouseDragged(block::handle_MouseDrag);
+            block.setOnMouseDragged(block::moveBlock);
 
             block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
 
@@ -64,12 +64,9 @@ public class BlockGroup extends VplElement {
         }
     }
 
-    @Override
-    public void binButton_MouseClick(MouseEvent e) {
-        deleteGroup();
-    }
 
-    private void deleteGroup() {
+    @Override
+    public void delete() {
         unObserveAllChildBlocks();
         workspace.blockGroupSet.remove(this);
         super.delete();
@@ -88,8 +85,7 @@ public class BlockGroup extends VplElement {
         }
 
         if (childBlocks.size() < 2) {
-//            binButton_Click(null, null);
-            deleteGroup();
+            delete();
         } else {
             calculateSize();
         }

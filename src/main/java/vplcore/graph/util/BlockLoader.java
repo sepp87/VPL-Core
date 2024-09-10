@@ -4,16 +4,13 @@ import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockInfo;
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,15 +55,6 @@ public class BlockLoader {
         Collections.sort(BLOCK_TYPE_LIST);
     }
 
-    private static void addBlockType(Class<?> blockType) {
-        if (blockType.isAnnotationPresent(BlockInfo.class)) {
-            BlockInfo info = blockType.getAnnotation(BlockInfo.class);
-            BLOCK_TYPE_MAP.put(info.identifier(), blockType);
-            BLOCK_TYPE_LIST.add(info.identifier());
-            BLOCK_LIBRARY.put(info.identifier(), blockType);
-        }
-    }
-
     /**
      * Retrieve all blocks from external libraries
      */
@@ -74,28 +62,36 @@ public class BlockLoader {
         File dir = new File(Config.get().libraryDirectory());
         File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
 
-        for (File lib : libraries) {
-            List<String> classNames = getClassNamesFromJarFile(lib);
-            List<Class<?>> classes = getClassesFromJarFile(lib, classNames);
+        List<Class<?>> classes = getClassesFromLibraries(libraries);
+        classes = filterEligibleClasses(classes);
 
-            for (Class<?> type : classes) {
-// TODELETE
-//                if (!type.getSuperclass().getName().equals("jo.vpl.core.Block")) {
-//                    continue;
-//                }
-                if (!Block.class.isAssignableFrom(type)) {
-                    continue;
-                }
-                addBlockType(type);
-            }
+        for (Class<?> clazz : classes) {
+            addBlockType(clazz);
         }
 
         Collections.sort(BLOCK_TYPE_LIST);
     }
 
+    private static void addBlockType(Class<?> blockType) {
+        BlockInfo info = blockType.getAnnotation(BlockInfo.class);
+        BLOCK_TYPE_MAP.put(info.identifier(), blockType);
+        BLOCK_TYPE_LIST.add(info.identifier());
+        BLOCK_LIBRARY.put(info.identifier(), blockType);
+    }
+
+    private static List<Class<?>> getClassesFromLibraries(File[] libraries) {
+        List<Class<?>> result = new ArrayList<>();
+        for (File lib : libraries) {
+            List<String> classNames = getClassNamesFromJarFile(lib);
+            List<Class<?>> classes = getClassesFromJarFile(lib, classNames);
+            result.addAll(classes);
+        }
+        return result;
+    }
+
     private static List<String> getClassNamesFromJarFile(File file) {
         List<String> result = new ArrayList<>();
-        try (JarFile jarFile = new JarFile(file)) {
+        try ( JarFile jarFile = new JarFile(file)) {
 
             Enumeration<JarEntry> e = jarFile.entries();
             String packageName = jarFile.getManifest().getMainAttributes().getValue("package");
@@ -137,29 +133,75 @@ public class BlockLoader {
         return result;
     }
 
+    private static List<Class<?>> filterEligibleClasses(List<Class<?>> classes) {
+        List<Class<?>> result = new ArrayList<>();
+        for (Class<?> clazz : classes) {
+            if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
+                result.add(clazz);
+            }
+        }
+        return result;
+    }
+
     /**
      * Retrieve all blocks from static methods
      */
-    public static void loadStaticMethodsAsBlocks() {
+    public static void loadInternalMethodBlocks() {
         BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
         BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
+        List<Class<?>> classes = List.of(
+                vpllib.method.JsonMethods.class,
+                vpllib.method.ListMethods.class,
+                vpllib.method.MathMethods.class,
+                vpllib.method.ObjectMethods.class,
+                vpllib.method.StringMethods.class
+        );
+        List<Method> methods = getStaticMethodsFromClasses(classes);
 
-        List<Method> methods = getStaticMethodsFromClass(vpllib.method.StringMethods.class);
-        methods.addAll(getStaticMethodsFromClass(vpllib.method.JsonMethods.class));
-        methods.addAll(getStaticMethodsFromClass(vpllib.method.MathMethods.class));
-        methods.addAll(getStaticMethodsFromClass(vpllib.method.ObjectMethods.class));
-        methods.addAll(getStaticMethodsFromClass(vpllib.method.ListMethods.class));
-
-        for (Method m : methods) {
-            addBlockMethod(m);
+        methods = filterEligibleMethods(methods);
+        for (Method method : methods) {
+            addMethodBlockType(method);
         }
 
         Collections.sort(BLOCK_TYPE_LIST);
     }
 
-    public static List<Method> getStaticMethodsFromClass(Class<?> c) {
+    public static void loadExternalMethodBlocks() {
+        File dir = new File(Config.get().libraryDirectory());
+        File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
+        List<Class<?>> classes = getClassesFromLibraries(libraries);
+        List<Method> methods = getStaticMethodsFromClasses(classes);
+
+        methods = filterEligibleMethods(methods);
+        for (Method method : methods) {
+            addMethodBlockType(method);
+        }
+
+        Collections.sort(BLOCK_TYPE_LIST);
+    }
+
+    private static List<Method> filterEligibleMethods(List<Method> methods) {
         List<Method> result = new ArrayList<>();
-        Method[] methods = c.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(BlockInfo.class)) {
+                result.add(method);
+            }
+        }
+        return result;
+    }
+
+    private static List<Method> getStaticMethodsFromClasses(List<Class<?>> classes) {
+        List<Method> result = new ArrayList<>();
+        for (Class<?> clazz : classes) {
+            List<Method> methods = getStaticMethodsFromClass(clazz);
+            result.addAll(methods);
+        }
+        return result;
+    }
+
+    private static List<Method> getStaticMethodsFromClass(Class<?> clazz) {
+        List<Method> result = new ArrayList<>();
+        Method[] methods = clazz.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
             if (Modifier.isStatic(m.getModifiers())) {
@@ -169,13 +211,11 @@ public class BlockLoader {
         return result;
     }
 
-    private static void addBlockMethod(Method blockMethod) {
-        if (blockMethod.isAnnotationPresent(BlockInfo.class)) {
-            BlockInfo info = blockMethod.getAnnotation(BlockInfo.class);
-            BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
-            BLOCK_TYPE_LIST.add(info.identifier());
-            BLOCK_LIBRARY.put(info.identifier(), blockMethod);
-        }
+    private static void addMethodBlockType(Method blockMethod) {
+        BlockInfo info = blockMethod.getAnnotation(BlockInfo.class);
+        BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
+        BLOCK_TYPE_LIST.add(info.identifier());
+        BLOCK_LIBRARY.put(info.identifier(), blockMethod);
     }
 
     public static void loadStaticFieldsAsBlocks() {

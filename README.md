@@ -44,7 +44,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 ### TODO
 * General UI/UX
     * Start screen
-    * Menu bar
+    * ✅ Menu bar
     * Undo/redo
     * Auto save/load
     * Save canvas size, position and zoom factor
@@ -53,15 +53,15 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 
 * Block behaviour
     * Hints
-    * Remove connections
+    * ✅ Remove connections
     * Exceptions
     * Save block size
 <br>
 
 * Block library extension
-    * Load external libraries (subclasses and static methods)
-    * Load blocks through reflection
-    * Migrate existing blocks to external libraries
+    * ✅ Load external libraries (subclasses and static methods)
+    * ✅ Load blocks through reflection
+    * ✅ Migrate existing blocks to external libraries
 <br>
 
 * Select Block
@@ -69,11 +69,11 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 * Bugs
-    * Fix align submenu of radial menu
+    * ✅ Fix align submenu of radial menu
 <br>
 
 * Other
-    * Remove Obj library
+    * ✅ Remove Obj library
     * Customization functionality through config file
     * Comments
     * Scripting block

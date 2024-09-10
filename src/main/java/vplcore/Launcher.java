@@ -56,7 +56,7 @@ public class Launcher {
         //Load all block types
         BlockLoader.loadInternalBlocks();
         BlockLoader.loadExternalBlocks();
-        BlockLoader.loadStaticMethodsAsBlocks();
+        BlockLoader.loadInternalMethodBlocks();
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();

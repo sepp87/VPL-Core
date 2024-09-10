@@ -25,16 +25,14 @@ public class ZoomHandler {
     public ZoomHandler(Workspace workspace) {
         this.workspace = workspace;
         addInputHandlers();
-
     }
 
     private void addInputHandlers() {
-
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, mouseScrollStartedHandler);
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL, mouseScrollHandler);
         workspace.getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, mouseScrollFinishedHandler);
-
     }
+    
     private final EventHandler<ScrollEvent> mouseScrollStartedHandler = new EventHandler<>() {
         @Override
         public void handle(ScrollEvent event) {
@@ -43,8 +41,8 @@ public class ZoomHandler {
             }
         }
     };
+    
     private final EventHandler<ScrollEvent> mouseScrollHandler = new EventHandler<>() {
-
         @Override
         public void handle(ScrollEvent event) {
             boolean onWindows = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS;
@@ -75,7 +73,7 @@ public class ZoomHandler {
             scale *= delta;
         }
 
-        scale = clamp(scale, workspace.MIN_SCALE, workspace.MAX_SCALE);
+        scale = clamp(scale, Workspace.MIN_ZOOM, Workspace.MAX_ZOOM);
 
         double f = (scale / oldScale) - 1;
 

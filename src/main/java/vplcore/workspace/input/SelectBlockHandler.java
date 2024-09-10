@@ -42,7 +42,7 @@ public class SelectBlockHandler {
         @Override
         public void handle(MouseEvent event) {
             if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.getButton() == MouseButton.PRIMARY) {
-                if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect()) {
+                if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomControls(event) && !workspace.onMenuBar(event)) {
                     showSelectBlock(event);
                 }
             }

@@ -350,3 +350,23 @@
     -fx-stroke-dash-offset: 6;
     -fx-stroke-line-cap: round;
 }
+
+.zoom-controls {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ccc;
+    -fx-padding: 5;
+    -fx-spacing: 10;
+}
+
+.zoom-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+.zoom-button {
+    -fx-font-size: 16px;
+    -fx-padding: 5 10;
+    -fx-background-color: #ddd;
+    -fx-border-color: #bbb;
+    -fx-cursor: hand;
+}

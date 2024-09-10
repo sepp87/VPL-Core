@@ -19,6 +19,7 @@ import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.graph.io.GraphLoader;
@@ -41,8 +42,12 @@ public class Workspace extends AnchorPane {
     //isSaved
     //styleFile
     public static boolean isCSS = true;
-    public static final double MAX_SCALE = 1.5d;
-    public static final double MIN_SCALE = .25d;
+    
+    
+    
+    public static final double MAX_ZOOM = 1.5;
+    public static final double MIN_ZOOM = 0.3;
+    public static final double ZOOM_STEP = 0.1;
 
     public ObservableSet<Connection> connectionSet;
     public ObservableSet<Block> blockSet;
@@ -209,6 +214,16 @@ public class Workspace extends AnchorPane {
         }
 
         return value;
+    }
+
+    public boolean onZoomControls(MouseEvent event) {
+        Node node = event.getPickResult().getIntersectedNode();
+        return checkParents(node, ZoomControls.class);
+    }
+
+    public boolean onMenuBar(MouseEvent event) {
+        Node node = event.getPickResult().getIntersectedNode();
+        return checkParents(node, Control.class);
     }
 
     public boolean onBlock(MouseEvent event) {

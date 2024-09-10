@@ -13,14 +13,14 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 ### SHORTCUTS
-* CTRL-C: copy selected blocks
-* CTRL-V: paste copied blocks
-* CTRL-G: group selected blocks
-* CTRL-O: load graph
-* CTRL-S: save graph
-* CTRL-N: new graph
+* CMD/CTRL-C: copy selected blocks
+* CMD/CTRL-V: paste copied blocks
+* CMD/CTRL-G: group selected blocks
+* CMD/CTRL-O: load graph
+* CMD/CTRL-S: save graph
+* CMD/CTRL-N: new graph
 * Space: zoom to fit
-* Del: delete selected blocks
+* Del/Backspace: delete selected blocks
 <br>
 
 ### FUNCTIONALITIES

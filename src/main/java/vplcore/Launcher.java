@@ -20,29 +20,12 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
-
 //
 // WORK IN PROGRESS
 // 2 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
-//
-// DONE
-// 1 IMPROVEMENT rename hubs to blocks
-// 2 IMPROVEMENT Copy reflection block
-// 2 IMPROVEMENT improve package structure e.g. block stuff put together, workspace stuff together, base input blocks in vpl-core, etc.
-// 3 IMPROVEMENT sift through jo.vpl.util package and consolidate
-// 1 IMPROVEMENT isolate radial menu as standalone library
-// 1 IMRPOVEMENT activate menu bar and radial menu actions
-// 3 BUG when opening a file and cancelling the action, everything is removed as if a new file was created
-// 2 IMPROVEMENT refactor select block so the block creation is delegated to a block factory
-// 3 IMPROVEMENT remove external OBJ code, due to enforcing unnecessary GPL license
-// 3 IMPROVEMENT Add MACOS shortcuts e.g. replace CTRL by CMD
-// 3 BUG where block is created at the top left when not moving the mouse after initially booting up the app and immediately double clicking to create a new block
-// 3 BUG selection rectangle offset when selection rectangle last rectangle was not removed (can be observed by a small rectangle artifact), this tiny rectangle can be created by a tiny drag (does not always occur)
-// 2 IMPROVEMENT create connection handler
-// 2 IMPROVEMENT prettify connection remove button
-// 1 IMPROVEMENT remove connections
+
 
 
 /**
@@ -57,6 +40,7 @@ public class Launcher {
         BlockLoader.loadInternalBlocks();
         BlockLoader.loadExternalBlocks();
         BlockLoader.loadInternalMethodBlocks();
+        BlockLoader.loadExternalMethodBlocks();
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();

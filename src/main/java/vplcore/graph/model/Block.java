@@ -396,6 +396,7 @@ public abstract class Block extends VplElement {
 
     public abstract void calculate();
 
+    @Override
     public abstract Block clone();
 
     public void serialize(BlockTag xmlTag) {
@@ -403,17 +404,20 @@ public abstract class Block extends VplElement {
         xmlTag.setUUID(uuid.toString());
         xmlTag.setX(getLayoutX());
         xmlTag.setY(getLayoutY());
+        if (resizable) {
+            xmlTag.setWidth(getPrefWidth());
+            xmlTag.setHeight(getPrefHeight());
+        }
     }
 
     public void deserialize(BlockTag xmlTag) {
         uuid = UUID.fromString(xmlTag.getUUID());
         setLayoutX(xmlTag.getX());
         setLayoutY(xmlTag.getY());
-        List<Block> blocks = new ArrayList<>();
-    }
-
-    public <type extends Block> void testList(type... blocks) {
-
+        if (resizable) {
+            setPrefWidth(xmlTag.getWidth());
+            setPrefHeight(xmlTag.getHeight());
+        }
     }
 
     public static Bounds getBoundingBoxOfBlocks(Collection<? extends Block> blocks) {

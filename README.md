@@ -44,18 +44,18 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 ### TODO
 * General UI/UX
     * Start screen
-    * ✅ Menu bar
     * Undo/redo
     * Auto save/load
-    * Save canvas size, position and zoom factor
-    * Zoom controls
+    * ✅ Menu bar
+    * ✅ Save canvas size, position and zoom factor
+    * ✅ Zoom controls
 <br>
 
 * Block behaviour
     * Hints
-    * ✅ Remove connections
     * Exceptions
-    * Save block size
+    * ✅ Remove connections
+    * ✅ Save block size
 <br>
 
 * Block library extension
@@ -73,10 +73,10 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 * Other
-    * ✅ Remove Obj library
     * Customization functionality through config file
     * Comments
     * Scripting block
     * Looping groups/areas
     * Improve grouping
     * BUG text and blocks are copied/pasted simultaneously
+    * ✅ Remove Obj library

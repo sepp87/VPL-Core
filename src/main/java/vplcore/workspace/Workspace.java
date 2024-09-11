@@ -22,14 +22,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import vplcore.graph.io.GraphLoader;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectBlockHandler;
 import vplcore.workspace.input.SelectionHandler;
-import vplcore.workspace.input.ZoomHandler;
+import vplcore.workspace.input.ZoomManager;
 import vplcore.workspace.radialmenu.RadialMenu;
 
 /**
@@ -136,7 +135,7 @@ public class Workspace extends AnchorPane {
     public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
 
-    private ZoomHandler zoomHandler;
+//    private ZoomHandler zoomHandler;
     private SelectionHandler selectHandler;
     private PanHandler panHandler;
     public PortConnector portConnector;
@@ -150,7 +149,6 @@ public class Workspace extends AnchorPane {
             mouse = new MousePositionHandler(Workspace.this);
             keyboard = new KeyboardInputHandler(Workspace.this);
 
-            zoomHandler = new ZoomHandler(Workspace.this);
             selectHandler = new SelectionHandler(Workspace.this);
             panHandler = new PanHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
@@ -218,7 +216,7 @@ public class Workspace extends AnchorPane {
 
     public boolean onZoomControls(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, ZoomControls.class);
+        return checkParents(node, ZoomManager.class);
     }
 
     public boolean onMenuBar(MouseEvent event) {

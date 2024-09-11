@@ -32,10 +32,11 @@
     
     <xsd:complexType name="BlockTag">
         <xsd:attribute name="Type" type="vpl:String" use="required"/>
-        <xsd:attribute name="Method" type="vpl:Boolean" use="optional"/>
         <xsd:attribute name="UUID" type="vpl:String" use="required"/>
         <xsd:attribute name="X" type="vpl:Double" use="required"/>
-        <xsd:attribute name="Y" type="vpl:Double" use="required"/>    
+        <xsd:attribute name="Y" type="vpl:Double" use="required"/>   
+        <xsd:attribute name="Width" type="vpl:Double" use="optional"/> 
+        <xsd:attribute name="Height" type="vpl:Double" use="optional"/>
         <xsd:anyAttribute processContents="skip"/>
     </xsd:complexType>
 

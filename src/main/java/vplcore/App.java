@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.Workspace;
 import vplcore.workspace.MenuBarConfigurator;
-import vplcore.workspace.ZoomControls;
+import vplcore.workspace.input.ZoomManager;
 
 /**
  *
@@ -18,7 +18,6 @@ import vplcore.workspace.ZoomControls;
  */
 public class App extends Application {
 
-    
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -35,10 +34,10 @@ public class App extends Application {
         MenuBar menuBar = new MenuBarConfigurator(workspace).configure();
         menuBar.prefWidthProperty().bind(pane.widthProperty());
 
-        ZoomControls zoomControls = new ZoomControls(workspace);
+        ZoomManager zoomControls = new ZoomManager(workspace);
         AnchorPane.setTopAnchor(zoomControls, 37.5);
         AnchorPane.setRightAnchor(zoomControls, 10.);
-        
+
         pane.getChildren().addAll(workspaceAndRadialMenu, menuBar, zoomControls);
 
         Scene scene = new Scene(pane, 800, 800);
@@ -50,7 +49,7 @@ public class App extends Application {
         GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
 
         System.out.println(menuBar.getHeight());
-        
+
     }
 
 }

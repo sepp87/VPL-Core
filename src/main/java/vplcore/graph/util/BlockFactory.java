@@ -42,7 +42,7 @@ public class BlockFactory {
         return block;
     }
 
-    public static Block createBlockFromMethod(Method method, Workspace workspace) {
+    public static MethodBlock createBlockFromMethod(Method method, Workspace workspace) {
         MethodBlock block = null;
         try {
             BlockInfo info = method.getAnnotation(BlockInfo.class);

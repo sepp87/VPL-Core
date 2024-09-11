@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javafx.scene.control.Label;
 import jo.vpl.xml.BlockTag;
+import vplcore.IconType;
 import vplcore.graph.model.Port;
 import vplcore.workspace.Workspace;
 
@@ -38,9 +40,6 @@ public class MethodBlock extends Block {
         this.description = info.description();
         this.tags = info.tags();
         this.method = method;
-
-        String blockName = !info.name().equals("") ? info.name() : info.identifier();
-        setName(blockName);
     }
 
     /**
@@ -235,7 +234,6 @@ public class MethodBlock extends Block {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.setType(method.getAnnotation(BlockInfo.class).identifier());
-        xmlTag.setMethod(true);
     }
 
     @Override
@@ -246,8 +244,7 @@ public class MethodBlock extends Block {
 
     @Override
     public Block clone() {
-        MethodBlock block = new MethodBlock(workspace, method);
-        //Specify further copy statements here
+        MethodBlock block = BlockFactory.createBlockFromMethod(method, workspace);
         return block;
     }
 }

@@ -1,5 +1,6 @@
 package vpllib.method;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -16,6 +17,9 @@ import vplcore.graph.model.BlockInfo;
 public class JsonMethods {
 
     public static final JsonParser PARSER = new JsonParser();
+    public static final com.google.gson.Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
     @BlockInfo(
             identifier = "Json.asList",
@@ -54,8 +58,8 @@ public class JsonMethods {
     /**
      *
      * @param a
-     * @return returns true when array contains only integers, false when double and null
-     * when none of both
+     * @return returns true when array contains only integers, false when double
+     * and null when none of both
      */
     private static Boolean isIntegerList(JsonArray a) {
         Boolean result = true;
@@ -93,6 +97,14 @@ public class JsonMethods {
             description = "Returns the element as string at the specified position in this JSON array.")
     public static String getIndex(String json, int index) {
         return PARSER.parse(json).getAsJsonArray().get(index).toString();
+    }
+
+    @BlockInfo(
+            identifier = "Json.toJson",
+            category = "Core",
+            description = "This method serializes the specified object into its equivalent Json representation.")
+    public static String toJson(Object object) {
+        return GSON.toJson(object);
     }
 
 }

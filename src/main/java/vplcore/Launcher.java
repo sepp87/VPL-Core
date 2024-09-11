@@ -9,7 +9,6 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 // List methods output cant be used in further operations - TODO TEST FIX
-
 // 2 BUG Zoom start and stop does not work on windows
 // 2 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
 // 2 IMPROVEMENT clean up App and Workspace according to UI structure
@@ -25,9 +24,6 @@ import vpllib.method.JsonMethods;
 // 2 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
 // 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
-
-
-
 /**
  *
  * @author JoostMeulenkamp
@@ -45,12 +41,15 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();
 //        TestGetLongValue();
+
+
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
     }
+
 
     static void TestJsonAsList() {
         JsonMethods.asList("[\"str\",6,7]");

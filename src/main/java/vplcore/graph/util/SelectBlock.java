@@ -3,6 +3,7 @@ package vplcore.graph.util;
 import vplcore.graph.model.Block;
 import static java.util.stream.Collectors.toCollection;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ListCell;
 
@@ -20,7 +21,14 @@ import vplcore.workspace.Workspace;
 public class SelectBlock extends Block {
 
     private ListView<String> listView;
-    private TextField searchField;
+    private final TextField searchField;
+    
+   private final EventHandler<MouseEvent> selectBlockExitedHandler = this::handleSelectBlockExited;
+   private final EventHandler<MouseEvent> selectBlockEnteredHandler = this::handleSelectBlockEntered;
+   private final EventHandler<MouseEvent> listViewPressedHandler = this::handleListViewPressed;
+   private final EventHandler<MouseEvent> listViewHoveredHandler = this::handleListViewHovered;
+   private final EventHandler<KeyEvent> searchFieldKeyPressedHandler = this::handleSearchFieldKeyPressed;
+   private final EventHandler<KeyEvent> searchFieldKeyReleasedHandler = this::handleSearchFieldKeyReleased;
 
     /**
      * Select block is used to pick a block type and place it on the host
@@ -47,13 +55,13 @@ public class SelectBlock extends Block {
 
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
 
-        this.setOnMouseExited(this::selectBlock_MouseExit);
-        this.setOnMouseDragExited(this::selectBlock_MouseExit);
-        this.setOnMouseEntered(this::selectBlock_MouseEnter);
-        listView.setOnMousePressed(this::listView_MousePress);
-        listView.setOnMouseMoved(this::listView_MouseMove);
-        searchField.setOnKeyPressed(this::searchField_KeyPress);
-        searchField.setOnKeyReleased(this::searchField_KeyRelease);
+        this.setOnMouseExited(selectBlockExitedHandler);
+        this.setOnMouseDragExited(selectBlockExitedHandler);
+        this.setOnMouseEntered(selectBlockEnteredHandler);
+        listView.setOnMousePressed(listViewPressedHandler);
+        listView.setOnMouseMoved(listViewHoveredHandler);
+        searchField.setOnKeyPressed(searchFieldKeyPressedHandler);
+        searchField.setOnKeyReleased(searchFieldKeyReleasedHandler);
 
         VBox searchBox = new VBox(10);
         searchBox.getChildren().addAll(searchField, listView);
@@ -68,7 +76,7 @@ public class SelectBlock extends Block {
      *
      * @param e
      */
-    private void listView_MousePress(MouseEvent e) {
+    private void handleListViewPressed(MouseEvent e) {
         searchField.requestFocus();
 
         if (e.getButton() != MouseButton.PRIMARY) {
@@ -81,7 +89,7 @@ public class SelectBlock extends Block {
         }
     }
 
-    private void listView_MouseMove(MouseEvent event) {
+    private void handleListViewHovered(MouseEvent event) {
 
         // Get the Y position of the mouse event relative to the ListView
         double yPos = event.getY();
@@ -107,7 +115,7 @@ public class SelectBlock extends Block {
      *
      * @param e
      */
-    private void searchField_KeyRelease(KeyEvent e) {
+    private void handleSearchFieldKeyReleased(KeyEvent e) {
         String keyWord = searchField.getText();
 
         if (!"".equals(keyWord)) {
@@ -143,7 +151,7 @@ public class SelectBlock extends Block {
      *
      * @param event
      */
-    private void searchField_KeyPress(KeyEvent event) {
+    private void handleSearchFieldKeyPressed(KeyEvent event) {
 
         KeyCode key = event.getCode();
 
@@ -210,7 +218,7 @@ public class SelectBlock extends Block {
      *
      * @param e
      */
-    private void selectBlock_MouseExit(MouseEvent e) {
+    private void handleSelectBlockExited(MouseEvent e) {
         hide();
         e.consume();
     }
@@ -228,7 +236,7 @@ public class SelectBlock extends Block {
      *
      * @param e
      */
-    private void selectBlock_MouseEnter(MouseEvent e) {
+    private void handleSelectBlockEntered(MouseEvent e) {
         TextField text = (TextField) controls.get(0).getChildrenUnmodifiable().get(0);
         text.requestFocus();
     }

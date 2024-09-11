@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.KeyEvent;
 
 /**
  *
@@ -204,8 +205,7 @@ public class Util {
         }
         return stringList;
     }
-    
-    
+
     /**
      * @param file to read from, e.g. a *.csv or *.txt
      * @return a list of strings. Each string represents a line.
@@ -414,6 +414,25 @@ public class Util {
         LINUX,
         SOLARIS,
         OTHER_OS
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////// EVENT UTILS ///////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    
+    public static boolean isModifierDown(KeyEvent e) {
+        switch (Config.get().operatingSystem()) {
+            case WINDOWS:
+                return e.isControlDown();
+            case MACOS:
+                return e.isMetaDown();
+            case LINUX:
+                return e.isMetaDown();
+            default:
+                return e.isControlDown();
+        }
     }
 
 }

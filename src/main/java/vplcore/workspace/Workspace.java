@@ -1,6 +1,5 @@
 package vplcore.workspace;
 
-import java.io.File;
 import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
@@ -39,11 +38,6 @@ public class Workspace extends AnchorPane {
 
     //STATIC VARIABLES
     //isSaved
-    //styleFile
-    public static boolean isCSS = true;
-    
-    
-    
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
@@ -112,21 +106,6 @@ public class Workspace extends AnchorPane {
         Group contentGroup = new Group();
         contentGroup.getChildren().addAll(this, radialMenu);
 
-        //Testing
-//        Block add = new DoubleSlider(this);
-//        add.relocate(100, 100);
-//        getChildren().add(add);
-//        blockSet.add(add);
-//        System.out.println(add.getClass().isAnnotationPresent(BlockInfo.class));
-//        Button button = new Button();
-//        ObjectProperty<Color> value = new SimpleObjectProperty();
-//        BlockStyle.bindBackgroundColor(value);
-//        button.setBackground(new Background(new BackgroundFill(value.getValue(), CornerRadii.EMPTY, Insets.EMPTY)));
-//        button.setOnMouseClicked(e -> {
-//            value.setValue(Color.AQUA);
-//        });
-//        contentGroup.getChildren().addAll(button);
-        //TODO improve listener removal because it doesn't work
         this.sceneProperty().addListener(initializationHandler);
 
         return contentGroup;
@@ -135,7 +114,6 @@ public class Workspace extends AnchorPane {
     public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
 
-//    private ZoomHandler zoomHandler;
     private SelectionHandler selectHandler;
     private PanHandler panHandler;
     public PortConnector portConnector;
@@ -165,7 +143,6 @@ public class Workspace extends AnchorPane {
     };
 
     public void reset() {
-
         setScale(1);
         setTranslateX(0);
         setTranslateY(0);
@@ -199,19 +176,6 @@ public class Workspace extends AnchorPane {
     public void setPivot(double x, double y) {
         setTranslateX(getTranslateX() - x);
         setTranslateY(getTranslateY() - y);
-    }
-
-    public static double clamp(double value, double min, double max) {
-
-        if (Double.compare(value, min) < 0) {
-            return min;
-        }
-
-        if (Double.compare(value, max) > 0) {
-            return max;
-        }
-
-        return value;
     }
 
     public boolean onZoomControls(MouseEvent event) {

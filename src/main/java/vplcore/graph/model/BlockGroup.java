@@ -1,9 +1,14 @@
 package vplcore.graph.model;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
+import javafx.collections.SetChangeListener.Change;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -15,7 +20,6 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.Workspace;
 
 /**
@@ -28,6 +32,11 @@ public class BlockGroup extends VplElement {
 
     private static int counter;
     public ObservableSet<Block> childBlocks;
+
+    private final EventHandler<MouseEvent> groupPressedHandler = this::handle_MousePress;
+    private final SetChangeListener<Change<?>> groupSetChangedListener = this::handle_CollectionChange;
+    private final PropertyChangeListener groupBlockDeletedListener = this::block_DeletedInBlockSet;
+    private final PropertyChangeListener groupBlockChangedListener = this::block_PropertyChanged;
 
     public BlockGroup(Workspace vplControl) {
         super(vplControl);
@@ -64,7 +73,6 @@ public class BlockGroup extends VplElement {
         }
     }
 
-
     @Override
     public void delete() {
         unObserveAllChildBlocks();
@@ -72,7 +80,7 @@ public class BlockGroup extends VplElement {
         super.delete();
     }
 
-    private void handle_CollectionChange(SetChangeListener.Change change) {
+    private void handle_CollectionChange(SetChangeListener.Change<?> change) {
 
         if (change.wasAdded()) {
             Block block = (Block) change.getElementAdded();

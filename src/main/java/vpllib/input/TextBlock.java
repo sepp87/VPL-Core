@@ -3,11 +3,13 @@ package vpllib.input;
 import java.util.Arrays;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Workspace;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
@@ -26,8 +28,11 @@ import vplcore.graph.model.BlockInfo;
         tags = {"input", "panel", "text"})
 public class TextBlock extends Block {
 
-    boolean editable = true;
-    TextArea area;
+    private final TextArea textArea;
+
+    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
+    private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
+    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
 
     public TextBlock(Workspace hostCanvas) {
         super(hostCanvas);
@@ -37,63 +42,65 @@ public class TextBlock extends Block {
         addInPortToBlock("Object", Object.class);
         addOutPortToBlock("String", String.class);
 
-        area = new TextArea();
+        textArea = new TextArea();
 
-        area.layoutBoundsProperty().addListener(e -> {
-            ScrollBar scrollBarv = (ScrollBar) area.lookup(".scroll-bar:vertical");
+        textArea.layoutBoundsProperty().addListener(e -> {
+            ScrollBar scrollBarv = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
             scrollBarv.setDisable(true);
 
-            ScrollPane pane = (ScrollPane) area.lookup(".scroll-pane");
+            ScrollPane pane = (ScrollPane) textArea.lookup(".scroll-pane");
             pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 //            Text text = (Text) area.lookup(".text");
 //            text.setLineSpacing(7);
         });
 
-        addControlToBlock(area);
+        addControlToBlock(textArea);
 
         inPorts.get(0).activeProperty().addListener(this::handle_IncomingData);
 
         contentGrid.setMinSize(220, 220);
         contentGrid.setPrefSize(220, 220);
-        
-        area.setOnKeyReleased(this::textArea_KeyRelease);
-        this.setOnMouseEntered(this::textArea_MouseEnter);
-        this.setOnMouseExited(this::textArea_MouseExit);
+
+        textArea.setOnKeyReleased(keyReleasedHandler);
+        this.setOnMouseEntered(fieldEnteredHandler);
+        this.setOnMouseExited(fieldExitedHandler);
     }
 
-    private void textArea_MouseEnter(MouseEvent e) {
-        area.requestFocus();
+    private EventHandler<KeyEvent> createKeyReleasedHandler() {
+        return (KeyEvent event) -> {
+            String text = textArea.getText();
+            this.setTextToData(text);
+        };
     }
 
-    private void textArea_MouseExit(MouseEvent e) {
-        workspace.requestFocus();
+    private EventHandler<MouseEvent> createFieldEnteredHandler() {
+        return (MouseEvent event) -> {
+            textArea.requestFocus();
+        };
     }
 
-    private void textArea_KeyRelease(KeyEvent e) {
-        String text = getText();
-        this.setTextToData(text);
+    private EventHandler<MouseEvent> createFieldExitedHandler() {
+        return (MouseEvent event) -> {
+            workspace.requestFocus();
+        };
     }
 
     private void handle_IncomingData(ObservableValue obj, Object oldVal, Object isActive) {
         //Do Action
         if ((boolean) isActive) {
-            area.setEditable(false);
+            textArea.setEditable(false);
             //          calculate();
         } else {
-            area.setEditable(true);
+            textArea.setEditable(true);
 //            calculate();
         }
     }
 
-    public String getText() {
-        return area.getText();
-    }
-
     public boolean setText(String text) {
         //Text can only be set when the text area is editable
-        if (area.isEditable()) {
-            area.setText(text);
+        if (this.textArea.isEditable()) {
+            this.textArea.setText(text);
             this.setTextToData(text);
             return true;
         } else {
@@ -114,8 +121,8 @@ public class TextBlock extends Block {
 
     @Override
     public void handle_IncomingConnectionRemoved(Port source) {
-        area.setText("");
-        area.setEditable(true);
+        textArea.setText("");
+        textArea.setEditable(true);
         outPorts.get(0).setData(null);
     }
 
@@ -126,7 +133,7 @@ public class TextBlock extends Block {
     public void calculate() {
         //Get controls and data
         Object data = inPorts.get(0).getData();
-        area.setText("");
+        textArea.setText("");
 
         //Do Action
         if (inPorts.get(0).getData() != null) {
@@ -138,22 +145,22 @@ public class TextBlock extends Block {
 
                 for (Object object : list) {
                     if (object == null) {
-                        area.appendText("null" + "\n");
+                        textArea.appendText("null" + "\n");
                     } else {
-                        area.appendText(object.toString() + "\n");
+                        textArea.appendText(object.toString() + "\n");
                     }
                 }
             } else {
-                area.setText(data.toString());
+                textArea.setText(data.toString());
             }
         } else {
             //Set data type back to string
             outPorts.get(0).dataType = String.class;
             outPorts.get(0).setName("String");
             if (inPorts.get(0).isActive()) {
-                area.setText("null");
+                textArea.setText("null");
             } else {
-                area.setText("");
+                textArea.setText("");
             }
         }
 
@@ -167,8 +174,8 @@ public class TextBlock extends Block {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         String text = "";
-        if (area.isEditable()) {
-            text = getText();
+        if (this.textArea.isEditable()) {
+            text = textArea.getText();
         }
         xmlTag.getOtherAttributes().put(QName.valueOf("text"), text);
     }
@@ -185,8 +192,8 @@ public class TextBlock extends Block {
     @Override
     public Block clone() {
         TextBlock block = new TextBlock(workspace);
-        if (area.isEditable()) {
-            block.setText(this.getText());
+        if (textArea.isEditable()) {
+            block.setText(textArea.getText());
         }
         return block;
     }

@@ -11,8 +11,7 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.SPACE;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
-import vplcore.Config;
-import static vplcore.Util.OperatingSystem.WINDOWS;
+import vplcore.Util;
 import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
 
@@ -39,7 +38,7 @@ public class KeyboardInputHandler {
         @Override
         public void handle(KeyEvent event) {
 
-            boolean isModifierDown = isModifierDown(event);
+            boolean isModifierDown = Util.isModifierDown(event);
 
             switch (event.getCode()) {
                 case BACK_SPACE:
@@ -90,17 +89,6 @@ public class KeyboardInputHandler {
         }
     };
 
-    private boolean isModifierDown(KeyEvent e) {
-        switch (Config.get().operatingSystem()) {
-            case WINDOWS:
-                return e.isControlDown();
-            case MACOS:
-                return e.isMetaDown();
-            case LINUX:
-                return e.isMetaDown();
-            default:
-                return e.isControlDown();
-        }
-    }
+
 
 }

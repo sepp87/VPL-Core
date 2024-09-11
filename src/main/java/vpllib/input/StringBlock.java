@@ -1,5 +1,6 @@
 package vpllib.input;
 
+import javafx.event.EventHandler;
 import vplcore.workspace.Workspace;
 import vplcore.graph.model.Block;
 import javafx.scene.control.TextField;
@@ -24,13 +25,19 @@ import vplcore.graph.model.BlockInfo;
         tags = {"input", "line", "string"})
 public class StringBlock extends Block {
 
+    private final TextField text;
+
+    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
+    private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
+    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
+
     public StringBlock(Workspace hostCanvas) {
         super(hostCanvas);
         setName("String");
 
         addOutPortToBlock("String : Value", String.class);
 
-        TextField text = new TextField();
+        text = new TextField();
         text.setPromptText("Write here...");
         text.setFocusTraversable(false);
         text.setMinWidth(100);
@@ -39,35 +46,38 @@ public class StringBlock extends Block {
 
         addControlToBlock(text);
 
-        text.setOnKeyReleased(this::textField_KeyRelease);
-        this.setOnMouseEntered(this::textField_MouseEnter);
-        this.setOnMouseExited(this::textField_MouseExit);
+        text.setOnKeyReleased(keyReleasedHandler);
+        this.setOnMouseEntered(fieldEnteredHandler);
+        this.setOnMouseExited(fieldExitedHandler);
 
 //        outPorts.get(0).setData(null);
     }
 
-    private void textField_MouseEnter(MouseEvent e) {
-        TextField text = (TextField) controls.get(0);
-        text.requestFocus();
+    private EventHandler<KeyEvent> createKeyReleasedHandler() {
+        return (KeyEvent event) -> {
+            calculate();
+        };
     }
 
-    private void textField_MouseExit(MouseEvent e) {
-        workspace.requestFocus();
+    private EventHandler<MouseEvent> createFieldEnteredHandler() {
+        return (MouseEvent event) -> {
+            text.requestFocus();
+        };
     }
 
-    private void textField_KeyRelease(KeyEvent e) {
-        calculate();
+    private EventHandler<MouseEvent> createFieldExitedHandler() {
+        return (MouseEvent event) -> {
+            workspace.requestFocus();
+        };
     }
 
     public void setString(String str) {
-        TextField textField = (TextField) controls.get(0);
-        textField.setText(str);
+        text.setText(str);
         calculate();
     }
 
     public String getString() {
-        TextField textField = (TextField) controls.get(0);
-        return textField.getText();
+        return text.getText();
     }
 
     @Override

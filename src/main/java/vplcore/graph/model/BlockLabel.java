@@ -1,6 +1,7 @@
 package vplcore.graph.model;
 
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -17,60 +18,64 @@ import javafx.scene.layout.Priority;
 public class BlockLabel extends Button {
 
     HBox hostElement;
-    TextField field;
-    String tempText;
+    private final TextField textField;
+    private String tempText;
+    
+    private final EventHandler<KeyEvent> keyPressedHandler = this::handleKeyPressed;
+    private final EventHandler<MouseEvent> fieldExitedHandler = this::handleFieldExited;
+    private final EventHandler<MouseEvent> blockLabelClickedHandler = this::handleBlockLabelClicked;
 
     public BlockLabel(HBox box) {
         hostElement = box;
-        field = new TextField();
+        textField = new TextField();
 
         HBox.setHgrow(this, Priority.ALWAYS);
         this.setMaxWidth(Double.MAX_VALUE);
-        field.maxWidthProperty().bind(this.widthProperty());
+        textField.maxWidthProperty().bind(this.widthProperty());
 
         getStyleClass().add("vpl-tag");
-        field.getStyleClass().add("vpl-tag");
+        textField.getStyleClass().add("vpl-tag");
 
-        field.textProperty().bindBidirectional(textProperty());
-        field.setOnKeyPressed(this::field_KeyPress);
-        field.setOnMouseExited(this::field_MouseExit);
-        setOnMouseClicked(this::handle_MouseClick);
+        textField.textProperty().bindBidirectional(textProperty());
+        textField.setOnKeyPressed(keyPressedHandler);
+        textField.setOnMouseExited(fieldExitedHandler);
+        setOnMouseClicked(blockLabelClickedHandler);
 
     }
 
-    private void field_KeyPress(KeyEvent e) {
+    private void handleKeyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.ENTER) {
-            field_MouseExit(e);
+            handleFieldExited(null);
         } else if (e.getCode() == KeyCode.ESCAPE) {
-            field_MouseExit(e);
+            handleFieldExited(null);
             setText(tempText);
         }
     }
 
-    private void field_MouseExit(Event e) {
+    private void handleFieldExited(MouseEvent event) {
         if (getText().isEmpty()) {
             setText(tempText);
         }
-        int index = hostElement.getChildren().indexOf(field);
-        hostElement.getChildren().remove(field);
+        int index = hostElement.getChildren().indexOf(textField);
+        hostElement.getChildren().remove(textField);
         hostElement.getChildren().add(index, this);
     }
 
-    private void handle_MouseClick(MouseEvent e) {
+    private void handleBlockLabelClicked(MouseEvent event) {
 
-        if (e.getButton() != MouseButton.PRIMARY) {
-            e.consume();
+        if (event.getButton() != MouseButton.PRIMARY) {
+            event.consume();
             return;
         }
 
         // 3 * 21 + 3 * 5
-        if (e.getClickCount() == 2) {
+        if (event.getClickCount() == 2) {
             int index = hostElement.getChildren().indexOf(this);
 
             tempText = getText();
             hostElement.getChildren().remove(this);
-            hostElement.getChildren().add(index, field);
-            field.requestFocus();
+            hostElement.getChildren().add(index, textField);
+            textField.requestFocus();
         }
     }
 }

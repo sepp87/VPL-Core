@@ -39,6 +39,9 @@ public class ZoomManager extends HBox {
     private final EventHandler<ScrollEvent> scrollHandler = createScrollHandler();
     private final EventHandler<ScrollEvent> scrollFinishedHandler = createScrollFinishedHandler();
 
+    // Keyboard event Handler
+    private final EventHandler<KeyEvent> keyEventHandler = createKeyEventHandler();
+
     // Button event handlers
     private final EventHandler<ActionEvent> decrementZoomHandler = createDecrementZoomHandler();
     private final EventHandler<ActionEvent> incrementZoomHandler = createIncrementZoomHandler();
@@ -69,9 +72,6 @@ public class ZoomManager extends HBox {
 
         getChildren().addAll(zoomLabel, zoomOutButton, zoomInButton);
 
-        // Add keyboard shortcuts for zoom
-        setOnKeyPressed(this::handleKeyPress);
-
         // Bind the zoom label to update whenever the zoom factor changes
         zoomFactor.addListener((observable, oldValue, newValue) -> zoomLabel.setText(getFormattedZoom()));
 
@@ -85,19 +85,7 @@ public class ZoomManager extends HBox {
         return String.format("%.0f%%", zoomFactor.get() * 100);
     }
 
-    // Handle keyboard shortcuts for zooming
-    private void handleKeyPress(KeyEvent event) {
-        if (event.isControlDown()) {
-            if (event.getCode() == KeyCode.PLUS || event.getCode() == KeyCode.EQUALS) {
-                zoomFactor.set(getNextZoomIncrement());
-            } else if (event.getCode() == KeyCode.MINUS) {
-                zoomFactor.set(getNextZoomDecrement());
-            }
-            applyZoom(null); // Zoom is not from scrolling; no scroll event needed
-        }
-    }
     // Increment zoom factor by the defined step size
-
     private double getNextZoomIncrement() {
         return Math.min(Workspace.MAX_ZOOM, zoomFactor.get() + Workspace.ZOOM_STEP);
     }
@@ -158,7 +146,7 @@ public class ZoomManager extends HBox {
                 double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
 
                 // Adjust zoom factor based on scroll direction
-                if (event.getDeltaY() > 0) {
+                if (event.getDeltaY() > 2) {
                     zoomFactor.set(getNextZoomIncrement());
                 } else {
                     zoomFactor.set(getNextZoomDecrement());
@@ -174,6 +162,20 @@ public class ZoomManager extends HBox {
         return (ScrollEvent event) -> {
             if (workspace.getMouseMode() == MouseMode.ZOOMING) {
                 workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+            }
+        };
+    }
+
+    private EventHandler<KeyEvent> createKeyEventHandler() {
+        return (KeyEvent event) -> {
+            // Handle keyboard shortcuts for zooming
+            if (Util.isModifierDown(event)) {
+                if (event.getCode() == KeyCode.PLUS) {
+                    zoomFactor.set(getNextZoomIncrement());
+                } else if (event.getCode() == KeyCode.MINUS) {
+                    zoomFactor.set(getNextZoomDecrement());
+                }
+                applyZoom(null); // Zoom is not from scrolling; no scroll event needed
             }
         };
     }
@@ -210,5 +212,7 @@ public class ZoomManager extends HBox {
         getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL, scrollHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
+        getScene().setOnKeyPressed(keyEventHandler); // Add keyboard shortcuts for zoom
+
     }
 }

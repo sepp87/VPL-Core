@@ -2,6 +2,7 @@ package vpllib.input;
 
 import java.util.Arrays;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.ScrollBar;
@@ -30,12 +31,13 @@ public class TextBlock extends Block {
 
     private final TextArea textArea;
 
-    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
-    private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
-    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
+    private final EventHandler<KeyEvent> textAreaKeyReleasedHandler = this::handleTextAreaKeyReleased;
+    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleBlockEntered;
+    private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
+    private final ChangeListener<Object> blockIncomingDataListener = this::handleBlockIncomingData;
 
-    public TextBlock(Workspace hostCanvas) {
-        super(hostCanvas);
+    public TextBlock(Workspace workspace) {
+        super(workspace);
         setName("Panel");
         setResizable(true);
 
@@ -57,36 +59,30 @@ public class TextBlock extends Block {
 
         addControlToBlock(textArea);
 
-        inPorts.get(0).activeProperty().addListener(this::handle_IncomingData);
+        inPorts.get(0).activeProperty().addListener(blockIncomingDataListener);
 
         contentGrid.setMinSize(220, 220);
         contentGrid.setPrefSize(220, 220);
 
-        textArea.setOnKeyReleased(keyReleasedHandler);
-        this.setOnMouseEntered(fieldEnteredHandler);
-        this.setOnMouseExited(fieldExitedHandler);
+        textArea.setOnKeyReleased(textAreaKeyReleasedHandler);
+        this.setOnMouseEntered(blockEnteredHandler);
+        this.setOnMouseExited(blockExitedHandler);
     }
 
-    private EventHandler<KeyEvent> createKeyReleasedHandler() {
-        return (KeyEvent event) -> {
-            String text = textArea.getText();
-            this.setTextToData(text);
-        };
+    private void handleTextAreaKeyReleased(KeyEvent event) {
+        String text = textArea.getText();
+        this.setTextToData(text);
     }
 
-    private EventHandler<MouseEvent> createFieldEnteredHandler() {
-        return (MouseEvent event) -> {
-            textArea.requestFocus();
-        };
+    private void handleBlockEntered(MouseEvent event) {
+        textArea.requestFocus();
     }
 
-    private EventHandler<MouseEvent> createFieldExitedHandler() {
-        return (MouseEvent event) -> {
-            workspace.requestFocus();
-        };
+    private void handleBlockExited(MouseEvent event) {
+        workspace.requestFocus();
     }
 
-    private void handle_IncomingData(ObservableValue obj, Object oldVal, Object isActive) {
+    private void handleBlockIncomingData(ObservableValue obj, Object oldVal, Object isActive) {
         //Do Action
         if ((boolean) isActive) {
             textArea.setEditable(false);
@@ -145,7 +141,7 @@ public class TextBlock extends Block {
 
                 for (Object object : list) {
                     if (object == null) {
-                        textArea.appendText("null" + "\n");
+                        textArea.appendText("null\n");
                     } else {
                         textArea.appendText(object.toString() + "\n");
                     }
@@ -166,8 +162,6 @@ public class TextBlock extends Block {
 
         //Set Data
         outPorts.get(0).setData(data);
-
-//        System.out.println(outPorts.get(0).dataType);
     }
 
     @Override

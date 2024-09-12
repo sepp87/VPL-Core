@@ -59,6 +59,7 @@ public class KeyboardInputHandler {
                     break;
                 case G:
                     if (isModifierDown) {
+                        System.out.println("group blocks");
                         Actions.groupBlocks(workspace);
                     }
                     break;

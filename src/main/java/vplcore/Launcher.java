@@ -1,29 +1,26 @@
 package vplcore;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// List methods output cant be used in further operations - TODO TEST FIX
-// 2 BUG Zoom start and stop does not work on windows
-// 2 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
-// 2 IMPROVEMENT clean up App and Workspace according to UI structure
+// 1 BUG short cuts are not working, maybe because blocked by zoommanager
+// 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
+// 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
+// 1 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
+// 1 IMPROVEMENT clean up App and Workspace according to UI structure
+// 2 IMPROVEMENT select block should stay the same size regardless of the zoom (probably needs to be on the contentGroup and not on the workspace, just like the radial menu)
+// 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 2 IMPROVEMENT create elaborate tests TBD what to test
-// 2 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
-// 3 IMPROVEMENT select block should stay the same size regardless of the zoom (probably needs to be on the contentGroup and not on the workspace, just like the radial menu)
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
-// 3 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
+// 3 REFACTOR integer and double slider event handlers
+// 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
+// 4 BUG Zoom start and stop does not work on windows
 //
 // WORK IN PROGRESS
-// 2 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
-// 1 IMPROVEMENT save output type to file so connections don't get lost when loading a file
-// 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
+// 1 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
+//
 /**
  *
  * @author JoostMeulenkamp
@@ -41,15 +38,12 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();
 //        TestGetLongValue();
-
-
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
     }
-
 
     static void TestJsonAsList() {
         JsonMethods.asList("[\"str\",6,7]");

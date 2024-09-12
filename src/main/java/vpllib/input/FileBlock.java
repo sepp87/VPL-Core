@@ -4,6 +4,7 @@ import vplcore.graph.model.Block;
 import vplcore.workspace.Workspace;
 import java.io.File;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -25,8 +26,13 @@ import vplcore.graph.model.BlockInfo;
         description = "Open a file",
         tags = {"file", "open", "load"}
 )
-
 public class FileBlock extends Block {
+
+    private final TextField textField;
+
+    private final EventHandler<ActionEvent> openFileHandler = this::handleOpenFile;
+    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
+    private final EventHandler<MouseEvent> textFieldEnteredHandler = this::handleTextFieldMouseEntered;
 
     public FileBlock(Workspace hostCanvas) {
         super(hostCanvas);
@@ -34,32 +40,30 @@ public class FileBlock extends Block {
 
         addOutPortToBlock("file", File.class);
 
-        TextField text = new TextField();
-        text.setPromptText("Open a file...");
-        text.setFocusTraversable(false);
+        textField = new TextField();
+        textField.setPromptText("Open a file...");
+        textField.setFocusTraversable(false);
 
         BlockButton button = new BlockButton(IconType.FA_FOLDER_OPEN);
-        button.setOnAction(this::button_openFile);
+        button.setOnAction(openFileHandler);
 
         HBox box = new HBox(5);
-        box.getChildren().addAll(text, button);
+        box.getChildren().addAll(textField, button);
         addControlToBlock(box);
 
-        text.setOnKeyReleased(this::textField_KeyRelease);
-        text.setOnMouseEntered(this::textField_MouseEnter);
+        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
+        textField.setOnMouseEntered(textFieldEnteredHandler);
     }
 
-    private void textField_KeyRelease(KeyEvent e) {
+    private void handleTextFieldKeyReleased(KeyEvent event) {
         calculate();
     }
 
-    private void textField_MouseEnter(MouseEvent e) {
-        HBox box = (HBox) controls.get(0);
-        TextField textField = (TextField) box.getChildren().get(0);
+    private void handleTextFieldMouseEntered(MouseEvent event) {
         textField.requestFocus();
     }
 
-    private void button_openFile(ActionEvent e) {
+    private void handleOpenFile(ActionEvent event) {
 
         //Do Action
         FileChooser picker = new FileChooser();
@@ -77,14 +81,10 @@ public class FileBlock extends Block {
     }
 
     public void setPath(String path) {
-        HBox box = (HBox) controls.get(0);
-        TextField textField = (TextField) box.getChildren().get(0);
         textField.setText(path);
     }
 
     public String getPath() {
-        HBox box = (HBox) controls.get(0);
-        TextField textField = (TextField) box.getChildren().get(0);
         return textField.getText();
     }
 

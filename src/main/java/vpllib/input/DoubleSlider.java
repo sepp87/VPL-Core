@@ -4,14 +4,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
 import vplcore.workspace.Workspace;
 import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
@@ -27,8 +30,10 @@ import vplcore.graph.model.BlockInfo;
         tags = {"input", "slider"})
 public class DoubleSlider extends Block {
 
-    Slider slider;
-    DoubleBinding doubleValue;
+    private final Slider slider;
+    private final DoubleBinding doubleValue;
+
+    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
 
     public DoubleSlider(Workspace hostCanvas) {
         super(hostCanvas);
@@ -69,7 +74,7 @@ public class DoubleSlider extends Block {
 
         addControlToBlock(p);
 
-        setOnMouseEntered(this::handle_MouseEnter);
+        setOnMouseEntered(blockEnteredHandler);
     }
 
     private int getNumberOfDecimalPlaces(Double value) {
@@ -77,16 +82,22 @@ public class DoubleSlider extends Block {
         return str.length() - str.indexOf('.') - 1;
     }
 
-    private void handle_MouseEnter(Event e) {
+    private void handleMouseEnter(Event e) {
         slider.requestFocus();
     }
 
     class Expander extends TitledPane {
 
-        TextField valueField;
-        TextField minField;
-        TextField maxField;
-        TextField stepField;
+        private final TextField valueField;
+        private final TextField minField;
+        private final TextField maxField;
+        private final TextField stepField;
+
+        private final EventHandler<KeyEvent> fieldKeyPressedHandler = this::handleFieldKeyPressed;
+        private final ChangeListener<Object> valueFieldFocusChangedHandler = this::handleValueFieldFocusChanged;
+        private final ChangeListener<Object> minFieldFocusedChangedHandler = this::handleMinFieldFocusChanged;
+        private final ChangeListener<Object> maxFieldFocusedChangedHandler = this::handleMaxFieldFocusChanged;
+        private final ChangeListener<Object> stepFieldFocusChangedHandler = this::handleStepFieldFocusChanged;
 
         public Expander() {
             GridPane grid = new GridPane();
@@ -109,15 +120,15 @@ public class DoubleSlider extends Block {
             maxField.setId("max");
             stepField.setId("step");
 
-            valueField.setOnKeyPressed(this::field_KeyPress);
-            minField.setOnKeyPressed(this::field_KeyPress);
-            maxField.setOnKeyPressed(this::field_KeyPress);
-            stepField.setOnKeyPressed(this::field_KeyPress);
+            valueField.setOnKeyPressed(fieldKeyPressedHandler);
+            minField.setOnKeyPressed(fieldKeyPressedHandler);
+            maxField.setOnKeyPressed(fieldKeyPressedHandler);
+            stepField.setOnKeyPressed(fieldKeyPressedHandler);
 
-            valueField.focusedProperty().addListener(this::valueField_FocusChange);
-            minField.focusedProperty().addListener(this::minField_FocusChange);
-            maxField.focusedProperty().addListener(this::maxField_FocusChange);
-            stepField.focusedProperty().addListener(this::stepField_FocusChange);
+            valueField.focusedProperty().addListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().addListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().addListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().addListener(stepFieldFocusChangedHandler);
 
             valueField.textProperty().bind(doubleValue.asString());
             minField.textProperty().bind(slider.minProperty().asString());
@@ -136,7 +147,7 @@ public class DoubleSlider extends Block {
             this.setContent(grid);
         }
 
-        private void valueField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleValueFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 valueField.textProperty().unbind();
@@ -151,7 +162,7 @@ public class DoubleSlider extends Block {
             }
         }
 
-        private void minField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleMinFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 minField.textProperty().unbind();
@@ -166,7 +177,7 @@ public class DoubleSlider extends Block {
             }
         }
 
-        private void maxField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleMaxFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 maxField.textProperty().unbind();
@@ -181,7 +192,7 @@ public class DoubleSlider extends Block {
             }
         }
 
-        private void stepField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleStepFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 stepField.textProperty().unbind();
@@ -197,7 +208,7 @@ public class DoubleSlider extends Block {
             }
         }
 
-        private void field_KeyPress(KeyEvent e) {
+        private void handleFieldKeyPressed(KeyEvent e) {
             TextField field = (TextField) e.getSource();
             field.textProperty().unbind();
             if (e.getCode() == KeyCode.ENTER) {

@@ -2,14 +2,17 @@ package vpllib.input;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import vplcore.workspace.Workspace;
 import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
@@ -26,11 +29,13 @@ import vplcore.graph.model.BlockInfo;
         tags = {"input", "slider"})
 public class IntegerSlider extends Block {
 
-    Slider slider;
-    IntegerProperty integerValue = new SimpleIntegerProperty();
-    IntegerProperty integerMin = new SimpleIntegerProperty();
-    IntegerProperty integerMax = new SimpleIntegerProperty();
-    IntegerProperty integerStep = new SimpleIntegerProperty();
+    private final Slider slider;
+    private final IntegerProperty integerValue = new SimpleIntegerProperty();
+    private final IntegerProperty integerMin = new SimpleIntegerProperty();
+    private final IntegerProperty integerMax = new SimpleIntegerProperty();
+    private final IntegerProperty integerStep = new SimpleIntegerProperty();
+
+    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
 
     public IntegerSlider(Workspace hostCanvas) {
         super(hostCanvas);
@@ -61,19 +66,25 @@ public class IntegerSlider extends Block {
 
         addControlToBlock(p);
 
-        setOnMouseEntered(this::handle_MouseEnter);
+        setOnMouseEntered(blockEnteredHandler);
     }
 
-    private void handle_MouseEnter(Event e) {
+    private void handleMouseEnter(MouseEvent event) {
         slider.requestFocus();
     }
 
     class Expander extends TitledPane {
 
-        TextField valueField;
-        TextField minField;
-        TextField maxField;
-        TextField stepField;
+        private final TextField valueField;
+        private final TextField minField;
+        private final TextField maxField;
+        private final TextField stepField;
+
+        private final EventHandler<KeyEvent> fieldKeyPressedHandler = this::handleFieldKeyPressed;
+        private final ChangeListener<Object> valueFieldFocusChangedHandler = this::handleValueFieldFocusChanged;
+        private final ChangeListener<Object> minFieldFocusedChangedHandler = this::handleMinFieldFocusChanged;
+        private final ChangeListener<Object> maxFieldFocusedChangedHandler = this::handleMaxFieldFocusChanged;
+        private final ChangeListener<Object> stepFieldFocusChangedHandler = this::handleStepFieldFocusChanged;
 
         public Expander() {
             GridPane grid = new GridPane();
@@ -96,15 +107,15 @@ public class IntegerSlider extends Block {
             maxField.setId("max");
             stepField.setId("step");
 
-            valueField.setOnKeyPressed(this::field_KeyPress);
-            minField.setOnKeyPressed(this::field_KeyPress);
-            maxField.setOnKeyPressed(this::field_KeyPress);
-            stepField.setOnKeyPressed(this::field_KeyPress);
+            valueField.setOnKeyPressed(fieldKeyPressedHandler);
+            minField.setOnKeyPressed(fieldKeyPressedHandler);
+            maxField.setOnKeyPressed(fieldKeyPressedHandler);
+            stepField.setOnKeyPressed(fieldKeyPressedHandler);
 
-            valueField.focusedProperty().addListener(this::valueField_FocusChange);
-            minField.focusedProperty().addListener(this::minField_FocusChange);
-            maxField.focusedProperty().addListener(this::maxField_FocusChange);
-            stepField.focusedProperty().addListener(this::stepField_FocusChange);
+            valueField.focusedProperty().addListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().addListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().addListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().addListener(stepFieldFocusChangedHandler);
 
             valueField.textProperty().bind(integerValueProperty().asString());
             minField.textProperty().bind(integerMinProperty().asString());
@@ -123,7 +134,7 @@ public class IntegerSlider extends Block {
             this.setContent(grid);
         }
 
-        private void valueField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleValueFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 valueField.textProperty().unbind();
@@ -138,7 +149,7 @@ public class IntegerSlider extends Block {
             }
         }
 
-        private void minField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleMinFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 minField.textProperty().unbind();
@@ -153,7 +164,7 @@ public class IntegerSlider extends Block {
             }
         }
 
-        private void maxField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleMaxFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 maxField.textProperty().unbind();
@@ -168,7 +179,7 @@ public class IntegerSlider extends Block {
             }
         }
 
-        private void stepField_FocusChange(ObservableValue obj, Object oldVal, Object newVal) {
+        private void handleStepFieldFocusChanged(ObservableValue obj, Object oldVal, Object newVal) {
             boolean focused = (boolean) obj.getValue();
             if (focused) {
                 stepField.textProperty().unbind();
@@ -184,12 +195,12 @@ public class IntegerSlider extends Block {
             }
         }
 
-        private void field_KeyPress(KeyEvent e) {
-            TextField field = (TextField) e.getSource();
+        private void handleFieldKeyPressed(KeyEvent event) {
+            TextField field = (TextField) event.getSource();
             field.textProperty().unbind();
-            if (e.getCode() == KeyCode.ENTER) {
+            if (event.getCode() == KeyCode.ENTER) {
                 slider.requestFocus();
-            } else if (e.getCode() == KeyCode.ESCAPE) {
+            } else if (event.getCode() == KeyCode.ESCAPE) {
                 slider.requestFocus();
             }
         }

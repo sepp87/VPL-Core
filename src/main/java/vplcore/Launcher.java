@@ -17,6 +17,7 @@ import vpllib.method.JsonMethods;
 // 3 REFACTOR integer and double slider event handlers
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
 // 4 BUG Zoom start and stop does not work on windows
+// 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace

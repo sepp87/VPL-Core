@@ -30,17 +30,17 @@ public class KeyboardInputHandler {
     }
 
     private void addInputHandlers() {
-        workspace.getScene().setOnKeyPressed(handleKeyPressed);
+        workspace.getScene().addEventHandler(KeyEvent.KEY_PRESSED, handleKeyPressed);
     }
 
     private final EventHandler<KeyEvent> handleKeyPressed = new EventHandler<>() {
 
         @Override
-        public void handle(KeyEvent event) {
+        public void handle(KeyEvent keyEvent) {
 
-            boolean isModifierDown = Util.isModifierDown(event);
+            boolean isModifierDown = Util.isModifierDown(keyEvent);
 
-            switch (event.getCode()) {
+            switch (keyEvent.getCode()) {
                 case BACK_SPACE:
                     Actions.deleteSelectedBlocks(workspace);
                     break;

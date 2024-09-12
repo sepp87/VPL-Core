@@ -39,6 +39,7 @@ public class App extends Application {
         AnchorPane.setRightAnchor(zoomControls, 10.);
 
         pane.getChildren().addAll(workspaceAndRadialMenu, menuBar, zoomControls);
+//        pane.getChildren().addAll(workspaceAndRadialMenu, menuBar);
 
         Scene scene = new Scene(pane, 800, 800);
         stage.setScene(scene);

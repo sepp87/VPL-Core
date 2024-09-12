@@ -208,12 +208,12 @@ public class DoubleSlider extends Block {
             }
         }
 
-        private void handleFieldKeyPressed(KeyEvent e) {
-            TextField field = (TextField) e.getSource();
+        private void handleFieldKeyPressed(KeyEvent keyEvent) {
+            TextField field = (TextField) keyEvent.getSource();
             field.textProperty().unbind();
-            if (e.getCode() == KeyCode.ENTER) {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
                 slider.requestFocus();
-            } else if (e.getCode() == KeyCode.ESCAPE) {
+            } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
                 slider.requestFocus();
             }
         }

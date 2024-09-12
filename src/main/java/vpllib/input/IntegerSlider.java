@@ -195,12 +195,12 @@ public class IntegerSlider extends Block {
             }
         }
 
-        private void handleFieldKeyPressed(KeyEvent event) {
-            TextField field = (TextField) event.getSource();
+        private void handleFieldKeyPressed(KeyEvent keyEvent) {
+            TextField field = (TextField) keyEvent.getSource();
             field.textProperty().unbind();
-            if (event.getCode() == KeyCode.ENTER) {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
                 slider.requestFocus();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
+            } else if (keyEvent.getCode() == KeyCode.ESCAPE) {
                 slider.requestFocus();
             }
         }

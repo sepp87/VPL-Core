@@ -55,7 +55,7 @@ public class FileBlock extends Block {
         textField.setOnMouseEntered(textFieldEnteredHandler);
     }
 
-    private void handleTextFieldKeyReleased(KeyEvent event) {
+    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
         calculate();
     }
 

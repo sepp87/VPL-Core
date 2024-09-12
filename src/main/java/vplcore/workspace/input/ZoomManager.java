@@ -167,12 +167,12 @@ public class ZoomManager extends HBox {
     }
 
     private EventHandler<KeyEvent> createKeyEventHandler() {
-        return (KeyEvent event) -> {
+        return (KeyEvent keyEvent) -> {
             // Handle keyboard shortcuts for zooming
-            if (Util.isModifierDown(event)) {
-                if (event.getCode() == KeyCode.PLUS) {
+            if (Util.isModifierDown(keyEvent)) {
+                if (keyEvent.getCode() == KeyCode.PLUS) {
                     zoomFactor.set(getNextZoomIncrement());
-                } else if (event.getCode() == KeyCode.MINUS) {
+                } else if (keyEvent.getCode() == KeyCode.MINUS) {
                     zoomFactor.set(getNextZoomDecrement());
                 }
                 applyZoom(null); // Zoom is not from scrolling; no scroll event needed
@@ -212,7 +212,7 @@ public class ZoomManager extends HBox {
         getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL, scrollHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
-        getScene().setOnKeyPressed(keyEventHandler); // Add keyboard shortcuts for zoom
+        workspace.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler); // Add keyboard shortcuts for zoom
 
     }
 }

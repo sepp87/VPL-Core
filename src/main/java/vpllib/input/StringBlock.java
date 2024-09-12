@@ -54,7 +54,7 @@ public class StringBlock extends Block {
     }
 
     private EventHandler<KeyEvent> createKeyReleasedHandler() {
-        return (KeyEvent event) -> {
+        return (KeyEvent keyEvent) -> {
             calculate();
         };
     }

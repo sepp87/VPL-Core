@@ -113,9 +113,9 @@ public class SelectBlock extends Block {
     /**
      * Search for a particular block type matching the search phrase
      *
-     * @param e
+     * @param keyEvent
      */
-    private void handleSearchFieldKeyReleased(KeyEvent e) {
+    private void handleSearchFieldKeyReleased(KeyEvent keyEvent) {
         String keyWord = searchField.getText();
 
         if (!"".equals(keyWord)) {
@@ -149,11 +149,11 @@ public class SelectBlock extends Block {
      * Handle key events in text field. Up and down changes the selected list
      * index. Enter confirms choice of selection and generates a type of block.
      *
-     * @param event
+     * @param keyEvent
      */
-    private void handleSearchFieldKeyPressed(KeyEvent event) {
+    private void handleSearchFieldKeyPressed(KeyEvent keyEvent) {
 
-        KeyCode key = event.getCode();
+        KeyCode key = keyEvent.getCode();
 
         int listSize = listView.getItems().size();
         int listIndex = listView.getSelectionModel().getSelectedIndex();
@@ -169,7 +169,7 @@ public class SelectBlock extends Block {
                 case DOWN:
                     if (listIndex < listSize) {
                         listView.getSelectionModel().select(listIndex + 1);
-                        event.consume();
+                        keyEvent.consume();
                     }
                     break;
 
@@ -177,7 +177,7 @@ public class SelectBlock extends Block {
                     if (listIndex > 0) {
                         listView.getSelectionModel().select(listIndex - 1);
                     }
-                    event.consume();
+                    keyEvent.consume();
                     break;
             }
         }

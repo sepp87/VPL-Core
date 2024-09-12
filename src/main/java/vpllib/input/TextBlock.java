@@ -69,7 +69,7 @@ public class TextBlock extends Block {
         this.setOnMouseExited(blockExitedHandler);
     }
 
-    private void handleTextAreaKeyReleased(KeyEvent event) {
+    private void handleTextAreaKeyReleased(KeyEvent keyEvent) {
         String text = textArea.getText();
         this.setTextToData(text);
     }

@@ -3,7 +3,6 @@ package vplcore.graph.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -33,10 +32,10 @@ public class BlockGroup extends VplElement {
     private static int counter;
     public ObservableSet<Block> childBlocks;
 
-    private final EventHandler<MouseEvent> groupPressedHandler = this::handle_MousePress;
-    private final SetChangeListener<Change<?>> groupSetChangedListener = this::handle_CollectionChange;
-    private final PropertyChangeListener groupBlockDeletedListener = this::block_DeletedInBlockSet;
-    private final PropertyChangeListener groupBlockChangedListener = this::block_PropertyChanged;
+    private final EventHandler<MouseEvent> groupPressedHandler = this::handleGroupPressed;
+    private final SetChangeListener<Block> groupSetChangedListener = this::handleGroupSetChanged;
+    private final PropertyChangeListener groupBlockDeletedListener = this::handleGroupBlockDeleted;
+    private final PropertyChangeListener groupBlockChangedListener = this::handleGroupBlockChanged; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
 
     public BlockGroup(Workspace vplControl) {
         super(vplControl);
@@ -46,7 +45,7 @@ public class BlockGroup extends VplElement {
         id = counter++;
 
         childBlocks = FXCollections.observableSet();
-        setOnMousePressed(this::handle_MousePress);
+        setOnMousePressed(groupPressedHandler);
 
         setName("Name group here...");
 
@@ -56,17 +55,17 @@ public class BlockGroup extends VplElement {
 
     public void setChildBlocks(ObservableSet<Block> blockSet) {
         childBlocks.addAll(blockSet);
-        childBlocks.addListener(this::handle_CollectionChange);
+        childBlocks.addListener(groupSetChangedListener);
         observeAllChildBlocks();
         calculateSize();
     }
 
-    private void handle_MousePress(MouseEvent e) {
+    private void handleGroupPressed(MouseEvent event) {
         for (Block block : childBlocks) {
 
             block.setOnMouseDragged(block::moveBlock);
 
-            block.oldMousePosition = new Point2D(e.getSceneX(), e.getSceneY());
+            block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
 
             block.setSelected(true);
             workspace.selectedBlockSet.add(block);
@@ -80,16 +79,16 @@ public class BlockGroup extends VplElement {
         super.delete();
     }
 
-    private void handle_CollectionChange(SetChangeListener.Change<?> change) {
+    private void handleGroupSetChanged(Change<? extends Block> change) {
 
         if (change.wasAdded()) {
-            Block block = (Block) change.getElementAdded();
-            block.eventBlaster.add("deleted", this::block_DeletedInBlockSet);
-            block.eventBlaster.add(this::block_PropertyChanged);
+            Block block = change.getElementAdded();
+            block.eventBlaster.add("deleted", groupBlockDeletedListener);
+            block.eventBlaster.add(groupBlockChangedListener);
         } else {
-            Block block = (Block) change.getElementRemoved();
-            block.eventBlaster.remove("deleted", this::block_DeletedInBlockSet);
-            block.eventBlaster.remove(this::block_PropertyChanged);
+            Block block = change.getElementRemoved();
+            block.eventBlaster.remove("deleted", groupBlockDeletedListener);
+            block.eventBlaster.remove(groupBlockChangedListener);
         }
 
         if (childBlocks.size() < 2) {
@@ -101,27 +100,27 @@ public class BlockGroup extends VplElement {
 
     private void observeAllChildBlocks() {
         for (Block block : childBlocks) {
-            block.eventBlaster.add("deleted", this::block_DeletedInBlockSet);
-            block.eventBlaster.add(this::block_PropertyChanged);
+            block.eventBlaster.add("deleted", groupBlockDeletedListener);
+            block.eventBlaster.add(groupBlockChangedListener);
         }
     }
 
     private void unObserveAllChildBlocks() {
         for (Block block : childBlocks) {
-            block.eventBlaster.remove("deleted", this::block_DeletedInBlockSet);
-            block.eventBlaster.remove(this::block_PropertyChanged);
+            block.eventBlaster.remove("deleted", groupBlockDeletedListener);
+            block.eventBlaster.remove(groupBlockChangedListener);
         }
     }
 
-    private void block_DeletedInBlockSet(PropertyChangeEvent e) {
-        Block block = (Block) e.getSource();
+    private void handleGroupBlockDeleted(PropertyChangeEvent event) {
+        Block block = (Block) event.getSource();
         if (block == null) {
             return;
         }
         childBlocks.remove(block);
     }
 
-    private void block_PropertyChanged(PropertyChangeEvent e) {
+    private void handleGroupBlockChanged(PropertyChangeEvent event) {
         calculateSize();
     }
 

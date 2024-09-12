@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -38,8 +39,12 @@ public class Port extends VBox {
     public Type portType;
     public Block parentBlock;
     public boolean multiDockAllowed;
-//    public BindingPoint origin;
     public int index;
+
+    private final EventHandler<MouseEvent> portDraggedHandler = this::handlePortDragged;
+    private final ListChangeListener<Connection> portConnectionsChangeListener = this::handlePortConnectionsChange;
+    private final ChangeListener<Object> portActivationChangeListener = this::handlePortActivationChange;
+    private final ChangeListener<Object> portCoordinatesChangeListener = this::handlePortCoordinatesChange;
 
     public Port(String name, Block parent, Type portType, Class type) {
         Tooltip tip = new Tooltip();
@@ -61,17 +66,17 @@ public class Port extends VBox {
         getStyleClass().add("port-" + portType.toString().toLowerCase());
 
         connectedConnections = FXCollections.observableArrayList();
-        connectedConnections.addListener(this::handle_ConnectionChange);
+        connectedConnections.addListener(portConnectionsChangeListener);
 
         setOnMouseClicked(createConnectionHandler);
         setOnMousePressed(consumePressHandler);
-        setOnMouseDragged(this::port_MouseDrag);
+        setOnMouseDragged(portDraggedHandler);
 
-        active.addListener(this::handle_Active);
+        active.addListener(portActivationChangeListener);
 
-        parentBlock.layoutXProperty().addListener(coordinatesChangeListener);
-        parentBlock.layoutYProperty().addListener(coordinatesChangeListener);
-        boundsInParentProperty().addListener(coordinatesChangeListener);
+        parentBlock.layoutXProperty().addListener(portCoordinatesChangeListener);
+        parentBlock.layoutYProperty().addListener(portCoordinatesChangeListener);
+        boundsInParentProperty().addListener(portCoordinatesChangeListener);
     }
 
     private final EventHandler<MouseEvent> createConnectionHandler = new EventHandler<>() {
@@ -90,7 +95,7 @@ public class Port extends VBox {
         }
     };
 
-    private void handle_ConnectionChange(ListChangeListener.Change change) {
+    private void handlePortConnectionsChange(Change<? extends Connection> change) {
         if (connectedConnections.size() == 0) {
             setActive(false);
         } else {
@@ -106,12 +111,10 @@ public class Port extends VBox {
         centerYProperty.set(centerInLocal.getY());
     }
 
-    ChangeListener<Object> coordinatesChangeListener = new ChangeListener<>() {
-        @Override
-        public void changed(ObservableValue ov, Object t, Object t1) {
-            calcOrigin();
-        }
-    };
+    private void handlePortCoordinatesChange(ObservableValue<? extends Object> b, Object o, Object n) {
+        calcOrigin();
+    }
+
 
     /**
      * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from
@@ -119,7 +122,7 @@ public class Port extends VBox {
      *
      * @param e
      */
-    private void port_MouseDrag(MouseEvent e) {
+    private void handlePortDragged(MouseEvent e) {
         e.consume();
     }
 
@@ -245,7 +248,7 @@ public class Port extends VBox {
         return name;
     }
 
-    private void handle_Active(Object obj, Object oldVal, Object newVal) {
+    private void handlePortActivationChange(Object obj, Object oldVal, Object newVal) {
         if (isActive()) {
             getStyleClass().remove("port");
             getStyleClass().add("port-active");

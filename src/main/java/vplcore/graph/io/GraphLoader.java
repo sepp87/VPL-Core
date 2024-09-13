@@ -15,7 +15,10 @@ import jo.vpl.xml.ConnectionsTag;
 import jo.vpl.xml.DocumentTag;
 import jo.vpl.xml.BlockTag;
 import jo.vpl.xml.BlocksTag;
+import jo.vpl.xml.GroupTag;
+import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
+import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
 import vplcore.graph.util.BlockFactory;
@@ -47,7 +50,11 @@ public class GraphLoader {
             // deserialize connections of graph
             ConnectionsTag connectionsTag = documentTag.getConnections();
             deserializeConnections(connectionsTag, workspace);
-            
+
+            // deserialize groups of graph
+            GroupsTag groups = documentTag.getGroups();
+            deserializeGroups(groups, workspace);
+
         } catch (JAXBException | SecurityException | IllegalArgumentException ex) {
             Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -55,53 +62,72 @@ public class GraphLoader {
 
     private static void deserializeBlocks(BlocksTag blocksTag, Workspace workspace) {
         List<BlockTag> blockTagList = blocksTag.getBlock();
-        if (blockTagList != null) {
-
-            for (BlockTag blockTag : blockTagList) {
-
-                String blockIdentifier = blockTag.getType();
-                Block block = BlockFactory.createBlock(blockIdentifier, workspace);
-
-                if (block == null) {
-                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
-                    return;
-                }
-
-                block.deserialize(blockTag);
-                workspace.blockSet.add(block);
-                workspace.getChildren().add(block);
-            }
+        if (blockTagList == null) {
+            return;
         }
+
+        for (BlockTag blockTag : blockTagList) {
+
+            String blockIdentifier = blockTag.getType();
+            Block block = BlockFactory.createBlock(blockIdentifier, workspace);
+
+            if (block == null) {
+                System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
+                return;
+            }
+
+            block.deserialize(blockTag);
+            workspace.blockSet.add(block);
+            workspace.getChildren().add(block);
+        }
+
     }
 
     private static void deserializeConnections(ConnectionsTag connectionsTag, Workspace workspace) {
         List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
-        if (connectionTagList
-                != null) {
-            for (ConnectionTag connectionTag : connectionTagList) {
+        if (connectionTagList == null) {
+            return;
+        }
 
-                UUID startBlockUuid = UUID.fromString(connectionTag.getStartBlock());
-                int startPortIndex = connectionTag.getStartIndex();
-                UUID endBlockUuid = UUID.fromString(connectionTag.getEndBlock());
-                int endPortIndex = connectionTag.getEndIndex();
+        for (ConnectionTag connectionTag : connectionTagList) {
 
-                Block startBlock = null;
-                Block endBlock = null;
-                for (Block Block : workspace.blockSet) {
-                    if (Block.uuid.compareTo(startBlockUuid) == 0) {
-                        startBlock = Block;
-                    } else if (Block.uuid.compareTo(endBlockUuid) == 0) {
-                        endBlock = Block;
-                    }
-                }
+            UUID startBlockUuid = UUID.fromString(connectionTag.getStartBlock());
+            int startPortIndex = connectionTag.getStartIndex();
+            UUID endBlockUuid = UUID.fromString(connectionTag.getEndBlock());
+            int endPortIndex = connectionTag.getEndIndex();
 
-                if (startBlock != null && endBlock != null) {
-                    Port startPort = startBlock.outPorts.get(startPortIndex);
-                    Port endPort = endBlock.inPorts.get(endPortIndex);
-                    Connection connection = new Connection(workspace, startPort, endPort);
-                    workspace.connectionSet.add(connection);
+            Block startBlock = null;
+            Block endBlock = null;
+            for (Block Block : workspace.blockSet) {
+                if (Block.uuid.compareTo(startBlockUuid) == 0) {
+                    startBlock = Block;
+                } else if (Block.uuid.compareTo(endBlockUuid) == 0) {
+                    endBlock = Block;
                 }
             }
+
+            if (startBlock != null && endBlock != null) {
+                Port startPort = startBlock.outPorts.get(startPortIndex);
+                Port endPort = endBlock.inPorts.get(endPortIndex);
+                Connection connection = new Connection(workspace, startPort, endPort);
+                workspace.connectionSet.add(connection);
+            }
+        }
+    }
+
+    private static void deserializeGroups(GroupsTag groupsTag, Workspace workspace) {
+        if (groupsTag == null) {
+            return;
+        }
+
+        List<GroupTag> groupTagList = groupsTag.getGroup();
+        if (groupTagList == null) {
+            return;
+        }
+
+        for (GroupTag groupTag : groupTagList) {
+            BlockGroup group = new BlockGroup(workspace);
+            group.deserialize(groupTag);
         }
     }
 

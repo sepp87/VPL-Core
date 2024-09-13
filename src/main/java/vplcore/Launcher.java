@@ -3,7 +3,6 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 1 BUG short cuts are not working, maybe because blocked by zoommanager
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
 // 1 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks

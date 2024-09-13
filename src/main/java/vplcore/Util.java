@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -421,17 +422,29 @@ public class Util {
     //////////////////////////////// EVENT UTILS ///////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    
-    public static boolean isModifierDown(KeyEvent e) {
+    public static boolean isModifierDown(KeyEvent event) {
         switch (Config.get().operatingSystem()) {
             case WINDOWS:
-                return e.isControlDown();
+                return event.isControlDown();
             case MACOS:
-                return e.isMetaDown();
+                return event.isMetaDown();
             case LINUX:
-                return e.isMetaDown();
+                return event.isMetaDown();
             default:
-                return e.isControlDown();
+                return event.isControlDown();
+        }
+    }
+
+    public static boolean isModifierDown(MouseEvent event) {
+        switch (Config.get().operatingSystem()) {
+            case WINDOWS:
+                return event.isControlDown();
+            case MACOS:
+                return event.isMetaDown();
+            case LINUX:
+                return event.isMetaDown();
+            default:
+                return event.isControlDown();
         }
     }
 

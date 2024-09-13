@@ -2,6 +2,10 @@ package vplcore.graph.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -19,7 +23,12 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import jo.vpl.xml.BlockReferenceTag;
+import jo.vpl.xml.GroupTag;
+import jo.vpl.xml.ObjectFactory;
+import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.Workspace;
+import vplcore.workspace.input.MouseMode;
 
 /**
  *
@@ -33,6 +42,7 @@ public class BlockGroup extends VplElement {
     public ObservableSet<Block> childBlocks;
 
     private final EventHandler<MouseEvent> groupPressedHandler = this::handleGroupPressed;
+    private final EventHandler<MouseEvent> groupReleasedHandler = this::handleGroupReleased;
     private final SetChangeListener<Block> groupSetChangedListener = this::handleGroupSetChanged;
     private final PropertyChangeListener groupBlockDeletedListener = this::handleGroupBlockDeleted;
     private final PropertyChangeListener groupBlockChangedListener = this::handleGroupBlockChanged; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
@@ -46,6 +56,7 @@ public class BlockGroup extends VplElement {
 
         childBlocks = FXCollections.observableSet();
         setOnMousePressed(groupPressedHandler);
+        setOnMouseReleased(groupReleasedHandler);
 
         setName("Name group here...");
 
@@ -53,7 +64,7 @@ public class BlockGroup extends VplElement {
         workspace.getChildren().add(1, this);
     }
 
-    public void setChildBlocks(ObservableSet<Block> blockSet) {
+    public void setChildBlocks(Collection<Block> blockSet) {
         childBlocks.addAll(blockSet);
         childBlocks.addListener(groupSetChangedListener);
         observeAllChildBlocks();
@@ -70,6 +81,12 @@ public class BlockGroup extends VplElement {
             block.setSelected(true);
             workspace.selectedBlockSet.add(block);
         }
+        workspace.setMouseMode(MouseMode.SELECTING_GROUP); // prevent group from being deselected
+    }
+
+    private void handleGroupReleased(MouseEvent event) {
+        workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+//        event.consume();
     }
 
     @Override
@@ -80,7 +97,7 @@ public class BlockGroup extends VplElement {
     }
 
     private void handleGroupSetChanged(Change<? extends Block> change) {
-
+        System.out.println("Hello world!");
         if (change.wasAdded()) {
             Block block = change.getElementAdded();
             block.eventBlaster.add("deleted", groupBlockDeletedListener);
@@ -90,7 +107,7 @@ public class BlockGroup extends VplElement {
             block.eventBlaster.remove("deleted", groupBlockDeletedListener);
             block.eventBlaster.remove(groupBlockChangedListener);
         }
-
+        
         if (childBlocks.size() < 2) {
             delete();
         } else {
@@ -177,5 +194,30 @@ public class BlockGroup extends VplElement {
                 blockGroupBorderWidth);
         Border blockBorder = new Border(blockBorderStroke);
         Insets blockPadding = new Insets(10);
+    }
+
+    public void serialize(GroupTag xmlTag) {
+        ObjectFactory factory = getObjectFactory();
+        xmlTag.setName(getName());
+        for (Block block : childBlocks) {
+            BlockReferenceTag blockReferenceTag = factory.createBlockReferenceTag();
+            blockReferenceTag.setUUID(block.uuid.toString());
+            xmlTag.getBlockReference().add(blockReferenceTag);
+        }
+    }
+
+    public void deserialize(GroupTag xmlTag) {
+        setName(xmlTag.getName());
+        List<BlockReferenceTag> blockReferenceTagList = xmlTag.getBlockReference();
+        List<Block> blocks = new ArrayList<>();
+        for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {
+            for (Block block : workspace.blockSet) {
+                if (block.uuid.toString().equals(blockReferenceTag.getUUID())) {
+                    blocks.add(block);
+                    break;
+                }
+            }
+        }
+        setChildBlocks(blocks);
     }
 }

@@ -12,6 +12,7 @@ import vplcore.workspace.Workspace;
 import jo.vpl.xml.BlockTag;
 import vplcore.Config;
 import vplcore.IconType;
+import vplcore.Util;
 import static vplcore.Util.OperatingSystem.LINUX;
 import static vplcore.Util.OperatingSystem.MACOS;
 import static vplcore.Util.OperatingSystem.WINDOWS;
@@ -170,7 +171,7 @@ public abstract class Block extends VplElement {
     private void updateSelection(MouseEvent event) {
 
         if (workspace.selectedBlockSet.contains(this)) {
-            if (isModifierDown(event)) {
+            if (Util.isModifierDown(event)) {
                 // Remove this node from selection
                 workspace.selectedBlockSet.remove(this);
                 setSelected(false);
@@ -182,7 +183,7 @@ public abstract class Block extends VplElement {
                 }
             }
         } else {
-            if (isModifierDown(event)) {
+            if (Util.isModifierDown(event)) {
                 // add this node to selection
                 workspace.selectedBlockSet.add(this);
                 setSelected(true);
@@ -208,19 +209,6 @@ public abstract class Block extends VplElement {
             }
         }
         event.consume();
-    }
-
-    private boolean isModifierDown(MouseEvent event) {
-        switch (Config.get().operatingSystem()) {
-            case WINDOWS:
-                return event.isControlDown();
-            case MACOS:
-                return event.isMetaDown();
-            case LINUX:
-                return event.isMetaDown();
-            default:
-                return event.isControlDown();
-        }
     }
 
     private final EventHandler<MouseEvent> blockDraggedHandler = new EventHandler<>() {

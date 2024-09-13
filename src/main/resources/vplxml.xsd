@@ -60,8 +60,15 @@
     </xsd:complexType>
     
     <xsd:complexType name="GroupTag">
+        <xsd:sequence>
+            <xsd:element name="BlockReference" maxOccurs="unbounded" type="vpl:BlockReferenceTag"/>
+        </xsd:sequence>
         <xsd:attribute name="Name" type="vpl:String" use="required"/>  
         <xsd:anyAttribute processContents="skip"/>  
+    </xsd:complexType>
+    
+    <xsd:complexType name="BlockReferenceTag">
+        <xsd:attribute name="UUID" type="vpl:String" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="DocumentTag">

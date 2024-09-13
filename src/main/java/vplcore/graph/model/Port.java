@@ -41,13 +41,18 @@ public class Port extends VBox {
     public boolean multiDockAllowed;
     public int index;
 
-    private final EventHandler<MouseEvent> portDraggedHandler = this::handlePortDragged;
-    private final ListChangeListener<Connection> portConnectionsChangeListener = this::handlePortConnectionsChange;
-    private final ChangeListener<Object> portActivationChangeListener = this::handlePortActivationChange;
-    private final ChangeListener<Object> portCoordinatesChangeListener = this::handlePortCoordinatesChange;
+    private final Tooltip tip;
 
-    public Port(String name, Block parent, Type portType, Class type) {
-        Tooltip tip = new Tooltip();
+    private final EventHandler<MouseEvent> portClickedForNewConnectionHandler = this::handlePortClickedForNewConnection;
+    private final EventHandler<MouseEvent> portPressedHandler = this::handlePortPressed;
+    private final EventHandler<MouseEvent> portDraggedHandler = this::handlePortDragged;
+    private final ListChangeListener<Connection> portConnectionsChangedListener = this::handlePortConnectionsChanged;
+    private final ChangeListener<Object> portActivationChangedListener = this::handlePortActivationChanged;
+    private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
+    private final ChangeListener<Object> startPortDataChangedListener = this::handleStartPortDataChanged;
+
+    public Port(String name, Block parent, Type portType, Class<?> type) {
+        tip = new Tooltip();
         Tooltip.install(this, tip);
         tip.textProperty().bind(this.nameProperty());
 
@@ -66,36 +71,29 @@ public class Port extends VBox {
         getStyleClass().add("port-" + portType.toString().toLowerCase());
 
         connectedConnections = FXCollections.observableArrayList();
-        connectedConnections.addListener(portConnectionsChangeListener);
 
-        setOnMouseClicked(createConnectionHandler);
-        setOnMousePressed(consumePressHandler);
-        setOnMouseDragged(portDraggedHandler);
-
-        active.addListener(portActivationChangeListener);
-
-        parentBlock.layoutXProperty().addListener(portCoordinatesChangeListener);
-        parentBlock.layoutYProperty().addListener(portCoordinatesChangeListener);
-        boundsInParentProperty().addListener(portCoordinatesChangeListener);
+        connectedConnections.addListener(portConnectionsChangedListener);
+        addEventHandler(MouseEvent.MOUSE_CLICKED, portClickedForNewConnectionHandler);
+        addEventHandler(MouseEvent.MOUSE_PRESSED, portPressedHandler);
+        addEventHandler(MouseEvent.MOUSE_DRAGGED, portDraggedHandler);
+        active.addListener(portActivationChangedListener);
+        parentBlock.layoutXProperty().addListener(portCoordinatesChangedListener);
+        parentBlock.layoutYProperty().addListener(portCoordinatesChangedListener);
+        boundsInParentProperty().addListener(portCoordinatesChangedListener);
     }
 
-    private final EventHandler<MouseEvent> createConnectionHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if (event.isStillSincePress()) {
-                parentBlock.workspace.portConnector.createConnection(Port.this);
-            }
-            event.consume();
+    public void handlePortClickedForNewConnection(MouseEvent event) {
+        if (event.isStillSincePress()) {
+            parentBlock.workspace.portConnector.createConnection(Port.this);
         }
-    };
-    private final EventHandler<MouseEvent> consumePressHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            event.consume();
-        }
-    };
+        event.consume();
+    }
 
-    private void handlePortConnectionsChange(Change<? extends Connection> change) {
+    public void handlePortPressed(MouseEvent event) {
+        event.consume();
+    }
+
+    private void handlePortConnectionsChanged(Change<? extends Connection> change) {
         if (connectedConnections.size() == 0) {
             setActive(false);
         } else {
@@ -111,10 +109,9 @@ public class Port extends VBox {
         centerYProperty.set(centerInLocal.getY());
     }
 
-    private void handlePortCoordinatesChange(ObservableValue<? extends Object> b, Object o, Object n) {
+    private void handlePortCoordinatesChanged(ObservableValue<? extends Object> b, Object o, Object n) {
         calcOrigin();
     }
-
 
     /**
      * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from
@@ -138,32 +135,20 @@ public class Port extends VBox {
         return data.get();
     }
 
-    //Double point operators do NOT work when trying to remove listeners
-    //USE THIS OTHERWISE THERE WILL BE MEMORY LEAKING
-    ChangeListener<Object> startPort_DataChangeListener = new ChangeListener<>() {
+    public ChangeListener<Object> getStartPortDataChangedListener() {
+        return startPortDataChangedListener;
+    }
 
-        @Override
-        public void changed(ObservableValue obj, Object oldVal, Object newVal) {
-            calculateData(newVal);
-        }
-    };
+    private void handleStartPortDataChanged(ObservableValue obj, Object oldVal, Object newVal) {
+        calculateData(newVal);
+    }
 
-//    OBSOLETE CODE, SINCE dataChanged IS ALREADY THIS AND IS MONITORED?
-//    public void OnDataChanged() {
-//        if (DataChanged != null) {
-//            DataChanged(this, new EventArgs());
-//        }
-//    }
     public void calculateData() {
         calculateData(null);
     }
 
     public void calculateData(Object value) {
 
-//        boolean fxThread = Thread.currentThread().getName().equals("JavaFX Application Thread");
-//        if (!fxThread) {
-//            System.out.println(this.parentBlock.getName());
-//        }
         if (portType == Type.IN) {
 
             if (multiDockAllowed && connectedConnections.size() > 1) {
@@ -171,8 +156,6 @@ public class Port extends VBox {
                 dataType.cast(new Object());
                 List listOfLists = new ArrayList<>();
 
-//                var listType = typeof(List < >).MakeGenericType(new Type[]{DataType});
-//                IList list = (IList) Activator.CreateInstance(listType);
                 for (Connection connection : connectedConnections) {
 
                     //Cast all primitive dataType to String if this port dataType is String
@@ -248,7 +231,7 @@ public class Port extends VBox {
         return name;
     }
 
-    private void handlePortActivationChange(Object obj, Object oldVal, Object newVal) {
+    private void handlePortActivationChanged(Object obj, Object oldVal, Object newVal) {
         if (isActive()) {
             getStyleClass().remove("port");
             getStyleClass().add("port-active");
@@ -258,4 +241,22 @@ public class Port extends VBox {
         }
     }
 
+    public void delete() {
+        connectedConnections.removeListener(portConnectionsChangedListener);
+        removeEventHandler(MouseEvent.MOUSE_CLICKED, portClickedForNewConnectionHandler);
+        removeEventHandler(MouseEvent.MOUSE_PRESSED, portPressedHandler);
+        removeEventHandler(MouseEvent.MOUSE_DRAGGED, portDraggedHandler);
+        active.removeListener(portActivationChangedListener);
+        parentBlock.layoutXProperty().removeListener(portCoordinatesChangedListener);
+        parentBlock.layoutYProperty().removeListener(portCoordinatesChangedListener);
+        boundsInParentProperty().removeListener(portCoordinatesChangedListener);
+
+        tip.textProperty().unbind();
+
+        for (Connection connection : connectedConnections) {
+            
+        }
+
+        connectedConnections.clear();
+    }
 }

@@ -68,4 +68,5 @@ public class EventBlaster {
         this.changeHandler.removePropertyChangeListener(propertyName, listener);
 
     }
+
 }

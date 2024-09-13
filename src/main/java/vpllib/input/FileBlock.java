@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javax.xml.namespace.QName;
-import vplcore.graph.model.BlockButton;
+import vplcore.graph.model.VplButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.BlockInfo;
@@ -44,7 +44,7 @@ public class FileBlock extends Block {
         textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
 
-        BlockButton button = new BlockButton(IconType.FA_FOLDER_OPEN);
+        VplButton button = new VplButton(IconType.FA_FOLDER_OPEN);
         button.setOnAction(openFileHandler);
 
         HBox box = new HBox(5);

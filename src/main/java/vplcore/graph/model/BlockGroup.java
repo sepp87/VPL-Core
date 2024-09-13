@@ -74,8 +74,6 @@ public class BlockGroup extends VplElement {
     private void handleGroupPressed(MouseEvent event) {
         for (Block block : childBlocks) {
 
-            block.setOnMouseDragged(block::moveBlock);
-
             block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
 
             block.setSelected(true);

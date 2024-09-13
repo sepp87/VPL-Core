@@ -370,3 +370,52 @@
     -fx-border-color: #bbb;
     -fx-cursor: hand;
 }
+
+.block-exception {
+    -fx-background-color: #f5f5f5; /* Background color of the panel */
+    -fx-border-color: #d0d0d0; /* Border color */
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
+}
+
+.block-exception-maximize-button {
+    -fx-background-color: red;
+    -fx-text-fill: white; /* White text on the button */
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+}
+
+.block-exception-maximized-box {
+    -fx-background-color: #fff;
+    -fx-padding: 10px;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-spacing: 10px;
+}
+
+.block-exception-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333; /* Text color for exception messages */
+}
+
+.block-exception-navigation-box {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-background-color : lightblue;
+    /*-fx-width: 100%;*/
+}
+
+.block-exception-minimize-button {
+    -fx-background-color: #007acc;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 3px 8px;
+}
+
+.block-exception-button {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-padding: 5px 10px;
+    -fx-text-fill: #333;
+}

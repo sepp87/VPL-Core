@@ -20,7 +20,7 @@ public class BlockLabel extends Button {
     HBox hostElement;
     private final TextField textField;
     private String tempText;
-    
+
     private final EventHandler<KeyEvent> keyPressedHandler = this::handleKeyPressed;
     private final EventHandler<MouseEvent> fieldExitedHandler = this::handleFieldExited;
     private final EventHandler<MouseEvent> blockLabelClickedHandler = this::handleBlockLabelClicked;
@@ -40,7 +40,6 @@ public class BlockLabel extends Button {
         textField.setOnKeyPressed(keyPressedHandler);
         textField.setOnMouseExited(fieldExitedHandler);
         setOnMouseClicked(blockLabelClickedHandler);
-
     }
 
     private void handleKeyPressed(KeyEvent e) {
@@ -77,5 +76,13 @@ public class BlockLabel extends Button {
             hostElement.getChildren().add(index, textField);
             textField.requestFocus();
         }
+    }
+
+    public void delete() {
+        textField.maxWidthProperty().unbind();
+        textField.textProperty().unbindBidirectional(textProperty());
+        textField.setOnKeyPressed(null);
+        textField.setOnMouseExited(null);
+        setOnMouseClicked(null);
     }
 }

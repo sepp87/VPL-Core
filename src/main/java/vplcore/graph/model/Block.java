@@ -8,14 +8,9 @@ import javafx.geometry.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
-import vplcore.workspace.Workspace;
 import jo.vpl.xml.BlockTag;
-import vplcore.Config;
 import vplcore.IconType;
 import vplcore.Util;
-import static vplcore.Util.OperatingSystem.LINUX;
-import static vplcore.Util.OperatingSystem.MACOS;
-import static vplcore.Util.OperatingSystem.WINDOWS;
 import vplcore.workspace.Workspace;
 
 /**
@@ -36,11 +31,19 @@ public abstract class Block extends VplElement {
 
     public Point2D oldMousePosition;
 
+    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleBlockEntered;
+    private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
+    private final EventHandler<MouseEvent> blockPressedHandler = this::handleBlockPressed;
+    private final EventHandler<MouseEvent> blockDraggedHandler = this::handleBlockDragged;
+    private final EventHandler<MouseEvent> resizeButtonPressedHandler = this::handleResizeButtonPressed;
+    private final EventHandler<MouseEvent> resizeButtonDraggedHandler = this::handleResizeButtonDragged;
+    private final ChangeListener<Object> portDataChangedListener = this::handlePortDataChanged;
+    private final ChangeListener<Boolean> selectionChangedListener = this::handleSelectionChanged;
+
     public Block(Workspace workspace) {
         super(workspace);
         uuid = UUID.randomUUID();
 
-//this.setMouseTransparent(true);
         inPorts = new ArrayList<>();
         outPorts = new ArrayList<>();
         controls = new ArrayList<>();
@@ -48,10 +51,10 @@ public abstract class Block extends VplElement {
         //Content Grid is the actual block box without the buttons on top etc.
         contentGrid = new GridPane();
         contentGrid.setAlignment(Pos.CENTER);
-        contentGrid.addEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        contentGrid.addEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        contentGrid.addEventHandler(MouseEvent.MOUSE_ENTERED, blockEnteredHandler);
+        contentGrid.addEventHandler(MouseEvent.MOUSE_EXITED, blockExitedHandler);
         contentGrid.addEventHandler(MouseEvent.MOUSE_PRESSED, blockPressedHandler);
-        selected.addListener(selectChangeListener);
+        selected.addListener(selectionChangedListener);
 
         if (true) {
             VBox in = new VBox();
@@ -120,28 +123,20 @@ public abstract class Block extends VplElement {
 
     public void setResizable(boolean resizable) {
         if (resizable) {
-            resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
+            resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
             contentGrid.add(resizeButton, 2, 3);
             resizeButton.addEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
             resizeButton.addEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
         }
     }
 
-    private final EventHandler<MouseEvent> resizeButtonPressedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-        }
+    public void handleResizeButtonPressed(MouseEvent event) {
+        oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+    }
 
-    };
-
-    private final EventHandler<MouseEvent> resizeButtonDraggedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            resizeBlock(event);
-        }
-
-    };
+    public void handleResizeButtonDragged(MouseEvent event) {
+        resizeBlock(event);
+    }
 
     private void resizeBlock(MouseEvent event) {
         double scale = workspace.getScale();
@@ -155,12 +150,9 @@ public abstract class Block extends VplElement {
         contentGrid.layout();
     }
 
-    private final EventHandler<MouseEvent> blockPressedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            updateSelection(event);
-        }
-    };
+    public void handleBlockPressed(MouseEvent event) {
+        updateSelection(event);
+    }
 
     /**
      * Event handler for selection of blocks and possible followed up dragging
@@ -211,13 +203,9 @@ public abstract class Block extends VplElement {
         event.consume();
     }
 
-    private final EventHandler<MouseEvent> blockDraggedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            moveBlock(event);
-        }
-
-    };
+    public void handleBlockDragged(MouseEvent event) {
+        moveBlock(event);
+    }
 
     public void moveBlock(MouseEvent event) {
         double scale = workspace.getScale();
@@ -253,7 +241,7 @@ public abstract class Block extends VplElement {
         Port port = new Port(name, this, Port.Type.IN, type);
         port.multiDockAllowed = multiDockAllowed;
         inPortBox.getChildren().add(port);
-        port.dataProperty().addListener(port_DataChangeListener);
+        port.dataProperty().addListener(portDataChangedListener);
         inPorts.add(port);
         return port;
     }
@@ -266,7 +254,7 @@ public abstract class Block extends VplElement {
      */
     public Port addInPortToBlock(Port port) {
         inPortBox.getChildren().add(port.index, port);
-        port.dataProperty().addListener(port_DataChangeListener);
+        port.dataProperty().addListener(portDataChangedListener);
         inPorts.add(port.index, port);
         return port;
     }
@@ -277,25 +265,20 @@ public abstract class Block extends VplElement {
      * @param port the port to remove
      */
     public void removeInPortFromBlock(Port port) {
-        for (Connection connector : port.connectedConnections) {
-            connector.removeFromCanvas();
+        for (Connection connection : port.connectedConnections) {
+            connection.removeFromCanvas();
         }
         inPortBox.getChildren().remove(port);
-        port.dataProperty().removeListener(port_DataChangeListener);
+        port.dataProperty().removeListener(portDataChangedListener);
         inPorts.remove(port);
     }
 
-    //Double point operators do NOT work when trying to remove listeners
-    //USE THIS OTHERWISE THERE WILL BE MEMORY LEAKING
-    private final ChangeListener<Object> port_DataChangeListener = new ChangeListener<>() {
-
-        @Override
-        public void changed(ObservableValue obj, Object oldVal, Object newVal) {
-            //        try {
+    public void handlePortDataChanged(ObservableValue obj, Object oldVal, Object newVal) {
+        //        try {
 //            if (AutoCheckBox.IsChecked != null && (bool) AutoCheckBox.IsChecked) {
 
-            calculate();
-            //            }
+        calculate();
+        //            }
 //            HasError = false;
 //            TopComment.Visibility = Visibility.Hidden;
 //        } catch (Exception ex) {
@@ -303,8 +286,7 @@ public abstract class Block extends VplElement {
 //            TopComment.Text = ex.ToString();
 //            TopComment.Visibility = Visibility.Visible;
 //        }
-        }
-    };
+    }
 
     /**
      * Add a port to the block, multiple outgoing connections are allowed
@@ -345,16 +327,19 @@ public abstract class Block extends VplElement {
             resizeButton.removeEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
             resizeButton.removeEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
         }
-        contentGrid.removeEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        contentGrid.removeEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
+        contentGrid.removeEventHandler(MouseEvent.MOUSE_ENTERED, blockEnteredHandler);
+        contentGrid.removeEventHandler(MouseEvent.MOUSE_EXITED, blockExitedHandler);
         contentGrid.removeEventHandler(MouseEvent.MOUSE_PRESSED, blockPressedHandler);
-        selected.addListener(selectChangeListener);
+        selected.addListener(selectionChangedListener);
         this.removeEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
         for (Port port : inPorts) {
-            port.dataProperty().removeListener(port_DataChangeListener);
+            port.dataProperty().removeListener(portDataChangedListener);
+            port.delete();
         }
+        inPorts.clear();
+        outPorts.clear();
+        controls.clear();
         workspace.blockSet.remove(this);
-
     }
 
     /**
@@ -366,7 +351,7 @@ public abstract class Block extends VplElement {
      * @param source port the connection was added to
      * @param incoming port which sends the data
      */
-    protected void handle_IncomingConnectionAdded(Port source, Port incoming) {
+    protected void handleIncomingConnectionAdded(Port source, Port incoming) {
         calculate();
     }
 
@@ -378,7 +363,7 @@ public abstract class Block extends VplElement {
      *
      * @param source port the connection was removed from
      */
-    protected void handle_IncomingConnectionRemoved(Port source) {
+    protected void handleIncomingConnectionRemoved(Port source) {
         calculate();
     }
 
@@ -436,45 +421,25 @@ public abstract class Block extends VplElement {
         return new BoundingBox(minLeft, minTop, maxLeft - minLeft, maxTop - minTop);
     }
 
-    private final EventHandler<MouseEvent> onMouseEnterEventHandler = new EventHandler<MouseEvent>() {
+    protected void handleBlockEntered(MouseEvent event) {
+        workspace.portDisconnector.hideRemoveButton();
+        Block.this.setActive(true);
+        Block.this.updateStyle();
+    }
 
-        @Override
-        public void handle(MouseEvent e) {
-            workspace.portDisconnector.hideRemoveButton();
-            Block.this.setActive(true);
-            Block.this.updateStyle();
-        }
-    };
-    private final EventHandler<MouseEvent> onMouseExitEventHandler = new EventHandler<MouseEvent>() {
+    protected void handleBlockExited(MouseEvent event) {
+        //Change focus on exit to workspace so controls do not interrupt key events
+        Block.this.workspace.requestFocus();
+        Block.this.setActive(false);
+        Block.this.updateStyle();
+    }
 
-        @Override
-        public void handle(MouseEvent e) {
-            //Change focus on exit to host canvas so controls do not interrupt key events
-            Block.this.workspace.requestFocus();
-            Block.this.setActive(false);
-            Block.this.updateStyle();
-        }
-    };
-    private final EventHandler<MouseEvent> onMousePressEventHandler = new EventHandler<MouseEvent>() {
-
-        @Override
-        public void handle(MouseEvent e) {
-
-        }
-    };
-
-    private final ChangeListener<Boolean> selectChangeListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldVal, Boolean newVal) {
-            updateStyle();
-        }
-    };
+    public void handleSelectionChanged(ObservableValue<? extends Boolean> arg0, Boolean oldVal, Boolean newVal) {
+        updateStyle();
+    }
 
     public void updateStyle() {
-//        System.out.println(this.isPressed());
-//        System.out.println(this.isSelected());
         if (isSelected()) {
-//          contentGrid.getStyleClass().clear();
             contentGrid.getStyleClass().add("block-selected");
         } else {
             contentGrid.getStyleClass().clear();

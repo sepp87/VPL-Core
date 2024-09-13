@@ -74,12 +74,10 @@ public class TextBlock extends Block {
         this.setTextToData(text);
     }
 
-    private void handleBlockEntered(MouseEvent event) {
+    @Override
+    protected void handleBlockEntered(MouseEvent event) {
+        super.handleBlockEntered(event);
         textArea.requestFocus();
-    }
-
-    private void handleBlockExited(MouseEvent event) {
-        workspace.requestFocus();
     }
 
     private void handleBlockIncomingData(ObservableValue obj, Object oldVal, Object isActive) {
@@ -116,7 +114,7 @@ public class TextBlock extends Block {
     }
 
     @Override
-    public void handle_IncomingConnectionRemoved(Port source) {
+    public void handleIncomingConnectionRemoved(Port source) {
         textArea.setText("");
         textArea.setEditable(true);
         outPorts.get(0).setData(null);

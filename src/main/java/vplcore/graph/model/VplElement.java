@@ -2,6 +2,7 @@ package vplcore.graph.model;
 
 import vplcore.graph.util.SelectBlock;
 import javafx.beans.property.*;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -17,11 +18,11 @@ import vplcore.workspace.Workspace;
  */
 public class VplElement extends GridPane {
 
-    public BlockButton autoCheckBox;
-    public BlockButton binButton;
+    public VplButton autoCheckBox;
+    public VplButton binButton;
     public BlockLabel captionLabel;
-    public BlockButton questionButton;
-    public BlockButton resizeButton;
+    public VplButton questionButton;
+    public VplButton resizeButton;
     public HBox menuBox;
 
     public Workspace workspace;
@@ -30,6 +31,10 @@ public class VplElement extends GridPane {
     public final BooleanProperty deleted = new SimpleBooleanProperty(this, "deleted", false);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     public EventBlaster eventBlaster = new EventBlaster(this);
+
+    private final EventHandler<MouseEvent> vplElementEnteredHandler = this::handleVplElementEntered;
+    private final EventHandler<MouseEvent> vplElementExitedHandler = this::handleVplElementExited;
+    private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
     public VplElement(Workspace workspace) {
 
@@ -47,11 +52,6 @@ public class VplElement extends GridPane {
         eventBlaster.set("selected", selected);
         eventBlaster.set("deleted", deleted);
 
-        //Event handlers replace anonymous handlers otherwise they conflict with the
-        //ones created within a block, which leads to missing VPL Element buttons
-        this.addEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        this.addEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
-
         if (this instanceof SelectBlock) {
             return;
         }
@@ -61,12 +61,11 @@ public class VplElement extends GridPane {
         captionLabel = new BlockLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.textProperty().bindBidirectional(name);
-        questionButton = new BlockButton(IconType.FA_QUESTION_CIRCLE);
-        resizeButton = new BlockButton(IconType.FA_PLUS_SQUARE_O);
-        binButton = new BlockButton(IconType.FA_MINUS_CIRCLE);
-        binButton.addEventHandler(MouseEvent.MOUSE_CLICKED, binButtonClickedHandler);
-        autoCheckBox = new BlockButton(IconType.FA_CHECK_CIRCLE);
-        autoCheckBox.setClickedType(IconType.FA_CIRCLE_O);
+        questionButton = new VplButton(IconType.FA_QUESTION_CIRCLE);
+        resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
+        binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
+        autoCheckBox = new VplButton(IconType.FA_CHECK_CIRCLE);
+        autoCheckBox.setIconWhenClicked(IconType.FA_CIRCLE_O);
 
         captionLabel.setVisible(false);
         binButton.setVisible(false);
@@ -78,55 +77,54 @@ public class VplElement extends GridPane {
         menuBox.getStyleClass().add("block-header");
         menuBox.getChildren().addAll(captionLabel, autoCheckBox, questionButton, binButton);
 
+        // Add event handlers
+        binButton.setOnAction(binButtonClickedHandler);
+        addEventHandler(MouseEvent.MOUSE_ENTERED, vplElementEnteredHandler);
+        addEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
+
         add(menuBox, 1, 0);
     }
 
-    private final EventHandler<MouseEvent> binButtonClickedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            delete();
-        }
-    };
+    public void handleBinButtonClicked(ActionEvent event) {
+        delete();
+    }
 
     public void delete() {
-        removeEventHandler(MouseEvent.MOUSE_ENTERED, onMouseEnterEventHandler);
-        removeEventHandler(MouseEvent.MOUSE_EXITED, onMouseExitEventHandler);
-        removeEventHandler(MouseEvent.MOUSE_CLICKED, binButtonClickedHandler);
+        removeEventHandler(MouseEvent.MOUSE_ENTERED, vplElementEnteredHandler);
+        removeEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
+
+        
+        
+        binButton.setOnAction(null);
+        autoCheckBox.setOnAction(null);
+        captionLabel.textProperty().unbindBidirectional(name);
+        captionLabel.delete();
         workspace.getChildren().remove(this);
         setDeleted(true);
     }
 
-    private final EventHandler<MouseEvent> onMouseEnterEventHandler = new EventHandler<MouseEvent>() {
-
-        @Override
-        public void handle(MouseEvent e) {
-            //Point to this by calling VPL Element
-            if (VplElement.this instanceof SelectBlock) {
-                return;
-            }
-
-            captionLabel.setVisible(true);
-            binButton.setVisible(true);
-            questionButton.setVisible(true);
-            resizeButton.setVisible(true);
-            autoCheckBox.setVisible(true);
+    public void handleVplElementEntered(MouseEvent event) {
+        //Point to this by calling VPL Element
+        if (VplElement.this instanceof SelectBlock) {
+            return;
         }
-    };
-    private final EventHandler<MouseEvent> onMouseExitEventHandler = new EventHandler<MouseEvent>() {
+        toggleControlsVisibility(true);
+    }
 
-        @Override
-        public void handle(MouseEvent e) {
-            if (VplElement.this instanceof SelectBlock) {
-                return;
-            }
-
-            captionLabel.setVisible(false);
-            binButton.setVisible(false);
-            questionButton.setVisible(false);
-            resizeButton.setVisible(false);
-            autoCheckBox.setVisible(false);
+    public void handleVplElementExited(MouseEvent element) {
+        if (VplElement.this instanceof SelectBlock) {
+            return;
         }
-    };
+        toggleControlsVisibility(false);
+    }
+
+    private void toggleControlsVisibility(boolean isVisible) {
+        captionLabel.setVisible(isVisible);
+        binButton.setVisible(isVisible);
+        questionButton.setVisible(isVisible);
+        resizeButton.setVisible(isVisible);
+        autoCheckBox.setVisible(isVisible);
+    }
 
     public Point2D getLocation() {
         return new Point2D(getLayoutX(), getLayoutY());
@@ -175,14 +173,4 @@ public class VplElement extends GridPane {
     public void setDeleted(boolean value) {
         deleted.set(value);
     }
-
-//    private void handle_Select(PropertyChangeEvent e) {
-//        if (isSelected()) {
-//            getStyleClass().remove("vpl-element");
-//            getStyleClass().add("vpl-element-active");
-//        } else {
-//            getStyleClass().remove("vpl-element-active");
-//            getStyleClass().add("vpl-element");
-//        }
-//    }
 }

@@ -47,7 +47,7 @@ public class MethodBlock extends Block {
      * is called
      */
     @Override
-    public void handle_IncomingConnectionAdded(Port source, Port incoming) {
+    public void handleIncomingConnectionAdded(Port source, Port incoming) {
         //Sample code for handling just specific ports
         int index = inPorts.indexOf(source);
         if (index == 0) {
@@ -59,7 +59,7 @@ public class MethodBlock extends Block {
      * Function to handle data when a connection is removed
      */
     @Override
-    public void handle_IncomingConnectionRemoved(Port source) {
+    public void handleIncomingConnectionRemoved(Port source) {
         //Sample code for handling just specific ports
         int index = inPorts.indexOf(source);
         if (index == 0) {

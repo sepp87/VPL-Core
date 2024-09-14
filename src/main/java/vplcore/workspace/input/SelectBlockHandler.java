@@ -14,56 +14,53 @@ import vplcore.workspace.Workspace;
  */
 public class SelectBlockHandler {
 
+    private final ChangeListener<Object> initializationHandler = this::handleInitialization;
+    private final ChangeListener<Boolean> visibilityListener = this::handleVisibility;
+    private final EventHandler<MouseEvent> mouseReleasedHandler = this::handleMouseReleased;
+
     private Workspace workspace;
     private SelectBlock selectBlock;
 
     public SelectBlockHandler(Workspace workspace) {
         this.workspace = workspace;
         initializeSelectBlock();
-        addInputHandlers();
+        workspace.sceneProperty().addListener(initializationHandler);
     }
-    
-    public SelectBlock getSelectBlock() {
-        return selectBlock;
+
+    public void handleInitialization(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
+        workspace.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
     }
 
     private void initializeSelectBlock() {
         selectBlock = new SelectBlock(workspace);
         selectBlock.setVisible(false);
-        selectBlock.visibleProperty().addListener(visibilityHandler);
-        workspace.getChildren().add(selectBlock);
+        selectBlock.visibleProperty().addListener(visibilityListener);
     }
 
-    private void addInputHandlers() {
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
-    }
-
-    private final EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.getButton() == MouseButton.PRIMARY) {
-                if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomControls(event) && !workspace.onMenuBar(event)) {
-                    showSelectBlock(event);
-                }
+    public void handleMouseReleased(MouseEvent event) {
+        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.getButton() == MouseButton.PRIMARY) {
+            if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomControls(event) && !workspace.onMenuBar(event)) {
+                showSelectBlock(event);
             }
         }
-    };
+    }
 
     private void showSelectBlock(MouseEvent event) {
-        selectBlock.setLayoutX(workspace.sceneToLocal(event.getX(), event.getY()).getX() - 20);
-        selectBlock.setLayoutY(workspace.sceneToLocal(event.getX(), event.getY()).getY() - 20);
+        selectBlock.setLayoutX(event.getX() - 20);
+        selectBlock.setLayoutY(event.getY() - 20);
         selectBlock.setVisible(true);
     }
 
-    private final ChangeListener<Boolean> visibilityHandler = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
-            if (isVisble) {
-                workspace.setMouseMode(MouseMode.AWAITING_SELECT_BLOCK);
-            } else {
-                workspace.setMouseMode(MouseMode.MOUSE_IDLE);
-            }
+    public void handleVisibility(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
+        if (isVisble) {
+            workspace.setMouseMode(MouseMode.AWAITING_SELECT_BLOCK);
+        } else {
+            workspace.setMouseMode(MouseMode.MOUSE_IDLE);
         }
-    };
+    }
+
+    public SelectBlock getSelectBlock() {
+        return selectBlock;
+    }
 
 }

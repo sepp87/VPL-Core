@@ -25,7 +25,6 @@ import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
-import vplcore.workspace.input.SelectBlockHandler;
 import vplcore.workspace.input.SelectionHandler;
 import vplcore.workspace.input.ZoomManager;
 import vplcore.workspace.radialmenu.RadialMenu;
@@ -114,11 +113,10 @@ public class Workspace extends AnchorPane {
     public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
 
-    private SelectionHandler selectHandler;
+    private SelectionHandler selectionHandler;
     private PanHandler panHandler;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
-    public SelectBlockHandler selectBlockHandler;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override
@@ -126,20 +124,18 @@ public class Workspace extends AnchorPane {
 
             mouse = new MousePositionHandler(Workspace.this);
             keyboard = new KeyboardInputHandler(Workspace.this);
-
-            selectHandler = new SelectionHandler(Workspace.this);
+            selectionHandler = new SelectionHandler(Workspace.this);
             panHandler = new PanHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
-            selectBlockHandler = new SelectBlockHandler(Workspace.this);
             mouseModeProperty().addListener(mouseModeListener);
         }
     };
 
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
 
-    private ChangeListener<Object> mouseModeListener = (ov, t, t1) -> {
-        System.out.println(t1);
+    private ChangeListener<Object> mouseModeListener = (b, o, n) -> {
+        System.out.println(n);
     };
 
     public void reset() {
@@ -149,7 +145,6 @@ public class Workspace extends AnchorPane {
         blockSet.clear();
         connectionSet.clear();
         getChildren().clear();
-        getChildren().add(selectBlockHandler.getSelectBlock());
         getChildren().add(portDisconnector.getRemoveButton());
     }
 

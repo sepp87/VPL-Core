@@ -1,5 +1,6 @@
 package vplcore;
 
+import java.io.File;
 import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -7,9 +8,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import vplcore.graph.io.GraphLoader;
 import vplcore.graph.model.BlockException;
+import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 import vplcore.workspace.MenuBarConfigurator;
+import vplcore.workspace.input.SelectBlockHandler;
 import vplcore.workspace.input.ZoomManager;
 
 /**
@@ -31,15 +35,19 @@ public class App extends Application {
         // get radial menu
         Group workspaceAndRadialMenu = workspace.Go();
 
+        // create menu bar
         MenuBar menuBar = new MenuBarConfigurator(workspace).configure();
         menuBar.prefWidthProperty().bind(pane.widthProperty());
 
+        // create zoom controls
         ZoomManager zoomControls = new ZoomManager(workspace);
         AnchorPane.setTopAnchor(zoomControls, 37.5);
         AnchorPane.setRightAnchor(zoomControls, 10.);
 
-        pane.getChildren().addAll(workspaceAndRadialMenu, menuBar, zoomControls);
-//        pane.getChildren().addAll(workspaceAndRadialMenu, menuBar);
+        // create selection block
+        SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();
+        
+        pane.getChildren().addAll(workspaceAndRadialMenu, menuBar, zoomControls, selectBlock);
 
         Scene scene = new Scene(pane, 800, 800);
         stage.setScene(scene);
@@ -47,12 +55,10 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-//        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
-
+        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
         System.out.println("MenuBar Height " + menuBar.getHeight());
-        
-//        testException(pane, workspace);
 
+//        testException(pane, workspace);
     }
 
     public static void testException(AnchorPane pane, Workspace workspace) {
@@ -75,7 +81,7 @@ public class App extends Application {
         AnchorPane.setLeftAnchor(e, 10.0);
 
         workspace.getChildren().add(p);
-        
+
 //        pane.getChildren().add(p);
     }
 

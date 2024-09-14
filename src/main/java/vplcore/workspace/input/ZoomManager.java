@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -18,6 +19,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import vplcore.Config;
 import vplcore.Util;
+import vplcore.graph.model.Block;
 import vplcore.workspace.Workspace;
 
 /**
@@ -25,11 +27,21 @@ import vplcore.workspace.Workspace;
  */
 public class ZoomManager extends HBox {
 
+    private static final double MAX_ZOOM = 1.5;
+    private static final double MIN_ZOOM = 0.3;
+    private static final double ZOOM_STEP = 0.1;
+
+    private final DoubleProperty zoomFactor;  // Property to hold zoom factor
+
+    // To throttle zoom on macOS
+    private long lastZoomTime = 0;
+    private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
+
+    // UI elements
     private final Workspace workspace;
     private final Label zoomLabel;  // Label to show zoom percentage
     private final Button zoomInButton;  // Button to zoom in
     private final Button zoomOutButton;  // Button to zoom out
-    private final DoubleProperty zoomFactor;  // Property to hold zoom factor
 
     // Scene initialization handler
     private final ChangeListener<Object> initializationHandler = createInitializationHandler();
@@ -49,6 +61,8 @@ public class ZoomManager extends HBox {
 
     public ZoomManager(Workspace workspace) {
         this.workspace = workspace;
+        workspace.zoomManager = this;
+        
         this.zoomFactor = new SimpleDoubleProperty(1.0);  // Default zoom level is 100%
 
         // Initialize UI components
@@ -87,12 +101,12 @@ public class ZoomManager extends HBox {
 
     // Increment zoom factor by the defined step size
     private double getNextZoomIncrement() {
-        return Math.min(Workspace.MAX_ZOOM, zoomFactor.get() + Workspace.ZOOM_STEP);
+        return Math.min(MAX_ZOOM, zoomFactor.get() + ZOOM_STEP);
     }
 
     // Decrement zoom factor by the defined step size
     private double getNextZoomDecrement() {
-        return Math.max(Workspace.MIN_ZOOM, zoomFactor.get() - Workspace.ZOOM_STEP);
+        return Math.max(MIN_ZOOM, zoomFactor.get() - ZOOM_STEP);
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
@@ -140,13 +154,23 @@ public class ZoomManager extends HBox {
     private EventHandler<ScrollEvent> createScrollHandler() {
         return (ScrollEvent event) -> {
             boolean onWindows = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS;
+            boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
             if (workspace.getMouseMode() == MouseMode.ZOOMING || onWindows) {
 
                 // multiplier used for smooth scrolling, not implemented
                 double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
 
+                // Throttle zoom on macOS
+                if (onMac) {
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastZoomTime < zoomThrottleInterval) {
+                        return;  // Ignore if throttling is active
+                    }
+                    lastZoomTime = currentTime;  // Update the last zoom time
+                }
+
                 // Adjust zoom factor based on scroll direction
-                if (event.getDeltaY() > 2) {
+                if (event.getDeltaY() > 0) {
                     zoomFactor.set(getNextZoomIncrement());
                 } else {
                     zoomFactor.set(getNextZoomDecrement());
@@ -168,6 +192,7 @@ public class ZoomManager extends HBox {
 
     private EventHandler<KeyEvent> createKeyEventHandler() {
         return (KeyEvent keyEvent) -> {
+            
             // Handle keyboard shortcuts for zooming
             if (Util.isModifierDown(keyEvent)) {
                 if (keyEvent.getCode() == KeyCode.PLUS) {
@@ -176,12 +201,16 @@ public class ZoomManager extends HBox {
                     zoomFactor.set(getNextZoomDecrement());
                 }
                 applyZoom(null); // Zoom is not from scrolling; no scroll event needed
+            } 
+            else if (keyEvent.getCode() == KeyCode.SPACE) {
+                zoomToFit();
             }
         };
     }
 
     private EventHandler<ActionEvent> createDecrementZoomHandler() {
         return (ActionEvent event) -> {
+            workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
             zoomFactor.set(getNextZoomDecrement());
             applyZoom(null); // Zoom is not from scrolling; no scroll event needed
         };
@@ -189,6 +218,7 @@ public class ZoomManager extends HBox {
 
     private EventHandler<ActionEvent> createIncrementZoomHandler() {
         return (ActionEvent event) -> {
+            workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
             zoomFactor.set(getNextZoomIncrement());
             applyZoom(null); // Zoom is not from scrolling; no scroll event needed
         };
@@ -212,7 +242,34 @@ public class ZoomManager extends HBox {
         getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL, scrollHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
-        workspace.getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler); // Add keyboard shortcuts for zoom
+        getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler); // Add keyboard shortcuts for zoom
+        workspace.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
+    }
 
+    public void zoomToFit() {
+        Scene scene = workspace.getScene();
+        Bounds localBBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
+        if (localBBox == null) {
+            return;
+        }
+
+        //Zoom to fit        
+        Bounds bBox = workspace.localToParent(localBBox);
+        double ratioX = bBox.getWidth() / scene.getWidth();
+        double ratioY = bBox.getHeight() / scene.getHeight();
+        double ratio = Math.max(ratioX, ratioY);
+        // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
+        double scale = Math.ceil((workspace.getScale() / ratio) * 10 - 1) / 10;
+        scale = scale < MIN_ZOOM ? MIN_ZOOM : scale;
+        scale = scale > MAX_ZOOM ? MAX_ZOOM : scale;
+        zoomFactor.set(scale);
+        workspace.setScale(scale);
+
+        //Pan to fit
+        bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
+        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - scene.getWidth() / 2;
+        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - scene.getHeight() / 2;
+        workspace.setTranslateX(workspace.getTranslateX() - deltaX);
+        workspace.setTranslateY(workspace.getTranslateY() - deltaY);
     }
 }

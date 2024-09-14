@@ -3,18 +3,16 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 1 BUG space bar causes zoom in
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
-// 3 IMPROVEMENT Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 REFACTOR integer and double slider event handlers
-// 3 IMPROVEMENT differentiate between mouse wheel and touch pad, zoom increments should be less big on mac when zooming with a mouse wheel
-// 4 BUG Zoom start and stop does not work on windows
+// 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
 // 4 IMPROVEMENT create elaborate tests TBD what to test
+// 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
@@ -23,6 +21,8 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
 // 1 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
 // 2 IMPROVEMENT select block should stay the same size regardless of the zoom (probably needs to be on the contentGroup and not on the workspace, just like the radial menu)
+// 1 BUG space bar causes zoom in
+// 3 IMPROVEMENT zoom increments should be less big on mac when zooming with a mouse wheel
 //
 /**
  *

@@ -4,7 +4,6 @@ import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
 import vplcore.workspace.input.DragContext;
-import vplcore.EventBlaster;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
 import javafx.beans.property.DoubleProperty;
@@ -35,11 +34,8 @@ import vplcore.workspace.radialmenu.RadialMenu;
  */
 public class Workspace extends AnchorPane {
 
-    //STATIC VARIABLES
     //isSaved
-    public static final double MAX_ZOOM = 1.5;
-    public static final double MIN_ZOOM = 0.3;
-    public static final double ZOOM_STEP = 0.1;
+
 
     public ObservableSet<Connection> connectionSet;
     public ObservableSet<Block> blockSet;
@@ -70,7 +66,7 @@ public class Workspace extends AnchorPane {
         //Actions
         actions = new Actions(this);
 
-        //Must set due to funky resize, which messes up zooming (must be the same as the zoompane
+        //Must set due to funky resize, which messes up zooming (must be the same as the zoompane)
         setMinSize(0, 0);
         setMaxSize(0, 0);
 
@@ -108,8 +104,10 @@ public class Workspace extends AnchorPane {
 
     private SelectionHandler selectionHandler;
     private PanHandler panHandler;
+    public ZoomManager zoomManager;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
+    
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override

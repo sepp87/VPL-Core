@@ -37,7 +37,6 @@ public class KeyboardInputHandler {
 
         @Override
         public void handle(KeyEvent keyEvent) {
-
             boolean isModifierDown = Util.isModifierDown(keyEvent);
 
             switch (keyEvent.getCode()) {
@@ -81,9 +80,6 @@ public class KeyboardInputHandler {
                     if (isModifierDown) {
                         Actions.selectAllBlocks(workspace);
                     }
-                    break;
-                case SPACE:
-                    Actions.zoomToFit(workspace);
                     break;
             }
         }

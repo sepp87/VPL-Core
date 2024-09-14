@@ -96,7 +96,7 @@ public class Actions {
             case ZOOM_OUT:
                 break;
             case ZOOM_TO_FIT:
-                zoomToFit(workspace);
+                workspace.zoomManager.zoomToFit();
                 break;
         }
     }
@@ -299,29 +299,6 @@ public class Actions {
             workspace.selectedBlockSet.add(block);
         }
 
-    }
-
-    public static void zoomToFit(Workspace workspace) {
-
-        Scene bScene = workspace.getScene();
-        Bounds localBBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
-        if (localBBox == null) {
-            return;
-        }
-
-        //Zoom to fit        
-        Bounds bBox = workspace.localToParent(localBBox);
-        double ratioX = bBox.getWidth() / bScene.getWidth();
-        double ratioY = bBox.getHeight() / bScene.getHeight();
-        double ratio = Math.max(ratioX, ratioY);
-        workspace.setScale((workspace.getScale() / ratio) - 0.03); //little extra zoom out, not to touch the borders
-
-        //Pan to fit
-        bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
-        double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - bScene.getWidth() / 2;
-        double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - bScene.getHeight() / 2;
-        workspace.setTranslateX(workspace.getTranslateX() - deltaX);
-        workspace.setTranslateY(workspace.getTranslateY() - deltaY);
     }
 
 }

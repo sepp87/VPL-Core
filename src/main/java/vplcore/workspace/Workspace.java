@@ -57,8 +57,6 @@ public class Workspace extends AnchorPane {
     public Point2D startSelectionPoint;
     public Region selectionRectangle;
 
-    //EventBlaster for changes in view
-    EventBlaster controlBlaster = new EventBlaster(this);
 
     //Pan members
     public DragContext panContext;
@@ -92,11 +90,6 @@ public class Workspace extends AnchorPane {
 
         this.setStyle("-fx-background-color: green;");
         getChildren().add(zoomPane);
-
-        //Initialize eventblaster
-        controlBlaster.set("scale", scale);
-        controlBlaster.set("translateX", translateXProperty());
-        controlBlaster.set("translateY", translateYProperty());
 
         //Create radial menu
         RadialMenu radialMenu = new RadialMenuConfigurator(this).getRadialMenu();

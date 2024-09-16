@@ -62,7 +62,7 @@ public class ZoomManager extends HBox {
     public ZoomManager(Workspace workspace) {
         this.workspace = workspace;
         workspace.zoomManager = this;
-        
+
         this.zoomFactor = new SimpleDoubleProperty(1.0);  // Default zoom level is 100%
 
         // Initialize UI components
@@ -107,6 +107,16 @@ public class ZoomManager extends HBox {
     // Decrement zoom factor by the defined step size
     private double getNextZoomDecrement() {
         return Math.max(MIN_ZOOM, zoomFactor.get() - ZOOM_STEP);
+    }
+
+    public void incrementZoom() {
+        zoomFactor.set(getNextZoomIncrement());
+        applyZoom(null);
+    }
+
+    public void decrementZoom() {
+        zoomFactor.set(getNextZoomDecrement());
+        applyZoom(null);
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
@@ -192,7 +202,7 @@ public class ZoomManager extends HBox {
 
     private EventHandler<KeyEvent> createKeyEventHandler() {
         return (KeyEvent keyEvent) -> {
-            
+
             // Handle keyboard shortcuts for zooming
             if (Util.isModifierDown(keyEvent)) {
                 if (keyEvent.getCode() == KeyCode.PLUS) {
@@ -201,8 +211,7 @@ public class ZoomManager extends HBox {
                     zoomFactor.set(getNextZoomDecrement());
                 }
                 applyZoom(null); // Zoom is not from scrolling; no scroll event needed
-            } 
-            else if (keyEvent.getCode() == KeyCode.SPACE) {
+            } else if (keyEvent.getCode() == KeyCode.SPACE) {
                 zoomToFit();
             }
         };

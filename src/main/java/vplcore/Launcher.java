@@ -1,5 +1,6 @@
 package vplcore;
 
+import javafx.geometry.Point2D;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
@@ -41,11 +42,42 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();
 //        TestGetLongValue();
+//        test();
+        // a = 0,0 > 0,10
+        // b = 125,0 > 
+        // c = 0,95 > 10,95
+        // 
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
+    }
+
+    public static Point2D getPerpendicularOffset(Point2D vector, double offset) {
+        // Perpendicular vector: (-y, x)
+        Point2D perpendicular = new Point2D(-vector.getY(), vector.getX());
+
+        // Normalize the perpendicular vector
+        Point2D normalizedPerpendicular = perpendicular.normalize();
+
+        // Scale by the desired offset
+        return normalizedPerpendicular.multiply(offset);
+    }
+
+    public static void test() {
+        Point2D originalVector = new Point2D(0, 125);
+        double offset = 10;
+
+        Point2D offsetVector = getPerpendicularOffset(originalVector, offset);
+        System.out.println("Offset vector: " + offsetVector);
+
+        Point2D b = new Point2D(125, 0);
+        Point2D c = new Point2D(0, 95);
+        Point2D vector = c.subtract(b);
+        offsetVector = getPerpendicularOffset(vector, offset);
+        System.out.println("Offset vector: " + vector.subtract(offsetVector));
+        
     }
 
     static void TestJsonAsList() {

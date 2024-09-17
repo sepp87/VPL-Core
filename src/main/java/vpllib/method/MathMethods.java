@@ -9,30 +9,31 @@ import vplcore.graph.model.BlockInfo;
 public class MathMethods {
 
     @BlockInfo(
+            name = "Pi",
             identifier = "Math.pi",
-            category = "Core",
-            name = "Pi")
+            category = "Core")
     public static double pi() {
         return Math.PI;
     }
 
     @BlockInfo(
+            name = "2*Pi*R",
             identifier = "Math.getCircleCircumference",
-            category = "Core",
-            name = "2*Pi*R")
+            category = "Core")
     public static Double getCircleCircumference(Number r) {
         return 2 * Math.PI * r.doubleValue();
     }
 
     @BlockInfo(
+            name = "Pi*R^2",
             identifier = "Math.getCircleArea",
-            category = "Core",
-            name = "Pi*R^2")
+            category = "Core")
     public static Double getCircleArea(Number r) {
         return Math.PI * Math.pow(r.doubleValue(), 2);
     }
 
     @BlockInfo(
+            name = "X+Y",
             identifier = "Math.add",
             category = "Core")
     public static Number add(Number a, Number b) {
@@ -47,6 +48,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            name = "X-Y",
             identifier = "Math.substract",
             category = "Core")
     public static Number substract(Number a, Number b) {
@@ -61,6 +63,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            name = "X*Y",
             identifier = "Math.multiply",
             category = "Core")
     public static Number multiply(Number a, Number b) {
@@ -75,6 +78,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            name = "X/Y",
             identifier = "Math.divide",
             category = "Core")
     public static Number divide(Number a, Number b) {
@@ -124,6 +128,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            name = "|X|",
             identifier = "Math.abs",
             category = "Core")
     public static Number abs(Number a) {

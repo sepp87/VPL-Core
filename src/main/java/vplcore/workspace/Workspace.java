@@ -126,7 +126,7 @@ public class Workspace extends AnchorPane {
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
 
     private ChangeListener<Object> mouseModeListener = (b, o, n) -> {
-        System.out.println(n);
+//        System.out.println(n);
     };
 
     public void reset() {

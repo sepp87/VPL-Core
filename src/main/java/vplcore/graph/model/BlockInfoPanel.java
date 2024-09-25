@@ -3,13 +3,16 @@ package vplcore.graph.model;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.ClosePath;
@@ -25,30 +28,39 @@ import vplcore.workspace.Workspace;
 public class BlockInfoPanel extends Pane {
 
     private final Workspace workspace;
-    
+
     private final List<String> messages = new ArrayList<>();
     private int currentIndex = 0;
 
-    private VBox infoBubble;
+    private Button closeButton;
     private Label messageLabel;
-    private Label pageLabel;
-    private HBox pagingControls;
+    private ScrollPane messagePane;
 
-    private double previousInfoBubbleHeight;
-    private double currentInfoBubbleHeight;
-    ChangeListener<Object> infoMessageShownHandler = this::handleInfoMessageShown;
+    private HBox pagingControls;
+    private Label pageLabel;
+    private Button nextButton;
+    private Button previousButton;
 
     public BlockInfoPanel(Workspace workspace) {
         this.workspace = workspace;
-        
+
+        double height = 420;
+        VBox container = new VBox(-2);
+        container.setPrefHeight(height);
+        container.setAlignment(Pos.BOTTOM_LEFT);
+        container.setLayoutY(-height);
+        container.setStyle("-fx-background-color: #FF0000;");
+
         // create info bubble with tail
-        this.infoBubble = buildInfoBubble();
+        VBox infoBubble = buildInfoBubble();
         Path tail = buildTail();
+        
 
         // add info bubble and tail to panel
         this.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );");
         this.getStyleClass().add("block-info");
-        this.getChildren().addAll(infoBubble, tail);
+        container.getChildren().addAll(infoBubble, tail);
+        this.getChildren().add(container);
     }
 
     // Set the exceptions to be shown in the panel
@@ -58,50 +70,70 @@ public class BlockInfoPanel extends Pane {
         this.currentIndex = 0;
 
         // Update UI state
-        updateUI();
+        updateLabels();
     }
 
-    private VBox buildInfoBubble() {
+    private ScrollPane buildInfoBubble2() {
 
         // create title box
-        Button closeButton = new Button("X");
+        this.closeButton = new Button("X");
         closeButton.setOnAction(e -> remove());
         HBox titleBox = new HBox(closeButton);
-//        titleBox.setAlignment(Pos.CENTER_RIGHT);
+        titleBox.setAlignment(Pos.CENTER_RIGHT);
 
         // create info message
         this.messageLabel = new Label();
         messageLabel.getStyleClass().add("block-info-message");
         messageLabel.setWrapText(true);
 
+        // create scroll pane to contain info message
+        this.messagePane = new ScrollPane(messageLabel);
+        messagePane.setFitToWidth(true);
+
+        messagePane.setStyle("-fx-background-color: #5F5F5F;-fx-background-radius: 4;");
+        double offsetX = -18; // 18.46 instead of 40 TODO is not added because of the alignment of container
+
+        messagePane.setPrefWidth(220);
+        messagePane.prefViewportHeightProperty().bind(messageLabel.heightProperty());
+
+        messagePane.setLayoutX(offsetX);
+
+        return messagePane;
+    }
+
+    private VBox buildInfoBubble() {
+
+        // create title box
+        this.closeButton = new Button("X");
+        closeButton.setOnAction(e -> remove());
+        HBox titleBox = new HBox(closeButton);
+        titleBox.setAlignment(Pos.CENTER_RIGHT);
+
+        // create info message
+        this.messageLabel = new Label();
+        messageLabel.getStyleClass().add("block-info-message");
+        messageLabel.setWrapText(true);
+
+        // create scroll pane to contain info message
+        this.messagePane = new ScrollPane(messageLabel);
+        messagePane.setFitToWidth(true);
+        messagePane.prefViewportHeightProperty().bind(messageLabel.heightProperty());
+
         // create info message paging controls
         this.pagingControls = buildPagingControls();
 
         // create info bubble
-        this.infoBubble = new VBox();
+        VBox infoBubble = new VBox();
         infoBubble.setStyle("-fx-background-color: #5F5F5F;-fx-background-radius: 4;");
-        double offsetX = -40;
-//        double height = 220;
-        infoBubble.setPrefWidth(220);
+        double offsetX = -18; // 18.46 instead of 40
 
-        infoBubble.heightProperty().addListener(infoMessageShownHandler);
-//        infoBubble.setPrefHeight(height);
-//        infoBubble.setLayoutY(-height);
+        infoBubble.setPrefWidth(220);
+        infoBubble.setMaxHeight(Double.MAX_VALUE);
+
         infoBubble.setLayoutX(offsetX);
-        infoBubble.getChildren().addAll(titleBox, messageLabel, pagingControls);
+        infoBubble.getChildren().addAll(titleBox, messagePane, pagingControls);
 
         return infoBubble;
-    }
-
-    private void handleInfoMessageShown(Object b, Object o, Object n) {
-        currentInfoBubbleHeight = this.infoBubble.getHeight();
-        System.out.println("Height " + currentInfoBubbleHeight + "   previousHeight " + previousInfoBubbleHeight);
-        double y = infoBubble.getLayoutY();
-        double dY = previousInfoBubbleHeight - currentInfoBubbleHeight;
-        double lY = y + dY;
-        System.out.println("LayoutY " + y + " dY " + dY + " newLayoutY " + lY);
-        infoBubble.setLayoutY(lY);
-        this.layout();
     }
 
     private HBox buildPagingControls() {
@@ -109,20 +141,16 @@ public class BlockInfoPanel extends Pane {
         this.pageLabel = new Label("1 of 10");
 
         // Create paging buttons
-        Button previousButton = new Button("<");
+        this.previousButton = new Button("<");
         previousButton.getStyleClass().add("block-info-navigation-button");
-        Button nextButton = new Button(">");
+        this.nextButton = new Button(">");
         nextButton.getStyleClass().add("block-info-navigation-button");
 
         // Set navigation button handlers
         previousButton.setOnAction(e -> showPreviousMessage());
         nextButton.setOnAction(e -> showNextMessage());
 
-        // Set navigation button handlers
-//        nextButton.setAlignment(Pos.CENTER_RIGHT);
-
         HBox navigationBox = new HBox(previousButton, pageLabel, nextButton);
-//        navigationBox.setAlignment(Pos.BOTTOM_RIGHT);
         return navigationBox;
     }
 
@@ -133,6 +161,7 @@ public class BlockInfoPanel extends Pane {
         // intersection2 |\ intersection1
         //               | \
         //    bottomLeft |__\ bottomRight
+        //
         double tailHeight = 30; // 30.1
         double radius = 3; // 4.99
         double degrees = 37.5;
@@ -147,11 +176,12 @@ public class BlockInfoPanel extends Pane {
 
         double overlap = -2;
         Point2D bottomLeft = new Point2D(0, overlap); // substract one pixel to overlap the tail with the info bubble to prevent a visual gap between both shapes
-        Point2D bottomRight = new Point2D(overlap - tailHeight / slope, 0); // see above comment
+        Point2D bottomRight = new Point2D(overlap - tailHeight / slope, overlap); // see above comment
         Point2D intersection1 = new Point2D(centerX, centerY + tailHeight).add(offset); // add the offset to find the intersection on the original declining line
         Point2D intersection2 = new Point2D(0, centerY + tailHeight);
 
         Path tail = new Path();
+        VBox.setMargin(tail, new Insets(0, 0, 0, 40));
         tail.getElements().add(new MoveTo(bottomLeft.getX(), bottomLeft.getY()));
         tail.getElements().add(new LineTo(bottomRight.getX(), bottomRight.getY()));
         tail.getElements().add(new LineTo(intersection1.getX(), intersection1.getY()));
@@ -164,41 +194,36 @@ public class BlockInfoPanel extends Pane {
 
     // Show the previous exception in the list
     private void showPreviousMessage() {
-        System.out.println("currentIndex " + currentIndex);
         if (currentIndex > 0) {
             currentIndex--;
         } else {
             currentIndex = messages.size() - 1;
         }
-        updateUI();
+        updateLabels();
     }
 
     // Show the next exception in the list
     private void showNextMessage() {
-        System.out.println("currentIndex " + currentIndex);
         if (currentIndex < messages.size() - 1) {
             currentIndex++;
         } else {
             currentIndex = 0;
         }
-        updateUI();
+        updateLabels();
     }
 
     // Update UI to reflect the current exception and pagination
-    private void updateUI() {
-        previousInfoBubbleHeight = infoBubble.getHeight();
-        if (!messages.isEmpty()) {
-            messageLabel.setText(messages.get(currentIndex));
-            pageLabel.setText((currentIndex + 1) + " of " + messages.size());
-
-        } else {
-//            removePanel();
-        }
-
+    private void updateLabels() {
+        messageLabel.setText(messages.get(currentIndex));
+        pageLabel.setText((currentIndex + 1) + " of " + messages.size());
+        messagePane.layout(); // Force scroll pane to recompute viewport height
     }
-    
+
     private void remove() {
-        workspace.getChildren().remove(this);
+        workspace.getChildren().remove(BlockInfoPanel.this);
+        closeButton.setOnAction(null);
+        previousButton.setOnAction(null);
+        nextButton.setOnAction(null);
         // remove block info panel
         // remove block port labels
     }

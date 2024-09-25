@@ -1,10 +1,13 @@
-package vplcore.workspace;
+package vplcore;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import vplcore.workspace.*;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 
-public class DraggablePanel extends Pane {
+public class InfoPanel extends Pane {
 
     private double offsetX;
     private double offsetY;
@@ -13,8 +16,9 @@ public class DraggablePanel extends Pane {
     private boolean infoPanelExpanded = false;
 
     private Pane mainPanel;
+    private Pane infoPanel;
 
-    public DraggablePanel(Workspace workspace) {
+    public InfoPanel(Workspace workspace) {
 
         // Main Panel (200x200)
         mainPanel = new Pane();
@@ -22,7 +26,7 @@ public class DraggablePanel extends Pane {
         mainPanel.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 1px;");
 
         // Info Panel (100x100, initially invisible)
-        Pane infoPanel = new Pane();
+        this.infoPanel = new Pane();
         infoPanel.setPrefSize(100, 100);
         infoPanel.setStyle("-fx-background-color: lightgray; -fx-border-color: black; -fx-border-width: 1px;");
         infoPanel.setLayoutX(50); // Center it above the main panel
@@ -50,8 +54,21 @@ public class DraggablePanel extends Pane {
 
         // Enable dragging of the main panel
         makeDraggable(mainPanel, infoPanel);
-
+        infoPanel.prefHeightProperty().addListener(cl);
     }
+
+    ChangeListener<Object> cl = new ChangeListener<Object>() {
+        @Override
+        public void changed(ObservableValue<? extends Object> ov, Object t, Object t1) {
+            if (infoPanelExpanded) {
+                infoPanel.setLayoutY(mainPanel.getLayoutY() - 200 - 10); // Position it 10px above the main panel
+
+            } else {
+                infoPanel.setLayoutY(mainPanel.getLayoutY() - 100 - 10); // Position it 10px above the main panel
+
+            }
+        }
+    };
 
     // Toggle visibility of the info panel
     private void toggleInfoPanelVisibility(Pane infoPanel) {
@@ -64,11 +81,11 @@ public class DraggablePanel extends Pane {
         infoPanelExpanded = !infoPanelExpanded;
         if (infoPanelExpanded) {
             infoPanel.setPrefHeight(200); // Expand to 200px height
-            infoPanel.setLayoutY(mainPanel.getLayoutY() - 200 - 10); // Position it 10px above the main panel
+//            infoPanel.setLayoutY(mainPanel.getLayoutY() - 200 - 10); // Position it 10px above the main panel
 
         } else {
             infoPanel.setPrefHeight(100); // Collapse to 100px height
-            infoPanel.setLayoutY(mainPanel.getLayoutY() - 100 - 10); // Position it 10px above the main panel
+//            infoPanel.setLayoutY(mainPanel.getLayoutY() - 100 - 10); // Position it 10px above the main panel
 
         }
 

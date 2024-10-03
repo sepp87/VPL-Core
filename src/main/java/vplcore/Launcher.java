@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
@@ -14,6 +15,7 @@ import vpllib.method.JsonMethods;
 // 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
+// 4 IMPROVEMENT improve styling of block resize button
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
@@ -47,6 +49,8 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
+        
+   
         if (false) {
             return;
         }
@@ -110,4 +114,5 @@ public class Launcher {
         System.out.println(value + " ");
     }
 
+    
 }

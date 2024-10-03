@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -165,7 +166,8 @@ public class ZoomManager extends HBox {
         return (ScrollEvent event) -> {
             boolean onWindows = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS;
             boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
-            if (workspace.getMouseMode() == MouseMode.ZOOMING || onWindows) {
+            boolean onScrollPane = workspace.checkParents(event.getPickResult().getIntersectedNode(), ScrollPane.class);
+            if ((workspace.getMouseMode() == MouseMode.ZOOMING || onWindows) && !onScrollPane) {
 
                 // multiplier used for smooth scrolling, not implemented
                 double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;

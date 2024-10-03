@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
@@ -35,7 +36,7 @@ import vplcore.workspace.radialmenu.RadialMenu;
 public class Workspace extends AnchorPane {
 
     //isSaved
-
+    public BlockInfoPanel activeBlockInfoPanel;
 
     public ObservableSet<Connection> connectionSet;
     public ObservableSet<Block> blockSet;
@@ -52,7 +53,6 @@ public class Workspace extends AnchorPane {
     //Selection rectangle members
     public Point2D startSelectionPoint;
     public Region selectionRectangle;
-
 
     //Pan members
     public DragContext panContext;
@@ -107,7 +107,6 @@ public class Workspace extends AnchorPane {
     public ZoomManager zoomManager;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
-    
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override
@@ -177,6 +176,11 @@ public class Workspace extends AnchorPane {
     public boolean onBlock(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
         return checkParents(node, Block.class);
+    }
+
+    public boolean onBlockInfoPanel(MouseEvent event) {
+        Node node = event.getPickResult().getIntersectedNode();
+        return checkParents(node, BlockInfoPanel.class);
     }
 
     /**

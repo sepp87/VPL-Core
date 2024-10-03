@@ -3,14 +3,18 @@ package vplcore.graph.model;
 import java.util.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import jo.vpl.xml.BlockTag;
+import vplcore.FontAwesomeIcon;
 import vplcore.IconType;
 import vplcore.Util;
+import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 
 /**
@@ -31,6 +35,13 @@ public abstract class Block extends VplElement {
 
     public Point2D oldMousePosition;
 
+    BlockInfoPanel infoPanel;
+    BlockExceptionPanel exceptionPanel;
+
+    public Button resizeButton;
+    public VplButton infoButton = new VplButton(IconType.FA_INFO_CIRCLE);
+    public VplButton exceptionButton = new VplButton(IconType.FA_WARNING);
+
     private final EventHandler<MouseEvent> blockEnteredHandler = this::handleBlockEntered;
     private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
     private final EventHandler<MouseEvent> blockPressedHandler = this::handleBlockPressed;
@@ -39,6 +50,9 @@ public abstract class Block extends VplElement {
     private final EventHandler<MouseEvent> resizeButtonDraggedHandler = this::handleResizeButtonDragged;
     private final ChangeListener<Object> portDataChangedListener = this::handlePortDataChanged;
     private final ChangeListener<Boolean> selectionChangedListener = this::handleSelectionChanged;
+    private final ChangeListener<Number> blockWidthChangedListener = this::handleBlockWidthChanged;
+    private final EventHandler<ActionEvent> infoButtonClickedHandler = this::handleInfoButtonClicked;
+    private final EventHandler<ActionEvent> exceptionButtonClickedHandler = this::handleExceptionButtonClicked;
 
     public Block(Workspace workspace) {
         super(workspace);
@@ -56,42 +70,28 @@ public abstract class Block extends VplElement {
         contentGrid.addEventHandler(MouseEvent.MOUSE_PRESSED, blockPressedHandler);
         selected.addListener(selectionChangedListener);
 
-        if (true) {
-            VBox in = new VBox();
-            VBox out = new VBox();
+        VBox in = new VBox();
+        VBox out = new VBox();
 
-            in.setAlignment(Pos.CENTER);
-            out.setAlignment(Pos.CENTER);
+        in.setAlignment(Pos.CENTER);
+        out.setAlignment(Pos.CENTER);
 
-            inPortBox = in;
-            outPortBox = out;
+        inPortBox = in;
+        outPortBox = out;
 
-            contentGrid.add(inPortBox, 0, 1);
-            contentGrid.add(outPortBox, 2, 1);
+        contentGrid.add(inPortBox, 0, 1);
+        contentGrid.add(outPortBox, 2, 1);
 
-            ColumnConstraints column1 = new ColumnConstraints();
-            ColumnConstraints column2 = new ColumnConstraints();
-            ColumnConstraints column3 = new ColumnConstraints();
+        ColumnConstraints column1 = new ColumnConstraints();
+        ColumnConstraints column2 = new ColumnConstraints();
+        ColumnConstraints column3 = new ColumnConstraints();
 
-            column1.setHgrow(Priority.NEVER);
-            column2.setHgrow(Priority.ALWAYS);
-            column3.setHgrow(Priority.NEVER);
-            column3.setHalignment(HPos.RIGHT);
+        column1.setHgrow(Priority.NEVER);
+        column2.setHgrow(Priority.ALWAYS);
+        column3.setHgrow(Priority.NEVER);
+        column3.setHalignment(HPos.RIGHT);
 
-            contentGrid.getColumnConstraints().addAll(column1, column2, column3);
-        } else {
-            HBox in = new HBox();
-            HBox out = new HBox();
-
-            in.setAlignment(Pos.CENTER);
-            out.setAlignment(Pos.CENTER);
-
-            inPortBox = in;
-            outPortBox = out;
-
-            contentGrid.add(inPortBox, 1, 0);
-            contentGrid.add(outPortBox, 1, 3);
-        }
+        contentGrid.getColumnConstraints().addAll(column1, column2, column3);
 
         contentGrid.getStyleClass().add("block");
         inPortBox.getStyleClass().add("in-port-box");
@@ -118,23 +118,110 @@ public abstract class Block extends VplElement {
         column.setHalignment(HPos.CENTER);
         mainContentGrid.getColumnConstraints().addAll(column);
 
-        super.add(contentGrid, 1, 1);
+        this.add(contentGrid, 1, 1);
+
+        if (this instanceof SelectBlock) {
+            return;
+        }
+
+        //Open block info panel on clicking question button
+        infoButton.setOnAction(infoButtonClickedHandler);
+        infoButton.setVisible(false);
+        exceptionButton.setOnAction(exceptionButtonClickedHandler);
+        exceptionButton.setVisible(false);
+        menuBox.getChildren().addAll(exceptionButton, infoButton);
+
+        this.widthProperty().addListener(blockWidthChangedListener);
+    }
+
+    private void handleBlockWidthChanged(Object b, Number o, Number n) {
+        if (infoPanel != null) {
+            double dX = n.doubleValue() - o.doubleValue();
+            infoPanel.move(dX, 0);
+        }
     }
 
     public void setResizable(boolean resizable) {
         if (resizable) {
-            resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
+//            resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
+            resizeButton = new Button();
+            resizeButton.getStyleClass().add("vpl-button-fa6");
+            resizeButton.setText(FontAwesomeIcon.ADDRESS_BOOK.unicode());
+            resizeButton.setRotate(45);
+            resizeButton.setPrefSize(50,50);
+//            resizeButton.setStyle("-fx-background-color: FF0000;");
+            GridPane.setHalignment(resizeButton, HPos.RIGHT);  // Align horizontally to the right
+            GridPane.setValignment(resizeButton, VPos.BOTTOM);
+            resizeButton.setVisible(false);
             contentGrid.add(resizeButton, 2, 3);
             resizeButton.addEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
             resizeButton.addEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
+            this.resizable = true;
         }
     }
 
-    public void handleResizeButtonPressed(MouseEvent event) {
+    private void handleInfoButtonClicked(ActionEvent event) {
+        if (workspace.activeBlockInfoPanel != null) {
+            workspace.activeBlockInfoPanel.delete();
+        }
+        BlockInfoPanel info = new BlockInfoPanel(this);
+        workspace.activeBlockInfoPanel = info;
+        infoPanel = info;
+        infoButton.setVisible(false);
+    }
+
+    private void handleExceptionButtonClicked(ActionEvent event) {
+        if (workspace.activeBlockInfoPanel != null) {
+            workspace.activeBlockInfoPanel.delete();
+        }
+        BlockExceptionPanel exception = new BlockExceptionPanel(this);
+        exception.setMessages(List.of(
+                "Short message! 🧐",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget odio vel purus sodales ullamcorper. Sed id suscipit ante, vitae molestie quam. Donec turpis nulla, rhoncus ac fermentum sit amet, tempus non justo. Proin mattis fringilla dui. Curabitur elementum, odio ut porta rhoncus, quam sapien fermentum augue, vitae mattis risus velit quis mauris. Nam eleifend tortor ac dignissim aliquam. In bibendum magna sed erat ultricies, id imperdiet odio ultrices. Etiam in euismod nunc. Nullam varius lacus eu est aliquet tempus. Fusce suscipit, enim vel maximus tristique, erat mauris hendrerit quam, ac convallis augue dui id nulla. Praesent convallis diam non nunc cursus feugiat. Nullam gravida, tortor a bibendum iaculis, erat mauris dapibus lacus, eu lobortis turpis enim luctus quam. Morbi sed lectus suscipit nibh lacinia viverra. Fusce laoreet tortor at risus molestie ultrices.\n"
+                + "\n"
+                + "Vivamus pellentesque eros mi, nec commodo leo sagittis mollis. Suspendisse ultricies ac nisi id facilisis. Sed ac nisl quis neque blandit vestibulum. Nunc ullamcorper odio at ante tincidunt ultrices. Aliquam nec varius sem. Donec sed convallis nibh. Donec nec ultricies tellus, at pulvinar tortor. Nullam enim dolor, malesuada sit amet libero euismod, imperdiet faucibus elit. Ut ligula dui, luctus vel venenatis at, vehicula in metus. Nunc ultricies id nunc sit amet dignissim. Maecenas et nunc lacus. Donec sit amet sapien hendrerit turpis interdum vulputate a vitae metus.\n"
+                + "\n"
+                + "Praesent non tincidunt orci. Morbi egestas ex velit, eget laoreet ipsum posuere et. Morbi tempor lacinia tincidunt. Mauris vitae arcu sed neque aliquam malesuada. Suspendisse a efficitur mi, ac vestibulum elit. Donec luctus gravida dui vel mollis. Ut gravida urna lorem, sed tincidunt elit pellentesque sed. Mauris viverra pharetra purus, nec ultricies enim rhoncus dictum. Ut odio purus, scelerisque quis arcu sed, ullamcorper tincidunt risus. Praesent ac velit ut nibh rutrum malesuada id non nulla.",
+                "This is a mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.",
+                "This is the second mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows."));
+        workspace.activeBlockInfoPanel = exception;
+        exceptionPanel = exception;
+        exceptionButton.setVisible(false);
+        infoButton.setVisible(true);
+    }
+
+    @Override
+    public void handleVplElementEntered(MouseEvent event) {
+        super.handleVplElementEntered(event);
+        if (Block.this instanceof SelectBlock) {
+            return;
+        }
+        boolean infoPanelIsActive = infoPanel != null;
+        if (!infoPanelIsActive) {
+            infoButton.setVisible(true);
+        }
+        if (resizable) {
+            resizeButton.setVisible(true);
+        }
+    }
+
+    @Override
+    public void handleVplElementExited(MouseEvent event) {
+        super.handleVplElementEntered(event);
+        if (Block.this instanceof SelectBlock) {
+            return;
+        }
+        infoButton.setVisible(false);
+        if (resizable) {
+            resizeButton.setVisible(false);
+        }
+    }
+
+    private void handleResizeButtonPressed(MouseEvent event) {
         oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
     }
 
-    public void handleResizeButtonDragged(MouseEvent event) {
+    private void handleResizeButtonDragged(MouseEvent event) {
         resizeBlock(event);
     }
 
@@ -142,8 +229,10 @@ public abstract class Block extends VplElement {
         double scale = workspace.getScale();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
-        double newWidth = Math.max(contentGrid.getPrefWidth() + deltaX, contentGrid.getMinWidth());
-        double newHeight = Math.max(contentGrid.getPrefHeight() + deltaY, contentGrid.getMinHeight());
+        double oldWidth = contentGrid.getPrefWidth();
+        double oldHeight = contentGrid.getPrefHeight();
+        double newWidth = Math.max(oldWidth + deltaX, contentGrid.getMinWidth());
+        double newHeight = Math.max(oldHeight + deltaY, contentGrid.getMinHeight());
         contentGrid.setPrefWidth(newWidth);
         contentGrid.setPrefHeight(newHeight);
         oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
@@ -204,16 +293,19 @@ public abstract class Block extends VplElement {
     }
 
     public void handleBlockDragged(MouseEvent event) {
-        moveBlock(event);
+        move(event);
     }
 
-    public void moveBlock(MouseEvent event) {
+    public void move(MouseEvent event) {
         double scale = workspace.getScale();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
         for (Block block : workspace.selectedBlockSet) {
             block.setLayoutX(block.getLayoutX() + deltaX);
             block.setLayoutY(block.getLayoutY() + deltaY);
+        }
+        if (infoPanel != null) {
+            infoPanel.move(deltaX, deltaY);
         }
         oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
     }
@@ -340,6 +432,9 @@ public abstract class Block extends VplElement {
         outPorts.clear();
         controls.clear();
         workspace.blockSet.remove(this);
+        if (infoPanel != null) {
+            infoPanel.delete();
+        }
     }
 
     /**
@@ -388,8 +483,8 @@ public abstract class Block extends VplElement {
         setLayoutX(xmlTag.getX());
         setLayoutY(xmlTag.getY());
         if (resizable) {
-            setPrefWidth(xmlTag.getWidth());
-            setPrefHeight(xmlTag.getHeight());
+            contentGrid.setPrefWidth(xmlTag.getWidth());
+            contentGrid.setPrefHeight(xmlTag.getHeight());
         }
     }
 

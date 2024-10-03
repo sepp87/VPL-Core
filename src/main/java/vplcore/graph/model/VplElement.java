@@ -2,9 +2,7 @@ package vplcore.graph.model;
 
 import vplcore.graph.util.SelectBlock;
 import javafx.beans.property.*;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import vplcore.IconType;
 import javafx.scene.input.MouseEvent;
@@ -18,11 +16,7 @@ import vplcore.workspace.Workspace;
  */
 public class VplElement extends GridPane {
 
-    public VplButton autoCheckBox;
-    public VplButton binButton;
     public BlockLabel captionLabel;
-    public VplButton questionButton;
-    public VplButton resizeButton;
     public HBox menuBox;
 
     public Workspace workspace;
@@ -34,7 +28,6 @@ public class VplElement extends GridPane {
 
     private final EventHandler<MouseEvent> vplElementEnteredHandler = this::handleVplElementEntered;
     private final EventHandler<MouseEvent> vplElementExitedHandler = this::handleVplElementExited;
-    private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
     public VplElement(Workspace workspace) {
 
@@ -56,47 +49,31 @@ public class VplElement extends GridPane {
             return;
         }
 
+        
         menuBox = new HBox(5);
 
         captionLabel = new BlockLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.textProperty().bindBidirectional(name);
-        questionButton = new VplButton(IconType.FA_QUESTION_CIRCLE);
-        resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
-        binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
-        autoCheckBox = new VplButton(IconType.FA_CHECK_CIRCLE);
-        autoCheckBox.setIconWhenClicked(IconType.FA_CIRCLE_O);
-
         captionLabel.setVisible(false);
-        binButton.setVisible(false);
-        questionButton.setVisible(false);
-        resizeButton.setVisible(false);
-        autoCheckBox.setVisible(false);
-
+        
         menuBox.setAlignment(Pos.BOTTOM_LEFT);
         menuBox.getStyleClass().add("block-header");
-        menuBox.getChildren().addAll(captionLabel, autoCheckBox, questionButton, binButton);
+        menuBox.getChildren().addAll(captionLabel);
 
         // Add event handlers
-        binButton.setOnAction(binButtonClickedHandler);
         addEventHandler(MouseEvent.MOUSE_ENTERED, vplElementEnteredHandler);
         addEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
 
         add(menuBox, 1, 0);
     }
 
-    public void handleBinButtonClicked(ActionEvent event) {
-        delete();
-    }
+
 
     public void delete() {
         removeEventHandler(MouseEvent.MOUSE_ENTERED, vplElementEnteredHandler);
         removeEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
-
         
-        
-        binButton.setOnAction(null);
-        autoCheckBox.setOnAction(null);
         captionLabel.textProperty().unbindBidirectional(name);
         captionLabel.delete();
         workspace.getChildren().remove(this);
@@ -111,7 +88,7 @@ public class VplElement extends GridPane {
         toggleControlsVisibility(true);
     }
 
-    public void handleVplElementExited(MouseEvent element) {
+    public void handleVplElementExited(MouseEvent event) {
         if (VplElement.this instanceof SelectBlock) {
             return;
         }
@@ -120,15 +97,8 @@ public class VplElement extends GridPane {
 
     private void toggleControlsVisibility(boolean isVisible) {
         captionLabel.setVisible(isVisible);
-        binButton.setVisible(isVisible);
-        questionButton.setVisible(isVisible);
-        resizeButton.setVisible(isVisible);
-        autoCheckBox.setVisible(isVisible);
     }
 
-    public Point2D getLocation() {
-        return new Point2D(getLayoutX(), getLayoutY());
-    }
 
     public final StringProperty nameProperty() {
         return name;

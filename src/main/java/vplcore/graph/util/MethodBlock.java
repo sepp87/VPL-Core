@@ -153,6 +153,7 @@ public class MethodBlock extends Block {
             try {
                 return method.invoke(null, a);
             } catch (IllegalAccessException | InvocationTargetException ex) {
+               
 //                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
 //                System.out.println("TEST ARGS 1");
                 return null;

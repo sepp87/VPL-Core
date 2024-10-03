@@ -33,7 +33,7 @@ public class SelectionHandler {
     private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event)) {
+            if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event) && !workspace.onBlockInfoPanel(event)) {
                 workspace.setMouseMode(MouseMode.SELECTING);
                 prepareSelectionRectangle(event);
 

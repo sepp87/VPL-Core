@@ -9,7 +9,8 @@ import vplcore.graph.model.BlockInfo;
 public class MathMethods {
 
     @BlockInfo(
-            name = "Pi",
+            name = "pi",
+            description = "The double value that is closer than any other to pi (π), the ratio of the circumference of a circle to its diameter.",
             identifier = "Math.pi",
             category = "Core")
     public static double pi() {
@@ -17,7 +18,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "2*Pi*R",
+            name = "2*pi*r",
+            description = "The circumference of a circle with radius r.",
             identifier = "Math.getCircleCircumference",
             category = "Core")
     public static Double getCircleCircumference(Number r) {
@@ -25,7 +27,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "Pi*R^2",
+            name = "pi*r^2",
+            description = "The area of a circle with radius r.",
             identifier = "Math.getCircleArea",
             category = "Core")
     public static Double getCircleArea(Number r) {
@@ -33,7 +36,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "X+Y",
+            name = "a+b",
+            description = "The result of adding value b to a.",
             identifier = "Math.add",
             category = "Core")
     public static Number add(Number a, Number b) {
@@ -48,7 +52,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "X-Y",
+            name = "a-b",
+            description = "The result of substracting value b from a.",
             identifier = "Math.substract",
             category = "Core")
     public static Number substract(Number a, Number b) {
@@ -63,7 +68,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "X*Y",
+            name = "a*b",
+            description = "The result of multiplying value a with b.",
             identifier = "Math.multiply",
             category = "Core")
     public static Number multiply(Number a, Number b) {
@@ -78,7 +84,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "X/Y",
+            name = "a/b",
+            description = "The result of dividing value a by b.",
             identifier = "Math.divide",
             category = "Core")
     public static Number divide(Number a, Number b) {
@@ -86,6 +93,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            name = "a%b",
+            description = "The remainder of dividing value a by b.",
             identifier = "Math.remainder",
             category = "Core")
     public static Number remainder(Number a, Number b) {
@@ -100,6 +109,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            description = "Returns the greater of two double values.",
             identifier = "Math.max",
             category = "Core")
     public static Number max(Number a, Number b) {
@@ -114,6 +124,7 @@ public class MathMethods {
     }
 
     @BlockInfo(
+            description = "Returns the smaller of two double values.",
             identifier = "Math.min",
             category = "Core")
     public static Number min(Number a, Number b) {
@@ -128,7 +139,8 @@ public class MathMethods {
     }
 
     @BlockInfo(
-            name = "|X|",
+            name = "|a|",
+            description = "Returns the absolute value of a double value. If the argument is not negative, the argument is returned. If the argument is negative, the negation of the argument is returned.",
             identifier = "Math.abs",
             category = "Core")
     public static Number abs(Number a) {

@@ -42,7 +42,7 @@ public class BlockLoader {
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
     /**
-     * Retrieve all blocks from jo.vpl.block package
+     * Retrieve all blocks from vpllib.input package
      */
     public static void loadInternalBlocks() {
         Reflections reflections = new Reflections("vpllib.input");

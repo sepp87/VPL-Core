@@ -5,12 +5,12 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -26,6 +26,7 @@ import javafx.scene.paint.Color;
 import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
+import vplcore.IconType;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.Workspace;
 import vplcore.workspace.input.MouseMode;
@@ -41,11 +42,14 @@ public class BlockGroup extends VplElement {
     private static int counter;
     public ObservableSet<Block> childBlocks;
 
+    public VplButton binButton;
+
     private final EventHandler<MouseEvent> groupPressedHandler = this::handleGroupPressed;
     private final EventHandler<MouseEvent> groupReleasedHandler = this::handleGroupReleased;
     private final SetChangeListener<Block> groupSetChangedListener = this::handleGroupSetChanged;
     private final PropertyChangeListener groupBlockDeletedListener = this::handleGroupBlockDeleted;
     private final PropertyChangeListener groupBlockChangedListener = this::handleGroupBlockChanged; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
+    private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
     public BlockGroup(Workspace vplControl) {
         super(vplControl);
@@ -62,6 +66,25 @@ public class BlockGroup extends VplElement {
 
         workspace.blockGroupSet.add(this);
         workspace.getChildren().add(1, this);
+
+        binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
+        binButton.setVisible(false);
+        menuBox.getChildren().addAll(captionLabel, binButton);
+        binButton.setOnAction(binButtonClickedHandler);
+    }
+
+    public void handleBinButtonClicked(ActionEvent event) {
+        delete();
+    }
+
+    public void handleVplElementEntered(MouseEvent event) {
+        super.handleVplElementEntered(event);
+        binButton.setVisible(true);
+    }
+
+    public void handleVplElementExited(MouseEvent event) {
+        super.handleVplElementExited(event);
+        binButton.setVisible(false);
     }
 
     public void setChildBlocks(Collection<Block> blockSet) {
@@ -91,6 +114,7 @@ public class BlockGroup extends VplElement {
     public void delete() {
         unObserveAllChildBlocks();
         workspace.blockGroupSet.remove(this);
+        binButton.setOnAction(null);
         super.delete();
     }
 
@@ -105,7 +129,7 @@ public class BlockGroup extends VplElement {
             block.eventBlaster.remove("deleted", groupBlockDeletedListener);
             block.eventBlaster.remove(groupBlockChangedListener);
         }
-        
+
         if (childBlocks.size() < 2) {
             delete();
         } else {

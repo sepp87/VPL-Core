@@ -4,8 +4,26 @@
 }
 
 @font-face {
+    font-family: 'Font Awesome 6 Free Solid';
+    src: url('fa-solid-900.ttf');
+}
+
+
+@font-face {
+    font-family: 'FontAwesome';
     src: url('fontawesome-webfont.ttf');
 }
+
+@font-face {
+    font-family: 'Font Awesome 6 Free Brands';
+    src: url('fa-brands-400.ttf');
+}
+
+@font-face {
+    font-family: 'Font Awesome 6 Free Regular';
+    src: url('fa-regular-400.ttf');
+}
+
 
 .label{
     -fx-font-size: 10;
@@ -70,31 +88,31 @@
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
 }
 
-.text-area{
+.block .text-area{
     -fx-background-color: transparent;
     -fx-font-family:'Source Code Pro';
     /*    -fx-wrap-text: true;*/
 }
 
-.text-area .scroll-pane {
+.block .text-area .scroll-pane {
     -fx-background-color: transparent;
 }
 
-.text-area .scroll-bar:vertical:disabled {
+.block .text-area .scroll-bar:vertical:disabled {
     -fx-opacity: 0;
 }
 
-.text-area .scroll-bar:horizontal {
+.block .text-area .scroll-bar:horizontal {
     -fx-opacity: 0;
 }
 
 
-.text-area .scroll-pane .viewport{
+.block .text-area .scroll-pane .viewport{
     -fx-background-color: transparent;
 }
 
 
-.text-area .scroll-pane .content{
+.block .text-area .scroll-pane .content{
     -fx-background-color: transparent,
         linear-gradient(from 0px 3.5px to 0px 19.5px, repeat, #5F5F5F 0%, transparent 10%);
     /*linear-gradient(from 0px 3.5px to 0px 12px, repeat, #b5b5b5 0%, transparent 10%);*/
@@ -102,11 +120,11 @@
 }
 
 
-.text-area .scroll-pane .content .text {
+.block .text-area .scroll-pane .content .text {
     /*-fx-line-spacing: 7;*/
 }
 
-.text-field{
+.block .text-field{
     -fx-background-color: transparent;
     -fx-font-family: 'Source Code Pro';
     -fx-pref-column-count: 22;
@@ -117,17 +135,17 @@
     -fx-background-color: #efefef;
 }
 
-.list-view {
+.block .list-view {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-font-family: 'Source Code Pro';
 }
 
-.list-view .list-cell {
+.block .list-view .list-cell {
     -fx-text-fill: #5F5F5F;
 }
 
-.list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
+.block .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
     -fx-background-color: salmon;
     -fx-text-fill: white;
 }
@@ -142,25 +160,25 @@
     -fx-text-fill: white;
 }*/
 
-.list-view .list-cell:even {
+.block .list-view .list-cell:even {
     -fx-background-color: rgba(127,127,127,0.1);
 }
 
-.list-view .list-cell:odd {
+.block .list-view .list-cell:odd {
     -fx-background-color: transparent;
 }
 
-.list-view .scroll-bar:vertical:disabled {
+.block .list-view .scroll-bar:vertical:disabled {
     -fx-max-width: 0;
     -fx-pref-width: 0;
     -fx-min-width: 0;
     -fx-opacity: 0;
 }
 
-.list-view .scroll-bar:horizontal .increment-arrow,
-.list-view .scroll-bar:horizontal .decrement-arrow,
-.list-view .scroll-bar:horizontal .increment-button,
-.list-view .scroll-bar:horizontal .decrement-button {
+.block .list-view .scroll-bar:horizontal .increment-arrow,
+.block .list-view .scroll-bar:horizontal .decrement-arrow,
+.block .list-view .scroll-bar:horizontal .increment-button,
+.block .list-view .scroll-bar:horizontal .decrement-button {
     -fx-padding:0;
 }
 
@@ -197,6 +215,21 @@
 }
 
 .vpl-button:hover{
+    -fx-text-fill: salmon;
+}
+
+.vpl-button-fa6 {
+    -fx-padding: 0;
+    /*-fx-label-padding: 0;*/
+    -fx-background-color: transparent;
+    -fx-border-insets: 0;
+    -fx-border-width: 0;
+    -fx-font-family: 'Font Awesome 6 Free Solid';
+    -fx-font-size: 24;
+    -fx-text-fill: #5F5F5F;
+}
+
+.vpl-button-fa6:hover{
     -fx-text-fill: salmon;
 }
 

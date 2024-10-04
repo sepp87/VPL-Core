@@ -1,8 +1,6 @@
 package vplcore.workspace.radialmenu;
 
-import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.input.MouseEvent;
 import vplcore.IconType;
 
 /**

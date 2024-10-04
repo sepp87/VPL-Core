@@ -5,6 +5,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
+// 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
@@ -15,6 +16,7 @@ import vpllib.method.JsonMethods;
 // 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
+// 4 IMPROVEMENT add scrollbars for TextBlock 
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
@@ -49,40 +51,12 @@ public class Launcher {
         // c = 0,95 > 10,95
         // 
         
-   
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
     }
-
-    public static Point2D getPerpendicularOffset(Point2D vector, double offset) {
-        // Perpendicular vector: (-y, x)
-        Point2D perpendicular = new Point2D(-vector.getY(), vector.getX());
-
-        // Normalize the perpendicular vector
-        Point2D normalizedPerpendicular = perpendicular.normalize();
-
-        // Scale by the desired offset
-        return normalizedPerpendicular.multiply(offset);
-    }
-
-    public static void test() {
-        Point2D originalVector = new Point2D(0, 125);
-        double offset = 10;
-
-        Point2D offsetVector = getPerpendicularOffset(originalVector, offset);
-        System.out.println("Offset vector: " + offsetVector);
-
-        Point2D b = new Point2D(125, 0);
-        Point2D c = new Point2D(0, 95);
-        Point2D vector = c.subtract(b);
-        offsetVector = getPerpendicularOffset(vector, offset);
-        System.out.println("Offset vector: " + vector.subtract(offsetVector));
-        
-    }
-
     static void TestJsonAsList() {
         JsonMethods.asList("[\"str\",6,7]");
         JsonMethods.asList("[1,6,7]");

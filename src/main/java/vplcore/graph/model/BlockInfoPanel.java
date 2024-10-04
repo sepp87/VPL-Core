@@ -14,6 +14,7 @@ import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import vplcore.FontAwesomeIcon;
 import vplcore.graph.util.MethodBlock;
 import vplcore.workspace.Workspace;
 
@@ -24,13 +25,13 @@ import vplcore.workspace.Workspace;
 public class BlockInfoPanel extends Pane {
 
     // specify types info, warning and error
-    // set exception when block throws one
-    // style panel properly
+    // style panel by severity 
     protected final Workspace workspace;
     protected final Block block;
 
     protected Button closeButton;
     protected VBox infoBubble;
+    protected Path tail;
     protected ScrollPane messagePane;
 
     public static final double MAX_HEIGHT = 420;
@@ -42,15 +43,12 @@ public class BlockInfoPanel extends Pane {
         VBox container = new VBox(-2);
         container.setPrefHeight(MAX_HEIGHT);
         container.setAlignment(Pos.BOTTOM_LEFT);
-//        container.setLayoutY(-height);
-//        container.setStyle("-fx-background-color: #FF0000;");
 
         // create info bubble with tail
         this.infoBubble = buildInfoBubble();
-        Path tail = buildTail();
+        this.tail = buildTail();
 
         // add info bubble and tail to panel
-        this.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );");
         this.getStyleClass().add("block-info");
         container.getChildren().addAll(infoBubble, tail);
         this.getChildren().add(container);
@@ -70,7 +68,8 @@ public class BlockInfoPanel extends Pane {
     private VBox buildInfoBubble() {
 
         // create title box
-        this.closeButton = new Button("X");
+        this.closeButton = new Button(FontAwesomeIcon.TIMES.unicode());
+        closeButton.getStyleClass().add("block-info-close-button");
         closeButton.setOnAction(e -> delete());
         HBox titleBox = new HBox(closeButton);
         titleBox.setAlignment(Pos.CENTER_RIGHT);
@@ -87,7 +86,7 @@ public class BlockInfoPanel extends Pane {
 
         // create info bubble
         VBox infoBubble = new VBox();
-        infoBubble.setStyle("-fx-background-color: #5F5F5F;-fx-background-radius: 4;");
+        infoBubble.getStyleClass().add("block-info-bubble");
         double offsetX = -18; // 18.46 instead of 40
 
         infoBubble.setPrefWidth(220);
@@ -101,24 +100,30 @@ public class BlockInfoPanel extends Pane {
 
     protected VBox buildContent() {
 
-        VBox content = new VBox(5);
+        VBox content = new VBox();
 
         // create headers
-        Label descriptionHeader = new Label("DESCRIPTION");
-        Label inputHeader = new Label("INPUT");
-        Label outputHeader = new Label("OUTPUT");
+        Label descriptionHeader = buildHeader("DESCRIPTION");
+        Label inputHeader = buildHeader("INPUT");
+        Label outputHeader = buildHeader("OUTPUT");
 
         // create content
         Label description = buildDescription();
         Label input = buildInput();
         Label output = buildOutput();
 
-        content.getChildren().addAll(descriptionHeader, description, inputHeader, input, outputHeader, output);
+//        content.getChildren().addAll(descriptionHeader, description, inputHeader, input, outputHeader, output);
+        content.getChildren().addAll(description, inputHeader, input, outputHeader, output);
         return content;
     }
 
+    protected Label buildHeader(String header) {
+        Label label = new Label(header);
+        label.getStyleClass().add("header");
+        return label;
+    }
+
     private Label buildDescription() {
-        Label label = new Label();
         BlockInfo info;
         if (block instanceof MethodBlock methodBlock) {
             info = methodBlock.method.getAnnotation(BlockInfo.class);
@@ -126,7 +131,13 @@ public class BlockInfoPanel extends Pane {
             info = block.getClass().getAnnotation(BlockInfo.class);
         }
         String description = info.description().isEmpty() ? "n/a" : info.description();
-        label.setText(description);
+        Label label = buildLabel(description);
+
+        return label;
+    }
+
+    protected Label buildLabel(String text) {
+        Label label = new Label(text);
         label.setWrapText(true);
         return label;
     }
@@ -194,7 +205,7 @@ public class BlockInfoPanel extends Pane {
         tail.getElements().add(new ArcTo(radius, radius, 0, intersection2.getX(), intersection2.getY(), false, true));
         tail.getElements().add(new ClosePath());
 
-        tail.setStyle("-fx-fill: #5F5F5F;-fx-stroke: transparent;-fx-stroke-width: 0px;");
+        tail.getStyleClass().add("block-info-tail");
         return tail;
     }
 

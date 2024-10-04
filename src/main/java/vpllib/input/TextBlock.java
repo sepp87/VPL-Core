@@ -53,8 +53,6 @@ public class TextBlock extends Block {
             ScrollPane pane = (ScrollPane) textArea.lookup(".scroll-pane");
             pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-//            Text text = (Text) area.lookup(".text");
-//            text.setLineSpacing(7);
         });
 
         addControlToBlock(textArea);

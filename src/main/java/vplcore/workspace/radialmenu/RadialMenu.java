@@ -43,13 +43,13 @@ public class RadialMenu extends Group {
         Circle outer = new Circle(0, 0, OUTER_RADIUS);
         Circle inner = new Circle(0, 0, INNER_RADIUS);
         Shape radialMenuCircle = Shape.subtract(outer, inner);
-        radialMenuCircle.getStyleClass().add("new-radial-menu");
+        radialMenuCircle.getStyleClass().add("radial-menu");
 
         radialSubMenuCircle = Shape.subtract(outer, inner);
-        radialSubMenuCircle.getStyleClass().add("new-radial-sub-menu");
+        radialSubMenuCircle.getStyleClass().add("radial-sub-menu");
 
         radialMenuLabel = new Label(RADIAL_MENU_ITEM_LABEL_TEXT);
-        radialMenuLabel.getStyleClass().add("new-radial-menu-label");
+        radialMenuLabel.getStyleClass().add("radial-menu-label");
         radialMenuLabel.layoutXProperty().bind(radialMenuLabel.widthProperty().divide(2).negate());
         radialMenuLabel.layoutYProperty().bind(radialMenuLabel.heightProperty().divide(2).negate());
         radialMenuLabel.setOnMouseClicked((MouseEvent mouseEvent) -> {
@@ -120,7 +120,7 @@ public class RadialMenu extends Group {
         String sub = isSubMenu ? "-sub" : "";
 
         Path path = new Path();
-        path.getStyleClass().add("new-radial" + sub + "-menu-item");
+        path.getStyleClass().add("radial" + sub + "-menu-item");
 //        path.getProperties().put("index", index);
 //        path.setFill(Color.RED);
 
@@ -189,7 +189,7 @@ public class RadialMenu extends Group {
 //        Label label = new Label(index + "");
         Label label = new Label(item.icon.getUnicode() + "");
         label.setRotate(item.iconRotation);
-        label.getStyleClass().add("new-radial" + sub + "-menu-item-icon");
+        label.getStyleClass().add("radial" + sub + "-menu-item-icon");
         label.layoutXProperty().bind(label.widthProperty().divide(2).negate().add(centerX));
         label.layoutYProperty().bind(label.heightProperty().divide(2).negate().add(centerY));
 
@@ -199,10 +199,10 @@ public class RadialMenu extends Group {
         item.hoverProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 radialMenuLabel.setText(item.name);
-                path.getStyleClass().add("new-radial" + sub + "-menu-item-hover");
+                path.getStyleClass().add("radial" + sub + "-menu-item-hover");
             } else {
                 radialMenuLabel.setText(RADIAL_MENU_ITEM_LABEL_TEXT);
-                path.getStyleClass().remove("new-radial" + sub + "-menu-item-hover");
+                path.getStyleClass().remove("radial" + sub + "-menu-item-hover");
             }
         });
         return item;

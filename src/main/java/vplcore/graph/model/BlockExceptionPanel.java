@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
  */
 public class BlockExceptionPanel extends BlockInfoPanel {
 
-    private final List<String> messages = new ArrayList<>();
+    private final List<BlockException> exceptions = new ArrayList<>();
     private int currentIndex = 0;
 
     private Label messageLabel;
@@ -23,6 +23,7 @@ public class BlockExceptionPanel extends BlockInfoPanel {
     private Label pageLabel;
     private Button nextButton;
     private Button previousButton;
+    private Severity highestSeverity;
 
     public BlockExceptionPanel(Block block) {
         super(block);
@@ -49,9 +50,9 @@ public class BlockExceptionPanel extends BlockInfoPanel {
     }
 
     // Set the exceptions to be shown in the panel
-    public void setMessages(List<String> messages) {
-        this.messages.clear();
-        this.messages.addAll(messages);
+    public void setExceptions(List<BlockException> exceptions) {
+        this.exceptions.clear();
+        this.exceptions.addAll(exceptions);
         this.currentIndex = 0;
 
         // Update UI state
@@ -81,14 +82,14 @@ public class BlockExceptionPanel extends BlockInfoPanel {
         if (currentIndex > 0) {
             currentIndex--;
         } else {
-            currentIndex = messages.size() - 1;
+            currentIndex = exceptions.size() - 1;
         }
         updateLabels();
     }
 
     // Show the next exception in the list
     private void showNextMessage() {
-        if (currentIndex < messages.size() - 1) {
+        if (currentIndex < exceptions.size() - 1) {
             currentIndex++;
         } else {
             currentIndex = 0;
@@ -98,8 +99,8 @@ public class BlockExceptionPanel extends BlockInfoPanel {
 
     // Update UI to reflect the current exception and pagination
     private void updateLabels() {
-        messageLabel.setText(messages.get(currentIndex));
-        pageLabel.setText((currentIndex + 1) + " of " + messages.size());
+        messageLabel.setText(exceptions.get(currentIndex).exception.getMessage());
+        pageLabel.setText((currentIndex + 1) + " of " + exceptions.size());
         messagePane.layout(); // Force scroll pane to recompute viewport height
     }
 

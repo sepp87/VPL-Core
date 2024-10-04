@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import vplcore.graph.io.GraphLoader;
 import vplcore.graph.model.BlockInfoPanel;
@@ -57,8 +58,9 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-//        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
-//        System.out.println("MenuBar Height " + menuBar.getHeight());
+        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
+        System.out.println("MenuBar Height " + menuBar.getHeight());
+
 
     }
 

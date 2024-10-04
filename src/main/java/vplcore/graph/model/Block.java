@@ -14,6 +14,7 @@ import jo.vpl.xml.BlockTag;
 import vplcore.FontAwesomeIcon;
 import vplcore.IconType;
 import vplcore.Util;
+import vplcore.graph.model.BlockExceptionPanel.BlockException;
 import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 
@@ -38,7 +39,7 @@ public abstract class Block extends VplElement {
     BlockInfoPanel infoPanel;
     BlockExceptionPanel exceptionPanel;
 
-    public Button resizeButton;
+    public ResizeButton resizeButton;
     public VplButton infoButton = new VplButton(IconType.FA_INFO_CIRCLE);
     public VplButton exceptionButton = new VplButton(IconType.FA_WARNING);
 
@@ -128,7 +129,7 @@ public abstract class Block extends VplElement {
         infoButton.setOnAction(infoButtonClickedHandler);
         infoButton.setVisible(false);
         exceptionButton.setOnAction(exceptionButtonClickedHandler);
-        exceptionButton.setVisible(false);
+        exceptionButton.setVisible(true);
         menuBox.getChildren().addAll(exceptionButton, infoButton);
 
         this.widthProperty().addListener(blockWidthChangedListener);
@@ -143,16 +144,9 @@ public abstract class Block extends VplElement {
 
     public void setResizable(boolean resizable) {
         if (resizable) {
-//            resizeButton = new VplButton(IconType.FA_PLUS_SQUARE_O);
-            resizeButton = new Button();
-            resizeButton.getStyleClass().add("vpl-button-fa6");
-            resizeButton.setText(FontAwesomeIcon.ADDRESS_BOOK.unicode());
-            resizeButton.setRotate(45);
-            resizeButton.setPrefSize(50,50);
-//            resizeButton.setStyle("-fx-background-color: FF0000;");
-            GridPane.setHalignment(resizeButton, HPos.RIGHT);  // Align horizontally to the right
-            GridPane.setValignment(resizeButton, VPos.BOTTOM);
+            resizeButton = new ResizeButton();
             resizeButton.setVisible(false);
+            contentGrid.setStyle("-fx-padding: 10 0 0 0");
             contentGrid.add(resizeButton, 2, 3);
             resizeButton.addEventHandler(MouseEvent.MOUSE_PRESSED, resizeButtonPressedHandler);
             resizeButton.addEventHandler(MouseEvent.MOUSE_DRAGGED, resizeButtonDraggedHandler);
@@ -175,15 +169,22 @@ public abstract class Block extends VplElement {
             workspace.activeBlockInfoPanel.delete();
         }
         BlockExceptionPanel exception = new BlockExceptionPanel(this);
-        exception.setMessages(List.of(
-                "Short message! 🧐",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget odio vel purus sodales ullamcorper. Sed id suscipit ante, vitae molestie quam. Donec turpis nulla, rhoncus ac fermentum sit amet, tempus non justo. Proin mattis fringilla dui. Curabitur elementum, odio ut porta rhoncus, quam sapien fermentum augue, vitae mattis risus velit quis mauris. Nam eleifend tortor ac dignissim aliquam. In bibendum magna sed erat ultricies, id imperdiet odio ultrices. Etiam in euismod nunc. Nullam varius lacus eu est aliquet tempus. Fusce suscipit, enim vel maximus tristique, erat mauris hendrerit quam, ac convallis augue dui id nulla. Praesent convallis diam non nunc cursus feugiat. Nullam gravida, tortor a bibendum iaculis, erat mauris dapibus lacus, eu lobortis turpis enim luctus quam. Morbi sed lectus suscipit nibh lacinia viverra. Fusce laoreet tortor at risus molestie ultrices.\n"
-                + "\n"
-                + "Vivamus pellentesque eros mi, nec commodo leo sagittis mollis. Suspendisse ultricies ac nisi id facilisis. Sed ac nisl quis neque blandit vestibulum. Nunc ullamcorper odio at ante tincidunt ultrices. Aliquam nec varius sem. Donec sed convallis nibh. Donec nec ultricies tellus, at pulvinar tortor. Nullam enim dolor, malesuada sit amet libero euismod, imperdiet faucibus elit. Ut ligula dui, luctus vel venenatis at, vehicula in metus. Nunc ultricies id nunc sit amet dignissim. Maecenas et nunc lacus. Donec sit amet sapien hendrerit turpis interdum vulputate a vitae metus.\n"
-                + "\n"
-                + "Praesent non tincidunt orci. Morbi egestas ex velit, eget laoreet ipsum posuere et. Morbi tempor lacinia tincidunt. Mauris vitae arcu sed neque aliquam malesuada. Suspendisse a efficitur mi, ac vestibulum elit. Donec luctus gravida dui vel mollis. Ut gravida urna lorem, sed tincidunt elit pellentesque sed. Mauris viverra pharetra purus, nec ultricies enim rhoncus dictum. Ut odio purus, scelerisque quis arcu sed, ullamcorper tincidunt risus. Praesent ac velit ut nibh rutrum malesuada id non nulla.",
-                "This is a mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.",
-                "This is the second mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows."));
+        Exception e1 = new Exception("Short message! 🧐");
+        Exception e2 = new Exception("""
+                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget odio vel purus sodales ullamcorper. Sed id suscipit ante, vitae molestie quam. Donec turpis nulla, rhoncus ac fermentum sit amet, tempus non justo. Proin mattis fringilla dui. Curabitur elementum, odio ut porta rhoncus, quam sapien fermentum augue, vitae mattis risus velit quis mauris. Nam eleifend tortor ac dignissim aliquam. In bibendum magna sed erat ultricies, id imperdiet odio ultrices. Etiam in euismod nunc. Nullam varius lacus eu est aliquet tempus. Fusce suscipit, enim vel maximus tristique, erat mauris hendrerit quam, ac convallis augue dui id nulla. Praesent convallis diam non nunc cursus feugiat. Nullam gravida, tortor a bibendum iaculis, erat mauris dapibus lacus, eu lobortis turpis enim luctus quam. Morbi sed lectus suscipit nibh lacinia viverra. Fusce laoreet tortor at risus molestie ultrices.
+                                                                           
+                                     Vivamus pellentesque eros mi, nec commodo leo sagittis mollis. Suspendisse ultricies ac nisi id facilisis. Sed ac nisl quis neque blandit vestibulum. Nunc ullamcorper odio at ante tincidunt ultrices. Aliquam nec varius sem. Donec sed convallis nibh. Donec nec ultricies tellus, at pulvinar tortor. Nullam enim dolor, malesuada sit amet libero euismod, imperdiet faucibus elit. Ut ligula dui, luctus vel venenatis at, vehicula in metus. Nunc ultricies id nunc sit amet dignissim. Maecenas et nunc lacus. Donec sit amet sapien hendrerit turpis interdum vulputate a vitae metus.
+                                                                      
+                                     Praesent non tincidunt orci. Morbi egestas ex velit, eget laoreet ipsum posuere et. Morbi tempor lacinia tincidunt. Mauris vitae arcu sed neque aliquam malesuada. Suspendisse a efficitur mi, ac vestibulum elit. Donec luctus gravida dui vel mollis. Ut gravida urna lorem, sed tincidunt elit pellentesque sed. Mauris viverra pharetra purus, nec ultricies enim rhoncus dictum. Ut odio purus, scelerisque quis arcu sed, ullamcorper tincidunt risus. Praesent ac velit ut nibh rutrum malesuada id non nulla.
+                                     """);
+        Exception e3 = new Exception("This is a mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.");
+        Exception e4 = new Exception("This is the second mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.");
+        List<BlockExceptionPanel.BlockException> list = new ArrayList<>();
+        list.add(new BlockException("[0]", BlockExceptionPanel.Severity.ERROR, e1));
+        list.add(new BlockException("[1]", BlockExceptionPanel.Severity.ERROR, e2));
+        list.add(new BlockException("[2]", BlockExceptionPanel.Severity.ERROR, e3));
+        list.add(new BlockException("[3]", BlockExceptionPanel.Severity.ERROR, e4));
+        exception.setExceptions(list);
         workspace.activeBlockInfoPanel = exception;
         exceptionPanel = exception;
         exceptionButton.setVisible(false);

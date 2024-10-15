@@ -1,6 +1,6 @@
 package vplcore;
 
-import javafx.geometry.Point2D;
+
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
@@ -19,15 +19,8 @@ import vpllib.method.JsonMethods;
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 //
 // WORK IN PROGRESS
-// 1 IMPROVEMENT update overall UI to show port data hints, exceptions, ... 
-//
-// DONE
-// 1 IMPROVEMENT replace method references with event handlers (BlockX, Group, Port, Connection, Workspace
-// 1 IMPROVEMENT Ensure that event handlers and bindings are removed as soon objects are removed from the workspace to prevent memory leaks
-// 2 IMPROVEMENT select block should stay the same size regardless of the zoom (probably needs to be on the contentGroup and not on the workspace, just like the radial menu)
-// 1 BUG space bar causes zoom in
-// 3 IMPROVEMENT zoom increments should be less big on mac when zooming with a mouse wheel
-//
+// 1 IMPROVEMENT update overall UI to show port data hints ... 
+
 /**
  *
  * @author JoostMeulenkamp

@@ -126,23 +126,24 @@ public class ZoomManager extends HBox {
         double oldScale = workspace.getScale();
         double scaleChange = (scaleFactor / oldScale) - 1;
 
-        // Get the bounds of the zoom pane in the workspace's parent coordinates
-        Bounds zoomPaneBounds = workspace.localToParent(workspace.zoomPane.getBoundsInParent());
+        // Get the bounds of the workspace
+        Bounds workspaceBounds = workspace.getBoundsInParent();
+
 
         double dx, dy;
 
         if (event != null) {
             // Calculate the distance from the zoom point (mouse cursor) to the center
-            dx = (event.getSceneX() - (zoomPaneBounds.getWidth() / 2 + zoomPaneBounds.getMinX()));
-            dy = (event.getSceneY() - (zoomPaneBounds.getHeight() / 2 + zoomPaneBounds.getMinY()));
+            dx = event.getSceneX() - workspaceBounds.getMinX();
+            dy = event.getSceneY() - workspaceBounds.getMinY();
         } else {
             // Calculate the center of the scene (visible area)
             double sceneCenterX = getScene().getWidth() / 2;
             double sceneCenterY = getScene().getHeight() / 2;
 
-            // Calculate the distance from the zoom pane's center to the scene's center
-            dx = (sceneCenterX - (zoomPaneBounds.getWidth() / 2 + zoomPaneBounds.getMinX()));
-            dy = (sceneCenterY - (zoomPaneBounds.getHeight() / 2 + zoomPaneBounds.getMinY()));
+            // Calculate the distance from the workspace's center to the scene's center
+            dx = sceneCenterX - workspaceBounds.getMinX();
+            dy = sceneCenterY - workspaceBounds.getMinY();
         }
 
         // Calculate the new translation needed to zoom to the center or to the mouse position

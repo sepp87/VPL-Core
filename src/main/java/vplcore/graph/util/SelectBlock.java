@@ -22,13 +22,13 @@ public class SelectBlock extends Block {
 
     private ListView<String> listView;
     private final TextField searchField;
-    
-   private final EventHandler<MouseEvent> selectBlockExitedHandler = this::handleSelectBlockExited;
-   private final EventHandler<MouseEvent> selectBlockEnteredHandler = this::handleSelectBlockEntered;
-   private final EventHandler<MouseEvent> listViewPressedHandler = this::handleListViewPressed;
-   private final EventHandler<MouseEvent> listViewHoveredHandler = this::handleListViewHovered;
-   private final EventHandler<KeyEvent> searchFieldKeyPressedHandler = this::handleSearchFieldKeyPressed;
-   private final EventHandler<KeyEvent> searchFieldKeyReleasedHandler = this::handleSearchFieldKeyReleased;
+
+    private final EventHandler<MouseEvent> selectBlockExitedHandler = this::handleSelectBlockExited;
+    private final EventHandler<MouseEvent> selectBlockEnteredHandler = this::handleSelectBlockEntered;
+    private final EventHandler<MouseEvent> listViewPressedHandler = this::handleListViewPressed;
+    private final EventHandler<MouseEvent> listViewHoveredHandler = this::handleListViewHovered;
+    private final EventHandler<KeyEvent> searchFieldKeyPressedHandler = this::handleSearchFieldKeyPressed;
+    private final EventHandler<KeyEvent> searchFieldKeyReleasedHandler = this::handleSearchFieldKeyReleased;
 
     /**
      * Select block is used to pick a block type and place it on the host
@@ -118,14 +118,14 @@ public class SelectBlock extends Block {
     private void handleSearchFieldKeyReleased(KeyEvent keyEvent) {
         String keyWord = searchField.getText();
 
-        if (!"".equals(keyWord)) {
+        if (keyWord != null && !"".equals(keyWord)) {
+
             /**
              * Regular expression to filter the list with. (?i) : makes it
              * ignore case \Q ... \E : takes care of possible special characters
              * in keyWord . : means any character * : zero to multiple times
              * recurring
              */
-
             String regex = "(?si).*\\Q" + keyWord + "\\E.*";
 
             /**
@@ -169,8 +169,8 @@ public class SelectBlock extends Block {
                 case DOWN:
                     if (listIndex < listSize) {
                         listView.getSelectionModel().select(listIndex + 1);
-                        keyEvent.consume();
                     }
+                    keyEvent.consume();
                     break;
 
                 case UP:

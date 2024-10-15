@@ -59,7 +59,6 @@ public class Workspace extends AnchorPane {
 
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
-    public Pane zoomPane;
 
     //Radial menu
     public Group Go() {
@@ -79,13 +78,9 @@ public class Workspace extends AnchorPane {
         //Zooming functionality
         scaleXProperty().bind(scale);
         scaleYProperty().bind(scale);
-        zoomPane = new Pane();
-        zoomPane.setPrefSize(0, 0);
-        zoomPane.setStyle("-fx-background-color: red;");
-        zoomPane.relocate(0, 0);
 
         this.setStyle("-fx-background-color: green;");
-        getChildren().add(zoomPane);
+
 
         //Create radial menu
         RadialMenu radialMenu = new RadialMenuConfigurator(this).getRadialMenu();

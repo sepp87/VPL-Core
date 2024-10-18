@@ -11,12 +11,12 @@ import vplcore.workspace.Actions.ActionType;
  *
  * @author joostmeulenkamp
  */
-public class MenuBarConfigurator {
+public class MenuBarView {
 
     private Workspace workspace;
     private MenuBar menuBar;
 
-    public MenuBarConfigurator(Workspace workspace) {
+    public MenuBarView(Workspace workspace) {
         this.workspace = workspace;
     }
 

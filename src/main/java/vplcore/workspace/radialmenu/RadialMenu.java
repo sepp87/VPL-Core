@@ -12,6 +12,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
+import vplcore.Config;
 
 /**
  *
@@ -23,6 +24,7 @@ public class RadialMenu extends Group {
     private final double OUTER_RADIUS = 120;
 
     private final List<RadialMenuItem<?>> items;
+    private List<RadialMenuItem<?>> subItems;
     private final Label radialMenuLabel;
     private final String RADIAL_MENU_ITEM_LABEL_TEXT = "Exit\nmenu";
     private final Shape radialSubMenuCircle;
@@ -37,7 +39,7 @@ public class RadialMenu extends Group {
     }
 
     public RadialMenu(List<RadialMenuItem<?>> items) {
-
+        this.getStylesheets().add(Config.get().stylesheets());
         this.items = items;
 
         Circle outer = new Circle(0, 0, OUTER_RADIUS);
@@ -70,7 +72,12 @@ public class RadialMenu extends Group {
         }
     }
 
-    public List<RadialMenuItem<?>> addSubMenu(RadialSubMenu subMenu, List<RadialMenuItem<?>> subItems) {
+    public void addSubMenu(RadialSubMenu subMenu, List<RadialMenuItem<?>> subItems) {
+
+        if (this.subItems == null) {
+            this.subItems = new ArrayList<>();
+        }
+        this.subItems.addAll(subItems);
 
         // build items
         int count = subItems.size();
@@ -113,7 +120,6 @@ public class RadialMenu extends Group {
 
         subItems.add(exit);
         subMenu.items.addAll(subItems);
-        return subItems;
     }
 
     private RadialMenuItem<?> addRadialMenuItem(RadialMenuItem<?> item, boolean isSubMenu) {
@@ -229,7 +235,7 @@ public class RadialMenu extends Group {
         activeRadialSubMenu = subMenu;
     }
 
-    private void returnToMain() {
+    public void returnToMain() {
         if (activeRadialSubMenu == null) {
             return;
         }
@@ -238,4 +244,21 @@ public class RadialMenu extends Group {
         activeRadialSubMenu = null;
     }
 
+    /**
+     *
+     * @return returns all the radial menu items on the top level and within the
+     * sub menus. The list of items does NOT return items of type RadialSubMenu,
+     * nor does it return the exit sub menu item.
+     */
+    public List<RadialMenuItem<?>> getAllItems() {
+        List<RadialMenuItem<?>> result = new ArrayList<>();
+        for (RadialMenuItem item : items) {
+            if (item instanceof RadialSubMenu) {
+                continue;
+            }
+            result.add(item);
+        }
+        result.addAll(subItems);
+        return result;
+    }
 }

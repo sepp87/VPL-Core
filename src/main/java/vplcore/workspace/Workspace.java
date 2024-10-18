@@ -61,7 +61,7 @@ public class Workspace extends AnchorPane {
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
     //Radial menu
-    public Group Go() {
+    public Workspace() {
         //Actions
         actions = new Actions(this);
 
@@ -81,17 +81,8 @@ public class Workspace extends AnchorPane {
 
         this.setStyle("-fx-background-color: green;");
 
-
-        //Create radial menu
-        RadialMenu radialMenu = new RadialMenuConfigurator(this).getRadialMenu();
-
-        //Create content group, elements within this group get added to the scene and are not by the zooming of the workspace (this)
-        Group contentGroup = new Group();
-        contentGroup.getChildren().addAll(this, radialMenu);
-
         this.sceneProperty().addListener(initializationHandler);
 
-        return contentGroup;
     }
     //Initial modi members
     public KeyboardInputHandler keyboard;
@@ -185,11 +176,14 @@ public class Workspace extends AnchorPane {
      * @param type the type of node to check against
      * @return
      */
-    public boolean checkParents(Node node, Class<?> type) {
+    public static <T> boolean checkParents(Node node, Class<T> type) {
         if (node == null) {
             return false;
         }
-        if (type.isAssignableFrom(node.getClass())) {
+        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
+
+        if(node.getClass().getSimpleName().equals(type.getSimpleName())) {
+//        if (type.isAssignableFrom(node.getClass())) {
             return true;
         } else {
             Node parent = node.getParent();

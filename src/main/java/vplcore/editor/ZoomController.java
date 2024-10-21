@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.editor;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -131,7 +131,9 @@ public class ZoomController extends HBox {
         double newTranslateX = scaleChange * dx;
         double newTranslateY = scaleChange * dy;
 
-        model.zoomFactorProperty().set(newScale);
+//        System.out.println(newScale);
+        model.setZoomFactor(newScale);
+//        model.zoomFactorProperty().set(newScale);
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }
@@ -150,7 +152,7 @@ public class ZoomController extends HBox {
         double ratio = Math.max(ratioX, ratioY);
 
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
-        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
+        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10.;
         scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
 

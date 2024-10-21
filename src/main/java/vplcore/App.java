@@ -7,12 +7,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import vplcore.editor.MenuBarController;
 import vplcore.editor.MenuBarView;
+import vplcore.editor.PanController;
 import vplcore.editor.radialmenu.RadialMenuController;
 import vplcore.editor.radialmenu.RadialMenuView;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.ZoomModel;
-import vplcore.workspace.input.ZoomController;
-import vplcore.workspace.input.ZoomView;
+import vplcore.editor.ZoomModel;
+import vplcore.editor.ZoomController;
+import vplcore.editor.ZoomView;
 
 /**
  *
@@ -38,10 +39,11 @@ public class App extends Application {
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
+        PanController panController = new PanController(workspace, zoomModel);
         ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace);
         MenuBarController menuBarController = new MenuBarController(menuBarView, workspace);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);

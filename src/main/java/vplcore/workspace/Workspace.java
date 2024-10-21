@@ -27,7 +27,6 @@ import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectionHandler;
 import vplcore.workspace.input.ZoomManager;
-import vplcore.editor.radialmenu.RadialMenu;
 
 /**
  *
@@ -180,7 +179,7 @@ public class Workspace extends AnchorPane {
         if (node == null) {
             return false;
         }
-        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
+//        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
 
         if(node.getClass().getSimpleName().equals(type.getSimpleName())) {
 //        if (type.isAssignableFrom(node.getClass())) {

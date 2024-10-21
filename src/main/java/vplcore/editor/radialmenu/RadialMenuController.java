@@ -44,7 +44,7 @@ public class RadialMenuController {
         workspace.actions.perform(item.getAction());
     }
 
-    public void handleVisibilityToggled(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
+    private void handleVisibilityToggled(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
         if (isVisble) {
             workspace.setMouseMode(MouseMode.AWAITING_RADIAL_MENU);
         } else {
@@ -69,11 +69,11 @@ public class RadialMenuController {
         }
     }
 
-    public void showRadialMenu(double x, double y) {
+    private void showRadialMenu(double x, double y) {
         view.getRadialMenu().show(x, y);
     }
 
-    public void hideRadialMenu() {
+    private void hideRadialMenu() {
         view.getRadialMenu().setVisible(false);
     }
 }

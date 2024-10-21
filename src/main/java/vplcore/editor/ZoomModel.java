@@ -1,8 +1,7 @@
-package vplcore.workspace.input;
+package vplcore.editor;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import vplcore.workspace.Workspace;
 
 /**
  *
@@ -22,6 +21,12 @@ public class ZoomModel {
         this.zoomFactor = new SimpleDoubleProperty(1.0); // Default zoom level
         this.translateX = new SimpleDoubleProperty(0.);
         this.translateY = new SimpleDoubleProperty(0.);
+
+        zoomFactor.addListener(this::zoomFactorChanged);
+    }
+
+    private void zoomFactorChanged(Object b, Object o, Object n) {
+        System.out.println(n);
     }
 
     public DoubleProperty zoomFactorProperty() {
@@ -50,4 +55,7 @@ public class ZoomModel {
         return Math.max(MIN_ZOOM, zoomFactor.get() - ZOOM_STEP);
     }
 
+    public void setZoomFactor(double factor) {
+        this.zoomFactor.set(Math.round(factor * 10) / 10.);
+    }
 }

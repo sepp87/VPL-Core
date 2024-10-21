@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.editor;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

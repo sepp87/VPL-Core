@@ -177,7 +177,7 @@ public class ZoomManager extends HBox {
                     zoomFactor.set(getNextZoomDecrement());
                 }
                 applyZoom(event);  // Zoom from scrolling; pass mouse position
-                event.consume();
+//                event.consume();
             }
         };
     }

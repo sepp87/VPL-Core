@@ -1,16 +1,10 @@
 package vplcore.editor;
 
 import vplcore.editor.radialmenu.RadialMenuController;
-import vplcore.editor.EditorView;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.MouseMode;
-import vplcore.editor.radialmenu.RadialMenu;
-import vplcore.workspace.input.ZoomController;
 
 /**
  *
@@ -21,25 +15,39 @@ public class EditorController {
     private final Workspace workspace;
     private final RadialMenuController radialMenuController;
     private final ZoomController zoomController;
-    
+    private final PanController panController;
+
     private final EditorView view;
 
     private final EventHandler<MouseEvent> mouseClickedHandler;
+    private final EventHandler<MouseEvent> mousePressedHandler;
+    private final EventHandler<MouseEvent> mouseDraggedHandler;
+    private final EventHandler<MouseEvent> mouseReleasedHandler;
     private final EventHandler<ScrollEvent> scrollHandler;
 
-    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController) {
+    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController) {
         this.workspace = workspace;
         this.radialMenuController = radialMenuController;
         this.zoomController = zoomController;
+        this.panController = panController;
         this.view = editorView;
-
-        this.mouseClickedHandler = this::handleMouseClicked;
-        this.view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
 
         this.scrollHandler = this::handleScroll;
         this.view.addEventFilter(ScrollEvent.SCROLL, scrollHandler);
+        
+        this.mouseClickedHandler = this::handleMouseClicked;
+        this.view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
+
+        this.mousePressedHandler = this::handleMousePressed;
+        this.view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
+        
+        this.mouseDraggedHandler = this::handleMouseDragged;
+        this.view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
+        
+        this.mouseReleasedHandler = this::handleMouseReleased;
+        this.view.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
     }
-    
+
     private void handleScroll(ScrollEvent event) {
         zoomController.handleScroll(event);
     }
@@ -48,11 +56,16 @@ public class EditorController {
         radialMenuController.handleMouseClicked(event);
     }
 
-    public void showRadialMenu(double x, double y) {
-        radialMenuController.showRadialMenu(x, y);
+    private void handleMousePressed(MouseEvent event) {
+        panController.handleMousePressed(event);
     }
 
-    public void hideRadialMenu() {
-        radialMenuController.hideRadialMenu();
+    private void handleMouseDragged(MouseEvent event) {
+        panController.handleMouseDragged(event);
     }
+
+    private void handleMouseReleased(MouseEvent event) {
+        panController.handleMouseReleased(event);
+    }
+
 }

@@ -1,4 +1,4 @@
-package vplcore.workspace.radialmenu;
+package vplcore.editor.radialmenu;
 
 import javafx.scene.Group;
 import vplcore.IconType;

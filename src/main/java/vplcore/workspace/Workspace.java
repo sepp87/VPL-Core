@@ -27,7 +27,7 @@ import vplcore.workspace.input.MouseMode;
 import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectionHandler;
 import vplcore.workspace.input.ZoomManager;
-import vplcore.workspace.radialmenu.RadialMenu;
+import vplcore.editor.radialmenu.RadialMenu;
 
 /**
  *

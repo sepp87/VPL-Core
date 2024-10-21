@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.editor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,31 +11,24 @@ import vplcore.workspace.Actions.ActionType;
  *
  * @author joostmeulenkamp
  */
-public class MenuBarView1 {
+public class MenuBarView extends MenuBar {
 
-    private MenuBar menuBar;
+    public MenuBarView() {
+        this.setUseSystemMenuBar(false);
 
-    public MenuBarView1(Workspace workspace) {
-        this.menuBar = buildMenuBar();
-    }
-
-    private MenuBar buildMenuBar() {
-        MenuBar menu = new MenuBar();
-        menu.setUseSystemMenuBar(false);
-
-        Menu file = new Menu("File");
+        Menu fileMenu = new Menu("File");
         MenuBarItem newFile = new MenuBarItem(ActionType.NEW_FILE, "New file");
         MenuBarItem openFile = new MenuBarItem(ActionType.OPEN_FILE, "Open file");
         MenuBarItem save = new MenuBarItem(ActionType.SAVE_FILE, "Save");
-        file.getItems().addAll(newFile, openFile, save);
+        fileMenu.getItems().addAll(newFile, openFile, save);
 
-        Menu edit = new Menu("Edit");
+        Menu editMenu = new Menu("Edit");
         MenuBarItem copy = new MenuBarItem(ActionType.COPY_BLOCKS, "Copy");
         MenuBarItem paste = new MenuBarItem(ActionType.PASTE_BLOCKS, "Paste");
         MenuBarItem delete = new MenuBarItem(ActionType.DELETE_BLOCKS, "Delete");
         MenuBarItem group = new MenuBarItem(ActionType.GROUP_BLOCKS, "Group");
-        Menu align = new Menu("Align");
-        edit.getItems().addAll(copy, paste, delete, group, align);
+        Menu alignMenu = new Menu("Align");
+        editMenu.getItems().addAll(copy, paste, delete, group, alignMenu);
 
         MenuBarItem alignLeft = new MenuBarItem(ActionType.ALIGN_LEFT, "Align left");
         MenuBarItem alignVertically = new MenuBarItem(ActionType.ALIGN_VERTICALLY, "Align vertically");
@@ -43,17 +36,15 @@ public class MenuBarView1 {
         MenuBarItem alignTop = new MenuBarItem(ActionType.ALIGN_TOP, "Align top");
         MenuBarItem alignHorizontally = new MenuBarItem(ActionType.ALIGN_HORIZONTALLY, "Align horizontally");
         MenuBarItem alignBottom = new MenuBarItem(ActionType.ALIGN_BOTTOM, "Align bottom");
-        align.getItems().addAll(alignLeft, alignVertically, alignRight, alignTop, alignHorizontally, alignBottom);
+        alignMenu.getItems().addAll(alignLeft, alignVertically, alignRight, alignTop, alignHorizontally, alignBottom);
 
-        Menu view = new Menu("View");
+        Menu viewMenu = new Menu("View");
         MenuBarItem zoomToFit = new MenuBarItem(ActionType.ZOOM_TO_FIT, "Zoom to fit");
         MenuBarItem zoomIn = new MenuBarItem(ActionType.ZOOM_IN, "Zoom in");
         MenuBarItem zoomOut = new MenuBarItem(ActionType.ZOOM_OUT, "Zoom out");
-        view.getItems().addAll(zoomToFit, zoomIn, zoomOut);
+        viewMenu.getItems().addAll(zoomToFit, zoomIn, zoomOut);
 
-        menu.getMenus().addAll(file, edit, view);
-
-        return menu;
+        this.getMenus().addAll(fileMenu, editMenu, viewMenu);
     }
 
     public class MenuBarItem extends MenuItem {
@@ -72,7 +63,7 @@ public class MenuBarView1 {
 
     public List<MenuBarItem> getAllMenuBarItems() {
         List<MenuBarItem> result = new ArrayList<>();
-        for (Menu menu : menuBar.getMenus()) {
+        for (Menu menu : this.getMenus()) {
             result.addAll(getMenuBarItemsFrom(menu));
         }
         return result;

@@ -48,9 +48,7 @@ public class ZoomManager extends HBox {
     private final ChangeListener<Object> initializationHandler = createInitializationHandler();
 
     // Scroll event handlers
-    private final EventHandler<ScrollEvent> scrollStartedHandler = createScrollStartedHandler();
     private final EventHandler<ScrollEvent> scrollHandler = createScrollHandler();
-    private final EventHandler<ScrollEvent> scrollFinishedHandler = createScrollFinishedHandler();
 
     // Keyboard event Handler
     private final EventHandler<KeyEvent> keyEventHandler = createKeyEventHandler();
@@ -129,7 +127,6 @@ public class ZoomManager extends HBox {
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
 
-
         double dx, dy;
 
         if (event != null) {
@@ -154,21 +151,12 @@ public class ZoomManager extends HBox {
         workspace.setScale(scaleFactor);
     }
 
-    private EventHandler<ScrollEvent> createScrollStartedHandler() {
-        return (ScrollEvent event) -> {
-            if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE) {
-                workspace.setMouseMode(MouseMode.ZOOMING);
-            }
-        };
-    }
-
     // Create and return the ScrollEvent handler for SCROLL
     private EventHandler<ScrollEvent> createScrollHandler() {
         return (ScrollEvent event) -> {
-            boolean onWindows = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS;
             boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
             boolean onScrollPane = workspace.checkParents(event.getPickResult().getIntersectedNode(), ScrollPane.class);
-            if ((workspace.getMouseMode() == MouseMode.ZOOMING || onWindows) && !onScrollPane) {
+            if (!onScrollPane) {
 
                 // multiplier used for smooth scrolling, not implemented
                 double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
@@ -190,15 +178,6 @@ public class ZoomManager extends HBox {
                 }
                 applyZoom(event);  // Zoom from scrolling; pass mouse position
                 event.consume();
-            }
-        };
-    }
-
-    // Create and return the ScrollEvent handler for SCROLL_FINISHED
-    private EventHandler<ScrollEvent> createScrollFinishedHandler() {
-        return (ScrollEvent event) -> {
-            if (workspace.getMouseMode() == MouseMode.ZOOMING) {
-                workspace.setMouseMode(MouseMode.MOUSE_IDLE);
             }
         };
     }
@@ -251,9 +230,7 @@ public class ZoomManager extends HBox {
 
     // Add scroll event handlers
     private void addInputHandlers() {
-        getScene().addEventFilter(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         getScene().addEventFilter(ScrollEvent.SCROLL, scrollHandler);
-        getScene().addEventFilter(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, keyEventHandler); // Add keyboard shortcuts for zoom
         workspace.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
     }

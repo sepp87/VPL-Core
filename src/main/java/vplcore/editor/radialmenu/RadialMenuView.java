@@ -1,13 +1,13 @@
-package vplcore.workspace;
+package vplcore.editor.radialmenu;
 
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Group;
 import vplcore.IconType;
 import vplcore.workspace.Actions.ActionType;
-import vplcore.workspace.radialmenu.RadialMenu;
-import vplcore.workspace.radialmenu.RadialMenuItem;
-import vplcore.workspace.radialmenu.RadialSubMenu;
+import vplcore.editor.radialmenu.RadialMenu;
+import vplcore.editor.radialmenu.RadialMenuItem;
+import vplcore.editor.radialmenu.RadialSubMenu;
 
 /**
  *

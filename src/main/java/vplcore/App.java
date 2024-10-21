@@ -1,11 +1,18 @@
 package vplcore;
 
+import vplcore.editor.EditorController;
+import vplcore.editor.EditorView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import vplcore.workspace.RadialMenuController;
-import vplcore.workspace.RadialMenuView;
+import vplcore.editor.MenuBarController;
+import vplcore.editor.MenuBarView;
+import vplcore.editor.radialmenu.RadialMenuController;
+import vplcore.editor.radialmenu.RadialMenuView;
 import vplcore.workspace.Workspace;
+import vplcore.workspace.input.ZoomModel;
+import vplcore.workspace.input.ZoomController;
+import vplcore.workspace.input.ZoomView;
 
 /**
  *
@@ -16,20 +23,25 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        // Initialize models
+        ZoomModel zoomModel = new ZoomModel();
+        
         // Initialize views
         // WorkspaceView
-        // ZoomControlsView
         // BlockSearchView
-        Workspace workspace = new Workspace();
+        ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
-        EditorView editorView = new EditorView(radialMenuView, workspace);
+        Workspace workspace = new Workspace();
+        MenuBarView menuBarView = new MenuBarView();
+        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView);
 
         // Initialize controllers
         // WorkspaceController
-        // ZoomController
         // BlockSearchController
+        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace);
+        MenuBarController menuBarController = new MenuBarController(menuBarView, workspace);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);

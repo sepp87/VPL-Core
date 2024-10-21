@@ -1,8 +1,9 @@
-package vplcore.workspace;
+package vplcore.editor;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import vplcore.workspace.MenuBarView1.MenuBarItem;
+import vplcore.editor.MenuBarView.MenuBarItem;
+import vplcore.workspace.Workspace;
 
 /**
  *
@@ -11,11 +12,11 @@ import vplcore.workspace.MenuBarView1.MenuBarItem;
 public class MenuBarController {
 
     private Workspace workspace;
-    private final MenuBarView1 view;
+    private final MenuBarView view;
 
     private final EventHandler<ActionEvent> menuBarItemClickedHandler;
 
-    public MenuBarController(MenuBarView1 menuBarView, Workspace workspace) {
+    public MenuBarController(MenuBarView menuBarView, Workspace workspace) {
         this.workspace = workspace;
         this.view = menuBarView;
 

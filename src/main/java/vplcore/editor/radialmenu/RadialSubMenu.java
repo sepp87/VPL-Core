@@ -1,4 +1,4 @@
-package vplcore.workspace.radialmenu;
+package vplcore.editor.radialmenu;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,6 +21,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import vplcore.Config;
 import vplcore.Util;
+import vplcore.editor.ZoomModel;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Workspace;
 
@@ -29,10 +30,8 @@ import vplcore.workspace.Workspace;
  */
 public class ZoomManager extends HBox {
 
-    private static final double MAX_ZOOM = 1.5;
-    private static final double MIN_ZOOM = 0.3;
-    private static final double ZOOM_STEP = 0.1;
-
+    private final ZoomModel model;
+    
     private final DoubleProperty zoomFactor;  // Property to hold zoom factor
 
     // To throttle zoom on macOS
@@ -59,8 +58,9 @@ public class ZoomManager extends HBox {
     private final EventHandler<ActionEvent> incrementZoomHandler = createIncrementZoomHandler();
     private final EventHandler<MouseEvent> resetZoomHandler = createResetZoomHandler();
 
-    public ZoomManager(Workspace workspace) {
+    public ZoomManager(ZoomModel zoomModel, Workspace workspace) {
         this.workspace = workspace;
+        this.model = zoomModel;
         workspace.zoomManager = this;
 
         this.zoomFactor = new SimpleDoubleProperty(1.0);  // Default zoom level is 100%
@@ -101,34 +101,41 @@ public class ZoomManager extends HBox {
 
     // Increment zoom factor by the defined step size
     private double getNextZoomIncrement() {
-        return Math.min(MAX_ZOOM, zoomFactor.get() + ZOOM_STEP);
+        return Math.min(model.MAX_ZOOM, zoomFactor.get() + model.ZOOM_STEP);
     }
 
     // Decrement zoom factor by the defined step size
     private double getNextZoomDecrement() {
-        return Math.max(MIN_ZOOM, zoomFactor.get() - ZOOM_STEP);
+        return Math.max(model.MIN_ZOOM, zoomFactor.get() - model.ZOOM_STEP);
     }
 
     public void incrementZoom() {
-        zoomFactor.set(getNextZoomIncrement());
-        applyZoom(null);
+        double newScale = getNextZoomIncrement();
+//        zoomFactor.set(getNextZoomIncrement());
+        applyZoom(newScale);
     }
 
     public void decrementZoom() {
-        zoomFactor.set(getNextZoomDecrement());
-        applyZoom(null);
+        double newScale = getNextZoomDecrement();
+//        zoomFactor.set(getNextZoomDecrement());
+        applyZoom(newScale);
+    }
+
+    private void applyZoom(double newScale) {
+        applyZoom(newScale, null);
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
-    private void applyZoom(Point2D pivotPoint) {
-        double newScale = zoomFactor.get();
-        double oldScale = workspace.getScale();
+    private void applyZoom(double newScale, Point2D pivotPoint) {
+//        double newScale = zoomFactor.get();
+//        double oldScale = workspace.getScale();
+        double oldScale = zoomFactor.get();
         double scaleChange = (newScale / oldScale) - 1;
 
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
         System.out.println(workspaceBounds + " ZoomManager");
-        
+
         double dx, dy;
 
         if (pivotPoint != null) {
@@ -149,6 +156,7 @@ public class ZoomManager extends HBox {
         double newTranslateX = scaleChange * dx;
         double newTranslateY = scaleChange * dy;
 
+        zoomFactor.set(newScale);
         workspace.setPivot(newTranslateX, newTranslateY);
         workspace.setScale(newScale);
 
@@ -174,14 +182,18 @@ public class ZoomManager extends HBox {
                     lastZoomTime = currentTime;  // Update the last zoom time
                 }
 
+                double newScale;
                 // Adjust zoom factor based on scroll direction
                 if (event.getDeltaY() > 0) {
-                    zoomFactor.set(getNextZoomIncrement());
+                    newScale = getNextZoomIncrement();
+//                    zoomFactor.set(getNextZoomIncrement());
+
                 } else {
-                    zoomFactor.set(getNextZoomDecrement());
+                    newScale = getNextZoomDecrement();
+//                    zoomFactor.set(getNextZoomDecrement());
                 }
                 Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
-                applyZoom(pivotPoint);  // Zoom from scrolling; pass mouse position
+                applyZoom(newScale, pivotPoint);  // Zoom from scrolling; pass mouse position
 //                event.consume();
             }
         };
@@ -192,12 +204,17 @@ public class ZoomManager extends HBox {
 
             // Handle keyboard shortcuts for zooming
             if (Util.isModifierDown(keyEvent)) {
+                Double newScale = null;
                 if (keyEvent.getCode() == KeyCode.PLUS) {
-                    zoomFactor.set(getNextZoomIncrement());
+                    newScale = getNextZoomIncrement();
+//                    zoomFactor.set(getNextZoomIncrement());
                 } else if (keyEvent.getCode() == KeyCode.MINUS) {
-                    zoomFactor.set(getNextZoomDecrement());
+                    newScale = getNextZoomDecrement();
+//                    zoomFactor.set(getNextZoomDecrement());
                 }
-                applyZoom(null); // Zoom is not from scrolling; no scroll event needed
+                if (newScale != null) {
+                    applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
+                }
             } else if (keyEvent.getCode() == KeyCode.SPACE) {
                 zoomToFit();
             }
@@ -207,23 +224,25 @@ public class ZoomManager extends HBox {
     private EventHandler<ActionEvent> createDecrementZoomHandler() {
         return (ActionEvent event) -> {
             workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
-            zoomFactor.set(getNextZoomDecrement());
-            applyZoom(null); // Zoom is not from scrolling; no scroll event needed
+//            zoomFactor.set(getNextZoomDecrement());
+            double newScale = getNextZoomDecrement();
+            applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
         };
     }
 
     private EventHandler<ActionEvent> createIncrementZoomHandler() {
         return (ActionEvent event) -> {
             workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
-            zoomFactor.set(getNextZoomIncrement());
-            applyZoom(null); // Zoom is not from scrolling; no scroll event needed
+//            zoomFactor.set(getNextZoomIncrement());
+            double newScale = getNextZoomIncrement();
+            applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
         };
     }
 
     private EventHandler<MouseEvent> createResetZoomHandler() {
         return (MouseEvent event) -> {
-            zoomFactor.set(1.0); // Reset zoom to the default 100%
-            applyZoom(null); // Zoom is not from scrolling; no scroll event needed
+//            zoomFactor.set(1.0); // Reset zoom to the default 100%
+            applyZoom(1.0); // Zoom is not from scrolling; no scroll event needed
         };
     }
 
@@ -254,8 +273,8 @@ public class ZoomManager extends HBox {
         double ratio = Math.max(ratioX, ratioY);
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
         double scale = Math.ceil((workspace.getScale() / ratio) * 10 - 1) / 10;
-        scale = scale < MIN_ZOOM ? MIN_ZOOM : scale;
-        scale = scale > MAX_ZOOM ? MAX_ZOOM : scale;
+        scale = scale < model.MIN_ZOOM ? model.MIN_ZOOM : scale;
+        scale = scale > model.MAX_ZOOM ? model.MAX_ZOOM : scale;
         zoomFactor.set(scale);
         workspace.setScale(scale);
 

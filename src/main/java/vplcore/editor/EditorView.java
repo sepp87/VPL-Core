@@ -31,12 +31,13 @@ public class EditorView extends AnchorPane {
 
         // TODO create ZoomControlsView
         // TODO create ZoomController
-        ZoomManager zoomControls = new ZoomManager(workspace);
+        ZoomModel zoomModel = new ZoomModel();
+        ZoomManager zoomControls = new ZoomManager(zoomModel,workspace);
         AnchorPane.setTopAnchor(zoomControls, 37.5);
         AnchorPane.setRightAnchor(zoomControls, 10.);
 
-        AnchorPane.setTopAnchor(zoomView, 37.5);
-        AnchorPane.setRightAnchor(zoomView, 10.);
+//        AnchorPane.setTopAnchor(zoomView, 37.5);
+//        AnchorPane.setRightAnchor(zoomView, 10.);
 
         // create selection block
         SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();

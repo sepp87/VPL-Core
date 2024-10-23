@@ -26,28 +26,29 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
 
         // Initialize models
-        ZoomModel zoomModel = new ZoomModel();
+//        ZoomModel zoomModel = new ZoomModel();
 
         // Initialize views
         // WorkspaceView
         // BlockSearchView
-        ZoomView zoomView = new ZoomView(zoomModel);
+//        ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace(zoomModel);
+        Workspace workspace = new Workspace(null);
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView);
+        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, null);
 
         // Temporary stuff
-        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
-        Actions actions = new Actions(workspace, zoomController);
+//        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
+        Actions actions = new Actions(workspace, null);
 
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
-        PanController panController = new PanController(workspace, zoomModel);
+//        PanController panController = new PanController(workspace, zoomModel);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
         MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, null, null);
+//        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);

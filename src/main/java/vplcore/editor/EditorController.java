@@ -49,7 +49,7 @@ public class EditorController {
     }
 
     private void handleScroll(ScrollEvent event) {
-        zoomController.handleScroll(event);
+//        zoomController.handleScroll(event);
     }
 
     private void handleMouseClicked(MouseEvent event) {
@@ -57,15 +57,15 @@ public class EditorController {
     }
 
     private void handleMousePressed(MouseEvent event) {
-        panController.handleMousePressed(event);
+//        panController.handleMousePressed(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {
-        panController.handleMouseDragged(event);
+//        panController.handleMouseDragged(event);
     }
 
     private void handleMouseReleased(MouseEvent event) {
-        panController.handleMouseReleased(event);
+//        panController.handleMouseReleased(event);
     }
 
 }

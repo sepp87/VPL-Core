@@ -57,11 +57,11 @@ public class Workspace extends AnchorPane {
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
-    private ZoomModel zoomModel;
+//    private ZoomModel zoomModel;
     
     //Radial menu
     public Workspace(ZoomModel zoomModel) {
-        this.zoomModel = zoomModel;
+//        this.zoomModel = zoomModel;
 //        this.scale.bind(zoomModel.zoomFactorProperty());
 //        this.translateXProperty().bind(zoomModel.translateXProperty());
 //        this.translateYProperty().bind(zoomModel.translateYProperty());

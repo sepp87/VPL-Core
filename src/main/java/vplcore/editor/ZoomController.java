@@ -3,12 +3,14 @@ package vplcore.editor;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.HBox;
 import vplcore.Config;
 import vplcore.Util;
 import vplcore.graph.model.Block;
@@ -17,26 +19,31 @@ import vplcore.workspace.Workspace;
 /**
  * Manages zooming functionality and controls in the workspace.
  */
-public class ZoomController {
+public class ZoomController extends HBox {
 
-    private final ZoomView view;
     private final ZoomModel model;
+    private final ZoomView view;
     private final Workspace workspace;
 
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    // Event handlers
+    // Scene initialization handler
+//    private final ChangeListener<Object> initializationHandler = createInitializationHandler();
+    // Scroll event handlers
+    private final EventHandler<ScrollEvent> scrollHandler = this::handleScroll;
+
+//        // Event handlers
     private final EventHandler<ActionEvent> zoomInHandler;
     private final EventHandler<ActionEvent> zoomOutHandler;
     private final EventHandler<MouseEvent> zoomResetHandler;
     private final EventHandler<KeyEvent> keyPressedHandler;
 
-    public ZoomController(ZoomView zoomView, ZoomModel zoomModel, Workspace workspace) {
+    public ZoomController(ZoomModel zoomModel, Workspace workspace, ZoomView zoomView) {
+        this.workspace = workspace;
         this.model = zoomModel;
         this.view = zoomView;
-        this.workspace = workspace;
 
         // Button event handlers
         zoomInHandler = this::handleZoomIn;
@@ -52,25 +59,34 @@ public class ZoomController {
 
     }
 
-    private void handleZoomIn(ActionEvent event) {
-        workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
-        double newScale = model.getIncrementedZoomFactor();
-        applyZoom(newScale);
+    public void incrementZoom() {
+        handleZoomIn(null);
+    }
+
+    public void decrementZoom() {
+        handleZoomOut(null);
     }
 
     private void handleZoomOut(ActionEvent event) {
         workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
         double newScale = model.getDecrementedZoomFactor();
-        applyZoom(newScale);
+        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
+    }
+
+    private void handleZoomIn(ActionEvent event) {
+        workspace.requestFocus(); // Discard focus so spacebar does not trigger this action again
+        double newScale = model.getIncrementedZoomFactor();
+        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
 
     private void handleZoomReset(MouseEvent event) {
-        model.resetZoomFactor();
+        applyZoom(1.0); // Zoom is not from scrolling; no scroll event needed
     }
 
+    // Create and return the ScrollEvent handler for SCROLL
     public void handleScroll(ScrollEvent event) {
         boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
-        boolean onScrollPane = Workspace.checkParents(event.getPickResult().getIntersectedNode(), ScrollPane.class);
+        boolean onScrollPane = workspace.checkParents(event.getPickResult().getIntersectedNode(), ScrollPane.class);
         if (!onScrollPane) {
 
             // TODO multiplier used for smooth scrolling, not implemented
@@ -86,14 +102,14 @@ public class ZoomController {
             }
 
             double newScale;
-
             // Adjust zoom factor based on scroll direction
             if (event.getDeltaY() > 0) {
                 newScale = model.getIncrementedZoomFactor();
             } else {
                 newScale = model.getDecrementedZoomFactor();
             }
-            applyZoom(newScale, event);  // Zoom from scrolling; pass mouse position
+            Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
+            applyZoom(newScale, pivotPoint);  // Zoom from scrolling; pass mouse position
         }
     }
 
@@ -102,20 +118,20 @@ public class ZoomController {
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
-    private void applyZoom(double newScale, ScrollEvent event) {
+    private void applyZoom(double newScale, Point2D pivotPoint) {
         double oldScale = model.zoomFactorProperty().get();
         double scaleChange = (newScale / oldScale) - 1;
 
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
-        System.out.println(workspaceBounds + " ZoomController");
+//        System.out.println(workspaceBounds + " ZoomManager");
 
         double dx, dy;
 
-        if (event != null) {
-            // Calculate the distance from the zoom point (mouse cursor) to the center
-            dx = event.getSceneX() - workspaceBounds.getMinX();
-            dy = event.getSceneY() - workspaceBounds.getMinY();
+        if (pivotPoint != null) {
+            // Calculate the distance from the zoom point (mouse cursor/graph center) to the workspace origin
+            dx = pivotPoint.getX() - workspaceBounds.getMinX();
+            dy = pivotPoint.getY() - workspaceBounds.getMinY();
         } else {
             // Calculate the center of the scene (visible area)
             double sceneCenterX = workspace.getScene().getWidth() / 2;
@@ -127,14 +143,22 @@ public class ZoomController {
         }
 
         // Calculate the new translation needed to zoom to the center or to the mouse position
-        double newTranslateX = scaleChange * dx;
-        double newTranslateY = scaleChange * dy;
+        double dX = scaleChange * dx;
+        double dY = scaleChange * dy;
+        
+        double newTranslateX = model.translateXProperty().get() - dX;
+        double newTranslateY = model.translateYProperty().get() - dY;
 
-        model.setZoomFactor(newScale);
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
+        model.zoomFactorProperty().set(newScale);
+        workspace.setPivot(dX, dY);
+        workspace.setScale(newScale);
 
-        System.out.println(newTranslateX + "\t" + newTranslateY + " ZoomController");
+        System.out.println(workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t ZoomController");
+        System.out.println(model.translateXProperty().get() + "\t" + model.translateYProperty().get() + "\t ZoomController");
+
+//        System.out.println(newTranslateX + "\t" + newTranslateY + " ZoomManager");
     }
 
     public void zoomToFit() {
@@ -149,40 +173,42 @@ public class ZoomController {
         double ratioX = boundingBox.getWidth() / scene.getWidth();
         double ratioY = boundingBox.getHeight() / scene.getHeight();
         double ratio = Math.max(ratioX, ratioY);
-
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
-        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
+        double scale = Math.ceil((workspace.getScale() / ratio) * 10 - 1) / 10;
         scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
-        model.setZoomFactor(scale); // Set zoom factor before panning to fit, otherwise the graph extents do not correspond to the actual distance needing to be panned
-//        workspace.setScale(scale);
+        model.zoomFactorProperty().set(scale);
+        workspace.setScale(scale);
+        System.out.println(boundingBox + " ZoomManager");
 
-        //Pan to fit TODO switch to another algorythm, so that setting scale after panning does not break positioning
+        //Pan to fit
         boundingBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
-        double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
-        double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
-        double newTranslateX = model.translateXProperty().get() - dx;
-        double newTranslateY = model.translateYProperty().get() - dy;
-        System.out.println(localBoundingBox + "\t" + boundingBox + " ZoomController");
+        double deltaX = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
+        double deltaY = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
+        double newTranslateX = workspace.getTranslateX() - deltaX;
+        double newTranslateY = workspace.getTranslateY() - deltaY;
 
+        System.out.println(boundingBox + " ZoomManager");
+        workspace.setTranslateX(newTranslateX);
+        workspace.setTranslateY(newTranslateY);
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }
 
-    private void handleKeyPressed(KeyEvent keyEvent) {
+    private void handleKeyPressed(KeyEvent event) {
 
         // Handle keyboard shortcuts for zooming
-        if (Util.isModifierDown(keyEvent)) {
+        if (Util.isModifierDown(event)) {
             Double newScale = null;
-            if (keyEvent.getCode() == KeyCode.PLUS) {
+            if (event.getCode() == KeyCode.PLUS) {
                 newScale = model.getIncrementedZoomFactor();
-            } else if (keyEvent.getCode() == KeyCode.MINUS) {
+            } else if (event.getCode() == KeyCode.MINUS) {
                 newScale = model.getDecrementedZoomFactor();
             }
             if (newScale != null) {
                 applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
             }
-        } else if (keyEvent.getCode() == KeyCode.SPACE) {
+        } else if (event.getCode() == KeyCode.SPACE) {
             zoomToFit();
         }
     }

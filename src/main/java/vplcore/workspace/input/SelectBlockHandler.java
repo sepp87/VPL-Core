@@ -39,7 +39,7 @@ public class SelectBlockHandler {
 
     public void handleMouseReleased(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.getButton() == MouseButton.PRIMARY) {
-            if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomControls(event) && !workspace.onMenuBar(event) && !workspace.onBlockInfoPanel(event)) {
+            if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomView(event) && !workspace.onMenuBar(event) && !workspace.onBlockInfoPanel(event)) {
                 showSelectBlock(event);
             }
         }

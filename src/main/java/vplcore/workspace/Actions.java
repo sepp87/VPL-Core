@@ -95,13 +95,13 @@ public class Actions {
                 saveFile(workspace);
                 break;
             case ZOOM_IN:
-                workspace.zoomManager.incrementZoom();
+                zoomController.incrementZoom();
                 break;
             case ZOOM_OUT:
-                workspace.zoomManager.decrementZoom();
+                zoomController.decrementZoom();
                 break;
             case ZOOM_TO_FIT:
-                workspace.zoomManager.zoomToFit();
+                zoomController.zoomToFit();
                 break;
         }
     }

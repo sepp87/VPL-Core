@@ -3,7 +3,6 @@ package vplcore.workspace;
 import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.workspace.input.KeyboardInputHandler;
-import vplcore.workspace.input.DragContext;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
 import javafx.beans.property.DoubleProperty;
@@ -15,19 +14,17 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.editor.ZoomModel;
+import vplcore.editor.ZoomView;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
-import vplcore.workspace.input.PanHandler;
 import vplcore.workspace.input.SelectionHandler;
-import vplcore.workspace.input.ZoomManager;
 
 /**
  *
@@ -50,9 +47,6 @@ public class Workspace extends AnchorPane {
     //Selection rectangle members
     public Point2D startSelectionPoint;
     public Region selectionRectangle;
-
-    //Pan members
-    public DragContext panContext;
 
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
@@ -97,8 +91,6 @@ public class Workspace extends AnchorPane {
     public MousePositionHandler mouse;
 
     private SelectionHandler selectionHandler;
-    private PanHandler panHandler;
-    public ZoomManager zoomManager;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
 
@@ -109,10 +101,10 @@ public class Workspace extends AnchorPane {
             mouse = new MousePositionHandler(Workspace.this);
             keyboard = new KeyboardInputHandler(Workspace.this);
             selectionHandler = new SelectionHandler(Workspace.this);
-//            panHandler = new PanHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
             mouseModeProperty().addListener(mouseModeListener);
+            Workspace.this.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
         }
     };
 
@@ -157,9 +149,9 @@ public class Workspace extends AnchorPane {
         setTranslateY(getTranslateY() - y);
     }
 
-    public boolean onZoomControls(MouseEvent event) {
+    public boolean onZoomView(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, ZoomManager.class);
+        return checkParents(node, ZoomView.class);
     }
 
     public boolean onMenuBar(MouseEvent event) {
@@ -190,8 +182,7 @@ public class Workspace extends AnchorPane {
         }
 //        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
 
-        if (node.getClass().getSimpleName().equals(type.getSimpleName())) {
-//        if (type.isAssignableFrom(node.getClass())) {
+        if (type.isAssignableFrom(node.getClass())) {
             return true;
         } else {
             Node parent = node.getParent();

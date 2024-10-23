@@ -3,7 +3,6 @@ package vplcore.editor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import vplcore.workspace.Workspace;
-
 import vplcore.workspace.input.MouseMode;
 
 /**
@@ -26,9 +25,7 @@ public class PanController {
     }
 
     public void handleMousePressed(MouseEvent event) {
-        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
-        System.out.println(workspace.getMouseMode() + " " + event.isSecondaryButtonDown() + " " + !workspace.onBlock(event));
-        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE || workspace.getMouseMode() == MouseMode.PANNING && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
+        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
             workspace.setMouseMode(MouseMode.PANNING);
             preparePan(event);
         }
@@ -37,10 +34,12 @@ public class PanController {
     private void preparePan(MouseEvent event) {
         initialX = event.getSceneX();
         initialY = event.getSceneY();
-        initialTranslateX = zoomModel.translateXProperty().get();
-        initialTranslateY = zoomModel.translateYProperty().get();
+        initialTranslateX = workspace.getTranslateX();
+        initialTranslateY = workspace.getTranslateY();
 
-        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
+//        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
+        System.out.println(workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t PanController");
+        System.out.println(zoomModel.translateXProperty().get() + "\t" + zoomModel.translateYProperty().get() + "\t PanController");
     }
 
     public void handleMouseDragged(MouseEvent event) {
@@ -49,15 +48,17 @@ public class PanController {
         }
     }
 
-    private void pan(MouseEvent event) {
-        zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-        zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
-    }
-
     public void handleMouseReleased(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.PANNING && event.getButton() == MouseButton.SECONDARY) {
             workspace.setMouseMode(MouseMode.MOUSE_IDLE);
         }
+    }
+
+    public void pan(MouseEvent event) {
+        workspace.setTranslateX(initialTranslateX + event.getSceneX() - initialX);
+        workspace.setTranslateY(initialTranslateY + event.getSceneY() - initialY);
+        zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+        zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
     }
 
 }

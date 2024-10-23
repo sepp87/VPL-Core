@@ -8,7 +8,6 @@ import vplcore.graph.io.GraphLoader;
 import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 import vplcore.workspace.input.SelectBlockHandler;
-import vplcore.workspace.input.ZoomManager;
 
 /**
  *
@@ -31,18 +30,14 @@ public class EditorView extends AnchorPane {
 
         // TODO create ZoomControlsView
         // TODO create ZoomController
-        ZoomModel zoomModel = new ZoomModel();
-        ZoomManager zoomControls = new ZoomManager(zoomModel,workspace);
-        AnchorPane.setTopAnchor(zoomControls, 37.5);
-        AnchorPane.setRightAnchor(zoomControls, 10.);
 
-//        AnchorPane.setTopAnchor(zoomView, 37.5);
-//        AnchorPane.setRightAnchor(zoomView, 10.);
+
+        AnchorPane.setTopAnchor(zoomView, 37.5);
+        AnchorPane.setRightAnchor(zoomView, 10.);
 
         // create selection block
         SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();
-//        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectBlock);
-        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomControls, selectBlock);
+        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectBlock);
 
 
     }

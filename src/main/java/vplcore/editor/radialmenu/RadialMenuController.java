@@ -19,13 +19,16 @@ import vplcore.editor.radialmenu.RadialMenuItem;
 public class RadialMenuController {
 
     private Workspace workspace;
+    private Actions actions;
+    
     private final RadialMenuView view;
 
     private final EventHandler<MouseEvent> radialMenuItemClickedHandler;
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(RadialMenuView radialMenuView, Workspace workspace) {
+    public RadialMenuController(RadialMenuView radialMenuView, Workspace workspace, Actions actions) {
         this.workspace = workspace;
+        this.actions = actions;
         this.view = radialMenuView;
 
         this.radialMenuItemClickedHandler = this::handleRadialMenuItemClicked;
@@ -41,7 +44,7 @@ public class RadialMenuController {
         @SuppressWarnings("unchecked")
         RadialMenuItem<Actions.ActionType> item = (RadialMenuItem<Actions.ActionType>) event.getSource();
         view.getRadialMenu().setVisible(false);
-        workspace.actions.perform(item.getAction());
+        actions.perform(item.getAction());
     }
 
     private void handleVisibilityToggled(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {

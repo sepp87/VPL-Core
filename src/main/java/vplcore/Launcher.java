@@ -4,7 +4,8 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-
+// 1 REIMPLEMENT EditorView and Workspace
+// 1 REIMPLEMENT GraphLoader translate and scale
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure

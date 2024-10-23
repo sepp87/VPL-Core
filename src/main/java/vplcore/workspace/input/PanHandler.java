@@ -62,6 +62,8 @@ public class PanHandler {
         workspace.panContext.setY(event.getSceneY());
         workspace.panContext.setTranslateX(workspace.getTranslateX());
         workspace.panContext.setTranslateY(workspace.getTranslateY());
+
+        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t PanHandler");
     }
 
     private void pan(MouseEvent event) {

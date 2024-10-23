@@ -17,6 +17,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import vplcore.editor.ZoomController;
 
 /**
  *
@@ -46,8 +47,10 @@ public class Actions {
     }
 
     private final Workspace workspace;
+    private final ZoomController zoomController;
 
-    public Actions(Workspace workspace) {
+    public Actions(Workspace workspace, ZoomController zoomController) {
+        this.zoomController = zoomController;
         this.workspace = workspace;
     }
 

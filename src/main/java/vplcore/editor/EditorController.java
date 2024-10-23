@@ -33,17 +33,17 @@ public class EditorController {
         this.view = editorView;
 
         this.scrollHandler = this::handleScroll;
-        this.view.addEventFilter(ScrollEvent.SCROLL, scrollHandler);
-        
+        this.view.addEventHandler(ScrollEvent.SCROLL, scrollHandler);
+
         this.mouseClickedHandler = this::handleMouseClicked;
         this.view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
 
         this.mousePressedHandler = this::handleMousePressed;
         this.view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
-        
+
         this.mouseDraggedHandler = this::handleMouseDragged;
         this.view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
-        
+
         this.mouseReleasedHandler = this::handleMouseReleased;
         this.view.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
     }

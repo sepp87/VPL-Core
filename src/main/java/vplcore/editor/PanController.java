@@ -26,7 +26,9 @@ public class PanController {
     }
 
     public void handleMousePressed(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
+        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
+        System.out.println(workspace.getMouseMode() + " " + event.isSecondaryButtonDown() + " " + !workspace.onBlock(event));
+        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE || workspace.getMouseMode() == MouseMode.PANNING && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
             workspace.setMouseMode(MouseMode.PANNING);
             preparePan(event);
         }
@@ -37,6 +39,8 @@ public class PanController {
         initialY = event.getSceneY();
         initialTranslateX = zoomModel.translateXProperty().get();
         initialTranslateY = zoomModel.translateYProperty().get();
+
+        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
     }
 
     public void handleMouseDragged(MouseEvent event) {

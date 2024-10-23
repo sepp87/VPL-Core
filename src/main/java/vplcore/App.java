@@ -14,6 +14,7 @@ import vplcore.workspace.Workspace;
 import vplcore.editor.ZoomModel;
 import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
+import vplcore.workspace.Actions;
 
 /**
  *
@@ -26,23 +27,26 @@ public class App extends Application {
 
         // Initialize models
         ZoomModel zoomModel = new ZoomModel();
-        
+
         // Initialize views
         // WorkspaceView
         // BlockSearchView
         ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace();
+        Workspace workspace = new Workspace(zoomModel);
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView);
+        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView);
+
+        // Temporary stuff
+        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
+        Actions actions = new Actions(workspace, zoomController);
 
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
         PanController panController = new PanController(workspace, zoomModel);
-        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
-        RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace);
-        MenuBarController menuBarController = new MenuBarController(menuBarView, workspace);
+        RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
+        MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
         EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController);
 
         // Setup scene

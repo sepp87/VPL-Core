@@ -9,7 +9,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
 import vplcore.Config;
 import vplcore.Util;
 import vplcore.graph.model.Block;
@@ -18,7 +17,7 @@ import vplcore.workspace.Workspace;
 /**
  * Manages zooming functionality and controls in the workspace.
  */
-public class ZoomController extends HBox {
+public class ZoomController {
 
     private final ZoomView view;
     private final ZoomModel model;
@@ -66,7 +65,6 @@ public class ZoomController extends HBox {
     }
 
     private void handleZoomReset(MouseEvent event) {
-        model.zoomFactorProperty().set(1.0); // Reset zoom to the default 100%
         model.resetZoomFactor();
     }
 
@@ -110,6 +108,7 @@ public class ZoomController extends HBox {
 
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
+        System.out.println(workspaceBounds + " ZoomController");
 
         double dx, dy;
 
@@ -119,8 +118,8 @@ public class ZoomController extends HBox {
             dy = event.getSceneY() - workspaceBounds.getMinY();
         } else {
             // Calculate the center of the scene (visible area)
-            double sceneCenterX = getScene().getWidth() / 2;
-            double sceneCenterY = getScene().getHeight() / 2;
+            double sceneCenterX = workspace.getScene().getWidth() / 2;
+            double sceneCenterY = workspace.getScene().getHeight() / 2;
 
             // Calculate the distance from the workspace's center to the scene's center
             dx = sceneCenterX - workspaceBounds.getMinX();
@@ -131,11 +130,11 @@ public class ZoomController extends HBox {
         double newTranslateX = scaleChange * dx;
         double newTranslateY = scaleChange * dy;
 
-//        System.out.println(newScale);
         model.setZoomFactor(newScale);
-//        model.zoomFactorProperty().set(newScale);
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
+
+        System.out.println(newTranslateX + "\t" + newTranslateY + " ZoomController");
     }
 
     public void zoomToFit() {
@@ -152,18 +151,20 @@ public class ZoomController extends HBox {
         double ratio = Math.max(ratioX, ratioY);
 
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
-        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10.;
+        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
         scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
+        model.setZoomFactor(scale); // Set zoom factor before panning to fit, otherwise the graph extents do not correspond to the actual distance needing to be panned
+//        workspace.setScale(scale);
 
-        //Pan to fit
+        //Pan to fit TODO switch to another algorythm, so that setting scale after panning does not break positioning
         boundingBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
         double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
         double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
         double newTranslateX = model.translateXProperty().get() - dx;
         double newTranslateY = model.translateYProperty().get() - dy;
+        System.out.println(localBoundingBox + "\t" + boundingBox + " ZoomController");
 
-        model.zoomFactorProperty().set(scale);
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }

@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import vplcore.editor.ZoomModel;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
@@ -43,9 +44,6 @@ public class Workspace extends AnchorPane {
     public ObservableSet<Block> selectedBlockSet;
     public ObservableSet<BlockGroup> blockGroupSet;
 
-    //Actions
-    public Actions actions;
-
     //Create connection members
     public boolean typeSensitive = true;
 
@@ -59,10 +57,14 @@ public class Workspace extends AnchorPane {
     //Zoom members
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
+    private ZoomModel zoomModel;
+    
     //Radial menu
-    public Workspace() {
-        //Actions
-        actions = new Actions(this);
+    public Workspace(ZoomModel zoomModel) {
+        this.zoomModel = zoomModel;
+//        this.scale.bind(zoomModel.zoomFactorProperty());
+//        this.translateXProperty().bind(zoomModel.translateXProperty());
+//        this.translateYProperty().bind(zoomModel.translateYProperty());
 
         //Must set due to funky resize, which messes up zooming (must be the same as the zoompane)
         setMinSize(0, 0);
@@ -82,7 +84,14 @@ public class Workspace extends AnchorPane {
 
         this.sceneProperty().addListener(initializationHandler);
 
+        this.translateXProperty().addListener(this::translateXChanged);
+
     }
+
+    private void translateXChanged(Object b, Object o, Object n) {
+//        System.out.println(n + " Workspace");
+    }
+
     //Initial modi members
     public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
@@ -100,7 +109,7 @@ public class Workspace extends AnchorPane {
             mouse = new MousePositionHandler(Workspace.this);
             keyboard = new KeyboardInputHandler(Workspace.this);
             selectionHandler = new SelectionHandler(Workspace.this);
-            panHandler = new PanHandler(Workspace.this);
+//            panHandler = new PanHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
             mouseModeProperty().addListener(mouseModeListener);
@@ -181,7 +190,7 @@ public class Workspace extends AnchorPane {
         }
 //        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
 
-        if(node.getClass().getSimpleName().equals(type.getSimpleName())) {
+        if (node.getClass().getSimpleName().equals(type.getSimpleName())) {
 //        if (type.isAssignableFrom(node.getClass())) {
             return true;
         } else {

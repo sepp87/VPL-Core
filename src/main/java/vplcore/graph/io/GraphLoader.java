@@ -39,9 +39,9 @@ public class GraphLoader {
             DocumentTag documentTag = (DocumentTag) document.getValue();
 
             // deserialize workspace and settings
-            workspace.setScale(documentTag.getScale());
-            workspace.setTranslateX(documentTag.getTranslateX());
-            workspace.setTranslateY(documentTag.getTranslateY());
+//            workspace.setScale(documentTag.getScale());
+//            workspace.setTranslateX(documentTag.getTranslateX());
+//            workspace.setTranslateY(documentTag.getTranslateY());
 
             // deserialize blocks of graph
             BlocksTag blocksTag = documentTag.getBlocks();

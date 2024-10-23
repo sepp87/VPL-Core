@@ -22,11 +22,16 @@ public class ZoomModel {
         this.translateX = new SimpleDoubleProperty(0.);
         this.translateY = new SimpleDoubleProperty(0.);
 
-        zoomFactor.addListener(this::zoomFactorChanged);
+//        zoomFactor.addListener(this::zoomFactorChanged);
+        translateX.addListener(this::translateXChanged);
     }
 
     private void zoomFactorChanged(Object b, Object o, Object n) {
         System.out.println(n);
+    }
+
+    private void translateXChanged(Object b, Object o, Object n) {
+//        System.out.println(n +  " ZoomModel");
     }
 
     public DoubleProperty zoomFactorProperty() {

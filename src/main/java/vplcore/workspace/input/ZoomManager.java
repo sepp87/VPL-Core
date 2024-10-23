@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -119,20 +120,21 @@ public class ZoomManager extends HBox {
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
-    private void applyZoom(ScrollEvent event) {
-        double scaleFactor = zoomFactor.get();
+    private void applyZoom(Point2D pivotPoint) {
+        double newScale = zoomFactor.get();
         double oldScale = workspace.getScale();
-        double scaleChange = (scaleFactor / oldScale) - 1;
+        double scaleChange = (newScale / oldScale) - 1;
 
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
-
+        System.out.println(workspaceBounds + " ZoomManager");
+        
         double dx, dy;
 
-        if (event != null) {
-            // Calculate the distance from the zoom point (mouse cursor) to the center
-            dx = event.getSceneX() - workspaceBounds.getMinX();
-            dy = event.getSceneY() - workspaceBounds.getMinY();
+        if (pivotPoint != null) {
+            // Calculate the distance from the zoom point (mouse cursor/graph center) to the workspace origin
+            dx = pivotPoint.getX() - workspaceBounds.getMinX();
+            dy = pivotPoint.getY() - workspaceBounds.getMinY();
         } else {
             // Calculate the center of the scene (visible area)
             double sceneCenterX = getScene().getWidth() / 2;
@@ -148,7 +150,9 @@ public class ZoomManager extends HBox {
         double newTranslateY = scaleChange * dy;
 
         workspace.setPivot(newTranslateX, newTranslateY);
-        workspace.setScale(scaleFactor);
+        workspace.setScale(newScale);
+
+        System.out.println(newTranslateX + "\t" + newTranslateY + " ZoomManager");
     }
 
     // Create and return the ScrollEvent handler for SCROLL
@@ -176,7 +180,8 @@ public class ZoomManager extends HBox {
                 } else {
                     zoomFactor.set(getNextZoomDecrement());
                 }
-                applyZoom(event);  // Zoom from scrolling; pass mouse position
+                Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
+                applyZoom(pivotPoint);  // Zoom from scrolling; pass mouse position
 //                event.consume();
             }
         };
@@ -258,7 +263,12 @@ public class ZoomManager extends HBox {
         bBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
         double deltaX = (bBox.getMinX() + bBox.getWidth() / 2) - scene.getWidth() / 2;
         double deltaY = (bBox.getMinY() + bBox.getHeight() / 2) - scene.getHeight() / 2;
-        workspace.setTranslateX(workspace.getTranslateX() - deltaX);
-        workspace.setTranslateY(workspace.getTranslateY() - deltaY);
+        double newTranslateX = workspace.getTranslateX() - deltaX;
+        double newTranslateY = workspace.getTranslateY() - deltaY;
+
+        System.out.println(localBBox + "\t" + bBox + " ZoomManager");
+        workspace.setTranslateX(newTranslateX);
+        workspace.setTranslateY(newTranslateY);
     }
+
 }

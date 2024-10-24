@@ -1,13 +1,8 @@
 package vplcore.workspace.input;
 
-import vplcore.graph.model.Block;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Line;
-import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 
 /**

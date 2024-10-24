@@ -124,7 +124,6 @@ public class ZoomController extends HBox {
 
         // Get the bounds of the workspace
         Bounds workspaceBounds = workspace.getBoundsInParent();
-//        System.out.println(workspaceBounds + " ZoomManager");
 
         double dx, dy;
 
@@ -152,13 +151,6 @@ public class ZoomController extends HBox {
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
         model.zoomFactorProperty().set(newScale);
-        workspace.setPivot(dX, dY);
-        workspace.setScale(newScale);
-
-        System.out.println(workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t ZoomController");
-        System.out.println(model.translateXProperty().get() + "\t" + model.translateYProperty().get() + "\t ZoomController");
-
-//        System.out.println(newTranslateX + "\t" + newTranslateY + " ZoomManager");
     }
 
     public void zoomToFit() {
@@ -174,11 +166,11 @@ public class ZoomController extends HBox {
         double ratioY = boundingBox.getHeight() / scene.getHeight();
         double ratio = Math.max(ratioX, ratioY);
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
-        double scale = Math.ceil((workspace.getScale() / ratio) * 10 - 1) / 10;
+        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
         scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
         model.zoomFactorProperty().set(scale);
-        workspace.setScale(scale);
+        
         System.out.println(boundingBox + " ZoomManager");
 
         //Pan to fit
@@ -189,8 +181,7 @@ public class ZoomController extends HBox {
         double newTranslateY = workspace.getTranslateY() - deltaY;
 
         System.out.println(boundingBox + " ZoomManager");
-        workspace.setTranslateX(newTranslateX);
-        workspace.setTranslateY(newTranslateY);
+        
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }

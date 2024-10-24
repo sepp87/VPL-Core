@@ -36,6 +36,8 @@ public class PanController {
         initialY = event.getSceneY();
         initialTranslateX = workspace.getTranslateX();
         initialTranslateY = workspace.getTranslateY();
+        initialTranslateX = zoomModel.translateXProperty().get();
+        initialTranslateY = zoomModel.translateYProperty().get();
 
 //        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
         System.out.println(workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t PanController");
@@ -55,8 +57,8 @@ public class PanController {
     }
 
     public void pan(MouseEvent event) {
-        workspace.setTranslateX(initialTranslateX + event.getSceneX() - initialX);
-        workspace.setTranslateY(initialTranslateY + event.getSceneY() - initialY);
+//        workspace.setTranslateX(initialTranslateX + event.getSceneX() - initialX);
+//        workspace.setTranslateY(initialTranslateY + event.getSceneY() - initialY);
         zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
         zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
     }

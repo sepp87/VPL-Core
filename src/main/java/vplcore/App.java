@@ -5,6 +5,7 @@ import vplcore.editor.EditorView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import vplcore.editor.KeyboardController;
 import vplcore.editor.MenuBarController;
 import vplcore.editor.MenuBarView;
 import vplcore.editor.PanController;
@@ -25,6 +26,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        boolean addNewStuff = true;
+
         // Initialize models
         ZoomModel zoomModel = new ZoomModel();
 
@@ -33,29 +36,22 @@ public class App extends Application {
         // BlockSearchView
         ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace(null);
+        Workspace workspace = new Workspace(zoomModel);
         MenuBarView menuBarView = new MenuBarView();
         EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView);
 
         // Temporary stuff
-//        ZoomController zoomController = new ZoomController(zoomView, zoomModel, workspace);
         ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);
-        Actions actions = new Actions(workspace, zoomController);
+        Actions actions = new Actions(workspace, zoomController, zoomModel);
 
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
-        boolean addNewController = true;
-
-        PanController panController = null;
-        if (addNewController) {
-            panController = new PanController(workspace, zoomModel);
-        }
-
+        KeyboardController keyboardController = new KeyboardController(actions);
+        PanController panController = new PanController(workspace, zoomModel);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
         MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController);
-//        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, null);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);

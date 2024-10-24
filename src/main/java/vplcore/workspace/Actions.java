@@ -7,7 +7,6 @@ import vplcore.graph.io.GraphSaver;
 import vplcore.graph.io.GraphLoader;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
-import java.awt.MouseInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import vplcore.editor.ZoomController;
+import vplcore.editor.ZoomModel;
 
 /**
  *
@@ -33,7 +33,7 @@ public class Actions {
         ALIGN_TOP,
         ALIGN_VERTICALLY,
         COPY_BLOCKS,
-        DELETE_BLOCKS,
+        DELETE_SELECTED_BLOCKS,
         DESELECT_ALL_BLOCKS,
         GROUP_BLOCKS,
         NEW_FILE,
@@ -46,11 +46,13 @@ public class Actions {
         ZOOM_TO_FIT,
     }
 
+    private final ZoomModel zoomModel;
     private final Workspace workspace;
     private final ZoomController zoomController;
 
-    public Actions(Workspace workspace, ZoomController zoomController) {
+    public Actions(Workspace workspace, ZoomController zoomController, ZoomModel zoomModel) {
         this.zoomController = zoomController;
+        this.zoomModel = zoomModel;
         this.workspace = workspace;
     }
 
@@ -77,7 +79,8 @@ public class Actions {
             case COPY_BLOCKS:
                 copyBlocks(workspace);
                 break;
-            case DELETE_BLOCKS:
+            case DELETE_SELECTED_BLOCKS:
+                deleteSelectedBlocks(workspace);
                 break;
             case GROUP_BLOCKS:
                 groupBlocks(workspace);
@@ -92,7 +95,7 @@ public class Actions {
                 pasteBlocks(workspace);
                 break;
             case SAVE_FILE:
-                saveFile(workspace);
+                saveFile(workspace, zoomModel);
                 break;
             case ZOOM_IN:
                 zoomController.incrementZoom();
@@ -216,11 +219,7 @@ public class Actions {
         }
 
         Point2D copyPoint = new Point2D(bBox.getMinX() + bBox.getWidth() / 2, bBox.getMinY() + bBox.getHeight() / 2);
-        double pastePointX = MouseInfo.getPointerInfo().getLocation().x;
-        double pastePointY = MouseInfo.getPointerInfo().getLocation().y;
-        Point2D pastePoint = workspace.screenToLocal(pastePointX, pastePointY);
-
-        pastePoint = workspace.mouse.getPosition();
+        Point2D pastePoint = workspace.mouse.getPosition();
 
         Point2D delta = pastePoint.subtract(copyPoint);
 
@@ -285,7 +284,7 @@ public class Actions {
         }
     }
 
-    public static void saveFile(Workspace workspace) {
+    public static void saveFile(Workspace workspace, ZoomModel zoomModel) {
         Stage stage = (Stage) workspace.getScene().getWindow();
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Save as vplXML...");
@@ -293,7 +292,7 @@ public class Actions {
         File file = chooser.showSaveDialog(stage);
 
         if (file != null) {
-            GraphSaver.serialize(file, workspace);
+            GraphSaver.serialize(file, workspace, zoomModel);
         }
     }
 

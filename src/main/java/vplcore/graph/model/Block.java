@@ -227,7 +227,7 @@ public abstract class Block extends VplElement {
     }
 
     private void resizeBlock(MouseEvent event) {
-        double scale = workspace.getScale();
+        double scale = workspace.getZoomFactor();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
         double oldWidth = contentGrid.getPrefWidth();
@@ -298,7 +298,7 @@ public abstract class Block extends VplElement {
     }
 
     public void move(MouseEvent event) {
-        double scale = workspace.getScale();
+        double scale = workspace.getZoomFactor();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
         for (Block block : workspace.selectedBlockSet) {

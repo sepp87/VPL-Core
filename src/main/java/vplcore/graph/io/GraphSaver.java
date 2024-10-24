@@ -17,6 +17,7 @@ import jo.vpl.xml.BlocksTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
+import vplcore.editor.ZoomModel;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
 import vplcore.workspace.Workspace;
@@ -36,16 +37,16 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, Workspace workspace) {
+    public static void serialize(File file, Workspace workspace, ZoomModel zoomModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();
 
             // serialize workspace and settings
             DocumentTag documentTag = factory.createDocumentTag();
-            documentTag.setScale(workspace.getScale());
-            documentTag.setTranslateX(workspace.getTranslateX());
-            documentTag.setTranslateY(workspace.getTranslateY());
+            documentTag.setScale(zoomModel.zoomFactorProperty().get());
+            documentTag.setTranslateX(zoomModel.translateXProperty().get());
+            documentTag.setTranslateY(zoomModel.translateYProperty().get());
 
             // serialize blocks of graph
             Collection<Block> blocks = workspace.blockSet;

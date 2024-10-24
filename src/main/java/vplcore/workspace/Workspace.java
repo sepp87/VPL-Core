@@ -2,7 +2,6 @@ package vplcore.workspace;
 
 import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
-import vplcore.workspace.input.KeyboardInputHandler;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
 import javafx.beans.property.DoubleProperty;
@@ -48,19 +47,18 @@ public class Workspace extends AnchorPane {
     public Point2D startSelectionPoint;
     public Region selectionRectangle;
 
-    //Zoom members
-    DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
-//    private ZoomModel zoomModel;
+    private final ZoomModel zoomModel;
     
     //Radial menu
     public Workspace(ZoomModel zoomModel) {
-//        this.zoomModel = zoomModel;
-//        this.scale.bind(zoomModel.zoomFactorProperty());
-//        this.translateXProperty().bind(zoomModel.translateXProperty());
-//        this.translateYProperty().bind(zoomModel.translateYProperty());
+        this.zoomModel = zoomModel;
+        this.scaleXProperty().bind(zoomModel.zoomFactorProperty());
+        this.scaleYProperty().bind(zoomModel.zoomFactorProperty());
+        this.translateXProperty().bind(zoomModel.translateXProperty());
+        this.translateYProperty().bind(zoomModel.translateYProperty());
 
-        //Must set due to funky resize, which messes up zooming (must be the same as the zoompane)
+        //Must set due to funky resize, which messes up zooming
         setMinSize(0, 0);
         setMaxSize(0, 0);
 
@@ -69,10 +67,6 @@ public class Workspace extends AnchorPane {
         blockSet = FXCollections.observableSet();
         selectedBlockSet = FXCollections.observableSet();
         blockGroupSet = FXCollections.observableSet();
-
-        //Zooming functionality
-        scaleXProperty().bind(scale);
-        scaleYProperty().bind(scale);
 
         this.setStyle("-fx-background-color: green;");
 
@@ -87,7 +81,6 @@ public class Workspace extends AnchorPane {
     }
 
     //Initial modi members
-    public KeyboardInputHandler keyboard;
     public MousePositionHandler mouse;
 
     private SelectionHandler selectionHandler;
@@ -99,7 +92,6 @@ public class Workspace extends AnchorPane {
         public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
 
             mouse = new MousePositionHandler(Workspace.this);
-            keyboard = new KeyboardInputHandler(Workspace.this);
             selectionHandler = new SelectionHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
@@ -113,11 +105,15 @@ public class Workspace extends AnchorPane {
     private ChangeListener<Object> mouseModeListener = (b, o, n) -> {
 //        System.out.println(n);
     };
+    
+    public double getZoomFactor() {
+        return zoomModel.zoomFactorProperty().get();
+    }
 
     public void reset() {
-        setScale(1);
-        setTranslateX(0);
-        setTranslateY(0);
+        zoomModel.resetZoomFactor();
+        zoomModel.translateXProperty().set(0.);
+        zoomModel.translateYProperty().set(0.);
         blockSet.clear();
         connectionSet.clear();
         getChildren().clear();
@@ -134,19 +130,6 @@ public class Workspace extends AnchorPane {
 
     public ObjectProperty<MouseMode> mouseModeProperty() {
         return mouseModeProperty;
-    }
-
-    public double getScale() {
-        return scale.get();
-    }
-
-    public void setScale(double value) {
-        scale.set(value);
-    }
-
-    public void setPivot(double x, double y) {
-        setTranslateX(getTranslateX() - x);
-        setTranslateY(getTranslateY() - y);
     }
 
     public boolean onZoomView(MouseEvent event) {

@@ -25,7 +25,7 @@ public class MenuBarView extends MenuBar {
         Menu editMenu = new Menu("Edit");
         MenuBarItem copy = new MenuBarItem(ActionType.COPY_BLOCKS, "Copy");
         MenuBarItem paste = new MenuBarItem(ActionType.PASTE_BLOCKS, "Paste");
-        MenuBarItem delete = new MenuBarItem(ActionType.DELETE_BLOCKS, "Delete");
+        MenuBarItem delete = new MenuBarItem(ActionType.DELETE_SELECTED_BLOCKS, "Delete");
         MenuBarItem group = new MenuBarItem(ActionType.GROUP_BLOCKS, "Group");
         Menu alignMenu = new Menu("Align");
         editMenu.getItems().addAll(copy, paste, delete, group, alignMenu);

@@ -3,7 +3,8 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-
+// 1 BUG selection discarded when clicking on menu bar
+// 1 BUG selection discarded when exiting radial menu
 // 1 BUG Info panel does not move down when aligning blocks
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 IMPROVEMENT Set block exception panel when block throws exception

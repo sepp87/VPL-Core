@@ -39,7 +39,6 @@ public class App extends Application {
 
         // Initialize views
         // WorkspaceView
-        // BlockSearchView
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView(zoomModel);
@@ -54,7 +53,6 @@ public class App extends Application {
 
         // Initialize controllers
         // WorkspaceController
-        // BlockSearchController
         BlockSearchController blockSearchController = new BlockSearchController(workspace, blockSearchView);
         SelectionRectangleController selectionRectangleController = new SelectionRectangleController(selectionRectangleView, workspace);
         KeyboardController keyboardController = new KeyboardController(actions);

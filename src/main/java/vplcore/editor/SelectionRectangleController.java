@@ -1,10 +1,8 @@
 package vplcore.editor;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
@@ -16,111 +14,97 @@ import vplcore.workspace.input.MouseMode;
  */
 public class SelectionRectangleController {
 
+    private final SelectionRectangleView view;
     private final Workspace workspace;
+    private Point2D startPoint;
 
-    public SelectionRectangleController(Workspace workspace) {
+
+    public SelectionRectangleController(SelectionRectangleView selectionRectangleView, Workspace workspace) {
+        this.view = selectionRectangleView;
         this.workspace = workspace;
-        addInputHandlers();
     }
 
-    private void addInputHandlers() {
-
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
-
+    public void handleMousePressed(MouseEvent event) {
+        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event) && !workspace.onBlockInfoPanel(event)) {
+            workspace.setMouseMode(MouseMode.SELECTING);
+            prepareSelectionRectangle(event);
+        }
     }
 
-    private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event) && !workspace.onBlockInfoPanel(event)) {
-                workspace.setMouseMode(MouseMode.SELECTING);
-                prepareSelectionRectangle(event);
-
-            }
+    public void handleMouseDragged(MouseEvent event) {
+        if (workspace.getMouseMode() == MouseMode.SELECTING && event.isPrimaryButtonDown()) {
+            initializeSelectionRectangle();
+            updateSelectionRectangle(event);
+            updateSelection();
         }
-    };
+    }
 
-    private final EventHandler<MouseEvent> mouseDraggedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
+    public void handleMouseReleased(MouseEvent event) {
+        // Reset the start selection point
+        startPoint = null;
+        if (event.getButton() == MouseButton.PRIMARY) {
 
-            boolean isSelecting = workspace.startSelectionPoint != null;
-//            if (event.isPrimaryButtonDown() && isSelecting) {
-            if (workspace.getMouseMode() == MouseMode.SELECTING && event.isPrimaryButtonDown()) {
-                startSelectionRectangleIfNull();
-                updateSelectionRectangle(event);
-                updateSelection();
-            }
-        }
-    };
-
-    private final EventHandler<MouseEvent> mouseReleasedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            // Reset the start selection point
-            workspace.startSelectionPoint = null;
-            if (event.getButton() == MouseButton.PRIMARY) {
-
-                if (workspace.getMouseMode() == MouseMode.SELECTING) {
-                    // Reset the mouse mode back to idle
-                    workspace.setMouseMode(MouseMode.MOUSE_IDLE);
-                    // Check if selection rectangle is active
-                    if (workspace.selectionRectangle != null) {
-                        // Finalize selection by removing the selection rectangle
-                        removeSelectionRectangle();
-                    } else {
-                        // Deselect all blocks if no selection rectangle was active
-                        Actions.deselectAllBlocks(workspace);
-                    }
+            if (workspace.getMouseMode() == MouseMode.SELECTING) {
+                // Reset the mouse mode back to idle
+                workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+                // Check if selection rectangle is active
+                if (view.isVisible()) {
+                    // Finalize selection by removing the selection rectangle
+                    removeSelectionRectangle();
+                } else {
+                    // Deselect all blocks if no selection rectangle was active
+                    Actions.deselectAllBlocks(workspace);
                 }
             }
         }
-    };
-
-    private void prepareSelectionRectangle(MouseEvent event) {
-        workspace.startSelectionPoint = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
     }
 
-    private void startSelectionRectangleIfNull() {
-        if (workspace.selectionRectangle != null) {
+    private void prepareSelectionRectangle(MouseEvent event) {
+        startPoint = new Point2D(event.getSceneX(), event.getSceneY());
+    }
+
+    private void initializeSelectionRectangle() {
+        if (view.isVisible()) {
             return;
         }
-        workspace.selectionRectangle = new Region();
-        workspace.selectionRectangle.setLayoutX(workspace.startSelectionPoint.getX());
-        workspace.selectionRectangle.setLayoutY(workspace.startSelectionPoint.getY());
-        workspace.selectionRectangle.setMinSize(0, 0);
-
-        workspace.selectionRectangle.getStyleClass().add("selection-rectangle");
-        workspace.getChildren().add(workspace.selectionRectangle);
+        view.setVisible(true);
+        view.setLayoutX(startPoint.getX());
+        view.setLayoutY(startPoint.getY());
+        view.setMinSize(0, 0);
     }
 
     private void updateSelectionRectangle(MouseEvent event) {
 
-        Point2D currentPosition = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
-        Point2D delta = currentPosition.subtract(workspace.startSelectionPoint);
+        Point2D currentPosition = new Point2D(event.getSceneX(), event.getSceneY());
+        Point2D delta = currentPosition.subtract(startPoint);
 
         if (delta.getX() < 0) {
-            workspace.selectionRectangle.setLayoutX(currentPosition.getX());
+            view.setLayoutX(currentPosition.getX());
         }
 
         if (delta.getY() < 0) {
-            workspace.selectionRectangle.setLayoutY(currentPosition.getY());
+            view.setLayoutY(currentPosition.getY());
         }
 
-        workspace.selectionRectangle.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
+        view.setMinSize(Math.abs(delta.getX()), Math.abs(delta.getY()));
 
     }
 
     private void updateSelection() {
+
+        Point2D selectionMin = workspace.sceneToLocal(view.getLayoutX(), view.getLayoutY());
+        Point2D selectionMax = workspace.sceneToLocal(selectionMin.getX() + view.getWidth(), selectionMin.getY() + view.getHeight());
+
         for (Block block : workspace.blockSet) {
-            if ((block.getLayoutX() >= workspace.selectionRectangle.getLayoutX())
-                    && block.getLayoutX() + block.getWidth() <= workspace.selectionRectangle.getLayoutX() + workspace.selectionRectangle.getWidth()
-                    && (block.getLayoutY() >= workspace.selectionRectangle.getLayoutY()
-                    && block.getLayoutY() + block.getHeight() <= workspace.selectionRectangle.getLayoutY() + workspace.selectionRectangle.getHeight())) {
+            if (true // unnecessary statement for readability
+                    && block.getLayoutX() >= selectionMin.getX()
+                    && block.getLayoutX() + block.getWidth() <= selectionMax.getX()
+                    && block.getLayoutY() >= selectionMin.getY()
+                    && block.getLayoutY() + block.getHeight() <= selectionMax.getY()) {
+
                 workspace.selectedBlockSet.add(block);
                 block.setSelected(true);
+
             } else {
                 workspace.selectedBlockSet.remove(block);
                 block.setSelected(false);
@@ -129,8 +113,7 @@ public class SelectionRectangleController {
     }
 
     private void removeSelectionRectangle() {
-        workspace.getChildren().remove(workspace.selectionRectangle);
-        workspace.selectionRectangle = null;
+        view.setVisible(false);
     }
 
 }

@@ -38,7 +38,7 @@ public class BlockLoader {
 //    static final Map<String, Class> BLOCK_PATH_MAP = new HashMap<>();
     static final Map<String, Method> BLOCK_METHOD_MAP = new HashMap<>();
     public static final Map<String, Class<?>> BLOCK_TYPE_MAP = new HashMap<>();
-    static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
+    public static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
     /**

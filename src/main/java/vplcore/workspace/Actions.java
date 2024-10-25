@@ -89,7 +89,7 @@ public class Actions {
                 newFile(workspace);
                 break;
             case OPEN_FILE:
-                openFile(workspace);
+                openFile(workspace, zoomModel);
                 break;
             case PASTE_BLOCKS:
                 pasteBlocks(workspace);
@@ -186,7 +186,7 @@ public class Actions {
         workspace.reset();
     }
 
-    public static void openFile(Workspace workspace) {
+    public static void openFile(Workspace workspace, ZoomModel zoomModel) {
 
         //Open File
         Stage stage = (Stage) workspace.getScene().getWindow();
@@ -203,7 +203,7 @@ public class Actions {
         workspace.reset();
 
         //Load file
-        GraphLoader.deserialize(file, workspace);
+        GraphLoader.deserialize(file, workspace, zoomModel);
 
     }
 

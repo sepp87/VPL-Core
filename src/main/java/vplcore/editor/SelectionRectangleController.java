@@ -16,8 +16,8 @@ public class SelectionRectangleController {
 
     private final SelectionRectangleView view;
     private final Workspace workspace;
-    private Point2D startPoint;
 
+    private Point2D startPoint;
 
     public SelectionRectangleController(SelectionRectangleView selectionRectangleView, Workspace workspace) {
         this.view = selectionRectangleView;
@@ -93,7 +93,7 @@ public class SelectionRectangleController {
     private void updateSelection() {
 
         Point2D selectionMin = workspace.sceneToLocal(view.getLayoutX(), view.getLayoutY());
-        Point2D selectionMax = workspace.sceneToLocal(selectionMin.getX() + view.getWidth(), selectionMin.getY() + view.getHeight());
+        Point2D selectionMax = workspace.sceneToLocal(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
 
         for (Block block : workspace.blockSet) {
             if (true // unnecessary statement for readability

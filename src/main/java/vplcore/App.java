@@ -1,5 +1,6 @@
 package vplcore;
 
+import java.io.File;
 import vplcore.editor.EditorController;
 import vplcore.editor.EditorView;
 import javafx.application.Application;
@@ -17,7 +18,10 @@ import vplcore.workspace.Workspace;
 import vplcore.editor.ZoomModel;
 import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
+import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.Actions;
+import vplcore.workspace.input.BlockSearchController;
+import vplcore.workspace.input.BlockSearchView;
 
 /**
  *
@@ -36,12 +40,13 @@ public class App extends Application {
         // Initialize views
         // WorkspaceView
         // BlockSearchView
+        BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
         Workspace workspace = new Workspace(zoomModel);
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView);
+        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Temporary stuff
         ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);
@@ -50,12 +55,13 @@ public class App extends Application {
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
+        BlockSearchController blockSearchController = new BlockSearchController(workspace, blockSearchView);
         SelectionRectangleController selectionRectangleController = new SelectionRectangleController(selectionRectangleView, workspace);
         KeyboardController keyboardController = new KeyboardController(actions);
         PanController panController = new PanController(workspace, zoomModel);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
         MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);
@@ -64,6 +70,7 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
+        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace, zoomModel);
         editorView.test();
     }
 

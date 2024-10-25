@@ -25,7 +25,7 @@ public class MenuBarController {
         
         this.view = menuBarView;
 
-        this.menuBarItemClickedHandler = this::handleMenuBarItemClicked;
+        menuBarItemClickedHandler = this::handleMenuBarItemClicked;
         for (MenuBarItem item : view.getAllMenuBarItems()) {
             item.setOnAction(menuBarItemClickedHandler);
         }

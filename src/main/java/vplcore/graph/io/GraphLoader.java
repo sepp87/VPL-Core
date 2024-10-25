@@ -18,6 +18,7 @@ import jo.vpl.xml.BlocksTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
+import vplcore.editor.ZoomModel;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
@@ -30,7 +31,7 @@ import vplcore.workspace.Workspace;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file, Workspace workspace) {
+    public static void deserialize(File file, Workspace workspace, ZoomModel zoomModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -39,9 +40,9 @@ public class GraphLoader {
             DocumentTag documentTag = (DocumentTag) document.getValue();
 
             // deserialize workspace and settings
-//            workspace.setScale(documentTag.getScale());
-//            workspace.setTranslateX(documentTag.getTranslateX());
-//            workspace.setTranslateY(documentTag.getTranslateY());
+            zoomModel.setZoomFactor(documentTag.getScale());
+            zoomModel.translateXProperty().set(documentTag.getTranslateX());
+            zoomModel.translateYProperty().set(documentTag.getTranslateY());
 
             // deserialize blocks of graph
             BlocksTag blocksTag = documentTag.getBlocks();

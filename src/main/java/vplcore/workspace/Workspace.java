@@ -21,7 +21,6 @@ import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
-
 /**
  *
  * @author JoostMeulenkamp
@@ -55,7 +54,7 @@ public class Workspace extends AnchorPane {
         this.translateXProperty().bind(zoomModel.translateXProperty());
         this.translateYProperty().bind(zoomModel.translateYProperty());
 
-        //Must set due to funky resize, which messes up zooming
+        //Must set to (0,0) due to funky resize, otherwise messes up zoom in and out
         setMinSize(0, 0);
         setMaxSize(0, 0);
 
@@ -79,7 +78,6 @@ public class Workspace extends AnchorPane {
 
     //Initial modi members
     public MousePositionHandler mouse;
-
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
 

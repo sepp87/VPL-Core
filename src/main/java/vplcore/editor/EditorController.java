@@ -9,6 +9,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import vplcore.workspace.Workspace;
+import vplcore.workspace.input.BlockSearchController;
 
 /**
  *
@@ -22,6 +23,7 @@ public class EditorController {
     private final PanController panController;
     private final KeyboardController keyboardController;
     private final SelectionRectangleController selectionRectangleController;
+    private final BlockSearchController blockSearchController;
     private final EditorView view;
 
     private final ObjectProperty<Point2D> mousePositionOnScene;
@@ -34,33 +36,34 @@ public class EditorController {
     private final EventHandler<ScrollEvent> scrollHandler;
     private final EventHandler<KeyEvent> keyPressedHandler;
 
-    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController) {
+    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController, BlockSearchController blockSearchController) {
         this.workspace = workspace;
         this.radialMenuController = radialMenuController;
         this.zoomController = zoomController;
         this.panController = panController;
         this.keyboardController = keyboardController;
         this.selectionRectangleController = selectionRectangleController;
+        this.blockSearchController = blockSearchController;
         this.view = editorView;
 
         // Used for pasting and positioning the SelectBlock TODO refactor and remove
-        this.mousePositionOnScene = new SimpleObjectProperty(new Point2D(0, 0));
+        mousePositionOnScene = new SimpleObjectProperty(new Point2D(0, 0));
 
-        this.mouseMovedHandler = this::handleMouseMoved;
-        this.mouseClickedHandler = this::handleMouseClicked;
-        this.mousePressedHandler = this::handleMousePressed;
-        this.mouseDraggedHandler = this::handleMouseDragged;
-        this.mouseReleasedHandler = this::handleMouseReleased;
-        this.scrollHandler = this::handleScroll;
-        this.keyPressedHandler = this::handleKeyPressed;
+        mouseMovedHandler = this::handleMouseMoved;
+        mouseClickedHandler = this::handleMouseClicked;
+        mousePressedHandler = this::handleMousePressed;
+        mouseDraggedHandler = this::handleMouseDragged;
+        mouseReleasedHandler = this::handleMouseReleased;
+        scrollHandler = this::handleScroll;
+        keyPressedHandler = this::handleKeyPressed;
 
-        this.view.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
-        this.view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
-        this.view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
-        this.view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
-        this.view.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
-        this.view.addEventHandler(ScrollEvent.SCROLL, scrollHandler);
-        this.view.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedHandler);
+        view.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
+        view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
+        view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
+        view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
+        view.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
+        view.addEventHandler(ScrollEvent.SCROLL, scrollHandler);
+        view.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedHandler);
     }
 
     private void handleMouseMoved(MouseEvent event) {
@@ -69,6 +72,7 @@ public class EditorController {
 
     private void handleMouseClicked(MouseEvent event) {
         radialMenuController.handleMouseClicked(event);
+        blockSearchController.handleMouseClicked(event);
     }
 
     private void handleMousePressed(MouseEvent event) {

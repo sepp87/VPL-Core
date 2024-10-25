@@ -1,11 +1,11 @@
 package vplcore;
 
-
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 1 REIMPLEMENT EditorView and Workspace
-// 1 REIMPLEMENT GraphLoader translate and scale
+
+// 1 BUG Block name does not disappear
+// 1 REMOVE Select Block after restyling Block Search
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
@@ -21,7 +21,6 @@ import vpllib.method.JsonMethods;
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
-
 /**
  *
  * @author JoostMeulenkamp
@@ -44,13 +43,16 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
-        
+
+
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
     }
+
+
     static void TestJsonAsList() {
         JsonMethods.asList("[\"str\",6,7]");
         JsonMethods.asList("[1,6,7]");
@@ -81,5 +83,4 @@ public class Launcher {
         System.out.println(value + " ");
     }
 
-    
 }

@@ -64,19 +64,19 @@ public class RadialMenuController {
 
         // TODO additional checks needed when 3D viewer is implemented e.g. check against Control.class and Shape3D.class
         if (isSecondaryClick && onEditorOrWorkspace && mouseIsIdle) {
-            showRadialMenu(event.getSceneX(), event.getSceneY());
+            showView(event.getSceneX(), event.getSceneY());
         } else if (onRadialMenu) {
             // keep radial menu shown if it is clicked on
         } else {
-            hideRadialMenu();
+            hideView();
         }
     }
 
-    private void showRadialMenu(double x, double y) {
+    private void showView(double x, double y) {
         view.getRadialMenu().show(x, y);
     }
 
-    private void hideRadialMenu() {
+    private void hideView() {
         view.getRadialMenu().setVisible(false);
     }
 }

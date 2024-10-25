@@ -1,13 +1,10 @@
 package vplcore.editor;
 
 import vplcore.editor.radialmenu.RadialMenuView;
-import java.io.File;
 import javafx.scene.layout.AnchorPane;
 import vplcore.Config;
-import vplcore.graph.io.GraphLoader;
-import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.SelectBlockHandler;
+import vplcore.workspace.input.BlockSearchView;
 
 /**
  *
@@ -18,7 +15,7 @@ public class EditorView extends AnchorPane {
     Workspace workspace;
     MenuBarView menuBarView;
 
-    public EditorView(RadialMenuView radialMenuView, Workspace workspace, MenuBarView menuBarView, ZoomView zoomView, SelectionRectangleView selectionRectangleView) {
+    public EditorView(RadialMenuView radialMenuView, Workspace workspace, MenuBarView menuBarView, ZoomView zoomView, SelectionRectangleView selectionRectangleView, BlockSearchView blockSearchView) {
 
         this.getStylesheets().add(Config.get().stylesheets());
         this.getStyleClass().add("vpl");
@@ -32,14 +29,11 @@ public class EditorView extends AnchorPane {
         AnchorPane.setRightAnchor(zoomView, 10.);
 
         // create selection block
-        SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();
-        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectBlock, selectionRectangleView);
-
+        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
     }
 
     public void test() {
-        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
         System.out.println("MenuBar Height " + menuBarView.getHeight());
     }
 

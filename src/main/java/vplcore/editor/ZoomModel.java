@@ -18,9 +18,9 @@ public class ZoomModel {
     private final DoubleProperty translateY;
 
     public ZoomModel() {
-        this.zoomFactor = new SimpleDoubleProperty(1.0); // Default zoom level
-        this.translateX = new SimpleDoubleProperty(0.);
-        this.translateY = new SimpleDoubleProperty(0.);
+        zoomFactor = new SimpleDoubleProperty(1.0); // Default zoom level
+        translateX = new SimpleDoubleProperty(0.);
+        translateY = new SimpleDoubleProperty(0.);
 
 //        zoomFactor.addListener(this::zoomFactorChanged);
         translateX.addListener(this::translateXChanged);

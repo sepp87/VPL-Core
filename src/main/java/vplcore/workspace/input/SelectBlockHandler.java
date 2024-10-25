@@ -16,7 +16,7 @@ public class SelectBlockHandler {
 
     private final ChangeListener<Object> initializationHandler = this::handleInitialization;
     private final ChangeListener<Boolean> visibilityListener = this::handleVisibility;
-    private final EventHandler<MouseEvent> mouseReleasedHandler = this::handleMouseReleased;
+    private final EventHandler<MouseEvent> mouseClickedHandler = this::handleMouseClicked;
 
     private Workspace workspace;
     private SelectBlock selectBlock;
@@ -28,7 +28,7 @@ public class SelectBlockHandler {
     }
 
     public void handleInitialization(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
-        workspace.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
+        workspace.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler);
     }
 
     private void initializeSelectBlock() {
@@ -37,7 +37,8 @@ public class SelectBlockHandler {
         selectBlock.visibleProperty().addListener(visibilityListener);
     }
 
-    public void handleMouseReleased(MouseEvent event) {
+    public void handleMouseClicked(MouseEvent event) {
+        System.out.println(workspace.getMouseMode() + " " + event.getButton());
         if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.getButton() == MouseButton.PRIMARY) {
             if (event.getClickCount() == 2 && !workspace.onBlock(event) && event.isDragDetect() && !workspace.onZoomView(event) && !workspace.onMenuBar(event) && !workspace.onBlockInfoPanel(event)) {
                 showSelectBlock(event);

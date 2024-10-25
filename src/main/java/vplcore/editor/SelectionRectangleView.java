@@ -10,8 +10,8 @@ public class SelectionRectangleView extends Region {
 
     public SelectionRectangleView() {
 
-        this.getStyleClass().add("selection-rectangle");
         this.setVisible(false);
+        this.getStyleClass().add("selection-rectangle");
 
         this.setLayoutX(0);
         this.setLayoutY(0);

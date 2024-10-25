@@ -4,7 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -29,12 +31,7 @@ public class ZoomController extends HBox {
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    // Scene initialization handler
-//    private final ChangeListener<Object> initializationHandler = createInitializationHandler();
-    // Scroll event handlers
-    private final EventHandler<ScrollEvent> scrollHandler = this::handleScroll;
-
-//        // Event handlers
+    // Event handlers
     private final EventHandler<ActionEvent> zoomInHandler;
     private final EventHandler<ActionEvent> zoomOutHandler;
     private final EventHandler<MouseEvent> zoomResetHandler;
@@ -86,8 +83,10 @@ public class ZoomController extends HBox {
     // Create and return the ScrollEvent handler for SCROLL
     public void handleScroll(ScrollEvent event) {
         boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
-        boolean onScrollPane = workspace.checkParents(event.getPickResult().getIntersectedNode(), ScrollPane.class);
-        if (!onScrollPane) {
+        Node intersectedNode = event.getPickResult().getIntersectedNode();
+        boolean onScrollPane = Workspace.checkParents(intersectedNode, ScrollPane.class);
+        boolean onListView = Workspace.checkParents(intersectedNode, ListView.class);
+        if (!onScrollPane && !onListView) {
 
             // TODO multiplier used for smooth scrolling, not implemented
             double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
@@ -144,7 +143,7 @@ public class ZoomController extends HBox {
         // Calculate the new translation needed to zoom to the center or to the mouse position
         double dX = scaleChange * dx;
         double dY = scaleChange * dy;
-        
+
         double newTranslateX = model.translateXProperty().get() - dX;
         double newTranslateY = model.translateYProperty().get() - dY;
 
@@ -170,7 +169,7 @@ public class ZoomController extends HBox {
         scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
         model.zoomFactorProperty().set(scale);
-        
+
         System.out.println(boundingBox + " ZoomManager");
 
         //Pan to fit
@@ -181,7 +180,7 @@ public class ZoomController extends HBox {
         double newTranslateY = workspace.getTranslateY() - deltaY;
 
         System.out.println(boundingBox + " ZoomManager");
-        
+
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }

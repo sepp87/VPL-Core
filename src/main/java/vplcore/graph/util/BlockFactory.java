@@ -37,7 +37,7 @@ public class BlockFactory {
         try {
             block = (Block) clazz.getConstructor(Workspace.class).newInstance(workspace);
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
-            Logger.getLogger(SelectBlock.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return block;
     }
@@ -78,7 +78,7 @@ public class BlockFactory {
             }
 
             // If first input parameter is of type list, then this is a list operator block
-            if (List.class.isAssignableFrom(method.getParameters()[0].getType())) {
+            if (method.getParameters().length > 0 && List.class.isAssignableFrom(method.getParameters()[0].getType())) {
                 block.isListOperator = true;
             }
 
@@ -91,7 +91,7 @@ public class BlockFactory {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(SelectBlock.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return block;
     }

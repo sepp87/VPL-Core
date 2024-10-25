@@ -26,7 +26,7 @@ public class BlockSearchView extends VBox {
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
 
         this.setVisible(false);
-        this.getStyleClass().add("block-search-box");
+        this.getStyleClass().add("block-search");
         this.setSpacing(10);
         this.getChildren().addAll(searchField, listView);
     }

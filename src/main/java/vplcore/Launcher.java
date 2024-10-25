@@ -4,11 +4,10 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
-// 1 BUG Block name does not disappear
-// 1 REMOVE Select Block after restyling Block Search
+// 1 BUG Info panel does not move down when aligning blocks
+// 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
-// 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
@@ -18,8 +17,10 @@ import vpllib.method.JsonMethods;
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 // 4 IMPROVEMENT add scrollbars for TextBlock 
+// 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
 //
 // WORK IN PROGRESS
+// 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 /**
  *

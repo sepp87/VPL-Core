@@ -6,16 +6,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import jo.vpl.xml.BlockTag;
-import vplcore.FontAwesomeIcon;
 import vplcore.IconType;
 import vplcore.Util;
 import vplcore.graph.model.BlockExceptionPanel.BlockException;
-import vplcore.graph.util.SelectBlock;
 import vplcore.workspace.Workspace;
 
 /**
@@ -121,10 +118,6 @@ public abstract class Block extends VplElement {
 
         this.add(contentGrid, 1, 1);
 
-        if (this instanceof SelectBlock) {
-            return;
-        }
-
         //Open block info panel on clicking question button
         infoButton.setOnAction(infoButtonClickedHandler);
         infoButton.setVisible(false);
@@ -194,9 +187,7 @@ public abstract class Block extends VplElement {
     @Override
     public void handleVplElementEntered(MouseEvent event) {
         super.handleVplElementEntered(event);
-        if (Block.this instanceof SelectBlock) {
-            return;
-        }
+
         boolean infoPanelIsActive = infoPanel != null;
         if (!infoPanelIsActive) {
             infoButton.setVisible(true);
@@ -208,10 +199,8 @@ public abstract class Block extends VplElement {
 
     @Override
     public void handleVplElementExited(MouseEvent event) {
-        super.handleVplElementEntered(event);
-        if (Block.this instanceof SelectBlock) {
-            return;
-        }
+        super.handleVplElementExited(event);
+
         infoButton.setVisible(false);
         if (resizable) {
             resizeButton.setVisible(false);

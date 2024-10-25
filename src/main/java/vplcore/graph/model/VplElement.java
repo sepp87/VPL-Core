@@ -1,10 +1,8 @@
 package vplcore.graph.model;
 
-import vplcore.graph.util.SelectBlock;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import vplcore.IconType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.EventBlaster;
@@ -45,18 +43,13 @@ public class VplElement extends GridPane {
         eventBlaster.set("selected", selected);
         eventBlaster.set("deleted", deleted);
 
-        if (this instanceof SelectBlock) {
-            return;
-        }
-
-        
         menuBox = new HBox(5);
 
         captionLabel = new BlockLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.textProperty().bindBidirectional(name);
         captionLabel.setVisible(false);
-        
+
         menuBox.setAlignment(Pos.BOTTOM_LEFT);
         menuBox.getStyleClass().add("block-header");
         menuBox.getChildren().addAll(captionLabel);
@@ -68,12 +61,10 @@ public class VplElement extends GridPane {
         add(menuBox, 1, 0);
     }
 
-
-
     public void delete() {
         removeEventHandler(MouseEvent.MOUSE_ENTERED, vplElementEnteredHandler);
         removeEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
-        
+
         captionLabel.textProperty().unbindBidirectional(name);
         captionLabel.delete();
         workspace.getChildren().remove(this);
@@ -81,24 +72,16 @@ public class VplElement extends GridPane {
     }
 
     public void handleVplElementEntered(MouseEvent event) {
-        //Point to this by calling VPL Element
-        if (VplElement.this instanceof SelectBlock) {
-            return;
-        }
-        toggleControlsVisibility(true);
+        captionLabel.setVisible(true);
     }
 
     public void handleVplElementExited(MouseEvent event) {
-        if (VplElement.this instanceof SelectBlock) {
-            return;
-        }
-        toggleControlsVisibility(false);
+        captionLabel.setVisible(false);
     }
 
     private void toggleControlsVisibility(boolean isVisible) {
         captionLabel.setVisible(isVisible);
     }
-
 
     public final StringProperty nameProperty() {
         return name;

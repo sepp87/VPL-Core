@@ -4,9 +4,7 @@ import vplcore.graph.model.Connection;
 import vplcore.workspace.input.MousePositionHandler;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +21,6 @@ import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.PortConnector;
 import vplcore.graph.util.PortDisconnector;
 import vplcore.workspace.input.MouseMode;
-import vplcore.workspace.input.SelectionHandler;
 
 /**
  *
@@ -83,7 +80,6 @@ public class Workspace extends AnchorPane {
     //Initial modi members
     public MousePositionHandler mouse;
 
-    private SelectionHandler selectionHandler;
     public PortConnector portConnector;
     public PortDisconnector portDisconnector;
 
@@ -92,7 +88,6 @@ public class Workspace extends AnchorPane {
         public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
 
             mouse = new MousePositionHandler(Workspace.this);
-            selectionHandler = new SelectionHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
             mouseModeProperty().addListener(mouseModeListener);

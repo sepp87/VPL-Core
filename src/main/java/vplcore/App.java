@@ -9,6 +9,8 @@ import vplcore.editor.KeyboardController;
 import vplcore.editor.MenuBarController;
 import vplcore.editor.MenuBarView;
 import vplcore.editor.PanController;
+import vplcore.editor.SelectionRectangleController;
+import vplcore.editor.SelectionRectangleView;
 import vplcore.editor.radialmenu.RadialMenuController;
 import vplcore.editor.radialmenu.RadialMenuView;
 import vplcore.workspace.Workspace;
@@ -34,11 +36,12 @@ public class App extends Application {
         // Initialize views
         // WorkspaceView
         // BlockSearchView
+        SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView(zoomModel);
         RadialMenuView radialMenuView = new RadialMenuView();
         Workspace workspace = new Workspace(zoomModel);
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView);
+        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView);
 
         // Temporary stuff
         ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);
@@ -47,11 +50,12 @@ public class App extends Application {
         // Initialize controllers
         // WorkspaceController
         // BlockSearchController
+        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(selectionRectangleView, workspace);
         KeyboardController keyboardController = new KeyboardController(actions);
         PanController panController = new PanController(workspace, zoomModel);
         RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
         MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);

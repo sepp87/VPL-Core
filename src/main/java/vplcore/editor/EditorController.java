@@ -21,6 +21,7 @@ public class EditorController {
     private final ZoomController zoomController;
     private final PanController panController;
     private final KeyboardController keyboardController;
+    private final SelectionRectangleController selectionRectangleController;
     private final EditorView view;
 
     private final ObjectProperty<Point2D> mousePositionOnScene;
@@ -33,12 +34,13 @@ public class EditorController {
     private final EventHandler<ScrollEvent> scrollHandler;
     private final EventHandler<KeyEvent> keyPressedHandler;
 
-    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController) {
+    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController) {
         this.workspace = workspace;
         this.radialMenuController = radialMenuController;
         this.zoomController = zoomController;
         this.panController = panController;
         this.keyboardController = keyboardController;
+        this.selectionRectangleController = selectionRectangleController;
         this.view = editorView;
 
         // Used for pasting and positioning the SelectBlock TODO refactor and remove
@@ -72,14 +74,17 @@ public class EditorController {
     private void handleMousePressed(MouseEvent event) {
         mousePositionOnScene.set(new Point2D(event.getSceneX(), event.getSceneY()));
         panController.handleMousePressed(event);
+        selectionRectangleController.handleMousePressed(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {
         panController.handleMouseDragged(event);
+        selectionRectangleController.handleMouseDragged(event);
     }
 
     private void handleMouseReleased(MouseEvent event) {
         panController.handleMouseReleased(event);
+        selectionRectangleController.handleMouseReleased(event);
     }
 
     private void handleScroll(ScrollEvent event) {

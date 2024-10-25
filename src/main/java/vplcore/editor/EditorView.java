@@ -18,7 +18,7 @@ public class EditorView extends AnchorPane {
     Workspace workspace;
     MenuBarView menuBarView;
 
-    public EditorView(RadialMenuView radialMenuView, Workspace workspace, MenuBarView menuBarView, ZoomView zoomView) {
+    public EditorView(RadialMenuView radialMenuView, Workspace workspace, MenuBarView menuBarView, ZoomView zoomView, SelectionRectangleView selectionRectangleView) {
 
         this.getStylesheets().add(Config.get().stylesheets());
         this.getStyleClass().add("vpl");
@@ -28,16 +28,12 @@ public class EditorView extends AnchorPane {
 
         menuBarView.prefWidthProperty().bind(this.widthProperty());
 
-        // TODO create ZoomControlsView
-        // TODO create ZoomController
-
-
         AnchorPane.setTopAnchor(zoomView, 37.5);
         AnchorPane.setRightAnchor(zoomView, 10.);
 
         // create selection block
         SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();
-        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectBlock);
+        this.getChildren().addAll(workspace, radialMenuView, menuBarView, zoomView, selectBlock, selectionRectangleView);
 
 
     }

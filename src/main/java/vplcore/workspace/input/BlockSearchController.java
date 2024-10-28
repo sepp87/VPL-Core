@@ -1,6 +1,5 @@
 package vplcore.workspace.input;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
@@ -8,12 +7,11 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.skin.ListViewSkin;
-import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import static vplcore.Util.scrollToWrapped;
 import vplcore.editor.EditorView;
 import vplcore.graph.model.Block;
 import vplcore.graph.util.BlockFactory;
@@ -36,7 +34,6 @@ public class BlockSearchController {
 
     private final TextField searchField;
     private final ListView<String> listView;
-    private final ReadOnlyIntegerProperty currentIndex;
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
@@ -53,9 +50,8 @@ public class BlockSearchController {
 
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
         listView.setOnMouseClicked(this::handleListViewClicked);
-        listView.setOnMouseMoved(this::handleListViewHovered);
+        listView.setOnMouseMoved(this::selectHoveredListViewElement);
 
-        currentIndex = listView.getSelectionModel().selectedIndexProperty();
     }
 
     private void handleSearchTermChanged(Object b, String o, String searchTerm) {
@@ -81,19 +77,7 @@ public class BlockSearchController {
         switch (event.getCode()) {
             case DOWN, UP -> {
                 int direction = event.getCode() == KeyCode.DOWN ? 1 : -1;
-                int index = shiftIndex(direction);
-                listView.getSelectionModel().select(index);
-
-                int firstVisibleCell = getFirstVisibleCell();
-                int lastVisibleCell = firstVisibleCell + ROWS_VISIBLE - 1;
-
-                // If scrolling down, scroll only if the selected index is beyond the last visible cell
-                if (direction > 0 && index > lastVisibleCell) {
-                    listView.scrollTo(firstVisibleCell + direction);
-                } // If scrolling up, scroll only if the selected index is before the first visible cell
-                else if (direction < 0 && index < firstVisibleCell) {
-                    listView.scrollTo(firstVisibleCell + direction);
-                }
+                scrollToWrapped(listView, direction, ROWS_VISIBLE);
             }
             case ESCAPE ->
                 hideView();
@@ -102,17 +86,7 @@ public class BlockSearchController {
         }
         event.consume(); // Consume the event so space does not trigger zoom to fit
     }
-
-    public int shiftIndex(int amount) {
-        int size = listView.getItems().size();
-        int index = currentIndex.get() + amount;
-
-        // Ensure the new index stays within the bounds [0, size]
-        index = index < 0 ? 0 : index;
-        index = index > size - 1 ? size - 1 : index;
-        return index;
-    }
-
+    
     private void handleListViewClicked(MouseEvent event) {
         createBlock();
     }
@@ -134,33 +108,16 @@ public class BlockSearchController {
         hideView();
     }
 
-    private void handleListViewHovered(MouseEvent event) {
+    private void selectHoveredListViewElement(MouseEvent event) {
         double yPos = event.getY(); // Get the Y position of the mouse event relative to the ListView
-        Integer firstVisibleIndex = getFirstVisibleCell();
+        Integer firstVisibleIndex = vplcore.Util.getFirstVisibleCell(listView);
         if (firstVisibleIndex == null) {
             return;
         }
-        int index = firstVisibleIndex + (int) (yPos / getCellHeight(listView)); // Calculate the index of the item under the mouse
+        int index = firstVisibleIndex + (int) (yPos / vplcore.Util.getCellHeight(listView)); // Calculate the index of the item under the mouse
         if (index >= 0 && index < listView.getItems().size()) { // Ensure the index is within the bounds of the ListView's items
             listView.getSelectionModel().select(index); // Select the item at the calculated index
         }
-    }
-
-    private Integer getFirstVisibleCell() {
-        ListViewSkin<?> skin = (ListViewSkin<?>) listView.getSkin(); // Access the ListView's skin to get the VirtualFlow
-        if (skin == null) {
-            return null; // If the skin is not set, return
-        }
-        VirtualFlow<?> virtualFlow = (VirtualFlow<?>) skin.getChildren().get(0);
-        if (virtualFlow == null) {
-            return null; // If the VirtualFlow is not found, return
-        }
-        return virtualFlow.getFirstVisibleCell().getIndex(); // Get the index of the first visible cell
-    }
-
-    // Method to determine the height of a cell in the ListView
-    private double getCellHeight(ListView<String> listView) {
-        return listView.lookup(".list-cell").getLayoutBounds().getHeight();
     }
 
     public void handleMouseClicked(MouseEvent event) {
@@ -187,7 +144,7 @@ public class BlockSearchController {
         view.setTranslateY(y - OFFSET);
         searchField.requestFocus();
         searchField.focusedProperty().addListener(searchFieldFocusChangedListener);
-        listView.setPrefHeight(getCellHeight(listView) * ROWS_VISIBLE);
+        listView.setPrefHeight(vplcore.Util.getCellHeight(listView) * ROWS_VISIBLE);
         listView.getSelectionModel().select(-1);
         listView.scrollTo(-1);
     }

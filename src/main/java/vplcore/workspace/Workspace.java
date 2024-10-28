@@ -88,16 +88,12 @@ public class Workspace extends AnchorPane {
             mouse = new MousePositionHandler(Workspace.this);
             portConnector = new PortConnector(Workspace.this);
             portDisconnector = new PortDisconnector(Workspace.this);
-            mouseModeProperty().addListener(mouseModeListener);
             Workspace.this.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
         }
     };
 
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
 
-    private ChangeListener<Object> mouseModeListener = (b, o, n) -> {
-//        System.out.println(n);
-    };
     
     public double getZoomFactor() {
         return zoomModel.zoomFactorProperty().get();

@@ -44,17 +44,17 @@ public class BlockSearchController {
         searchField = view.getSearchField();
         listView = view.getListView();
 
-        searchField.setOnKeyPressed(this::handleSearchFieldKeyPressed);
-        searchField.textProperty().addListener(this::handleSearchTermChanged);
-        searchFieldFocusChangedListener = this::handleSearchFieldFocusChanged;
+        searchField.setOnKeyPressed(this::handleShortcuts);
+        searchField.textProperty().addListener(this::handleSearch);
+        searchFieldFocusChangedListener = this::handleKeepFocus;
 
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
-        listView.setOnMouseClicked(this::handleListViewClicked);
-        listView.setOnMouseMoved(this::selectHoveredListViewElement);
+        listView.setOnMouseClicked(this::handleCreateBlock);
+        listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
     }
 
-    private void handleSearchTermChanged(Object b, String o, String searchTerm) {
+    private void handleSearch(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
             listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
@@ -73,7 +73,7 @@ public class BlockSearchController {
         listView.getSelectionModel().selectFirst();
     }
 
-    private void handleSearchFieldKeyPressed(KeyEvent event) {
+    private void handleShortcuts(KeyEvent event) {
         switch (event.getCode()) {
             case DOWN, UP -> {
                 int direction = event.getCode() == KeyCode.DOWN ? 1 : -1;
@@ -87,7 +87,7 @@ public class BlockSearchController {
         event.consume(); // Consume the event so space does not trigger zoom to fit
     }
     
-    private void handleListViewClicked(MouseEvent event) {
+    private void handleCreateBlock(MouseEvent event) {
         createBlock();
     }
 
@@ -108,7 +108,7 @@ public class BlockSearchController {
         hideView();
     }
 
-    private void selectHoveredListViewElement(MouseEvent event) {
+    private void handleSelectHoveredItem(MouseEvent event) {
         double yPos = event.getY(); // Get the Y position of the mouse event relative to the ListView
         Integer firstVisibleIndex = vplcore.Util.getFirstVisibleCell(listView);
         if (firstVisibleIndex == null) {
@@ -120,7 +120,7 @@ public class BlockSearchController {
         }
     }
 
-    public void handleMouseClicked(MouseEvent event) {
+    public void handleEditorMouseClicked(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
         boolean onBlockSearch = Workspace.checkParents(intersectedNode, BlockSearchView.class);
@@ -156,7 +156,7 @@ public class BlockSearchController {
         searchField.focusedProperty().removeListener(searchFieldFocusChangedListener);
     }
 
-    private void handleSearchFieldFocusChanged(Object b, boolean o, boolean isFocused) {
+    private void handleKeepFocus(Object b, boolean o, boolean isFocused) {
         if (!isFocused) {
             searchField.requestFocus();
         }

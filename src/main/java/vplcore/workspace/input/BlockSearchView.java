@@ -12,17 +12,14 @@ import vplcore.graph.util.BlockLoader;
 public class BlockSearchView extends VBox {
 
     private final TextField searchField;
-    private final ListView listView;
+    private final ListView<String> listView;
     
     public BlockSearchView() {
         
         searchField = new TextField();
-//        searchField.setMaxWidth(140);
         searchField.setPromptText("Search...");
         
         listView = new ListView<>();
-//        listView.setMaxWidth(240);
-//        listView.setPrefHeight(265);
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
 
         this.setVisible(false);
@@ -35,7 +32,7 @@ public class BlockSearchView extends VBox {
         return searchField;
     }
     
-    public ListView getListView() {
+    public ListView<String> getListView() {
         return listView;
     }
 }

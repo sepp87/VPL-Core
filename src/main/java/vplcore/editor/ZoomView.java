@@ -15,12 +15,11 @@ public class ZoomView extends HBox {
     private final Button zoomInButton;  // Button to zoom in
     private final Button zoomOutButton;  // Button to zoom out
 
-    public ZoomView(ZoomModel zoomModel) {
+    public ZoomView() {
 
         // Initialize UI components
         zoomLabel = new Label();
         zoomLabel.getStyleClass().add("zoom-label");
-        zoomLabel.textProperty().bind(zoomModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
 
         zoomOutButton = new Button("-");
         zoomOutButton.getStyleClass().add("zoom-button");

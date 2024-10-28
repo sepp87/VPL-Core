@@ -24,14 +24,14 @@ public class SelectionRectangleController {
         this.workspace = workspace;
     }
 
-    public void handleMousePressed(MouseEvent event) {
+    public void handleEditorSelectionStarted(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event) && !workspace.onBlockInfoPanel(event)) {
             workspace.setMouseMode(MouseMode.SELECTING);
             prepareSelectionRectangle(event);
         }
     }
 
-    public void handleMouseDragged(MouseEvent event) {
+    public void handleEditorSelection(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.SELECTING && event.isPrimaryButtonDown()) {
             initializeSelectionRectangle();
             updateSelectionRectangle(event);
@@ -39,7 +39,7 @@ public class SelectionRectangleController {
         }
     }
 
-    public void handleMouseReleased(MouseEvent event) {
+    public void handleEditorSelectionStopped(MouseEvent event) {
         // Reset the start selection point
         startPoint = null;
         if (event.getButton() == MouseButton.PRIMARY) {

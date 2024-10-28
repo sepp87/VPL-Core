@@ -41,7 +41,7 @@ public class App extends Application {
         // WorkspaceView
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
-        ZoomView zoomView = new ZoomView(zoomModel);
+        ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
         Workspace workspace = new Workspace(zoomModel);
         MenuBarView menuBarView = new MenuBarView();

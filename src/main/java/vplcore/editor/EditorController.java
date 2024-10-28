@@ -71,28 +71,28 @@ public class EditorController {
     }
 
     private void handleMouseClicked(MouseEvent event) {
-        radialMenuController.handleMouseClicked(event);
-        blockSearchController.handleMouseClicked(event);
+        radialMenuController.handleEditorMouseClicked(event);
+        blockSearchController.handleEditorMouseClicked(event);
     }
 
     private void handleMousePressed(MouseEvent event) {
         mousePositionOnScene.set(new Point2D(event.getSceneX(), event.getSceneY()));
-        panController.handleMousePressed(event);
-        selectionRectangleController.handleMousePressed(event);
+        panController.handleEditorPanStarted(event);
+        selectionRectangleController.handleEditorSelectionStarted(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {
-        panController.handleMouseDragged(event);
-        selectionRectangleController.handleMouseDragged(event);
+        panController.handleEditorPan(event);
+        selectionRectangleController.handleEditorSelection(event);
     }
 
     private void handleMouseReleased(MouseEvent event) {
-        panController.handleMouseReleased(event);
-        selectionRectangleController.handleMouseReleased(event);
+        panController.handleEditorPanStopped(event);
+        selectionRectangleController.handleEditorSelectionStopped(event);
     }
 
     private void handleScroll(ScrollEvent event) {
-        zoomController.handleScroll(event);
+        zoomController.handleEditorScroll(event);
     }
 
     private void handleKeyPressed(KeyEvent event) {

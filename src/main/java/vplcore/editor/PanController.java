@@ -24,43 +24,27 @@ public class PanController {
         this.zoomModel = zoomModel;
     }
 
-    public void handleMousePressed(MouseEvent event) {
+    public void handleEditorPanStarted(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
             workspace.setMouseMode(MouseMode.PANNING);
-            preparePan(event);
+            initialX = event.getSceneX();
+            initialY = event.getSceneY();
+            initialTranslateX = zoomModel.translateXProperty().get();
+            initialTranslateY = zoomModel.translateYProperty().get();
         }
     }
 
-    private void preparePan(MouseEvent event) {
-        initialX = event.getSceneX();
-        initialY = event.getSceneY();
-        initialTranslateX = workspace.getTranslateX();
-        initialTranslateY = workspace.getTranslateY();
-        initialTranslateX = zoomModel.translateXProperty().get();
-        initialTranslateY = zoomModel.translateYProperty().get();
-
-//        System.out.println(event.getSceneX() + "\t" + event.getSceneY() + "\t" + initialTranslateX + "\t" + initialTranslateY + "\t PanController");
-        System.out.println(workspace.getTranslateX() + "\t" + workspace.getTranslateY() + "\t PanController");
-        System.out.println(zoomModel.translateXProperty().get() + "\t" + zoomModel.translateYProperty().get() + "\t PanController");
-    }
-
-    public void handleMouseDragged(MouseEvent event) {
+    public void handleEditorPan(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.PANNING && event.isSecondaryButtonDown()) {
-            pan(event);
+            zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+            zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
-    public void handleMouseReleased(MouseEvent event) {
+    public void handleEditorPanStopped(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.PANNING && event.getButton() == MouseButton.SECONDARY) {
             workspace.setMouseMode(MouseMode.MOUSE_IDLE);
         }
-    }
-
-    public void pan(MouseEvent event) {
-//        workspace.setTranslateX(initialTranslateX + event.getSceneX() - initialX);
-//        workspace.setTranslateY(initialTranslateY + event.getSceneY() - initialY);
-        zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-        zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
     }
 
 }

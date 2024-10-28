@@ -31,29 +31,18 @@ public class ZoomController extends HBox {
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    // Event handlers
-    private final EventHandler<ActionEvent> zoomInHandler;
-    private final EventHandler<ActionEvent> zoomOutHandler;
-    private final EventHandler<MouseEvent> zoomResetHandler;
-    private final EventHandler<KeyEvent> keyPressedHandler;
 
     public ZoomController(ZoomModel zoomModel, Workspace workspace, ZoomView zoomView) {
         this.workspace = workspace;
         this.model = zoomModel;
         this.view = zoomView;
 
-        // Button event handlers
-        zoomInHandler = this::handleZoomIn;
-        zoomOutHandler = this::handleZoomOut;
-        zoomResetHandler = this::handleZoomReset;
+        view.getZoomInButton().setOnAction(this::handleZoomIn);
+        view.getZoomOutButton().setOnAction(this::handleZoomOut);
+        view.getZoomLabel().setOnMouseClicked(this::handleZoomReset);  // Reset zoom to 100% on click
+        view.getZoomLabel().textProperty().bind(zoomModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
 
-        view.getZoomInButton().setOnAction(zoomInHandler);
-        view.getZoomOutButton().setOnAction(zoomOutHandler);
-        view.getZoomLabel().setOnMouseClicked(zoomResetHandler);  // Reset zoom to 100% on click
-
-        keyPressedHandler = this::handleKeyPressed;
-        workspace.setOnKeyPressed(keyPressedHandler);
-
+        workspace.setOnKeyPressed(this::handleZoomShortcuts);
     }
 
     public void incrementZoom() {
@@ -81,7 +70,7 @@ public class ZoomController extends HBox {
     }
 
     // Create and return the ScrollEvent handler for SCROLL
-    public void handleScroll(ScrollEvent event) {
+    public void handleEditorScroll(ScrollEvent event) {
         boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = Workspace.checkParents(intersectedNode, ScrollPane.class);
@@ -170,8 +159,6 @@ public class ZoomController extends HBox {
         scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
         model.zoomFactorProperty().set(scale);
 
-        System.out.println(boundingBox + " ZoomManager");
-
         //Pan to fit
         boundingBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
         double deltaX = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
@@ -179,13 +166,11 @@ public class ZoomController extends HBox {
         double newTranslateX = workspace.getTranslateX() - deltaX;
         double newTranslateY = workspace.getTranslateY() - deltaY;
 
-        System.out.println(boundingBox + " ZoomManager");
-
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);
     }
 
-    private void handleKeyPressed(KeyEvent event) {
+    private void handleZoomShortcuts(KeyEvent event) {
 
         // Handle keyboard shortcuts for zooming
         if (Util.isModifierDown(event)) {

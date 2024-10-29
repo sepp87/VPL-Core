@@ -22,6 +22,8 @@ import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.Actions;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
+import vplcore.editor.EditorModel;
+import vplcore.workspace.ActionManager;
 
 /**
  *
@@ -35,6 +37,7 @@ public class App extends Application {
         boolean addNewStuff = true;
 
         // Initialize models
+        EditorModel editorModel = new EditorModel();
         ZoomModel zoomModel = new ZoomModel();
 
         // Initialize views
@@ -43,22 +46,23 @@ public class App extends Application {
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace(zoomModel);
+        Workspace workspace = new Workspace(zoomModel, editorModel);
         MenuBarView menuBarView = new MenuBarView();
         EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Temporary stuff
-        ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);
+        ActionManager actionManager = new ActionManager(workspace);
+        ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);///////////////////////////////////////////////////////////////////////////////////////////////////
         Actions actions = new Actions(workspace, zoomController, zoomModel);
 
         // Initialize controllers
         // WorkspaceController
-        BlockSearchController blockSearchController = new BlockSearchController(workspace, blockSearchView);
-        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(selectionRectangleView, workspace);
+        BlockSearchController blockSearchController = new BlockSearchController(editorModel, blockSearchView, actionManager);
+        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(editorModel, selectionRectangleView, workspace);/////////////////////////////////////////
         KeyboardController keyboardController = new KeyboardController(actions);
-        PanController panController = new PanController(workspace, zoomModel);
-        RadialMenuController radialMenuController = new RadialMenuController(radialMenuView, workspace, actions);
-        MenuBarController menuBarController = new MenuBarController(menuBarView, workspace, actions);
+        PanController panController = new PanController(editorModel, zoomModel);
+        RadialMenuController radialMenuController = new RadialMenuController(editorModel, radialMenuView, actions);
+        MenuBarController menuBarController = new MenuBarController(menuBarView, actions);
         EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
 
         // Setup scene

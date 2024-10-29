@@ -1,26 +1,22 @@
 package vplcore.workspace;
 
 import vplcore.graph.model.Connection;
-import vplcore.workspace.input.MousePositionHandler;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.control.Control;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import vplcore.editor.EditorMode;
+import vplcore.editor.EditorModel;
 import vplcore.editor.ZoomModel;
-import vplcore.editor.ZoomView;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.util.ConnectionCreator;
 import vplcore.graph.util.ConnectionRemover;
-import vplcore.workspace.input.MouseMode;
+
 /**
  *
  * @author JoostMeulenkamp
@@ -43,12 +39,14 @@ public class Workspace extends AnchorPane {
     public Point2D startSelectionPoint;
     public Region selectionRectangle;
 
-
     private final ZoomModel zoomModel;
-    
+    private final EditorModel editorModel;
+
     //Radial menu
-    public Workspace(ZoomModel zoomModel) {
+    public Workspace(ZoomModel zoomModel, EditorModel editorModel) {
         this.zoomModel = zoomModel;
+        this.editorModel = editorModel;
+        
         this.scaleXProperty().bind(zoomModel.zoomFactorProperty());
         this.scaleYProperty().bind(zoomModel.zoomFactorProperty());
         this.translateXProperty().bind(zoomModel.translateXProperty());
@@ -94,7 +92,6 @@ public class Workspace extends AnchorPane {
 
     private final SimpleObjectProperty<MouseMode> mouseModeProperty = new SimpleObjectProperty<>(MouseMode.MOUSE_IDLE);
 
-    
     public double getZoomFactor() {
         return zoomModel.zoomFactorProperty().get();
     }
@@ -109,55 +106,9 @@ public class Workspace extends AnchorPane {
         getChildren().add(portDisconnector.getRemoveButton());
     }
 
-    public MouseMode getMouseMode() {
-        return mouseModeProperty.get();
+
+    public void setEditorMode(EditorMode mode) {
+        editorModel.modeProperty().set(mode);
     }
 
-    public void setMouseMode(MouseMode mode) {
-        mouseModeProperty.set(mode);
-    }
-
-    public ObjectProperty<MouseMode> mouseModeProperty() {
-        return mouseModeProperty;
-    }
-
-    public static boolean onZoomView(MouseEvent event) {
-        Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, ZoomView.class);
-    }
-
-    public static boolean onMenuBar(MouseEvent event) {
-        Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, Control.class);
-    }
-
-    public static boolean onBlock(MouseEvent event) {
-        Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, Block.class);
-    }
-
-    public static boolean onBlockInfoPanel(MouseEvent event) {
-        Node node = event.getPickResult().getIntersectedNode();
-        return checkParents(node, BlockInfoPanel.class);
-    }
-
-    /**
-     * Check if the node of the same type or if it is embedded in the type
-     *
-     * @param node the node to check
-     * @param type the type of node to check against
-     * @return
-     */
-    public static <T> boolean checkParents(Node node, Class<T> type) {
-        if (node == null) {
-            return false;
-        }
-
-        if (type.isAssignableFrom(node.getClass())) {
-            return true;
-        } else {
-            Node parent = node.getParent();
-            return checkParents(parent, type);
-        }
-    }
 }

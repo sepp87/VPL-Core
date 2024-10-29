@@ -3,8 +3,6 @@ package vplcore.editor;
 import vplcore.editor.radialmenu.RadialMenuView;
 import javafx.scene.layout.AnchorPane;
 import vplcore.Config;
-import vplcore.graph.util.ConnectionCreator;
-import vplcore.graph.util.ConnectionRemover;
 import vplcore.workspace.Workspace;
 
 /**
@@ -24,9 +22,6 @@ public class EditorView extends AnchorPane {
         this.workspace = workspace;
         this.menuBarView = menuBarView;
         
-        ConnectionCreator creator = new ConnectionCreator(workspace);
-        ConnectionRemover remover = new ConnectionRemover(workspace);
-
         menuBarView.prefWidthProperty().bind(this.widthProperty());
 
         AnchorPane.setTopAnchor(zoomView, 37.5);

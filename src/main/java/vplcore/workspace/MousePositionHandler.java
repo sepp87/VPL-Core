@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.workspace;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;

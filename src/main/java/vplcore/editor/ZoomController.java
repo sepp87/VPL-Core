@@ -1,7 +1,6 @@
 package vplcore.editor;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -16,6 +15,7 @@ import javafx.scene.layout.HBox;
 import vplcore.Config;
 import vplcore.Util;
 import vplcore.graph.model.Block;
+import vplcore.util.NodeHierarchyUtils;
 import vplcore.workspace.Workspace;
 
 /**
@@ -30,7 +30,6 @@ public class ZoomController extends HBox {
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
-
 
     public ZoomController(ZoomModel zoomModel, Workspace workspace, ZoomView zoomView) {
         this.workspace = workspace;
@@ -71,16 +70,18 @@ public class ZoomController extends HBox {
 
     // Create and return the ScrollEvent handler for SCROLL
     public void processEditorScroll(ScrollEvent event) {
-        boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
+
         Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onScrollPane = Workspace.checkParents(intersectedNode, ScrollPane.class);
-        boolean onListView = Workspace.checkParents(intersectedNode, ListView.class);
+        boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
+        boolean onListView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ListView.class);
+
         if (!onScrollPane && !onListView) {
 
             // TODO multiplier used for smooth scrolling, not implemented
             double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
 
             // Throttle zoom on macOS
+            boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
             if (onMac) {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastZoomTime < zoomThrottleInterval) {
@@ -121,8 +122,8 @@ public class ZoomController extends HBox {
             dy = pivotPoint.getY() - workspaceBounds.getMinY();
         } else {
             // Calculate the center of the scene (visible area)
-            double sceneCenterX = workspace.getScene().getWidth() / 2;
-            double sceneCenterY = workspace.getScene().getHeight() / 2;
+            double sceneCenterX = view.getScene().getWidth() / 2;
+            double sceneCenterY = view.getScene().getHeight() / 2;
 
             // Calculate the distance from the workspace's center to the scene's center
             dx = sceneCenterX - workspaceBounds.getMinX();
@@ -142,14 +143,13 @@ public class ZoomController extends HBox {
     }
 
     public void zoomToFit() {
-        Scene scene = workspace.getScene();
-        Bounds localBoundingBox = Block.getBoundingBoxOfBlocks(workspace.blockSet);
-        if (localBoundingBox == null) {
+        Scene scene = view.getScene();
+        if (workspace.blockSet.isEmpty()) {
             return;
         }
 
         //Zoom to fit        
-        Bounds boundingBox = workspace.localToParent(localBoundingBox);
+        Bounds boundingBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
         double ratioX = boundingBox.getWidth() / scene.getWidth();
         double ratioY = boundingBox.getHeight() / scene.getHeight();
         double ratio = Math.max(ratioX, ratioY);
@@ -161,10 +161,10 @@ public class ZoomController extends HBox {
 
         //Pan to fit
         boundingBox = workspace.localToParent(Block.getBoundingBoxOfBlocks(workspace.blockSet));
-        double deltaX = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
-        double deltaY = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
-        double newTranslateX = workspace.getTranslateX() - deltaX;
-        double newTranslateY = workspace.getTranslateY() - deltaY;
+        double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
+        double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
+        double newTranslateX = model.translateXProperty().get() - dx;
+        double newTranslateY = model.translateYProperty().get() - dy;
 
         model.translateXProperty().set(newTranslateX);
         model.translateYProperty().set(newTranslateY);

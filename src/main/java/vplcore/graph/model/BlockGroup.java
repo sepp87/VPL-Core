@@ -27,9 +27,10 @@ import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.IconType;
+import vplcore.editor.EditorMode;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.MouseMode;
+import vplcore.workspace.MouseMode;
 
 /**
  *
@@ -102,11 +103,11 @@ public class BlockGroup extends VplElement {
             block.setSelected(true);
             workspace.selectedBlockSet.add(block);
         }
-        workspace.setMouseMode(MouseMode.SELECTING_GROUP); // prevent group from being deselected
+        workspace.setEditorMode(EditorMode.GROUP_SELECTION_MODE); // prevent group from being deselected
     }
 
     private void handleGroupReleased(MouseEvent event) {
-        workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+        workspace.setEditorMode(EditorMode.IDLE_MODE);
 //        event.consume();
     }
 

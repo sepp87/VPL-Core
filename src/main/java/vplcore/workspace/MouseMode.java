@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.workspace;
 
 /**
  *

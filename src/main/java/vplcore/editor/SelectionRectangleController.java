@@ -1,12 +1,12 @@
 package vplcore.editor;
 
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.MouseMode;
 
 /**
  *
@@ -14,25 +14,32 @@ import vplcore.workspace.input.MouseMode;
  */
 public class SelectionRectangleController {
 
+    private final EditorModel editorModel;
     private final SelectionRectangleView view;
     private final Workspace workspace;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(SelectionRectangleView selectionRectangleView, Workspace workspace) {
+    public SelectionRectangleController(EditorModel editorModel, SelectionRectangleView selectionRectangleView, Workspace workspace) {
+        this.editorModel = editorModel;
         this.view = selectionRectangleView;
         this.workspace = workspace;
     }
 
     public void processEditorSelectionStart(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isPrimaryButtonDown() && !workspace.onBlock(event) && !workspace.onBlockInfoPanel(event)) {
-            workspace.setMouseMode(MouseMode.SELECTING);
+        Node intersectedNode = event.getPickResult().getIntersectedNode();
+        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
+        boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY  ;
+        boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
+
+        if (isPrimaryClick && onEditorOrWorkspace && isIdle) {
+            editorModel.modeProperty().set(EditorMode.SELECTION_MODE);
             prepareSelectionRectangle(event);
         }
     }
 
     public void processEditorSelection(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.SELECTING && event.isPrimaryButtonDown()) {
+        if (editorModel.modeProperty().get() == EditorMode.SELECTION_MODE && event.isPrimaryButtonDown()) {
             initializeSelectionRectangle();
             updateSelectionRectangle(event);
             updateSelection();
@@ -44,9 +51,9 @@ public class SelectionRectangleController {
         startPoint = null;
         if (event.getButton() == MouseButton.PRIMARY) {
 
-            if (workspace.getMouseMode() == MouseMode.SELECTING) {
+            if (editorModel.modeProperty().get() == EditorMode.SELECTION_MODE) {
                 // Reset the mouse mode back to idle
-                workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+                editorModel.modeProperty().set(EditorMode.IDLE_MODE);
                 // Check if selection rectangle is active
                 if (view.isVisible()) {
                     // Finalize selection by removing the selection rectangle

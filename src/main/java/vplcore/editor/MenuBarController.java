@@ -12,15 +12,13 @@ import vplcore.workspace.Workspace;
  */
 public class MenuBarController {
 
-    private Workspace workspace;
     private Actions actions;
     
     private final MenuBarView view;
 
     private final EventHandler<ActionEvent> menuBarItemClickedHandler;
 
-    public MenuBarController(MenuBarView menuBarView, Workspace workspace, Actions actions) {
-        this.workspace = workspace;
+    public MenuBarController(MenuBarView menuBarView, Actions actions) {
         this.actions = actions;
         
         this.view = menuBarView;

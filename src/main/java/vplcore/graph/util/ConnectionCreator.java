@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
+import vplcore.util.NodeHierarchyUtils;
 import vplcore.workspace.Workspace;
 
 /**
@@ -136,8 +137,8 @@ public class ConnectionCreator {
     private final EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            Node node = event.getPickResult().getIntersectedNode();
-            boolean onPort = workspace.checkParents(node, Port.class);
+            Node intersectedNode = event.getPickResult().getIntersectedNode();
+            boolean onPort = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, Port.class);
             boolean isConnecting = state == State.IS_CONNECTING;
             boolean isPrimaryButton = event.getButton() == MouseButton.PRIMARY;
             if (isPrimaryButton && isConnecting && !onPort) {

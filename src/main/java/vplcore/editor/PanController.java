@@ -2,8 +2,8 @@ package vplcore.editor;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import vplcore.workspace.Workspace;
-import vplcore.workspace.input.MouseMode;
+import vplcore.graph.model.Block;
+import vplcore.util.NodeHierarchyUtils;
 
 /**
  *
@@ -11,7 +11,7 @@ import vplcore.workspace.input.MouseMode;
  */
 public class PanController {
 
-    private final Workspace workspace;
+    private final EditorModel editorModel;
     private final ZoomModel zoomModel;
 
     private double initialX;
@@ -19,14 +19,14 @@ public class PanController {
     private double initialTranslateX;
     private double initialTranslateY;
 
-    public PanController(Workspace workspace, ZoomModel zoomModel) {
-        this.workspace = workspace;
+    public PanController(EditorModel editorModel, ZoomModel zoomModel) {
+        this.editorModel = editorModel;
         this.zoomModel = zoomModel;
     }
 
     public void processEditorPanStart(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
-            workspace.setMouseMode(MouseMode.PANNING);
+        if (editorModel.modeProperty().get() == EditorMode.IDLE_MODE && event.isSecondaryButtonDown() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, Block.class)) {
+            editorModel.modeProperty().set(EditorMode.PAN_MODE);
             initialX = event.getSceneX();
             initialY = event.getSceneY();
             initialTranslateX = zoomModel.translateXProperty().get();
@@ -35,15 +35,15 @@ public class PanController {
     }
 
     public void processEditorPan(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.PANNING && event.isSecondaryButtonDown()) {
+        if (editorModel.modeProperty().get() == EditorMode.PAN_MODE && event.isSecondaryButtonDown()) {
             zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
             zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
     public void processEditorPanStop(MouseEvent event) {
-        if (workspace.getMouseMode() == MouseMode.PANNING && event.getButton() == MouseButton.SECONDARY) {
-            workspace.setMouseMode(MouseMode.MOUSE_IDLE);
+        if (editorModel.modeProperty().get() == EditorMode.PAN_MODE && event.getButton() == MouseButton.SECONDARY) {
+            editorModel.modeProperty().set(EditorMode.IDLE_MODE);
         }
     }
 

@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.editor;
 
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;

@@ -24,7 +24,7 @@ public class PanController {
         this.zoomModel = zoomModel;
     }
 
-    public void handleEditorPanStarted(MouseEvent event) {
+    public void processEditorPanStart(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.MOUSE_IDLE && event.isSecondaryButtonDown() && !workspace.onBlock(event)) {
             workspace.setMouseMode(MouseMode.PANNING);
             initialX = event.getSceneX();
@@ -34,14 +34,14 @@ public class PanController {
         }
     }
 
-    public void handleEditorPan(MouseEvent event) {
+    public void processEditorPan(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.PANNING && event.isSecondaryButtonDown()) {
             zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
             zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
-    public void handleEditorPanStopped(MouseEvent event) {
+    public void processEditorPanStop(MouseEvent event) {
         if (workspace.getMouseMode() == MouseMode.PANNING && event.getButton() == MouseButton.SECONDARY) {
             workspace.setMouseMode(MouseMode.MOUSE_IDLE);
         }

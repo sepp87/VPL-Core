@@ -1,4 +1,4 @@
-package vplcore.workspace.input;
+package vplcore.editor;
 
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -12,11 +12,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import static vplcore.Util.scrollToWrapped;
-import vplcore.editor.EditorView;
 import vplcore.graph.model.Block;
 import vplcore.graph.util.BlockFactory;
 import vplcore.graph.util.BlockLoader;
 import vplcore.workspace.Workspace;
+import vplcore.workspace.input.MouseMode;
 
 /**
  *
@@ -44,9 +44,9 @@ public class BlockSearchController {
         searchField = view.getSearchField();
         listView = view.getListView();
 
-        searchField.setOnKeyPressed(this::handleShortcuts);
-        searchField.textProperty().addListener(this::handleSearch);
-        searchFieldFocusChangedListener = this::handleKeepFocus;
+        searchField.setOnKeyPressed(this::handleShortcutAction);
+        searchField.textProperty().addListener(this::handleSearchAction);
+        searchFieldFocusChangedListener = this::handleRetainFocus;
 
         listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
         listView.setOnMouseClicked(this::handleCreateBlock);
@@ -54,7 +54,7 @@ public class BlockSearchController {
 
     }
 
-    private void handleSearch(Object b, String o, String searchTerm) {
+    private void handleSearchAction(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
             listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
@@ -73,7 +73,7 @@ public class BlockSearchController {
         listView.getSelectionModel().selectFirst();
     }
 
-    private void handleShortcuts(KeyEvent event) {
+    private void handleShortcutAction(KeyEvent event) {
         switch (event.getCode()) {
             case DOWN, UP -> {
                 int direction = event.getCode() == KeyCode.DOWN ? 1 : -1;
@@ -120,7 +120,7 @@ public class BlockSearchController {
         }
     }
 
-    public void handleEditorMouseClicked(MouseEvent event) {
+    public void processEditorMouseClicked(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
         boolean onBlockSearch = Workspace.checkParents(intersectedNode, BlockSearchView.class);
@@ -156,7 +156,7 @@ public class BlockSearchController {
         searchField.focusedProperty().removeListener(searchFieldFocusChangedListener);
     }
 
-    private void handleKeepFocus(Object b, boolean o, boolean isFocused) {
+    private void handleRetainFocus(Object b, boolean o, boolean isFocused) {
         if (!isFocused) {
             searchField.requestFocus();
         }

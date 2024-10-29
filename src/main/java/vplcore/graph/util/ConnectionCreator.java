@@ -13,7 +13,7 @@ import vplcore.workspace.Workspace;
  *
  * @author joostmeulenkamp
  */
-public class PortConnector {
+public class ConnectionCreator {
 
     public enum State {
         NOT_CONNECTING,
@@ -25,7 +25,7 @@ public class PortConnector {
     public Port tempStartPort;
     public State state = State.NOT_CONNECTING;
 
-    public PortConnector(Workspace workspace) {
+    public ConnectionCreator(Workspace workspace) {
         this.workspace = workspace;
         addInputHandlers();
     }

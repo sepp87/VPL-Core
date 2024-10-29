@@ -9,7 +9,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.input.BlockSearchController;
 
 /**
  *
@@ -46,7 +45,7 @@ public class EditorController {
         this.blockSearchController = blockSearchController;
         this.view = editorView;
 
-        // Used for pasting and positioning the SelectBlock TODO refactor and remove
+        // Used for pasting TODO refactor and remove
         mousePositionOnScene = new SimpleObjectProperty(new Point2D(0, 0));
 
         mouseMovedHandler = this::handleMouseMoved;
@@ -71,32 +70,32 @@ public class EditorController {
     }
 
     private void handleMouseClicked(MouseEvent event) {
-        radialMenuController.handleEditorMouseClicked(event);
-        blockSearchController.handleEditorMouseClicked(event);
+        radialMenuController.processEditorMouseClicked(event);
+        blockSearchController.processEditorMouseClicked(event);
     }
 
     private void handleMousePressed(MouseEvent event) {
         mousePositionOnScene.set(new Point2D(event.getSceneX(), event.getSceneY()));
-        panController.handleEditorPanStarted(event);
-        selectionRectangleController.handleEditorSelectionStarted(event);
+        panController.processEditorPanStart(event);
+        selectionRectangleController.processEditorSelectionStart(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {
-        panController.handleEditorPan(event);
-        selectionRectangleController.handleEditorSelection(event);
+        panController.processEditorPan(event);
+        selectionRectangleController.processEditorSelection(event);
     }
 
     private void handleMouseReleased(MouseEvent event) {
-        panController.handleEditorPanStopped(event);
-        selectionRectangleController.handleEditorSelectionStopped(event);
+        panController.processEditorPanStop(event);
+        selectionRectangleController.processEditorSelectionStop(event);
     }
 
     private void handleScroll(ScrollEvent event) {
-        zoomController.handleEditorScroll(event);
+        zoomController.processEditorScroll(event);
     }
 
     private void handleKeyPressed(KeyEvent event) {
-        keyboardController.handleKeyPressed(event);
+        keyboardController.processEditorShortcutAction(event);
     }
 
 }

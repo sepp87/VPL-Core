@@ -24,7 +24,7 @@ public class KeyboardController {
         this.actions = actions;
     }
 
-    public void handleKeyPressed(KeyEvent event) {
+    public void processEditorShortcutAction(KeyEvent event) {
         boolean isModifierDown = Util.isModifierDown(event);
         switch (event.getCode()) {
             case BACK_SPACE:

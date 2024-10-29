@@ -3,6 +3,7 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 BUG selection discarded when clicking on menu bar
 // 1 BUG selection discarded when exiting radial menu
 // 1 BUG Info panel does not move down when aligning blocks

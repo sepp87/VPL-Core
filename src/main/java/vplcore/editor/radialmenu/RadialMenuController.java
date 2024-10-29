@@ -34,7 +34,7 @@ public class RadialMenuController {
             item.setOnMouseClicked(this::handleRadialMenuItemClicked);
         }
 
-        this.visibilityToggledHandler = this::handleVisibilityToggled;
+        this.visibilityToggledHandler = this::handleToggleMouseMode;
         view.getRadialMenu().visibleProperty().addListener(visibilityToggledHandler);
     }
 
@@ -45,7 +45,7 @@ public class RadialMenuController {
         actions.perform(item.getAction());
     }
 
-    private void handleVisibilityToggled(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
+    private void handleToggleMouseMode(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
         if (isVisble) {
             workspace.setMouseMode(MouseMode.AWAITING_RADIAL_MENU);
         } else {
@@ -53,7 +53,7 @@ public class RadialMenuController {
         }
     }
 
-    public void handleEditorMouseClicked(MouseEvent event) {
+    public void processEditorMouseClicked(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
         boolean onRadialMenu = Workspace.checkParents(intersectedNode, RadialMenu.class);

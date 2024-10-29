@@ -18,8 +18,8 @@ import javafx.scene.layout.*;
 import vplcore.editor.ZoomModel;
 import vplcore.editor.ZoomView;
 import vplcore.graph.model.BlockInfoPanel;
-import vplcore.graph.util.PortConnector;
-import vplcore.graph.util.PortDisconnector;
+import vplcore.graph.util.ConnectionCreator;
+import vplcore.graph.util.ConnectionRemover;
 import vplcore.workspace.input.MouseMode;
 /**
  *
@@ -78,16 +78,16 @@ public class Workspace extends AnchorPane {
 
     //Initial modi members
     public MousePositionHandler mouse;
-    public PortConnector portConnector;
-    public PortDisconnector portDisconnector;
+    public ConnectionCreator portConnector;
+    public ConnectionRemover portDisconnector;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
 
             mouse = new MousePositionHandler(Workspace.this);
-            portConnector = new PortConnector(Workspace.this);
-            portDisconnector = new PortDisconnector(Workspace.this);
+            portConnector = new ConnectionCreator(Workspace.this);
+            portDisconnector = new ConnectionRemover(Workspace.this);
             Workspace.this.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
         }
     };

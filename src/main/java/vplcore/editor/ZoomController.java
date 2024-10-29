@@ -70,7 +70,7 @@ public class ZoomController extends HBox {
     }
 
     // Create and return the ScrollEvent handler for SCROLL
-    public void handleEditorScroll(ScrollEvent event) {
+    public void processEditorScroll(ScrollEvent event) {
         boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = Workspace.checkParents(intersectedNode, ScrollPane.class);

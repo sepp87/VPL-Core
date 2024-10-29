@@ -20,8 +20,8 @@ import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
 import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.Actions;
-import vplcore.workspace.input.BlockSearchController;
-import vplcore.workspace.input.BlockSearchView;
+import vplcore.editor.BlockSearchController;
+import vplcore.editor.BlockSearchView;
 
 /**
  *

@@ -17,7 +17,7 @@ import vplcore.workspace.Workspace;
  *
  * @author joostmeulenkamp
  */
-public class PortDisconnector {
+public class ConnectionRemover {
 
     private final Workspace workspace;
 
@@ -26,7 +26,7 @@ public class PortDisconnector {
     private Circle circle;
     private Connection removableConnection;
 
-    public PortDisconnector(Workspace workspace) {
+    public ConnectionRemover(Workspace workspace) {
         this.workspace = workspace;
         initializeRemoveButton();
     }

@@ -121,22 +121,22 @@ public class Workspace extends AnchorPane {
         return mouseModeProperty;
     }
 
-    public boolean onZoomView(MouseEvent event) {
+    public static boolean onZoomView(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
         return checkParents(node, ZoomView.class);
     }
 
-    public boolean onMenuBar(MouseEvent event) {
+    public static boolean onMenuBar(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
         return checkParents(node, Control.class);
     }
 
-    public boolean onBlock(MouseEvent event) {
+    public static boolean onBlock(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
         return checkParents(node, Block.class);
     }
 
-    public boolean onBlockInfoPanel(MouseEvent event) {
+    public static boolean onBlockInfoPanel(MouseEvent event) {
         Node node = event.getPickResult().getIntersectedNode();
         return checkParents(node, BlockInfoPanel.class);
     }
@@ -152,7 +152,6 @@ public class Workspace extends AnchorPane {
         if (node == null) {
             return false;
         }
-//        System.out.println(node.getClass().getSimpleName()  + " "+ type.getSimpleName());
 
         if (type.isAssignableFrom(node.getClass())) {
             return true;

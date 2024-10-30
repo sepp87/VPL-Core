@@ -7,17 +7,17 @@ import vplcore.workspace.Workspace;
  *
  * @author Joost
  */
-public class DeselectAllBlocksCommand implements Command {
+public class NewFileCommand implements Command {
 
     private final Workspace workspace;
 
-    public DeselectAllBlocksCommand(Workspace workspace) {
+    public NewFileCommand(Workspace workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.deselectAllBlocks();
+        workspace.reset();
     }
 
     @Override

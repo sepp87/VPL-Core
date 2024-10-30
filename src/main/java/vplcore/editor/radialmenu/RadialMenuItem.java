@@ -7,35 +7,26 @@ import vplcore.IconType;
  *
  * @author joostmeulenkamp
  */
-public class RadialMenuItem<T extends Enum<T>> extends Group {
+public class RadialMenuItem extends Group {
 
-    final T action;
-    final IconType icon;
     final String name;
-
+    final IconType icon;
     double iconRotation = 0.;
+    
     int index;
     double length;
 
-    public RadialMenuItem(T action, IconType icon, String name) {
-        this.action = action;
-        this.icon = icon;
+    public RadialMenuItem(String name, String id, IconType icon) {
         this.name = name;
+        this.idProperty().set(id);
+        this.icon = icon;
     }
 
-    public RadialMenuItem(T action, IconType icon, String name, double iconRotation) {
-        this.action = action;
-        this.icon = icon;
+    public RadialMenuItem(String name, String id, IconType icon, double iconRotation) {
         this.name = name;
+        this.idProperty().set(id);
+        this.icon = icon;
         this.iconRotation = iconRotation;
-    }
-
-    public T getAction() {
-        return action;
-    }
-
-    public Class<?> getActionType() {
-        return action.getClass();
     }
 
 }

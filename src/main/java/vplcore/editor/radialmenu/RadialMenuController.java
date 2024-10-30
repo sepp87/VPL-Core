@@ -2,16 +2,15 @@ package vplcore.editor.radialmenu;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import vplcore.editor.EditorMode;
 import vplcore.editor.EditorModel;
 import vplcore.editor.EditorView;
-import vplcore.workspace.Actions;
 import vplcore.workspace.Workspace;
 import vplcore.util.NodeHierarchyUtils;
+import vplcore.workspace.ActionManager;
 
 /**
  *
@@ -19,19 +18,18 @@ import vplcore.util.NodeHierarchyUtils;
  */
 public class RadialMenuController {
 
+    private ActionManager actionManager;
     private EditorModel editorModel;
-    private Actions actions;
-
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(EditorModel editorModel, RadialMenuView radialMenuView, Actions actions) {
+    public RadialMenuController(ActionManager actionManager, EditorModel editorModel, RadialMenuView radialMenuView) {
+        this.actionManager = actionManager;
         this.editorModel = editorModel;
-        this.actions = actions;
         this.view = radialMenuView;
 
-        for (RadialMenuItem<?> item : view.getAllRadialMenuItems()) {
+        for (RadialMenuItem item : view.getAllRadialMenuItems()) {
             item.setOnMouseClicked(this::handleRadialMenuItemClicked);
         }
 
@@ -40,10 +38,10 @@ public class RadialMenuController {
     }
 
     private void handleRadialMenuItemClicked(MouseEvent event) {
-        @SuppressWarnings("unchecked")
-        RadialMenuItem<Actions.ActionType> item = (RadialMenuItem<Actions.ActionType>) event.getSource();
-        view.getRadialMenu().setVisible(false);
-        actions.perform(item.getAction());
+        if (event.getSource() instanceof RadialMenuItem menuItem) {
+            actionManager.executeCommand(menuItem.getId());
+        }
+        hideView();
     }
 
     private void handleToggleMouseMode(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {

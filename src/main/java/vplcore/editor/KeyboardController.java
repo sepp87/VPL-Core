@@ -10,7 +10,16 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import vplcore.Util;
-import vplcore.workspace.Actions;
+import vplcore.workspace.ActionManager;
+import vplcore.workspace.Command;
+import vplcore.workspace.command.CopyBlocksCommand;
+import vplcore.workspace.command.DeleteSelectedBlocksCommand;
+import vplcore.workspace.command.GroupBlocksCommand;
+import vplcore.workspace.command.NewFileCommand;
+import vplcore.workspace.command.OpenFileCommand;
+import vplcore.workspace.command.PasteBlocksCommand;
+import vplcore.workspace.command.SaveFileCommand;
+import vplcore.workspace.command.SelectAllBlocksCommand;
 
 /**
  *
@@ -18,54 +27,59 @@ import vplcore.workspace.Actions;
  */
 public class KeyboardController {
 
-    private final Actions actions;
+    private final ActionManager actionManager;
 
-    public KeyboardController(Actions actions) {
-        this.actions = actions;
+    public KeyboardController(ActionManager actionManager) {
+        this.actionManager = actionManager;
     }
 
     public void processEditorShortcutAction(KeyEvent event) {
+        Command command = null;
         boolean isModifierDown = Util.isModifierDown(event);
         switch (event.getCode()) {
             case BACK_SPACE:
             case DELETE:
-                actions.perform(Actions.ActionType.DELETE_SELECTED_BLOCKS);
+                command = new DeleteSelectedBlocksCommand(actionManager.getWorkspace());
                 break;
             case C:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.COPY_BLOCKS);
+                    command = new CopyBlocksCommand(actionManager.getWorkspace());
                 }
                 break;
             case V:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.PASTE_BLOCKS);
+                    command = new PasteBlocksCommand(actionManager.getWorkspace());
                 }
                 break;
             case G:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.GROUP_BLOCKS);
+                    command = new GroupBlocksCommand(actionManager.getWorkspace());
                 }
                 break;
             case N:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.NEW_FILE);
+                    command = new NewFileCommand(actionManager.getWorkspace());
                 }
                 break;
             case S:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.SAVE_FILE);
+                    command = new SaveFileCommand(actionManager.getWorkspace());
                 }
                 break;
             case O:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.OPEN_FILE);
+                    command = new OpenFileCommand(actionManager.getWorkspace());
                 }
                 break;
             case A:
                 if (isModifierDown) {
-                    actions.perform(Actions.ActionType.SELECT_ALL_BLOCKS);
+                    command = new SelectAllBlocksCommand(actionManager.getWorkspace());
                 }
                 break;
+        }
+
+        if (command != null) {
+            actionManager.executeCommand(command);
         }
     }
 }

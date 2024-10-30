@@ -70,7 +70,7 @@ public class BlockGroup extends VplElement {
 
         binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
         binButton.setVisible(false);
-        menuBox.getChildren().addAll(captionLabel, binButton);
+        menuBox.getChildren().addAll( binButton);
         binButton.setOnAction(binButtonClickedHandler);
     }
 

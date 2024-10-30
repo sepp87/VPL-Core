@@ -1,5 +1,7 @@
 package vplcore.workspace.command;
 
+import javafx.collections.FXCollections;
+import vplcore.graph.model.Block;
 import vplcore.workspace.Command;
 import vplcore.workspace.Workspace;
 
@@ -7,17 +9,20 @@ import vplcore.workspace.Workspace;
  *
  * @author Joost
  */
-public class DeselectAllBlocksCommand implements Command {
+public class CopyBlocksCommand implements Command {
 
     private final Workspace workspace;
 
-    public DeselectAllBlocksCommand(Workspace workspace) {
+    public CopyBlocksCommand(Workspace workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.deselectAllBlocks();
+        workspace.tempBlockSet = FXCollections.observableSet();
+        for (Block block : workspace.selectedBlockSet) {
+            workspace.tempBlockSet.add(block);
+        }
     }
 
     @Override

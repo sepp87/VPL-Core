@@ -2,9 +2,8 @@ package vplcore.editor;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import vplcore.editor.MenuBarView.MenuBarItem;
-import vplcore.workspace.Actions;
-import vplcore.workspace.Workspace;
+import javafx.scene.control.MenuItem;
+import vplcore.workspace.ActionManager;
 
 /**
  *
@@ -12,27 +11,25 @@ import vplcore.workspace.Workspace;
  */
 public class MenuBarController {
 
-    private Actions actions;
-    
+    private ActionManager actionManager;
     private final MenuBarView view;
 
     private final EventHandler<ActionEvent> menuBarItemClickedHandler;
 
-    public MenuBarController(MenuBarView menuBarView, Actions actions) {
-        this.actions = actions;
-        
+    public MenuBarController(ActionManager actionManager, MenuBarView menuBarView) {
+        this.actionManager = actionManager;
         this.view = menuBarView;
 
         menuBarItemClickedHandler = this::handleMenuBarItemClicked;
-        for (MenuBarItem item : view.getAllMenuBarItems()) {
+        for (MenuItem item : view.getAllMenuItems()) {
             item.setOnAction(menuBarItemClickedHandler);
         }
     }
 
     public void handleMenuBarItemClicked(ActionEvent event) {
-        @SuppressWarnings("unchecked")
-        MenuBarItem item = (MenuBarItem) event.getSource();
-        actions.perform(item.getAction());
+        if (event.getSource() instanceof MenuItem menuItem) {
+            actionManager.executeCommand(menuItem.getId());
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package vplcore.workspace.command;
 
+import vplcore.graph.model.Block;
 import vplcore.workspace.Command;
 import vplcore.workspace.Workspace;
 
@@ -7,17 +8,21 @@ import vplcore.workspace.Workspace;
  *
  * @author Joost
  */
-public class DeselectAllBlocksCommand implements Command {
+public class SelectAllBlocksCommand implements Command {
 
     private final Workspace workspace;
 
-    public DeselectAllBlocksCommand(Workspace workspace) {
+    public SelectAllBlocksCommand(Workspace workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.deselectAllBlocks();
+        workspace.selectedBlockSet.clear();
+        for (Block block : workspace.blockSet) {
+            block.setSelected(true);
+            workspace.selectedBlockSet.add(block);
+        }
     }
 
     @Override

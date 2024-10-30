@@ -23,9 +23,12 @@ public class ZoomView extends HBox {
 
         zoomOutButton = new Button("-");
         zoomOutButton.getStyleClass().add("zoom-button");
+        zoomOutButton.setFocusTraversable(false);
 
         zoomInButton = new Button("+");
         zoomInButton.getStyleClass().add("zoom-button");
+        zoomInButton.setFocusTraversable(false);
+
 
         // Set up the HBox layout
         setSpacing(10);

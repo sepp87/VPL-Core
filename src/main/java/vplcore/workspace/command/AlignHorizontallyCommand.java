@@ -1,5 +1,7 @@
 package vplcore.workspace.command;
 
+import javafx.geometry.Bounds;
+import vplcore.graph.model.Block;
 import vplcore.workspace.Command;
 import vplcore.workspace.Workspace;
 
@@ -7,17 +9,20 @@ import vplcore.workspace.Workspace;
  *
  * @author Joost
  */
-public class DeselectAllBlocksCommand implements Command {
+public class AlignHorizontallyCommand implements Command {
 
     private final Workspace workspace;
 
-    public DeselectAllBlocksCommand(Workspace workspace) {
+    public AlignHorizontallyCommand(Workspace workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.deselectAllBlocks();
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.selectedBlockSet);
+        for (Block block : workspace.selectedBlockSet) {
+            block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
+        }
     }
 
     @Override

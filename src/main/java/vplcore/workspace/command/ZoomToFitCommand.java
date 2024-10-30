@@ -17,7 +17,7 @@ public class ZoomToFitCommand implements Command {
 
     @Override
     public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        workspace.zoomToFit();
     }
 
     @Override

@@ -23,8 +23,8 @@ public class RadialMenu extends Group {
     private final double INNER_RADIUS = 50;
     private final double OUTER_RADIUS = 120;
 
-    private final List<RadialMenuItem<?>> items;
-    private List<RadialMenuItem<?>> subItems;
+    private final List<RadialMenuItem> items;
+    private List<RadialMenuItem> subItems;
     private final Label radialMenuLabel;
     private final String RADIAL_MENU_ITEM_LABEL_TEXT = "Exit\nmenu";
     private final Shape radialSubMenuCircle;
@@ -38,7 +38,7 @@ public class RadialMenu extends Group {
         returnToMain();
     }
 
-    public RadialMenu(List<RadialMenuItem<?>> items) {
+    public RadialMenu(List<RadialMenuItem> items) {
         this.getStylesheets().add(Config.get().stylesheets());
         this.items = items;
 
@@ -72,7 +72,7 @@ public class RadialMenu extends Group {
         }
     }
 
-    public void addSubMenu(RadialSubMenu subMenu, List<RadialMenuItem<?>> subItems) {
+    public void addSubMenu(RadialSubMenu subMenu, List<RadialMenuItem> subItems) {
 
         if (this.subItems == null) {
             this.subItems = new ArrayList<>();
@@ -102,14 +102,14 @@ public class RadialMenu extends Group {
         }
 
         for (int i = 0; i < count; i++) {
-            RadialMenuItem<?> subItem = subItems.get(i);
+            RadialMenuItem subItem = subItems.get(i);
             subItem.index = indeces.get(i);
             subItem.length = subMenu.length;
             addRadialMenuItem(subItem, true);
         }
 
         // build exit button
-        RadialMenuItem<?> exit = new RadialMenuItem<>(null, subMenu.icon, "Return\nto main");
+        RadialMenuItem exit = new RadialMenuItem( "Return\nto main", null, subMenu.icon);
         exit.index = subMenu.index;
         exit.length = subMenu.length;
         addRadialMenuItem(exit, true);
@@ -122,7 +122,7 @@ public class RadialMenu extends Group {
         subMenu.items.addAll(subItems);
     }
 
-    private RadialMenuItem<?> addRadialMenuItem(RadialMenuItem<?> item, boolean isSubMenu) {
+    private RadialMenuItem addRadialMenuItem(RadialMenuItem item, boolean isSubMenu) {
         String sub = isSubMenu ? "-sub" : "";
 
         Path path = new Path();
@@ -250,8 +250,8 @@ public class RadialMenu extends Group {
      * sub menus. The list of items does NOT return items of type RadialSubMenu,
      * nor does it return the exit sub menu item.
      */
-    public List<RadialMenuItem<?>> getAllItems() {
-        List<RadialMenuItem<?>> result = new ArrayList<>();
+    public List<RadialMenuItem> getAllItems() {
+        List<RadialMenuItem> result = new ArrayList<>();
         for (RadialMenuItem item : items) {
             if (item instanceof RadialSubMenu) {
                 continue;

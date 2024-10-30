@@ -4,9 +4,11 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import vplcore.graph.model.Block;
-import vplcore.workspace.Actions;
+import vplcore.workspace.ActionManager;
+import vplcore.workspace.Command;
 import vplcore.workspace.Workspace;
+import vplcore.workspace.command.DeselectAllBlocksCommand;
+import vplcore.workspace.command.RectangleSelectCommand;
 
 /**
  *
@@ -14,22 +16,22 @@ import vplcore.workspace.Workspace;
  */
 public class SelectionRectangleController {
 
+    private final ActionManager actionManager;
     private final EditorModel editorModel;
     private final SelectionRectangleView view;
-    private final Workspace workspace;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(EditorModel editorModel, SelectionRectangleView selectionRectangleView, Workspace workspace) {
+    public SelectionRectangleController(ActionManager actionManager, EditorModel editorModel, SelectionRectangleView selectionRectangleView) {
+        this.actionManager = actionManager;
         this.editorModel = editorModel;
         this.view = selectionRectangleView;
-        this.workspace = workspace;
     }
 
     public void processEditorSelectionStart(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
-        boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY  ;
+        boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY;
         boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
 
         if (isPrimaryClick && onEditorOrWorkspace && isIdle) {
@@ -60,7 +62,8 @@ public class SelectionRectangleController {
                     removeSelectionRectangle();
                 } else {
                     // Deselect all blocks if no selection rectangle was active
-                    Actions.deselectAllBlocks(workspace);
+                    Command command = new DeselectAllBlocksCommand(actionManager.getWorkspace());
+                    actionManager.executeCommand(command);
                 }
             }
         }
@@ -98,25 +101,10 @@ public class SelectionRectangleController {
     }
 
     private void updateSelection() {
-
-        Point2D selectionMin = workspace.sceneToLocal(view.getLayoutX(), view.getLayoutY());
-        Point2D selectionMax = workspace.sceneToLocal(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
-
-        for (Block block : workspace.blockSet) {
-            if (true // unnecessary statement for readability
-                    && block.getLayoutX() >= selectionMin.getX()
-                    && block.getLayoutX() + block.getWidth() <= selectionMax.getX()
-                    && block.getLayoutY() >= selectionMin.getY()
-                    && block.getLayoutY() + block.getHeight() <= selectionMax.getY()) {
-
-                workspace.selectedBlockSet.add(block);
-                block.setSelected(true);
-
-            } else {
-                workspace.selectedBlockSet.remove(block);
-                block.setSelected(false);
-            }
-        }
+        Point2D selectionMin = new Point2D(view.getLayoutX(), view.getLayoutY());
+        Point2D selectionMax = new Point2D(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
+        Command command = new RectangleSelectCommand(actionManager.getWorkspace(), selectionMin, selectionMax);
+        actionManager.executeCommand(command);
     }
 
     private void removeSelectionRectangle() {

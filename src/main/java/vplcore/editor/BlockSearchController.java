@@ -101,7 +101,7 @@ public class BlockSearchController {
         }
 
         System.out.println("Create block " + blockIdentifier);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(blockIdentifier, creationPoint, actionManager.getWorkspace());
+        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspace(), blockIdentifier, creationPoint);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();

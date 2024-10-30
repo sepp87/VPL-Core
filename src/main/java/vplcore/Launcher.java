@@ -3,6 +3,7 @@ package vplcore;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 1 IMPROVEMENT implement zoom in and zoom out for menu bar
 // 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 BUG selection discarded when clicking on menu bar
 // 1 BUG selection discarded when exiting radial menu

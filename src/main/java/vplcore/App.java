@@ -19,11 +19,12 @@ import vplcore.editor.ZoomModel;
 import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
 import vplcore.graph.io.GraphLoader;
-import vplcore.workspace.Actions;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.editor.EditorModel;
 import vplcore.workspace.ActionManager;
+import vplcore.workspace.EventRouter;
+import vplcore.workspace.FocusReleasedEvent;
 
 /**
  *
@@ -34,7 +35,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        boolean addNewStuff = true;
+        EventRouter eventRouter = new EventRouter();
+        eventRouter.fireEvent(new FocusReleasedEvent());
 
         // Initialize models
         EditorModel editorModel = new EditorModel();
@@ -46,23 +48,22 @@ public class App extends Application {
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace(zoomModel, editorModel);
+        Workspace workspace = new Workspace(eventRouter, zoomModel, editorModel);
         MenuBarView menuBarView = new MenuBarView();
         EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Temporary stuff
         ActionManager actionManager = new ActionManager(workspace);
-        ZoomController zoomController = new ZoomController(zoomModel, workspace, zoomView);///////////////////////////////////////////////////////////////////////////////////////////////////
-        Actions actions = new Actions(workspace, zoomController, zoomModel);
-
+        ZoomController zoomController = new ZoomController(actionManager, zoomModel, workspace, zoomView); ///////////////////////////////
+        
         // Initialize controllers
         // WorkspaceController
         BlockSearchController blockSearchController = new BlockSearchController(editorModel, blockSearchView, actionManager);
-        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(editorModel, selectionRectangleView, workspace);/////////////////////////////////////////
-        KeyboardController keyboardController = new KeyboardController(actions);
+        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(actionManager, editorModel, selectionRectangleView);
+        KeyboardController keyboardController = new KeyboardController(actionManager);
         PanController panController = new PanController(editorModel, zoomModel);
-        RadialMenuController radialMenuController = new RadialMenuController(editorModel, radialMenuView, actions);
-        MenuBarController menuBarController = new MenuBarController(menuBarView, actions);
+        RadialMenuController radialMenuController = new RadialMenuController(actionManager, editorModel, radialMenuView);
+        MenuBarController menuBarController = new MenuBarController(actionManager, menuBarView);
         EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
 
         // Setup scene

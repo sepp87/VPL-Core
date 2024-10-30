@@ -17,10 +17,11 @@ public class CreateBlockCommand implements Command {
     private final Workspace workspace;
     private Block block;
 
-    public CreateBlockCommand(String blockIdentifier, Point2D location, Workspace workspace) {
+    public CreateBlockCommand(Workspace workspace, String blockIdentifier, Point2D location) {
+        this.workspace = workspace;
         this.blockIdentifier = blockIdentifier;
         this.location = workspace.sceneToLocal(location);
-        this.workspace = workspace;
+
     }
 
     @Override

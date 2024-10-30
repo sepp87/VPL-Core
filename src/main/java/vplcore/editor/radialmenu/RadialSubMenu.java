@@ -8,16 +8,16 @@ import vplcore.IconType;
  *
  * @author joostmeulenkamp
  */
-public class RadialSubMenu<T extends Enum<T>> extends RadialMenuItem<T> {
+public class RadialSubMenu extends RadialMenuItem {
 
-    final List<RadialMenuItem<?>> items = new ArrayList<>();
+    final List<RadialMenuItem> items = new ArrayList<>();
 
-    public RadialSubMenu(IconType icon, String name) {
-        super(null, icon, name);
+    public RadialSubMenu(String name, IconType icon) {
+        super(name, null, icon);
     }
 
-    public RadialSubMenu(IconType icon, String name, double iconRotation) {
-        super(null, icon, name, iconRotation);
+    public RadialSubMenu(String name, IconType icon, double iconRotation) {
+        super(name, null, icon, iconRotation);
     }
 
 }

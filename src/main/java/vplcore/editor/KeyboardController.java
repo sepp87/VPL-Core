@@ -9,7 +9,7 @@ import static javafx.scene.input.KeyCode.O;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
-import vplcore.Util;
+import vplcore.util.EventUtils;
 import vplcore.workspace.ActionManager;
 import vplcore.workspace.Command;
 import vplcore.workspace.command.CopyBlocksCommand;
@@ -20,6 +20,9 @@ import vplcore.workspace.command.OpenFileCommand;
 import vplcore.workspace.command.PasteBlocksCommand;
 import vplcore.workspace.command.SaveFileCommand;
 import vplcore.workspace.command.SelectAllBlocksCommand;
+import vplcore.workspace.command.ZoomInCommand;
+import vplcore.workspace.command.ZoomOutCommand;
+import vplcore.workspace.command.ZoomToFitCommand;
 
 /**
  *
@@ -35,7 +38,7 @@ public class KeyboardController {
 
     public void processEditorShortcutAction(KeyEvent event) {
         Command command = null;
-        boolean isModifierDown = Util.isModifierDown(event);
+        boolean isModifierDown = EventUtils.isModifierDown(event);
         switch (event.getCode()) {
             case BACK_SPACE:
             case DELETE:
@@ -76,6 +79,30 @@ public class KeyboardController {
                     command = new SelectAllBlocksCommand(actionManager.getWorkspace());
                 }
                 break;
+            case PLUS:
+                if (isModifierDown) {
+                    command = new ZoomInCommand(actionManager.getWorkspace());
+                }
+                break;
+            case MINUS:
+                if (isModifierDown) {
+                    command = new ZoomOutCommand(actionManager.getWorkspace());
+                }
+                break;
+            case SPACE:
+                command = new ZoomToFitCommand(actionManager.getWorkspace());
+                break;
+            case Z:
+                if (isModifierDown) {
+                    // TODO undo
+                }
+                break;
+            case Y:
+                if (isModifierDown) {
+                    // TODO redo
+                }
+                break;
+
         }
 
         if (command != null) {

@@ -11,6 +11,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.SVGPath;
 import vplcore.graph.model.Connection;
+import vplcore.util.FileUtils;
 import vplcore.workspace.Workspace;
 
 /**
@@ -33,7 +34,7 @@ public class ConnectionRemover {
 
     private void initializeRemoveButton() {
 
-        String xml = vplcore.Util.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
+        String xml = FileUtils.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
         String svg = xml.split("path d=\"")[1].replace("\"/></svg>", "");
         removeIcon = new SVGPath();
         removeIcon.setContent(svg);

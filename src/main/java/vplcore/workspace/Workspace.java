@@ -91,7 +91,7 @@ public class Workspace extends AnchorPane {
     public ZoomModel getZoomModel() {
         return zoomModel;
     }
-    
+
     public void reset() {
         zoomModel.resetZoomFactor();
         zoomModel.translateXProperty().set(0.);
@@ -108,6 +108,22 @@ public class Workspace extends AnchorPane {
 
     public double getZoomFactor() {
         return zoomModel.zoomFactorProperty().get();
+    }
+
+    public void zoomIn() {
+        ZoomModel model = zoomModel;
+        double newScale = model.getIncrementedZoomFactor();
+        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
+    }
+
+    public void zoomOut() {
+        ZoomModel model = zoomModel;
+        double newScale = model.getDecrementedZoomFactor();
+        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
+    }
+
+    private void applyZoom(double newScale) {
+        applyZoom(newScale, null);
     }
 
     public void applyZoom(double newScale, Point2D pivotPoint) {

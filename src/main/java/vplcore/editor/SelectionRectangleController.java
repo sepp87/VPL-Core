@@ -28,7 +28,7 @@ public class SelectionRectangleController {
         this.view = selectionRectangleView;
     }
 
-    public void processEditorSelectionStart(MouseEvent event) {
+    public void processEditorSelectionStarted(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
         boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY;
@@ -48,7 +48,7 @@ public class SelectionRectangleController {
         }
     }
 
-    public void processEditorSelectionStop(MouseEvent event) {
+    public void processEditorSelectionFinished(MouseEvent event) {
         // Reset the start selection point
         startPoint = null;
         if (event.getButton() == MouseButton.PRIMARY) {

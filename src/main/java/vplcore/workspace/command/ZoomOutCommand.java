@@ -17,7 +17,7 @@ public class ZoomOutCommand implements Command {
 
     @Override
     public void execute() {
-        workspace.zoomToFit();
+        workspace.zoomOut();
     }
 
     @Override

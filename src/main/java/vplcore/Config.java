@@ -2,7 +2,9 @@ package vplcore;
 
 import java.io.File;
 import java.util.Properties;
-import vplcore.Util.OperatingSystem;
+import vplcore.util.FileUtils;
+import vplcore.util.SystemUtils.OperatingSystem;
+import vplcore.util.SystemUtils;
 
 /**
  *
@@ -37,15 +39,15 @@ public class Config {
 
     private static void loadConfig() {
         config = new Config();
-        config.appRootDirectory = Util.getAppRootDirectory(config, BUILD_DIRECTORY);
+        config.appRootDirectory = SystemUtils.getAppRootDirectory(config, BUILD_DIRECTORY);
 
-        Util.createDirectory(new File(config.appRootDirectory + LIBRARY_DIRECTORY));
-        Util.createDirectory(new File(config.appRootDirectory + CONFIG_DIRECTORY));;
+        FileUtils.createDirectory(new File(config.appRootDirectory + LIBRARY_DIRECTORY));
+        FileUtils.createDirectory(new File(config.appRootDirectory + CONFIG_DIRECTORY));;
         File settingsFile = new File(config.appRootDirectory + CONFIG_DIRECTORY + SETTINGS_FILE);
-        Util.createFile(settingsFile);
+        FileUtils.createFile(settingsFile);
 
-        config.operatingSystem = Util.determineOperatingSystem();
-        config.settings = Util.loadProperties(settingsFile);
+        config.operatingSystem = SystemUtils.determineOperatingSystem();
+        config.settings = FileUtils.loadProperties(settingsFile);
     }
 
     public String appRootDirectory() {

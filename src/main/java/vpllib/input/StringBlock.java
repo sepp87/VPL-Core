@@ -7,10 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javax.xml.namespace.QName;
-import static vplcore.Util.getBooleanValue;
-import static vplcore.Util.getDoubleValue;
-import static vplcore.Util.getIntegerValue;
-import static vplcore.Util.getLongValue;
+import static vplcore.util.DataParsingUtils.getBooleanValue;
+import static vplcore.util.DataParsingUtils.getDoubleValue;
+import static vplcore.util.DataParsingUtils.getIntegerValue;
+import static vplcore.util.DataParsingUtils.getLongValue;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.BlockInfo;
 

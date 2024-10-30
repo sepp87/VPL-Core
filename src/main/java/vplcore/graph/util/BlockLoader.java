@@ -26,8 +26,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
 import vplcore.Config;
-import vplcore.Util;
 import org.reflections.Reflections;
+import vplcore.util.FileUtils;
 
 /**
  *
@@ -60,7 +60,7 @@ public class BlockLoader {
      */
     public static void loadExternalBlocks() {
         File dir = new File(Config.get().libraryDirectory());
-        File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
+        File[] libraries = FileUtils.getFilesByExtensionFrom(dir, ".jar");
 
         List<Class<?>> classes = getClassesFromLibraries(libraries);
         classes = filterEligibleClasses(classes);
@@ -168,7 +168,7 @@ public class BlockLoader {
 
     public static void loadExternalMethodBlocks() {
         File dir = new File(Config.get().libraryDirectory());
-        File[] libraries = Util.getFilesByExtensionFrom(dir, ".jar");
+        File[] libraries = FileUtils.getFilesByExtensionFrom(dir, ".jar");
         List<Class<?>> classes = getClassesFromLibraries(libraries);
         List<Method> methods = getStaticMethodsFromClasses(classes);
 

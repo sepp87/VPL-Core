@@ -1,14 +1,11 @@
 package vplcore;
 
+import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 1 IMPROVEMENT implement zoom in and zoom out for menu bar
 // 4 IMPROVEMENT reload plugins on demand from menu bar
-// 1 BUG selection discarded when clicking on menu bar
-// 1 BUG selection discarded when exiting radial menu
 // 1 BUG Info panel does not move down when aligning blocks
-// 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
@@ -21,10 +18,16 @@ import vpllib.method.JsonMethods;
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 4 IMPROVEMENT add save and save as commands
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
+//
+// DONE
+// 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
+// 1 BUG selection discarded when clicking on menu bar
+// 1 BUG selection discarded when exiting radial menu
 /**
  *
  * @author JoostMeulenkamp
@@ -47,15 +50,12 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
-
-
         if (false) {
             return;
         }
         //Launch the UI
         App.launch(App.class);
     }
-
 
     static void TestJsonAsList() {
         JsonMethods.asList("[\"str\",6,7]");
@@ -80,10 +80,10 @@ public class Launcher {
     }
 
     static void TestGetDoubleValue() {
-        Double value = Util.getDoubleValue("100 000");
-        value = Util.getDoubleValue("100,000");
-        value = Util.getDoubleValue("100000");
-        value = Util.getDoubleValue("100000d");
+        Double value = DataParsingUtils.getDoubleValue("100 000");
+        value = DataParsingUtils.getDoubleValue("100,000");
+        value = DataParsingUtils.getDoubleValue("100000");
+        value = DataParsingUtils.getDoubleValue("100000d");
         System.out.println(value + " ");
     }
 

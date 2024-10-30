@@ -54,8 +54,8 @@ public class App extends Application {
 
         // Temporary stuff
         ActionManager actionManager = new ActionManager(workspace);
-        ZoomController zoomController = new ZoomController(actionManager, zoomModel, workspace, zoomView); ///////////////////////////////
-        
+        ZoomController zoomController = new ZoomController(actionManager, editorModel, zoomModel, zoomView);
+
         // Initialize controllers
         // WorkspaceController
         BlockSearchController blockSearchController = new BlockSearchController(editorModel, blockSearchView, actionManager);

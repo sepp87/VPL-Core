@@ -5,20 +5,17 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import vplcore.Config;
-import vplcore.Util;
 import vplcore.util.NodeHierarchyUtils;
+import vplcore.util.SystemUtils;
 import vplcore.workspace.ActionManager;
 import vplcore.workspace.Command;
-import vplcore.workspace.EventRouter;
-import vplcore.workspace.Workspace;
 import vplcore.workspace.command.ApplyZoomCommand;
-import vplcore.workspace.command.ZoomToFitCommand;
+import vplcore.workspace.command.ZoomInCommand;
+import vplcore.workspace.command.ZoomOutCommand;
 
 /**
  * Manages zooming functionality and controls in the workspace.
@@ -26,17 +23,17 @@ import vplcore.workspace.command.ZoomToFitCommand;
 public class ZoomController extends HBox {
 
     private final ActionManager actionManager;
+    private final EditorModel editorModel;
     private final ZoomModel model;
     private final ZoomView view;
-    private final Workspace workspace;
 
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    public ZoomController(ActionManager actionManager, ZoomModel zoomModel, Workspace workspace, ZoomView zoomView) {
+    public ZoomController(ActionManager actionManager, EditorModel editorModel, ZoomModel zoomModel, ZoomView zoomView) {
         this.actionManager = actionManager;
-        this.workspace = workspace;
+        this.editorModel = editorModel;
         this.model = zoomModel;
         this.view = zoomView;
 
@@ -44,46 +41,42 @@ public class ZoomController extends HBox {
         view.getZoomOutButton().setOnAction(this::handleZoomOut);
         view.getZoomLabel().setOnMouseClicked(this::handleZoomReset);  // Reset zoom to 100% on click
         view.getZoomLabel().textProperty().bind(zoomModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
-
-        workspace.setOnKeyPressed(this::handleZoomShortcuts);
-    }
-
-    public void incrementZoom() {
-        handleZoomIn(null);
-    }
-
-    public void decrementZoom() {
-        handleZoomOut(null);
-    }
-
-    private void handleZoomOut(ActionEvent event) {
-        double newScale = model.getDecrementedZoomFactor();
-        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
 
     private void handleZoomIn(ActionEvent event) {
-        double newScale = model.getIncrementedZoomFactor();
-        applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
+        Command command = new ZoomInCommand(actionManager.getWorkspace());
+        actionManager.executeCommand(command);
+    }
+
+    private void handleZoomOut(ActionEvent event) {
+        Command command = new ZoomOutCommand(actionManager.getWorkspace());
+        actionManager.executeCommand(command);
     }
 
     private void handleZoomReset(MouseEvent event) {
-        applyZoom(1.0); // Zoom is not from scrolling; no scroll event needed
+        applyZoom(1.0, null); // Zoom is not from scrolling; no pivot point needed, since scene center is
+    }
+
+    public void processEditorScrollStarted(ScrollEvent event) {
+        if (editorModel.modeProperty().get() == EditorMode.IDLE_MODE) {
+            editorModel.modeProperty().set(EditorMode.ZOOM_MODE);
+        }
     }
 
     // Create and return the ScrollEvent handler for SCROLL
     public void processEditorScroll(ScrollEvent event) {
 
+        boolean onMac = Config.get().operatingSystem() == SystemUtils.OperatingSystem.MACOS;
+        boolean isZoomModeAndOnMac = editorModel.modeProperty().get() == EditorMode.ZOOM_MODE && onMac;
+        boolean isIdleAndNotOnMac = editorModel.modeProperty().get() == EditorMode.IDLE_MODE && !onMac;
+
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
         boolean onListView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ListView.class);
 
-        if (!onScrollPane && !onListView) {
-
-            // TODO multiplier used for smooth scrolling, not implemented
-            double multiplier = Config.get().operatingSystem() == Util.OperatingSystem.WINDOWS ? 1.2 : 1.05;
+        if (!onScrollPane && !onListView && (isZoomModeAndOnMac || isIdleAndNotOnMac)) {
 
             // Throttle zoom on macOS
-            boolean onMac = Config.get().operatingSystem() == Util.OperatingSystem.MACOS;
             if (onMac) {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastZoomTime < zoomThrottleInterval) {
@@ -104,37 +97,16 @@ public class ZoomController extends HBox {
         }
     }
 
-    private void applyZoom(double newScale) {
-        applyZoom(newScale, null);
+    public void processEditorScrollFinished(ScrollEvent event) {
+        if (editorModel.modeProperty().get() == EditorMode.ZOOM_MODE) {
+            editorModel.modeProperty().set(EditorMode.IDLE_MODE);
+        }
     }
 
     // Apply zoom and adjust pivot to keep zoom centered
     private void applyZoom(double newScale, Point2D pivotPoint) {
         Command command = new ApplyZoomCommand(actionManager.getWorkspace(), newScale, pivotPoint);
         actionManager.executeCommand(command);
-    }
-
-    public void zoomToFit() {
-        Command command = new ZoomToFitCommand(actionManager.getWorkspace());
-        actionManager.executeCommand(command);
-    }
-
-    private void handleZoomShortcuts(KeyEvent event) {
-
-        // Handle keyboard shortcuts for zooming
-        if (Util.isModifierDown(event)) {
-            Double newScale = null;
-            if (event.getCode() == KeyCode.PLUS) {
-                newScale = model.getIncrementedZoomFactor();
-            } else if (event.getCode() == KeyCode.MINUS) {
-                newScale = model.getDecrementedZoomFactor();
-            }
-            if (newScale != null) {
-                applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
-            }
-        } else if (event.getCode() == KeyCode.SPACE) {
-            zoomToFit();
-        }
     }
 
 }

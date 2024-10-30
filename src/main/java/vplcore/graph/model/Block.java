@@ -11,8 +11,8 @@ import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import jo.vpl.xml.BlockTag;
 import vplcore.IconType;
-import vplcore.Util;
 import vplcore.graph.model.BlockExceptionPanel.BlockException;
+import vplcore.util.EventUtils;
 import vplcore.workspace.Workspace;
 
 /**
@@ -242,7 +242,7 @@ public abstract class Block extends VplElement {
     private void updateSelection(MouseEvent event) {
 
         if (workspace.selectedBlockSet.contains(this)) {
-            if (Util.isModifierDown(event)) {
+            if (EventUtils.isModifierDown(event)) {
                 // Remove this node from selection
                 workspace.selectedBlockSet.remove(this);
                 setSelected(false);
@@ -254,7 +254,7 @@ public abstract class Block extends VplElement {
                 }
             }
         } else {
-            if (Util.isModifierDown(event)) {
+            if (EventUtils.isModifierDown(event)) {
                 // add this node to selection
                 workspace.selectedBlockSet.add(this);
                 setSelected(true);

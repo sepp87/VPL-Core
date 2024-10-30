@@ -27,13 +27,15 @@ public class EditorController {
 
     private final ObjectProperty<Point2D> mousePositionOnScene;
 
-    private final EventHandler<MouseEvent> mouseMovedHandler;
-    private final EventHandler<MouseEvent> mouseClickedHandler;
-    private final EventHandler<MouseEvent> mousePressedHandler;
-    private final EventHandler<MouseEvent> mouseDraggedHandler;
-    private final EventHandler<MouseEvent> mouseReleasedHandler;
-    private final EventHandler<ScrollEvent> scrollHandler;
-    private final EventHandler<KeyEvent> keyPressedHandler;
+    private final EventHandler<MouseEvent> mouseMovedHandler = this::handleMouseMoved;
+    private final EventHandler<MouseEvent> mouseClickedHandler = this::handleMouseClicked;
+    private final EventHandler<MouseEvent> mousePressedHandler = this::handleMousePressed;
+    private final EventHandler<MouseEvent> mouseDraggedHandler = this::handleMouseDragged;
+    private final EventHandler<MouseEvent> mouseReleasedHandler = this::handleMouseReleased;
+    private final EventHandler<ScrollEvent> scrollStartedHandler = this::handleScrollStarted;
+    private final EventHandler<ScrollEvent> scrollHandler = this::handleScroll;
+    private final EventHandler<ScrollEvent> scrollFinishedHandler = this::handleScrollFinished;
+    private final EventHandler<KeyEvent> keyPressedHandler = this::handleKeyPressed;
 
     public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController, BlockSearchController blockSearchController) {
         this.workspace = workspace;
@@ -48,20 +50,14 @@ public class EditorController {
         // Used for pasting TODO refactor and remove
         mousePositionOnScene = new SimpleObjectProperty(new Point2D(0, 0));
 
-        mouseMovedHandler = this::handleMouseMoved;
-        mouseClickedHandler = this::handleMouseClicked;
-        mousePressedHandler = this::handleMousePressed;
-        mouseDraggedHandler = this::handleMouseDragged;
-        mouseReleasedHandler = this::handleMouseReleased;
-        scrollHandler = this::handleScroll;
-        keyPressedHandler = this::handleKeyPressed;
-
         view.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
         view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
         view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
         view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
         view.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseReleasedHandler);
+        view.addEventHandler(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         view.addEventHandler(ScrollEvent.SCROLL, scrollHandler);
+        view.addEventHandler(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
         view.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedHandler);
     }
 
@@ -76,8 +72,8 @@ public class EditorController {
 
     private void handleMousePressed(MouseEvent event) {
         mousePositionOnScene.set(new Point2D(event.getSceneX(), event.getSceneY()));
-        panController.processEditorPanStart(event);
-        selectionRectangleController.processEditorSelectionStart(event);
+        panController.processEditorPanStarted(event);
+        selectionRectangleController.processEditorSelectionStarted(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {
@@ -86,12 +82,20 @@ public class EditorController {
     }
 
     private void handleMouseReleased(MouseEvent event) {
-        panController.processEditorPanStop(event);
-        selectionRectangleController.processEditorSelectionStop(event);
+        panController.processEditorPanFinished(event);
+        selectionRectangleController.processEditorSelectionFinished(event);
+    }
+
+    private void handleScrollStarted(ScrollEvent event) {
+        zoomController.processEditorScrollStarted(event);
     }
 
     private void handleScroll(ScrollEvent event) {
         zoomController.processEditorScroll(event);
+    }
+
+    private void handleScrollFinished(ScrollEvent event) {
+        zoomController.processEditorScrollFinished(event);
     }
 
     private void handleKeyPressed(KeyEvent event) {

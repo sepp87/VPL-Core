@@ -130,7 +130,7 @@ public class BlockSearchController {
             showView(event.getSceneX(), event.getSceneY());
         } else if (onBlockSearch) {
             // keep block search shown if it is clicked on
-        } else {
+        } else if (view.isVisible()) {
             hideView();
         }
     }

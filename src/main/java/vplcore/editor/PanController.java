@@ -24,7 +24,7 @@ public class PanController {
         this.zoomModel = zoomModel;
     }
 
-    public void processEditorPanStart(MouseEvent event) {
+    public void processEditorPanStarted(MouseEvent event) {
         if (editorModel.modeProperty().get() == EditorMode.IDLE_MODE && event.isSecondaryButtonDown() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, Block.class)) {
             editorModel.modeProperty().set(EditorMode.PAN_MODE);
             initialX = event.getSceneX();
@@ -41,7 +41,7 @@ public class PanController {
         }
     }
 
-    public void processEditorPanStop(MouseEvent event) {
+    public void processEditorPanFinished(MouseEvent event) {
         if (editorModel.modeProperty().get() == EditorMode.PAN_MODE && event.getButton() == MouseButton.SECONDARY) {
             editorModel.modeProperty().set(EditorMode.IDLE_MODE);
         }

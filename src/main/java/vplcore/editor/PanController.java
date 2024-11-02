@@ -1,5 +1,6 @@
 package vplcore.editor;
 
+import vplcore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import vplcore.graph.model.Block;
@@ -12,14 +13,14 @@ import vplcore.util.NodeHierarchyUtils;
 public class PanController {
 
     private final EditorModel editorModel;
-    private final ZoomModel zoomModel;
+    private final WorkspaceModel zoomModel;
 
     private double initialX;
     private double initialY;
     private double initialTranslateX;
     private double initialTranslateY;
 
-    public PanController(EditorModel editorModel, ZoomModel zoomModel) {
+    public PanController(EditorModel editorModel, WorkspaceModel zoomModel) {
         this.editorModel = editorModel;
         this.zoomModel = zoomModel;
     }

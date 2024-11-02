@@ -1,5 +1,6 @@
 package vplcore.editor;
 
+import vplcore.workspace.WorkspaceModel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -24,14 +25,14 @@ public class ZoomController extends HBox {
 
     private final ActionManager actionManager;
     private final EditorModel editorModel;
-    private final ZoomModel model;
+    private final WorkspaceModel model;
     private final ZoomView view;
 
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    public ZoomController(ActionManager actionManager, EditorModel editorModel, ZoomModel zoomModel, ZoomView zoomView) {
+    public ZoomController(ActionManager actionManager, EditorModel editorModel, WorkspaceModel zoomModel, ZoomView zoomView) {
         this.actionManager = actionManager;
         this.editorModel = editorModel;
         this.model = zoomModel;

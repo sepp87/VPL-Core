@@ -18,7 +18,7 @@ import jo.vpl.xml.BlocksTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
-import vplcore.editor.ZoomModel;
+import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
@@ -31,7 +31,7 @@ import vplcore.workspace.Workspace;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file, Workspace workspace, ZoomModel zoomModel) {
+    public static void deserialize(File file, Workspace workspace, WorkspaceModel zoomModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();

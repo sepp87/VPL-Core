@@ -44,7 +44,7 @@ public class Port extends VBox {
     private final Tooltip tip;
 
     private final EventHandler<MouseEvent> portClickedForNewConnectionHandler = this::handlePortClickedForNewConnection;
-    private final EventHandler<MouseEvent> portPressedHandler = this::handlePortPressed;
+    private final EventHandler<MouseEvent> portPressedHandler = this::handlePortPressed; // prevent block dragging
     private final EventHandler<MouseEvent> portDraggedHandler = this::handlePortDragged;
     private final ListChangeListener<Connection> portConnectionsChangedListener = this::handlePortConnectionsChanged;
     private final ChangeListener<Object> portActivationChangedListener = this::handlePortActivationChanged;
@@ -84,7 +84,8 @@ public class Port extends VBox {
 
     public void handlePortClickedForNewConnection(MouseEvent event) {
         if (event.isStillSincePress()) {
-            parentBlock.workspace.portConnector.createConnection(Port.this);
+            parentBlock.workspace.createConnection(Port.this);
+
         }
         event.consume();
     }
@@ -254,7 +255,7 @@ public class Port extends VBox {
         tip.textProperty().unbind();
 
         for (Connection connection : connectedConnections) {
-            
+
         }
 
         connectedConnections.clear();

@@ -30,7 +30,6 @@ import vplcore.IconType;
 import vplcore.editor.EditorMode;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.MouseMode;
 
 /**
  *

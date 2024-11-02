@@ -12,6 +12,7 @@ public class VplButton extends Button {
     public VplButton(IconType type) {
         getStyleClass().add("vpl-button");
         setText(type.getUnicode() + "");
+        setFocusTraversable(false);
     }
 
 }

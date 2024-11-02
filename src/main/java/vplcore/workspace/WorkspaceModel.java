@@ -1,4 +1,4 @@
-package vplcore.editor;
+package vplcore.workspace;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleDoubleProperty;
  *
  * @author Joost
  */
-public class ZoomModel {
+public class WorkspaceModel {
 
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
@@ -17,7 +17,7 @@ public class ZoomModel {
     private final DoubleProperty translateX;
     private final DoubleProperty translateY;
 
-    public ZoomModel() {
+    public WorkspaceModel() {
         zoomFactor = new SimpleDoubleProperty(1.0); // Default zoom level
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);

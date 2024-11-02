@@ -1,9 +1,9 @@
 package vplcore.workspace;
 
+import vplcore.MousePositionHandler;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,10 +14,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import vplcore.editor.EditorMode;
 import vplcore.editor.EditorModel;
-import vplcore.editor.ZoomModel;
 import vplcore.graph.model.BlockInfoPanel;
-import vplcore.graph.util.ConnectionCreator;
-import vplcore.graph.util.ConnectionRemover;
+import vplcore.graph.model.Port;
+import vplcore.graph.util.PreConnection;
 
 /**
  *
@@ -37,24 +36,18 @@ public class Workspace extends AnchorPane {
     //Create connection members
     public boolean typeSensitive = true;
 
-    //Selection rectangle members
-    public Point2D startSelectionPoint;
-    public Region selectionRectangle;
-
-    private final EventRouter eventRouter;
-    private final ZoomModel zoomModel;
+    private final WorkspaceModel zoomModel;
     private final EditorModel editorModel;
 
     //Radial menu
-    public Workspace(EventRouter eventRouter, ZoomModel zoomModel, EditorModel editorModel) {
-        this.eventRouter = eventRouter;
-        this.zoomModel = zoomModel;
+    public Workspace(WorkspaceModel workspaceModel, EditorModel editorModel) {
+        this.zoomModel = workspaceModel;
         this.editorModel = editorModel;
 
-        this.scaleXProperty().bind(zoomModel.zoomFactorProperty());
-        this.scaleYProperty().bind(zoomModel.zoomFactorProperty());
-        this.translateXProperty().bind(zoomModel.translateXProperty());
-        this.translateYProperty().bind(zoomModel.translateYProperty());
+        this.scaleXProperty().bind(workspaceModel.zoomFactorProperty());
+        this.scaleYProperty().bind(workspaceModel.zoomFactorProperty());
+        this.translateXProperty().bind(workspaceModel.translateXProperty());
+        this.translateYProperty().bind(workspaceModel.translateYProperty());
 
         //Must set to (0,0) due to funky resize, otherwise messes up zoom in and out
         setMinSize(0, 0);
@@ -72,23 +65,39 @@ public class Workspace extends AnchorPane {
 
     }
 
+    private PreConnection preConnection = null;
+
+    // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
+    public void createConnection(Port port) {
+        if (preConnection == null) {
+            preConnection = new PreConnection(Workspace.this, port);
+            Workspace.this.getChildren().add(0, preConnection);
+        } 
+    }
+    
+    // method is unneeded if createConnection catches the second click
+    public void removeChild(PreConnection preConnection) {
+        getChildren().remove(preConnection);
+        this.preConnection = null;
+    }
+
+    public void removeChild(Block block) {
+
+    }
+
     //Initial modi members
     public MousePositionHandler mouse;
-    public ConnectionCreator portConnector;
-    public ConnectionRemover portDisconnector;
 
     private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
 
             mouse = new MousePositionHandler(Workspace.this);
-            portConnector = new ConnectionCreator(Workspace.this);
-            portDisconnector = new ConnectionRemover(Workspace.this);
-            Workspace.this.requestFocus(); // Request focus, zoom to fit with SPACEBAR only works when workspace received focus
+
         }
     };
 
-    public ZoomModel getZoomModel() {
+    public WorkspaceModel getZoomModel() {
         return zoomModel;
     }
 
@@ -99,7 +108,6 @@ public class Workspace extends AnchorPane {
         blockSet.clear();
         connectionSet.clear();
         getChildren().clear();
-        getChildren().add(portDisconnector.getRemoveButton());
     }
 
     public void setEditorMode(EditorMode mode) {
@@ -111,13 +119,13 @@ public class Workspace extends AnchorPane {
     }
 
     public void zoomIn() {
-        ZoomModel model = zoomModel;
+        WorkspaceModel model = zoomModel;
         double newScale = model.getIncrementedZoomFactor();
         applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
 
     public void zoomOut() {
-        ZoomModel model = zoomModel;
+        WorkspaceModel model = zoomModel;
         double newScale = model.getDecrementedZoomFactor();
         applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
@@ -127,7 +135,7 @@ public class Workspace extends AnchorPane {
     }
 
     public void applyZoom(double newScale, Point2D pivotPoint) {
-        ZoomModel model = zoomModel;
+        WorkspaceModel model = zoomModel;
         Workspace view = this;
 
         double oldScale = model.zoomFactorProperty().get();
@@ -165,7 +173,7 @@ public class Workspace extends AnchorPane {
     }
 
     public void zoomToFit() {
-        ZoomModel model = zoomModel;
+        WorkspaceModel model = zoomModel;
         Workspace view = this;
 
         Scene scene = view.getScene();
@@ -180,8 +188,8 @@ public class Workspace extends AnchorPane {
         double ratio = Math.max(ratioX, ratioY);
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
         double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
-        scale = scale < ZoomModel.MIN_ZOOM ? ZoomModel.MIN_ZOOM : scale;
-        scale = scale > ZoomModel.MAX_ZOOM ? ZoomModel.MAX_ZOOM : scale;
+        scale = scale < WorkspaceModel.MIN_ZOOM ? WorkspaceModel.MIN_ZOOM : scale;
+        scale = scale > WorkspaceModel.MAX_ZOOM ? WorkspaceModel.MAX_ZOOM : scale;
         model.zoomFactorProperty().set(scale);
 
         //Pan to fit

@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore;
 
 import javafx.event.Event;
 import javafx.event.EventType;

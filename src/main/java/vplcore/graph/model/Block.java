@@ -507,7 +507,6 @@ public abstract class Block extends VplElement {
     }
 
     protected void handleBlockEntered(MouseEvent event) {
-        workspace.portDisconnector.hideRemoveButton();
         Block.this.setActive(true);
         Block.this.updateStyle();
     }

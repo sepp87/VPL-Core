@@ -1,8 +1,9 @@
-package vplcore.workspace;
+package vplcore;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import vplcore.workspace.Workspace;
 import vplcore.workspace.Workspace;
 
 /**

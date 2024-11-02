@@ -16,7 +16,6 @@ import vplcore.util.ListViewUtils;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.workspace.ActionManager;
 import vplcore.workspace.Workspace;
-import vplcore.workspace.MouseMode;
 import vplcore.workspace.command.CreateBlockCommand;
 
 /**

@@ -75,10 +75,10 @@ public class PasteBlocksCommand implements Command {
                         Connection newConnection = null;
 
                         // start and end block are contained in selection
-                        if (workspace.tempBlockSet.contains(connection.startPort.parentBlock)) {
+                        if (workspace.tempBlockSet.contains(connection.getStartPort().parentBlock)) {
                             CopyConnection cc2 = copyConnections
                                     .stream()
-                                    .filter(i -> i.oldBlock == connection.startPort.parentBlock)
+                                    .filter(i -> i.oldBlock == connection.getStartPort().parentBlock)
                                     .findFirst()
                                     .orElse(null);
 
@@ -87,7 +87,7 @@ public class PasteBlocksCommand implements Command {
                             }
                         } else {
                             // only end block is contained in selection
-                            newConnection = new Connection(workspace, connection.startPort, cc.newBlock.inPorts.get(counter));
+                            newConnection = new Connection(workspace, connection.getStartPort(), cc.newBlock.inPorts.get(counter));
                         }
 
                         if (newConnection != null) {

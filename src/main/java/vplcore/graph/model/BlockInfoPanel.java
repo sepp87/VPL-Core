@@ -16,7 +16,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import vplcore.FontAwesomeIcon;
 import vplcore.graph.util.MethodBlock;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -26,7 +26,7 @@ public class BlockInfoPanel extends Pane {
 
     // specify types info, warning and error
     // style panel by severity 
-    protected final Workspace workspace;
+    protected final WorkspaceView workspaceView;
     protected final Block block;
 
     protected Button closeButton;
@@ -37,7 +37,7 @@ public class BlockInfoPanel extends Pane {
     public static final double MAX_HEIGHT = 420;
 
     public BlockInfoPanel(Block block) {
-        this.workspace = block.workspace;
+        this.workspaceView = block.workspaceController.getView();
         this.block = block;
 
         VBox container = new VBox(-2);
@@ -55,7 +55,7 @@ public class BlockInfoPanel extends Pane {
 
         setPosition();
 
-        workspace.getChildren().addFirst(this);
+        workspaceView.getChildren().addFirst(this);
     }
 
     protected void setPosition() {
@@ -81,7 +81,7 @@ public class BlockInfoPanel extends Pane {
         this.messagePane = new ScrollPane(content);
         messagePane.setFitToWidth(true);
         messagePane.setFocusTraversable(false);
-        messagePane.setOnMousePressed(event -> workspace.requestFocus());
+        messagePane.setOnMousePressed(event -> workspaceView.requestFocus());
         messagePane.prefViewportHeightProperty().bind(content.heightProperty());
 
         // create info bubble
@@ -210,7 +210,7 @@ public class BlockInfoPanel extends Pane {
     }
 
     public void delete() {
-        workspace.getChildren().remove(BlockInfoPanel.this);
+        workspaceView.getChildren().remove(BlockInfoPanel.this);
         closeButton.setOnAction(null);
         block.infoPanel = null;
         messagePane.setOnMousePressed(null);

@@ -8,7 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -16,7 +16,7 @@ import vplcore.workspace.Workspace;
  */
 public class EditorController {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
     private final RadialMenuController radialMenuController;
     private final ZoomController zoomController;
     private final PanController panController;
@@ -37,7 +37,7 @@ public class EditorController {
     private final EventHandler<ScrollEvent> scrollFinishedHandler = this::handleScrollFinished;
     private final EventHandler<KeyEvent> keyPressedHandler = this::handleKeyPressed;
 
-    public EditorController(EditorView editorView, RadialMenuController radialMenuController, Workspace workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController, BlockSearchController blockSearchController) {
+    public EditorController(EditorView editorView, RadialMenuController radialMenuController, WorkspaceController workspace, ZoomController zoomController, PanController panController, KeyboardController keyboardController, SelectionRectangleController selectionRectangleController, BlockSearchController blockSearchController) {
         this.workspace = workspace;
         this.radialMenuController = radialMenuController;
         this.zoomController = zoomController;

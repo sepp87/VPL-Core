@@ -3,7 +3,7 @@ package vpllib.input;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -37,7 +37,7 @@ public class IntegerSlider extends Block {
 
     private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
 
-    public IntegerSlider(Workspace hostCanvas) {
+    public IntegerSlider(WorkspaceController hostCanvas) {
         super(hostCanvas);
         setName("Integer");
 
@@ -250,7 +250,7 @@ public class IntegerSlider extends Block {
 
     @Override
     public Block clone() {
-        IntegerSlider block = new IntegerSlider(workspace);
+        IntegerSlider block = new IntegerSlider(workspaceController);
         block.slider.setValue(this.slider.getValue());
         block.slider.setMin(this.slider.getMin());
         block.slider.setMax(this.slider.getMax());

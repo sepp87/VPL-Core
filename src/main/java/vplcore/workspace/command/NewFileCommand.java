@@ -1,7 +1,7 @@
 package vplcore.workspace.command;
 
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -9,9 +9,9 @@ import vplcore.workspace.Workspace;
  */
 public class NewFileCommand implements Command {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public NewFileCommand(Workspace workspace) {
+    public NewFileCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
@@ -20,8 +20,4 @@ public class NewFileCommand implements Command {
         workspace.reset();
     }
 
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

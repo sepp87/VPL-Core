@@ -29,7 +29,7 @@ import jo.vpl.xml.ObjectFactory;
 import vplcore.IconType;
 import vplcore.editor.EditorMode;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -51,8 +51,8 @@ public class BlockGroup extends VplElement {
     private final PropertyChangeListener groupBlockChangedListener = this::handleGroupBlockChanged; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
     private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
-    public BlockGroup(Workspace vplControl) {
-        super(vplControl);
+    public BlockGroup(WorkspaceController workspaceController) {
+        super(workspaceController);
 
         getStyleClass().add("block-group");
 
@@ -64,8 +64,8 @@ public class BlockGroup extends VplElement {
 
         setName("Name group here...");
 
-        workspace.blockGroupSet.add(this);
-        workspace.getChildren().add(1, this);
+        this.workspaceController.groupsOfBlocks.add(this);
+        this.workspaceView.getChildren().add(1, this);
 
         binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
         binButton.setVisible(false);
@@ -100,20 +100,20 @@ public class BlockGroup extends VplElement {
             block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
 
             block.setSelected(true);
-            workspace.selectedBlockSet.add(block);
+            workspaceController.blocksSelectedOnWorkspace.add(block);
         }
-        workspace.setEditorMode(EditorMode.GROUP_SELECTION_MODE); // prevent group from being deselected
+        workspaceController.setEditorMode(EditorMode.GROUP_SELECTION_MODE); // prevent group from being deselected
     }
 
     private void handleGroupReleased(MouseEvent event) {
-        workspace.setEditorMode(EditorMode.IDLE_MODE);
+        workspaceController.setEditorMode(EditorMode.IDLE_MODE);
 //        event.consume();
     }
 
     @Override
     public void delete() {
         unObserveAllChildBlocks();
-        workspace.blockGroupSet.remove(this);
+        workspaceController.groupsOfBlocks.remove(this);
         binButton.setOnAction(null);
         super.delete();
     }
@@ -233,7 +233,7 @@ public class BlockGroup extends VplElement {
         List<BlockReferenceTag> blockReferenceTagList = xmlTag.getBlockReference();
         List<Block> blocks = new ArrayList<>();
         for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {
-            for (Block block : workspace.blockSet) {
+            for (Block block : workspaceController.blocksOnWorkspace) {
                 if (block.uuid.toString().equals(blockReferenceTag.getUUID())) {
                     blocks.add(block);
                     break;

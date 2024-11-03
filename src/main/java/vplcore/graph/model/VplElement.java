@@ -6,7 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import vplcore.EventBlaster;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -17,7 +18,9 @@ public class VplElement extends GridPane {
     public BlockLabel captionLabel;
     public HBox menuBox;
 
-    public Workspace workspace;
+    public WorkspaceController workspaceController;
+    protected WorkspaceView workspaceView;
+    
     public final StringProperty name = new SimpleStringProperty(this, "name", "");
     public final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
     public final BooleanProperty deleted = new SimpleBooleanProperty(this, "deleted", false);
@@ -27,9 +30,10 @@ public class VplElement extends GridPane {
     private final EventHandler<MouseEvent> vplElementEnteredHandler = this::handleVplElementEntered;
     private final EventHandler<MouseEvent> vplElementExitedHandler = this::handleVplElementExited;
 
-    public VplElement(Workspace workspace) {
+    public VplElement(WorkspaceController workspaceController) {
 
-        this.workspace = workspace;
+        this.workspaceController = workspaceController;
+        this.workspaceView = workspaceController.getView();
 
         getStyleClass().add("vpl-element");
 
@@ -67,7 +71,7 @@ public class VplElement extends GridPane {
 
         captionLabel.textProperty().unbindBidirectional(name);
         captionLabel.delete();
-        workspace.getChildren().remove(this);
+        workspaceView.getChildren().remove(this);
         setDeleted(true);
     }
 

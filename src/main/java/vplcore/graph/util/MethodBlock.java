@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.Port;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -29,7 +29,7 @@ public class MethodBlock extends Block {
     public String[] tags;
     public Method method;
 
-    public MethodBlock(Workspace hostCanvas, Method method) {
+    public MethodBlock(WorkspaceController hostCanvas, Method method) {
         super(hostCanvas);
 
         BlockInfo info = method.getAnnotation(BlockInfo.class);
@@ -243,7 +243,7 @@ public class MethodBlock extends Block {
 
     @Override
     public Block clone() {
-        MethodBlock block = BlockFactory.createBlockFromMethod(method, workspace);
+        MethodBlock block = BlockFactory.createBlockFromMethod(method, workspaceController);
         return block;
     }
 }

@@ -1,28 +1,28 @@
 package vplcore.workspace.command;
 
 import vplcore.graph.model.BlockGroup;
-import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.Undoable;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class GroupBlocksCommand implements Command {
+public class GroupBlocksCommand implements Undoable {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public GroupBlocksCommand(Workspace workspace) {
+    public GroupBlocksCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        if (workspace.selectedBlockSet.size() <= 1) {
+        if (workspace.blocksSelectedOnWorkspace.size() <= 1) {
             return;
         }
         BlockGroup blockGroup = new BlockGroup(workspace);
-        blockGroup.setChildBlocks(workspace.selectedBlockSet);
+        blockGroup.setChildBlocks(workspace.blocksSelectedOnWorkspace);
     }
 
     @Override

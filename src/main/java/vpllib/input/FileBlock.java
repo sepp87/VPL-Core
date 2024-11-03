@@ -1,7 +1,7 @@
 package vpllib.input;
 
 import vplcore.graph.model.Block;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import java.io.File;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,7 +34,7 @@ public class FileBlock extends Block {
     private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
     private final EventHandler<MouseEvent> textFieldEnteredHandler = this::handleTextFieldMouseEntered;
 
-    public FileBlock(Workspace hostCanvas) {
+    public FileBlock(WorkspaceController hostCanvas) {
         super(hostCanvas);
         setName("File");
 
@@ -118,7 +118,7 @@ public class FileBlock extends Block {
 
     @Override
     public Block clone() {
-        FileBlock block = new FileBlock(workspace);
+        FileBlock block = new FileBlock(workspaceController);
         block.setPath(this.getPath());
         block.calculate();
         return block;

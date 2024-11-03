@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import vplcore.graph.model.Block;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -36,7 +36,7 @@ public class TextBlock extends Block {
     private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
     private final ChangeListener<Object> blockIncomingDataListener = this::handleBlockIncomingData;
 
-    public TextBlock(Workspace workspace) {
+    public TextBlock(WorkspaceController workspace) {
         super(workspace);
         setName("Panel");
         setResizable(true);
@@ -181,7 +181,7 @@ public class TextBlock extends Block {
 
     @Override
     public Block clone() {
-        TextBlock block = new TextBlock(workspace);
+        TextBlock block = new TextBlock(workspaceController);
         if (textArea.isEditable()) {
             block.setText(textArea.getText());
         }

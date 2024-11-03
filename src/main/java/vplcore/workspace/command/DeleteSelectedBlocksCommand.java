@@ -1,27 +1,27 @@
 package vplcore.workspace.command;
 
 import vplcore.graph.model.Block;
-import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.Undoable;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class DeleteSelectedBlocksCommand implements Command {
+public class DeleteSelectedBlocksCommand implements Undoable {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public DeleteSelectedBlocksCommand(Workspace workspace) {
+    public DeleteSelectedBlocksCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        for (Block block : workspace.selectedBlockSet) {
+        for (Block block : workspace.blocksSelectedOnWorkspace) {
             block.delete();
         }
-        workspace.selectedBlockSet.clear();
+        workspace.blocksSelectedOnWorkspace.clear();
     }
 
     @Override

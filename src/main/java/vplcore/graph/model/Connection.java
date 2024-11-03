@@ -16,7 +16,8 @@ import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.SVGPath;
 import jo.vpl.xml.ConnectionTag;
 import vplcore.util.FileUtils;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -24,13 +25,17 @@ import vplcore.workspace.Workspace;
  */
 public class Connection {
 
+    private final WorkspaceController workspaceController;
+    private final WorkspaceView workspaceView;
+    
     private final ChangeListener<Object> blockDeletedListener = this::handleBlockDeleted;
     private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
 
     private final static double SNAPPING_WIDTH = 22;
     private final Port startPort;
     private final Port endPort;
-    private final Workspace workspace;
+    
+    
     private final CubicCurve connectionCurve;
     private final CubicCurve snappingCurve;
 
@@ -41,12 +46,13 @@ public class Connection {
      * A connection contains a reference to an in- and outport. Its visual
      * representation is a cubic(bezier) curve between two ports.
      *
-     * @param workspace
+     * @param workspaceController
      * @param startPort the OUT port [ ]<
      * @param endPort the IN port >[ ]
      */
-    public Connection(Workspace workspace, Port startPort, Port endPort) {
-        this.workspace = workspace;
+    public Connection(WorkspaceController workspaceController, Port startPort, Port endPort) {
+        this.workspaceController = workspaceController;
+        this.workspaceView = workspaceController.getView();
 
         this.startPort = startPort;
         this.endPort = endPort;
@@ -76,8 +82,8 @@ public class Connection {
         snappingCurve.setStroke(Color.TRANSPARENT);
 //        snappingCurve.setUserData(this);
 
-        workspace.getChildren().add(0, snappingCurve);
-        workspace.getChildren().add(0, connectionCurve);
+        workspaceView.getChildren().add(0, snappingCurve);
+        workspaceView.getChildren().add(0, connectionCurve);
         addChangeListeners();
 
         initializeRemoveButton();
@@ -169,11 +175,11 @@ public class Connection {
     }
 
     public void removeFromCanvas() {
-        workspace.getChildren().remove(connectionCurve);
-        workspace.getChildren().remove(snappingCurve);
+        workspaceView.getChildren().remove(connectionCurve);
+        workspaceView.getChildren().remove(snappingCurve);
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
-        workspace.connectionSet.remove(this);
+        workspaceController.connectionsOnWorkspace.remove(this);
         if (!endPort.multiDockAllowed) {
             endPort.parentBlock.handleIncomingConnectionRemoved(endPort);
         }
@@ -214,8 +220,8 @@ public class Connection {
     private void initializeRemoveButton() {
 
         if (removeButton != null) {
-            if (!workspace.getChildren().contains(removeButton)) {
-                workspace.getChildren().add(removeButton);
+            if (!workspaceView.getChildren().contains(removeButton)) {
+                workspaceView.getChildren().add(removeButton);
             }
             return;
         }
@@ -244,7 +250,7 @@ public class Connection {
         removeButton.getChildren().add(removeIcon);
         removeButton.setVisible(false);
         removeButton.setMouseTransparent(true);
-        workspace.getChildren().add(removeButton);
+        workspaceView.getChildren().add(removeButton);
     }
 
     private void handleMoveRemoveButton(MouseEvent event) {
@@ -275,7 +281,7 @@ public class Connection {
 
     private void showRemoveButton(MouseEvent event) {
 
-        Point2D mouse = workspace.sceneToLocal(event.getSceneX(), event.getSceneY());
+        Point2D mouse = workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY());
 
         // Check proximity to the curve using parameter t
         double closestDistance = Double.MAX_VALUE;

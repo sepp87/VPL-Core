@@ -13,7 +13,7 @@ import jo.vpl.xml.BlockTag;
 import vplcore.IconType;
 import vplcore.graph.model.BlockExceptionPanel.BlockException;
 import vplcore.util.EventUtils;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -52,8 +52,8 @@ public abstract class Block extends VplElement {
     private final EventHandler<ActionEvent> infoButtonClickedHandler = this::handleInfoButtonClicked;
     private final EventHandler<ActionEvent> exceptionButtonClickedHandler = this::handleExceptionButtonClicked;
 
-    public Block(Workspace workspace) {
-        super(workspace);
+    public Block(WorkspaceController workspaceController) {
+        super(workspaceController);
         uuid = UUID.randomUUID();
 
         inPorts = new ArrayList<>();
@@ -148,18 +148,18 @@ public abstract class Block extends VplElement {
     }
 
     private void handleInfoButtonClicked(ActionEvent event) {
-        if (workspace.activeBlockInfoPanel != null) {
-            workspace.activeBlockInfoPanel.delete();
+        if (workspaceController.activeBlockInfoPanel != null) {
+            workspaceController.activeBlockInfoPanel.delete();
         }
         BlockInfoPanel info = new BlockInfoPanel(this);
-        workspace.activeBlockInfoPanel = info;
+        workspaceController.activeBlockInfoPanel = info;
         infoPanel = info;
         infoButton.setVisible(false);
     }
 
     private void handleExceptionButtonClicked(ActionEvent event) {
-        if (workspace.activeBlockInfoPanel != null) {
-            workspace.activeBlockInfoPanel.delete();
+        if (workspaceController.activeBlockInfoPanel != null) {
+            workspaceController.activeBlockInfoPanel.delete();
         }
         BlockExceptionPanel exception = new BlockExceptionPanel(this);
         Exception e1 = new Exception("Short message! 🧐");
@@ -178,7 +178,7 @@ public abstract class Block extends VplElement {
         list.add(new BlockException("[2]", BlockExceptionPanel.Severity.ERROR, e3));
         list.add(new BlockException("[3]", BlockExceptionPanel.Severity.ERROR, e4));
         exception.setExceptions(list);
-        workspace.activeBlockInfoPanel = exception;
+        workspaceController.activeBlockInfoPanel = exception;
         exceptionPanel = exception;
         exceptionButton.setVisible(false);
         infoButton.setVisible(true);
@@ -216,7 +216,7 @@ public abstract class Block extends VplElement {
     }
 
     private void resizeBlock(MouseEvent event) {
-        double scale = workspace.getZoomFactor();
+        double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
         double oldWidth = contentGrid.getPrefWidth();
@@ -241,14 +241,14 @@ public abstract class Block extends VplElement {
      */
     private void updateSelection(MouseEvent event) {
 
-        if (workspace.selectedBlockSet.contains(this)) {
+        if (workspaceController.blocksSelectedOnWorkspace.contains(this)) {
             if (EventUtils.isModifierDown(event)) {
                 // Remove this node from selection
-                workspace.selectedBlockSet.remove(this);
+                workspaceController.blocksSelectedOnWorkspace.remove(this);
                 setSelected(false);
             } else {
                 // Subscribe multiselection to MouseMove event
-                for (Block block : workspace.selectedBlockSet) {
+                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
                     block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
                     block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
                 }
@@ -256,19 +256,19 @@ public abstract class Block extends VplElement {
         } else {
             if (EventUtils.isModifierDown(event)) {
                 // add this node to selection
-                workspace.selectedBlockSet.add(this);
+                workspaceController.blocksSelectedOnWorkspace.add(this);
                 setSelected(true);
             } else {
                 // Deselect all blocks that are selected
-                for (Block block : workspace.selectedBlockSet) {
+                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
                     block.setSelected(false);
                 }
 
-                workspace.selectedBlockSet.clear();
-                workspace.selectedBlockSet.add(this);
+                workspaceController.blocksSelectedOnWorkspace.clear();
+                workspaceController.blocksSelectedOnWorkspace.add(this);
                 // Select this block as selected
                 setSelected(true);
-                for (Block block : workspace.selectedBlockSet) {
+                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
                     //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
                     this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
@@ -287,10 +287,10 @@ public abstract class Block extends VplElement {
     }
 
     public void move(MouseEvent event) {
-        double scale = workspace.getZoomFactor();
+        double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
-        for (Block block : workspace.selectedBlockSet) {
+        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
             block.setLayoutX(block.getLayoutX() + deltaX);
             block.setLayoutY(block.getLayoutY() + deltaY);
         }
@@ -421,7 +421,7 @@ public abstract class Block extends VplElement {
         inPorts.clear();
         outPorts.clear();
         controls.clear();
-        workspace.blockSet.remove(this);
+        workspaceController.blocksOnWorkspace.remove(this);
         if (infoPanel != null) {
             infoPanel.delete();
         }
@@ -513,7 +513,7 @@ public abstract class Block extends VplElement {
 
     protected void handleBlockExited(MouseEvent event) {
         //Change focus on exit to workspace so controls do not interrupt key events
-        Block.this.workspace.requestFocus();
+        Block.this.workspaceController.getView().requestFocus();
         Block.this.setActive(false);
         Block.this.updateStyle();
     }

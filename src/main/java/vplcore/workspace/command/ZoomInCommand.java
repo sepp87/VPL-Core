@@ -1,7 +1,7 @@
 package vplcore.workspace.command;
 
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -9,9 +9,9 @@ import vplcore.workspace.Workspace;
  */
 public class ZoomInCommand implements Command {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public ZoomInCommand(Workspace workspace) {
+    public ZoomInCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
@@ -20,9 +20,6 @@ public class ZoomInCommand implements Command {
         workspace.zoomIn();
     }
 
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 
 }

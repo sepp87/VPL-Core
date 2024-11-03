@@ -1,7 +1,7 @@
 package vpllib.input;
 
 import javafx.event.EventHandler;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import vplcore.graph.model.Block;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -29,9 +29,9 @@ public class StringBlock extends Block {
 
     private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
     private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
-    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
+//    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
 
-    public StringBlock(Workspace hostCanvas) {
+    public StringBlock(WorkspaceController hostCanvas) {
         super(hostCanvas);
         setName("String");
 
@@ -48,7 +48,7 @@ public class StringBlock extends Block {
 
         text.setOnKeyReleased(keyReleasedHandler);
         this.setOnMouseEntered(fieldEnteredHandler);
-        this.setOnMouseExited(fieldExitedHandler);
+//        this.setOnMouseExited(fieldExitedHandler);
 
 //        outPorts.get(0).setData(null);
     }
@@ -65,11 +65,11 @@ public class StringBlock extends Block {
         };
     }
 
-    private EventHandler<MouseEvent> createFieldExitedHandler() {
-        return (MouseEvent event) -> {
-            workspace.requestFocus();
-        };
-    }
+//    private EventHandler<MouseEvent> createFieldExitedHandler() {
+//        return (MouseEvent event) -> {
+//            workspaceController.getView().requestFocus();
+//        };
+//    }
 
     public void setString(String str) {
         text.setText(str);
@@ -184,7 +184,7 @@ public class StringBlock extends Block {
 
     @Override
     public Block clone() {
-        StringBlock block = new StringBlock(workspace);
+        StringBlock block = new StringBlock(workspaceController);
         block.setString(this.getString());
         return block;
     }

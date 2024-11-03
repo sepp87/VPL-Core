@@ -14,7 +14,7 @@ import vplcore.editor.SelectionRectangleController;
 import vplcore.editor.SelectionRectangleView;
 import vplcore.editor.radialmenu.RadialMenuController;
 import vplcore.editor.radialmenu.RadialMenuView;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
@@ -23,6 +23,7 @@ import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.editor.EditorModel;
 import vplcore.workspace.ActionManager;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -30,8 +31,12 @@ import vplcore.workspace.ActionManager;
  */
 public class App extends Application {
 
+    private static Stage stage;
+    
     @Override
     public void start(Stage stage) throws Exception {
+        
+        this.stage = stage;
 
         EventRouter eventRouter = new EventRouter();
         eventRouter.fireEvent(new FocusReleasedEvent());
@@ -42,27 +47,27 @@ public class App extends Application {
 
         // Initialize views
         // WorkspaceView
+        WorkspaceView workspaceView = new WorkspaceView();
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
-        Workspace workspace = new Workspace(workspaceModel, editorModel);
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspace, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+        EditorView editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
-        // Temporary stuff
-        ActionManager actionManager = new ActionManager(workspace);
-        ZoomController zoomController = new ZoomController(actionManager, editorModel, workspaceModel, zoomView);
+        // Initialize workspace controller and supporting managers
+        WorkspaceController workspaceController = new WorkspaceController(editorModel, workspaceModel, workspaceView);
+        ActionManager actionManager = new ActionManager(workspaceController);
 
         // Initialize controllers
-        // WorkspaceController
+        ZoomController zoomController = new ZoomController(actionManager, editorModel, workspaceModel, zoomView);
         BlockSearchController blockSearchController = new BlockSearchController(editorModel, blockSearchView, actionManager);
         SelectionRectangleController selectionRectangleController = new SelectionRectangleController(actionManager, editorModel, selectionRectangleView);
         KeyboardController keyboardController = new KeyboardController(actionManager);
         PanController panController = new PanController(editorModel, workspaceModel);
         RadialMenuController radialMenuController = new RadialMenuController(actionManager, editorModel, radialMenuView);
         MenuBarController menuBarController = new MenuBarController(actionManager, menuBarView);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspace, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
+        EditorController editorController = new EditorController(editorView, radialMenuController, workspaceController, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
 
         // Setup scene
         Scene scene = new Scene(editorView, 800, 800);
@@ -71,8 +76,11 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace, workspaceModel);
+        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.test();
     }
 
+    public static Stage getStage() {
+        return stage;
+    }
 }

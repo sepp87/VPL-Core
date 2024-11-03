@@ -32,30 +32,32 @@ public class ZoomController extends HBox {
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    public ZoomController(ActionManager actionManager, EditorModel editorModel, WorkspaceModel zoomModel, ZoomView zoomView) {
+    public ZoomController(ActionManager actionManager, EditorModel editorModel, WorkspaceModel workspaceModel, ZoomView zoomView) {
         this.actionManager = actionManager;
         this.editorModel = editorModel;
-        this.model = zoomModel;
+        this.model = workspaceModel;
         this.view = zoomView;
 
         view.getZoomInButton().setOnAction(this::handleZoomIn);
         view.getZoomOutButton().setOnAction(this::handleZoomOut);
         view.getZoomLabel().setOnMouseClicked(this::handleZoomReset);  // Reset zoom to 100% on click
-        view.getZoomLabel().textProperty().bind(zoomModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
+        view.getZoomLabel().textProperty().bind(workspaceModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
     }
 
     private void handleZoomIn(ActionEvent event) {
-        Command command = new ZoomInCommand(actionManager.getWorkspace());
+        Command command = new ZoomInCommand(actionManager.getWorkspaceController());
         actionManager.executeCommand(command);
     }
 
     private void handleZoomOut(ActionEvent event) {
-        Command command = new ZoomOutCommand(actionManager.getWorkspace());
+        Command command = new ZoomOutCommand(actionManager.getWorkspaceController());
         actionManager.executeCommand(command);
     }
 
     private void handleZoomReset(MouseEvent event) {
-        applyZoom(1.0, null); // Zoom is not from scrolling; no pivot point needed, since scene center is
+        // Zoom is not from scrolling; no pivot point needed, since scene center is
+        Command command = new ApplyZoomCommand(actionManager.getWorkspaceController(), 1.0, null);
+        actionManager.executeCommand(command);
     }
 
     public void processEditorScrollStarted(ScrollEvent event) {
@@ -94,7 +96,10 @@ public class ZoomController extends HBox {
                 newScale = model.getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
-            applyZoom(newScale, pivotPoint);  // Zoom from scrolling; pass mouse position
+            
+            // Zoom from scrolling; keep zoom centered around mouse position
+            Command command = new ApplyZoomCommand(actionManager.getWorkspaceController(), newScale, pivotPoint);
+            actionManager.executeCommand(command);
         }
     }
 
@@ -102,12 +107,6 @@ public class ZoomController extends HBox {
         if (editorModel.modeProperty().get() == EditorMode.ZOOM_MODE) {
             editorModel.modeProperty().set(EditorMode.IDLE_MODE);
         }
-    }
-
-    // Apply zoom and adjust pivot to keep zoom centered
-    private void applyZoom(double newScale, Point2D pivotPoint) {
-        Command command = new ApplyZoomCommand(actionManager.getWorkspace(), newScale, pivotPoint);
-        actionManager.executeCommand(command);
     }
 
 }

@@ -20,7 +20,7 @@ import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -37,7 +37,7 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, Workspace workspace, WorkspaceModel zoomModel) {
+    public static void serialize(File file, WorkspaceController workspace, WorkspaceModel zoomModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();
@@ -49,17 +49,17 @@ public class GraphSaver {
             documentTag.setTranslateY(zoomModel.translateYProperty().get());
 
             // serialize blocks of graph
-            Collection<Block> blocks = workspace.blockSet;
+            Collection<Block> blocks = workspace.blocksOnWorkspace;
             BlocksTag blocksTag = serializeBlocks(blocks);
             documentTag.setBlocks(blocksTag);
 
             // serialize connections of graph
-            Collection<Connection> connections = workspace.connectionSet;
+            Collection<Connection> connections = workspace.connectionsOnWorkspace;
             ConnectionsTag connectionsTag = serializeConnnections(connections);
             documentTag.setConnections(connectionsTag);
 
             // serialize groups of graph
-            Collection<BlockGroup> groups = workspace.blockGroupSet;
+            Collection<BlockGroup> groups = workspace.groupsOfBlocks;
             if (!groups.isEmpty()) {
                 GroupsTag groupsTag = serializeGroups(groups);
                 documentTag.setGroups(groupsTag);

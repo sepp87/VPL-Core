@@ -8,9 +8,9 @@ import javafx.scene.input.MouseEvent;
 import vplcore.editor.EditorMode;
 import vplcore.editor.EditorModel;
 import vplcore.editor.EditorView;
-import vplcore.workspace.Workspace;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.workspace.ActionManager;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -18,8 +18,8 @@ import vplcore.workspace.ActionManager;
  */
 public class RadialMenuController {
 
-    private ActionManager actionManager;
-    private EditorModel editorModel;
+    private final ActionManager actionManager;
+    private final EditorModel editorModel;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
@@ -54,7 +54,7 @@ public class RadialMenuController {
 
     public void processEditorMouseClicked(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
+        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
         boolean onRadialMenu = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, RadialMenu.class);
         boolean isSecondaryClick = event.getButton() == MouseButton.SECONDARY && event.isStillSincePress();
         boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;

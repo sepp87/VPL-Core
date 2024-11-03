@@ -4,6 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 4 BUG hit space on input.string causes zoomtofit and " " without triggering recalculation
 // 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 BUG Info panel does not move down when aligning blocks
 // 1 IMPROVEMENT Set block exception panel when block throws exception
@@ -28,6 +29,11 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 BUG selection discarded when clicking on menu bar
 // 1 BUG selection discarded when exiting radial menu
+//
+// NOTES
+// Mouse position is needed when pasting blocks and when creating a new connection 
+// Code duplication - Radial Menu, Selection Rectangle and Block Search all test if mouse is on Editor View or Workspace View 
+// Check where workspaceController.getView() is used and refactor it
 /**
  *
  * @author JoostMeulenkamp

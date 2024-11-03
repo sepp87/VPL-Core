@@ -3,40 +3,38 @@ package vplcore.workspace.command;
 import javafx.geometry.Point2D;
 import vplcore.graph.model.Block;
 import vplcore.graph.util.BlockFactory;
-import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.Undoable;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class CreateBlockCommand implements Command {
+public class CreateBlockCommand implements Undoable {
 
     private final String blockIdentifier;
     private final Point2D location;
-    private final Workspace workspace;
+    private final WorkspaceController workspaceController;
     private Block block;
 
-    public CreateBlockCommand(Workspace workspace, String blockIdentifier, Point2D location) {
-        this.workspace = workspace;
+    public CreateBlockCommand(WorkspaceController workspaceController, String blockIdentifier, Point2D location) {
+        this.workspaceController = workspaceController;
         this.blockIdentifier = blockIdentifier;
-        this.location = workspace.sceneToLocal(location);
+        this.location = workspaceController.getView().sceneToLocal(location);
 
     }
 
     @Override
     public void execute() {
-        this.block = BlockFactory.createBlock(blockIdentifier, workspace);
+        this.block = BlockFactory.createBlock(blockIdentifier, workspaceController);
         block.setLayoutX(location.getX());
         block.setLayoutY(location.getY());
-        workspace.getChildren().add(block);
-        workspace.blockSet.add(block);
+        workspaceController.addBlock(block);
     }
 
     @Override
     public void undo() {
-        workspace.getChildren().remove(block);
-        workspace.blockSet.remove(block);
+        workspaceController.removeChild(block);
     }
 
 }

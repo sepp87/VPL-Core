@@ -2,26 +2,26 @@ package vplcore.workspace.command;
 
 import javafx.collections.FXCollections;
 import vplcore.graph.model.Block;
-import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.Undoable;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class CopyBlocksCommand implements Command {
+public class CopyBlocksCommand implements Undoable {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public CopyBlocksCommand(Workspace workspace) {
+    public CopyBlocksCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.tempBlockSet = FXCollections.observableSet();
-        for (Block block : workspace.selectedBlockSet) {
-            workspace.tempBlockSet.add(block);
+        workspace.blocksCopied = FXCollections.observableSet();
+        for (Block block : workspace.blocksSelectedOnWorkspace) {
+            workspace.blocksCopied.add(block);
         }
     }
 

@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -35,7 +35,7 @@ public class DoubleSlider extends Block {
 
     private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
 
-    public DoubleSlider(Workspace hostCanvas) {
+    public DoubleSlider(WorkspaceController hostCanvas) {
         super(hostCanvas);
         setName("Double");
 
@@ -263,7 +263,7 @@ public class DoubleSlider extends Block {
 
     @Override
     public Block clone() {
-        DoubleSlider block = new DoubleSlider(workspace);
+        DoubleSlider block = new DoubleSlider(workspaceController);
         block.slider.setValue(this.slider.getValue());
         block.slider.setMin(this.slider.getMin());
         block.slider.setMax(this.slider.getMax());

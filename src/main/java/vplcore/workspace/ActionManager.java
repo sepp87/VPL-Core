@@ -26,38 +26,38 @@ import vplcore.workspace.command.ZoomToFitCommand;
  */
 public class ActionManager {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspaceController;
 
-    private final Stack<Command> undoStack = new Stack<>();
-    private final Stack<Command> redoStack = new Stack<>();
+    private final Stack<Undoable> undoStack = new Stack<>();
+    private final Stack<Undoable> redoStack = new Stack<>();
     private final Map<String, Command> commandRegistry = new HashMap<>();
 
-    public ActionManager(Workspace workspace) {
-        this.workspace = workspace;
+    public ActionManager(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
         initializeCommands();
     }
 
     private void initializeCommands() {
-        commandRegistry.put("NEW_FILE", new NewFileCommand(workspace));
-        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspace));
-        commandRegistry.put("SAVE_FILE", new SaveFileCommand(workspace));
-        commandRegistry.put("COPY_BLOCKS", new CopyBlocksCommand(workspace));
-        commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspace));
-        commandRegistry.put("DELETE_SELECTED_BLOCKS", new DeleteSelectedBlocksCommand(workspace));
-        commandRegistry.put("GROUP_BLOCKS", new GroupBlocksCommand(workspace));
-        commandRegistry.put("ALIGN_LEFT", new AlignLeftCommand(workspace));
-        commandRegistry.put("ALIGN_VERTICALLY", new AlignVerticallyCommand(workspace));
-        commandRegistry.put("ALIGN_RIGHT", new AlignRightCommand(workspace));
-        commandRegistry.put("ALIGN_TOP", new AlignTopCommand(workspace));
-        commandRegistry.put("ALIGN_HORIZONTALLY", new AlignHorizontallyCommand(workspace));
-        commandRegistry.put("ALIGN_BOTTOM", new AlignBottomCommand(workspace));
-        commandRegistry.put("ZOOM_TO_FIT", new ZoomToFitCommand(workspace));
-        commandRegistry.put("ZOOM_IN", new ZoomInCommand(workspace));
-        commandRegistry.put("ZOOM_OUT", new ZoomOutCommand(workspace));
+        commandRegistry.put("NEW_FILE", new NewFileCommand(workspaceController));
+        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspaceController));
+        commandRegistry.put("SAVE_FILE", new SaveFileCommand(workspaceController));
+        commandRegistry.put("COPY_BLOCKS", new CopyBlocksCommand(workspaceController));
+        commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspaceController));
+        commandRegistry.put("DELETE_SELECTED_BLOCKS", new DeleteSelectedBlocksCommand(workspaceController));
+        commandRegistry.put("GROUP_BLOCKS", new GroupBlocksCommand(workspaceController));
+        commandRegistry.put("ALIGN_LEFT", new AlignLeftCommand(workspaceController));
+        commandRegistry.put("ALIGN_VERTICALLY", new AlignVerticallyCommand(workspaceController));
+        commandRegistry.put("ALIGN_RIGHT", new AlignRightCommand(workspaceController));
+        commandRegistry.put("ALIGN_TOP", new AlignTopCommand(workspaceController));
+        commandRegistry.put("ALIGN_HORIZONTALLY", new AlignHorizontallyCommand(workspaceController));
+        commandRegistry.put("ALIGN_BOTTOM", new AlignBottomCommand(workspaceController));
+        commandRegistry.put("ZOOM_TO_FIT", new ZoomToFitCommand(workspaceController));
+        commandRegistry.put("ZOOM_IN", new ZoomInCommand(workspaceController));
+        commandRegistry.put("ZOOM_OUT", new ZoomOutCommand(workspaceController));
     }
 
-    public Workspace getWorkspace() {
-        return workspace;
+    public WorkspaceController getWorkspaceController() {
+        return workspaceController;
     }
 
     public void executeCommand(String id) {
@@ -69,13 +69,15 @@ public class ActionManager {
 
     public void executeCommand(Command command) {
         command.execute();
-        undoStack.push(command);
+        if (command instanceof Undoable undoable) {
+            undoStack.push(undoable);
+        }
         redoStack.clear();
     }
 
     public void undo() {
         if (!undoStack.isEmpty()) {
-            Command command = undoStack.pop();
+            Undoable command = undoStack.pop();
             command.undo();
             redoStack.push(command);
         }
@@ -83,7 +85,7 @@ public class ActionManager {
 
     public void redo() {
         if (!redoStack.isEmpty()) {
-            Command command = redoStack.pop();
+            Undoable command = redoStack.pop();
             command.execute();
             undoStack.push(command);
         }

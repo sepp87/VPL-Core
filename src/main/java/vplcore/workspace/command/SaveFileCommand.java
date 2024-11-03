@@ -3,9 +3,10 @@ package vplcore.workspace.command;
 import java.io.File;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import vplcore.App;
 import vplcore.graph.io.GraphSaver;
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -13,27 +14,24 @@ import vplcore.workspace.Workspace;
  */
 public class SaveFileCommand implements Command {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspaceController;
 
-    public SaveFileCommand(Workspace workspace) {
-        this.workspace = workspace;
+    public SaveFileCommand(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
-        Stage stage = (Stage) workspace.getScene().getWindow();
+
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Save as vplXML...");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showSaveDialog(stage);
+        File file = chooser.showSaveDialog(App.getStage());
 
         if (file != null) {
-            GraphSaver.serialize(file, workspace, workspace.getZoomModel());
+            GraphSaver.serialize(file, workspaceController, workspaceController.getModel());
         }
     }
 
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 }

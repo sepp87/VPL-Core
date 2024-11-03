@@ -6,7 +6,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import vplcore.workspace.ActionManager;
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceView;
 import vplcore.workspace.command.DeselectAllBlocksCommand;
 import vplcore.workspace.command.RectangleSelectCommand;
 
@@ -30,7 +30,7 @@ public class SelectionRectangleController {
 
     public void processEditorSelectionStarted(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
+        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
         boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY;
         boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
 
@@ -62,7 +62,7 @@ public class SelectionRectangleController {
                     removeSelectionRectangle();
                 } else {
                     // Deselect all blocks if no selection rectangle was active
-                    Command command = new DeselectAllBlocksCommand(actionManager.getWorkspace());
+                    Command command = new DeselectAllBlocksCommand(actionManager.getWorkspaceController());
                     actionManager.executeCommand(command);
                 }
             }
@@ -103,7 +103,7 @@ public class SelectionRectangleController {
     private void updateSelection() {
         Point2D selectionMin = new Point2D(view.getLayoutX(), view.getLayoutY());
         Point2D selectionMax = new Point2D(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
-        Command command = new RectangleSelectCommand(actionManager.getWorkspace(), selectionMin, selectionMax);
+        Command command = new RectangleSelectCommand(actionManager.getWorkspaceController(), selectionMin, selectionMax);
         actionManager.executeCommand(command);
     }
 

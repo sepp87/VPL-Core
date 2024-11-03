@@ -3,9 +3,10 @@ package vplcore.workspace.command;
 import java.io.File;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import vplcore.App;
 import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -13,34 +14,30 @@ import vplcore.workspace.Workspace;
  */
 public class OpenFileCommand implements Command {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspaceController;
 
-    public OpenFileCommand(Workspace workspace) {
-        this.workspace = workspace;
+    public OpenFileCommand(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
         //Open File
-        Stage stage = (Stage) workspace.getScene().getWindow();
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open a vplXML...");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showOpenDialog(stage);
+        File file = chooser.showOpenDialog(App.getStage());
 
         if (file == null) {
             return;
         }
 
         //Clear Layout
-        workspace.reset();
+        workspaceController.reset();
 
         //Load file
-        GraphLoader.deserialize(file, workspace, workspace.getZoomModel());
+        GraphLoader.deserialize(file, workspaceController, workspaceController.getModel());
     }
 
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 }

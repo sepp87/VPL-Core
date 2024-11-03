@@ -84,7 +84,7 @@ public class Port extends VBox {
 
     public void handlePortClickedForNewConnection(MouseEvent event) {
         if (event.isStillSincePress()) {
-            parentBlock.workspace.createConnection(Port.this);
+            parentBlock.workspaceController.createConnection(Port.this);
 
         }
         event.consume();
@@ -104,7 +104,7 @@ public class Port extends VBox {
 
     private void calcOrigin() {
         Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
-        Point2D centerInLocal = parentBlock.workspace.sceneToLocal(centerInScene);
+        Point2D centerInLocal = parentBlock.workspaceController.getView().sceneToLocal(centerInScene);
 
         centerXProperty.set(centerInLocal.getX());
         centerYProperty.set(centerInLocal.getY());

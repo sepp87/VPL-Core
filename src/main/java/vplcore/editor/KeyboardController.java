@@ -42,55 +42,55 @@ public class KeyboardController {
         switch (event.getCode()) {
             case BACK_SPACE:
             case DELETE:
-                command = new DeleteSelectedBlocksCommand(actionManager.getWorkspace());
+                command = new DeleteSelectedBlocksCommand(actionManager.getWorkspaceController());
                 break;
             case C:
                 if (isModifierDown) {
-                    command = new CopyBlocksCommand(actionManager.getWorkspace());
+                    command = new CopyBlocksCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case V:
                 if (isModifierDown) {
-                    command = new PasteBlocksCommand(actionManager.getWorkspace());
+                    command = new PasteBlocksCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case G:
                 if (isModifierDown) {
-                    command = new GroupBlocksCommand(actionManager.getWorkspace());
+                    command = new GroupBlocksCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case N:
                 if (isModifierDown) {
-                    command = new NewFileCommand(actionManager.getWorkspace());
+                    command = new NewFileCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case S:
                 if (isModifierDown) {
-                    command = new SaveFileCommand(actionManager.getWorkspace());
+                    command = new SaveFileCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case O:
                 if (isModifierDown) {
-                    command = new OpenFileCommand(actionManager.getWorkspace());
+                    command = new OpenFileCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case A:
                 if (isModifierDown) {
-                    command = new SelectAllBlocksCommand(actionManager.getWorkspace());
+                    command = new SelectAllBlocksCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case PLUS:
                 if (isModifierDown) {
-                    command = new ZoomInCommand(actionManager.getWorkspace());
+                    command = new ZoomInCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case MINUS:
                 if (isModifierDown) {
-                    command = new ZoomOutCommand(actionManager.getWorkspace());
+                    command = new ZoomOutCommand(actionManager.getWorkspaceController());
                 }
                 break;
             case SPACE:
-                command = new ZoomToFitCommand(actionManager.getWorkspace());
+                command = new ZoomToFitCommand(actionManager.getWorkspaceController());
                 break;
             case Z:
                 if (isModifierDown) {

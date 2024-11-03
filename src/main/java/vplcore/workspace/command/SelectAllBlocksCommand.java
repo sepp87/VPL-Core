@@ -2,7 +2,7 @@ package vplcore.workspace.command;
 
 import vplcore.graph.model.Block;
 import vplcore.workspace.Command;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -10,23 +10,20 @@ import vplcore.workspace.Workspace;
  */
 public class SelectAllBlocksCommand implements Command {
 
-    private final Workspace workspace;
+    private final WorkspaceController workspace;
 
-    public SelectAllBlocksCommand(Workspace workspace) {
+    public SelectAllBlocksCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.selectedBlockSet.clear();
-        for (Block block : workspace.blockSet) {
+        workspace.blocksSelectedOnWorkspace.clear();
+        for (Block block : workspace.blocksOnWorkspace) {
             block.setSelected(true);
-            workspace.selectedBlockSet.add(block);
+            workspace.blocksSelectedOnWorkspace.add(block);
         }
     }
 
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 }

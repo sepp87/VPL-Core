@@ -6,13 +6,13 @@ import vplcore.graph.model.Block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import javafx.scene.control.Label;
 import javax.xml.namespace.QName;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.Port;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -25,7 +25,7 @@ import vplcore.workspace.Workspace;
         tags = {"template", "dummy", "example"})
 public class TemplateBlock extends Block {
 
-    public TemplateBlock(Workspace hostCanvas) {
+    public TemplateBlock(WorkspaceController hostCanvas) {
         super(hostCanvas);
 
         setName("Template");
@@ -117,7 +117,7 @@ public class TemplateBlock extends Block {
 
     @Override
     public Block clone() {
-        TemplateBlock block = new TemplateBlock(workspace);
+        TemplateBlock block = new TemplateBlock(workspaceController);
         //Specify further copy statements here
         return block;
     }

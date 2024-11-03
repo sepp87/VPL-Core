@@ -1,7 +1,7 @@
 package vpllib.input;
 
 import vplcore.graph.model.Block;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import vpllib.util.CustomColorBox;
@@ -19,7 +19,7 @@ import vplcore.graph.model.BlockInfo;
         tags = {"input", "color"})
 public class ColorBlock extends Block {
 
-    public ColorBlock(Workspace hostCanvas) {
+    public ColorBlock(WorkspaceController hostCanvas) {
         super(hostCanvas);
 
         setName("Color Picker");
@@ -62,7 +62,7 @@ public class ColorBlock extends Block {
 
     @Override
     public Block clone() {
-        ColorBlock block = new ColorBlock(workspace);
+        ColorBlock block = new ColorBlock(workspaceController);
         block.setColor(this.getColor());
         return block;
     }

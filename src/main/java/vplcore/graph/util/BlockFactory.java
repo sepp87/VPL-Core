@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import vplcore.IconType;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockInfo;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -18,7 +18,7 @@ import vplcore.workspace.Workspace;
  */
 public class BlockFactory {
 
-    public static Block createBlock(String blockIdentifier, Workspace workspace) {
+    public static Block createBlock(String blockIdentifier, WorkspaceController workspace) {
         Block block = null;
         Object type = BlockLoader.BLOCK_LIBRARY.get(blockIdentifier);
 
@@ -32,17 +32,17 @@ public class BlockFactory {
         return block;
     }
 
-    public static Block createBlockFromClass(Class<?> clazz, Workspace workspace) {
+    public static Block createBlockFromClass(Class<?> clazz, WorkspaceController workspaceController) {
         Block block = null;
         try {
-            block = (Block) clazz.getConstructor(Workspace.class).newInstance(workspace);
+            block = (Block) clazz.getConstructor(WorkspaceController.class).newInstance(workspaceController);
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
             Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return block;
     }
 
-    public static MethodBlock createBlockFromMethod(Method method, Workspace workspace) {
+    public static MethodBlock createBlockFromMethod(Method method, WorkspaceController workspace) {
         MethodBlock block = null;
         try {
             BlockInfo info = method.getAnnotation(BlockInfo.class);

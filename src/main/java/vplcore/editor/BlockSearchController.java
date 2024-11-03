@@ -15,7 +15,7 @@ import vplcore.graph.util.BlockLoader;
 import vplcore.util.ListViewUtils;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.workspace.ActionManager;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceView;
 import vplcore.workspace.command.CreateBlockCommand;
 
 /**
@@ -100,7 +100,7 @@ public class BlockSearchController {
         }
 
         System.out.println("Create block " + blockIdentifier);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspace(), blockIdentifier, creationPoint);
+        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceController(), blockIdentifier, creationPoint);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();
@@ -120,7 +120,7 @@ public class BlockSearchController {
 
     public void processEditorMouseClicked(MouseEvent event) {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof Workspace;
+        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
         boolean onBlockSearch = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, BlockSearchView.class);
         boolean isDoublePrimaryClick = event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && event.isStillSincePress();
         boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;

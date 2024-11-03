@@ -34,7 +34,7 @@ public class CreateBlockCommand implements Undoable {
 
     @Override
     public void undo() {
-        workspaceController.removeChild(block);
+//        workspaceController.removeChild(block);
     }
 
 }

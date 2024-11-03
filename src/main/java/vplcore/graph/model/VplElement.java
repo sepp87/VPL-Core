@@ -20,7 +20,7 @@ public class VplElement extends GridPane {
 
     public WorkspaceController workspaceController;
     protected WorkspaceView workspaceView;
-    
+
     public final StringProperty name = new SimpleStringProperty(this, "name", "");
     public final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
     public final BooleanProperty deleted = new SimpleBooleanProperty(this, "deleted", false);
@@ -71,7 +71,8 @@ public class VplElement extends GridPane {
 
         captionLabel.textProperty().unbindBidirectional(name);
         captionLabel.delete();
-        workspaceView.getChildren().remove(this);
+        workspaceController.removeChild( this);
+//        workspaceView.getChildren().remove(this);
         setDeleted(true);
     }
 

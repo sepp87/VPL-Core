@@ -14,6 +14,7 @@ import vplcore.editor.EditorMode;
 import vplcore.editor.EditorModel;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.Port;
+import vplcore.graph.model.VplElement;
 import vplcore.graph.util.PreConnection;
 
 /**
@@ -156,9 +157,18 @@ public class WorkspaceController {
         view.getChildren().add(block);
     }
 
+    public <E extends VplElement> void removeChild(E block) {
+//        blocksOnWorkspace.remove(block);
+//        blocksSelectedOnWorkspace.remove(block);
+
+        System.out.println("VPL Extend");
+        view.getChildren().remove(block);
+    }
+
     public void removeChild(Block block) {
-        blocksOnWorkspace.remove(block);
-        blocksSelectedOnWorkspace.remove(block);
+//        blocksOnWorkspace.remove(block);
+//        blocksSelectedOnWorkspace.remove(block);
+        System.out.println("BLOCK");
         view.getChildren().remove(block);
     }
 

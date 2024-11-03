@@ -28,11 +28,11 @@ public class MenuBarView extends MenuBar {
         Menu alignMenu = new Menu("Align");
         editMenu.getItems().addAll(copy, paste, delete, group, alignMenu);
 
-        MenuItem alignLeft = new MenuItem("Align left" , "ALIGN_LEFT");
+        MenuItem alignLeft = new MenuItem("Align left", "ALIGN_LEFT");
         MenuItem alignVertically = new MenuItem("Align vertically", "ALIGN_VERTICALLY");
         MenuItem alignRight = new MenuItem("Align right", "ALIGN_RIGHT");
         MenuItem alignTop = new MenuItem("Align top", "ALIGN_TOP");
-        MenuItem alignHorizontally = new MenuItem("Align horizontally","ALIGN_HORIZONTALLY");
+        MenuItem alignHorizontally = new MenuItem("Align horizontally", "ALIGN_HORIZONTALLY");
         MenuItem alignBottom = new MenuItem("Align bottom", "ALIGN_BOTTOM");
         alignMenu.getItems().addAll(alignLeft, alignVertically, alignRight, alignTop, alignHorizontally, alignBottom);
 
@@ -42,7 +42,12 @@ public class MenuBarView extends MenuBar {
         MenuItem zoomOut = new MenuItem("Zoom out", "ZOOM_OUT");
         viewMenu.getItems().addAll(zoomToFit, zoomIn, zoomOut);
 
-        this.getMenus().addAll(fileMenu, editMenu, viewMenu);
+        Menu extrasMenu = new Menu("Extras");
+        MenuItem reloadPlugins = new MenuItem("Reload plugins", "RELOAD_PLUGINS");
+        MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
+        extrasMenu.getItems().addAll(reloadPlugins, logErrors);
+
+        this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);
     }
 
     public class MenuItem extends javafx.scene.control.MenuItem {

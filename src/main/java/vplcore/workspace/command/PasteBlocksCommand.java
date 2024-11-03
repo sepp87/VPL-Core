@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
-import vplcore.graph.util.CopyConnection;
+import vplcore.graph.util.CopiedConnection;
 import vplcore.workspace.Command;
 import vplcore.workspace.Workspace;
 
@@ -47,7 +47,7 @@ public class PasteBlocksCommand implements Command {
         workspace.selectedBlockSet.clear();
 
         List<Connection> alreadyClonedConnectors = new ArrayList<>();
-        List<CopyConnection> copyConnections = new ArrayList<>();
+        List<CopiedConnection> copiedConnections = new ArrayList<>();
 
         // copy block from clipboard to canvas
         for (Block block : workspace.tempBlockSet) {
@@ -63,10 +63,10 @@ public class PasteBlocksCommand implements Command {
             workspace.selectedBlockSet.add(newBlock);
             newBlock.setSelected(true);
 
-            copyConnections.add(new CopyConnection(block, newBlock));
+            copiedConnections.add(new CopiedConnection(block, newBlock));
         }
 
-        for (CopyConnection cc : copyConnections) {
+        for (CopiedConnection cc : copiedConnections) {
             int counter = 0;
 
             for (Port port : cc.oldBlock.inPorts) {
@@ -76,7 +76,7 @@ public class PasteBlocksCommand implements Command {
 
                         // start and end block are contained in selection
                         if (workspace.tempBlockSet.contains(connection.getStartPort().parentBlock)) {
-                            CopyConnection cc2 = copyConnections
+                            CopiedConnection cc2 = copiedConnections
                                     .stream()
                                     .filter(i -> i.oldBlock == connection.getStartPort().parentBlock)
                                     .findFirst()

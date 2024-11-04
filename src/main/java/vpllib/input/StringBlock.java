@@ -1,5 +1,6 @@
 package vpllib.input;
 
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import vplcore.workspace.WorkspaceController;
 import vplcore.graph.model.Block;
@@ -27,9 +28,8 @@ public class StringBlock extends Block {
 
     private final TextField text;
 
-    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
-    private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
-//    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
+    private final ChangeListener<String> calculateOnChangeHandler = this::handleCalculateOnChange;
+//    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
 
     public StringBlock(WorkspaceController hostCanvas) {
         super(hostCanvas);
@@ -46,30 +46,22 @@ public class StringBlock extends Block {
 
         addControlToBlock(text);
 
-        text.setOnKeyReleased(keyReleasedHandler);
-        this.setOnMouseEntered(fieldEnteredHandler);
-//        this.setOnMouseExited(fieldExitedHandler);
-
-//        outPorts.get(0).setData(null);
+        text.textProperty().addListener(calculateOnChangeHandler);
+        text.setOnKeyPressed(this::blockShortcuts);
+        this.setOnMouseEntered(this::focusOnTextField);
     }
 
-    private EventHandler<KeyEvent> createKeyReleasedHandler() {
-        return (KeyEvent keyEvent) -> {
-            calculate();
-        };
+    private void handleCalculateOnChange(Object b, Object o, Object n) {
+        calculate();
+    }
+    
+    private void blockShortcuts(KeyEvent event) {
+        event.consume();
     }
 
-    private EventHandler<MouseEvent> createFieldEnteredHandler() {
-        return (MouseEvent event) -> {
-            text.requestFocus();
-        };
+    private void focusOnTextField(MouseEvent event) {
+        text.requestFocus();
     }
-
-//    private EventHandler<MouseEvent> createFieldExitedHandler() {
-//        return (MouseEvent event) -> {
-//            workspaceController.getView().requestFocus();
-//        };
-//    }
 
     public void setString(String str) {
         text.setText(str);

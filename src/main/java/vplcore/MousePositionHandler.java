@@ -20,26 +20,23 @@ public class MousePositionHandler {
     }
 
     private void addInputHandlers() {
-        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
-        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEventHandler);
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, mouseEventHandler);
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseEventHandler);
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEventHandler);
 
     }
-    private final EventHandler<MouseEvent> mousePressedHandler = new EventHandler<>() {
+    private final EventHandler<MouseEvent> mouseEventHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
             position = workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY());
-        }
-    };
-    private final EventHandler<MouseEvent> mouseMovedHandler = new EventHandler<>() {
-        @Override
-        public void handle(MouseEvent event) {
-            position = workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY());
+            System.out.println("MOVE " + position);
+
         }
     };
 
     public Point2D getPosition() {
         return new Point2D(position.getX(), position.getY());
     }
-
 
 }

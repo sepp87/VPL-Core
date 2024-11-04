@@ -4,11 +4,12 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 4 BUG remove button of connection on copied blocks is shown on original connection
-// 4 BUG Directly paste after select blocks > copy, blocks are pasted at 0,0
-// 4 BUG hit space on input.string causes zoomtofit and " " without triggering recalculation
-// 4 IMPROVEMENT reload plugins on demand from menu bar
+// 1 IMPROVEMENT add clipboard for copying
+// 1 IMPROVEMENT Add undo/redo functionality
+// 1 IMPROVEMENT introduce global action manager, state manager and event router
+// 4 BUG connections are not pasted when pasting deleted blocks that were copied
 // 1 BUG Info panel does not move down when aligning blocks
+// 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
@@ -16,7 +17,6 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 REFACTOR integer and double slider event handlers
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
-// 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 // 4 IMPROVEMENT add scrollbars for TextBlock 
@@ -31,6 +31,12 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 BUG selection discarded when clicking on menu bar
 // 1 BUG selection discarded when exiting radial menu
+// 4 BUG hit space on input.string causes zoomtofit and " " without triggering recalculation
+// 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
+// 4 BUG mouse position is not registered correctly after dragging
+// 4 BUG mouse position is not registered correctly when dragging
+// 4 BUG remove button of connection on copied blocks is shown on connection it was last seen on
+
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

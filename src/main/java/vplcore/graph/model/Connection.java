@@ -80,10 +80,7 @@ public class Connection extends Group {
         snappingCurve.setStrokeWidth(SNAPPING_WIDTH);
         snappingCurve.setStroke(Color.TRANSPARENT);
 
-        this.getChildren().addAll(snappingCurve, connectionCurve);
-//        workspaceView.getChildren().add(0,this);
-//        workspaceView.getChildren().add(0, snappingCurve);
-//        workspaceView.getChildren().add(0, connectionCurve);
+        this.getChildren().addAll(connectionCurve, snappingCurve);
         addChangeListeners();
 
         initializeRemoveButton();
@@ -175,8 +172,6 @@ public class Connection extends Group {
 
     public void removeFromCanvas() {
         workspaceController.removeChild(this);
-//        workspaceView.getChildren().remove(connectionCurve);
-//        workspaceView.getChildren().remove(snappingCurve);
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
         workspaceController.connectionsOnWorkspace.remove(this);
@@ -253,6 +248,12 @@ public class Connection extends Group {
         workspaceView.getChildren().add(removeButton);
     }
 
+    private void handleShowRemoveButton(MouseEvent event) {
+        removeButton.setVisible(true);
+        showRemoveButton(event);
+        snappingCurve.addEventHandler(MouseEvent.MOUSE_CLICKED, clickedSnappingCurveHandler);
+    }
+
     private void handleMoveRemoveButton(MouseEvent event) {
         showRemoveButton(event);
         event.consume();
@@ -264,11 +265,6 @@ public class Connection extends Group {
             removeButton.setVisible(false);
             this.snappingCurve.removeEventHandler(MouseEvent.MOUSE_CLICKED, clickedSnappingCurveHandler);
         }
-    }
-
-    private void handleShowRemoveButton(MouseEvent event) {
-        removeButton.setVisible(true);
-        snappingCurve.addEventHandler(MouseEvent.MOUSE_CLICKED, clickedSnappingCurveHandler);
     }
 
     private final EventHandler<MouseEvent> clickedSnappingCurveHandler = new EventHandler<>() {

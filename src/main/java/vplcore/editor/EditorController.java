@@ -58,7 +58,7 @@ public class EditorController {
         view.addEventHandler(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         view.addEventHandler(ScrollEvent.SCROLL, scrollHandler);
         view.addEventHandler(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
-        view.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedHandler);
+        view.addEventHandler(KeyEvent.KEY_PRESSED, keyPressedHandler);
     }
 
     private void handleMouseMoved(MouseEvent event) {

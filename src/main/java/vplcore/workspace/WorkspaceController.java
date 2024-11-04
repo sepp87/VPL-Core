@@ -157,11 +157,11 @@ public class WorkspaceController  {
         view.getChildren().add(block);
     }
 
-    public <E extends VplElement> void removeChild(E block) {
+    public <E extends VplElement> void removeChild(E element) {
 //        blocksOnWorkspace.remove(block);
 //        blocksSelectedOnWorkspace.remove(block);
-        System.out.println("VPL Extend");
-        view.getChildren().remove(block);
+        System.out.println(element.getClass().getSimpleName() + " removed");
+        view.getChildren().remove(element);
     }
 
     public void removeChild(Connection connection) {
@@ -173,7 +173,6 @@ public class WorkspaceController  {
         Connection connection = new Connection(this, startPort, endPort);
         connectionsOnWorkspace.add(connection);
         view.getChildren().add(0, connection);
-// NOT IMPLEMENTED
     }
 
     public void addBlockGroup() {

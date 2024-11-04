@@ -104,7 +104,6 @@ public class KeyboardController {
                 break;
 
         }
-
         if (command != null) {
             actionManager.executeCommand(command);
         }

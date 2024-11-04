@@ -40,6 +40,7 @@ public class App extends Application {
         //state of editor
         //position of mouse on workspace
         //action manager
+        //event router
         
         this.stage = stage;
 

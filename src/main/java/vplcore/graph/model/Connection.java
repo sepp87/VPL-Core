@@ -23,19 +23,18 @@ import vplcore.workspace.WorkspaceView;
  *
  * @author JoostMeulenkamp
  */
-public class Connection {
+public class Connection extends Group {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceView workspaceView;
-    
+
     private final ChangeListener<Object> blockDeletedListener = this::handleBlockDeleted;
     private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
 
     private final static double SNAPPING_WIDTH = 22;
     private final Port startPort;
     private final Port endPort;
-    
-    
+
     private final CubicCurve connectionCurve;
     private final CubicCurve snappingCurve;
 
@@ -80,10 +79,11 @@ public class Connection {
         snappingCurve.setFill(null);
         snappingCurve.setStrokeWidth(SNAPPING_WIDTH);
         snappingCurve.setStroke(Color.TRANSPARENT);
-//        snappingCurve.setUserData(this);
 
-        workspaceView.getChildren().add(0, snappingCurve);
-        workspaceView.getChildren().add(0, connectionCurve);
+        this.getChildren().addAll(snappingCurve, connectionCurve);
+//        workspaceView.getChildren().add(0,this);
+//        workspaceView.getChildren().add(0, snappingCurve);
+//        workspaceView.getChildren().add(0, connectionCurve);
         addChangeListeners();
 
         initializeRemoveButton();
@@ -91,7 +91,6 @@ public class Connection {
     }
 
     private void addChangeListeners() {
-        //Use of 'real listeners' that support removeListener()
         startPort.dataProperty().addListener(endPort.getStartPortDataChangedListener());
 
         // new listeners
@@ -175,8 +174,9 @@ public class Connection {
     }
 
     public void removeFromCanvas() {
-        workspaceView.getChildren().remove(connectionCurve);
-        workspaceView.getChildren().remove(snappingCurve);
+        workspaceController.removeChild(this);
+//        workspaceView.getChildren().remove(connectionCurve);
+//        workspaceView.getChildren().remove(snappingCurve);
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
         workspaceController.connectionsOnWorkspace.remove(this);
@@ -305,7 +305,6 @@ public class Connection {
         removeButton.setTranslateX(closestX);
         removeButton.setTranslateY(closestY);
     }
-
 
     // Helper method to calculate cubic Bezier point
     private double cubicCurvePoint(double start, double control1, double control2, double end, double t) {

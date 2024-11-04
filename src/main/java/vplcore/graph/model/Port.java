@@ -84,7 +84,7 @@ public class Port extends VBox {
 
     public void handlePortClickedForNewConnection(MouseEvent event) {
         if (event.isStillSincePress()) {
-            parentBlock.workspaceController.createConnection(Port.this);
+            parentBlock.workspaceController.initiateConnection(Port.this);
 
         }
         event.consume();

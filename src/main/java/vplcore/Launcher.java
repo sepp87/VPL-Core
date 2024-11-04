@@ -4,6 +4,8 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 4 BUG remove button of connection on copied blocks is shown on original connection
+// 4 BUG Directly paste after select blocks > copy, blocks are pasted at 0,0
 // 4 BUG hit space on input.string causes zoomtofit and " " without triggering recalculation
 // 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 BUG Info panel does not move down when aligning blocks

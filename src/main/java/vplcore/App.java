@@ -36,6 +36,11 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         
+        //always want:
+        //state of editor
+        //position of mouse on workspace
+        //action manager
+        
         this.stage = stage;
 
         EventRouter eventRouter = new EventRouter();

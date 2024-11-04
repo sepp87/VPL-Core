@@ -64,9 +64,6 @@ public class BlockGroup extends VplElement {
 
         setName("Name group here...");
 
-        this.workspaceController.groupsOfBlocks.add(this);
-        this.workspaceView.getChildren().add(1, this);
-
         binButton = new VplButton(IconType.FA_MINUS_CIRCLE);
         binButton.setVisible(false);
         menuBox.getChildren().addAll( binButton);
@@ -119,7 +116,7 @@ public class BlockGroup extends VplElement {
     }
 
     private void handleGroupSetChanged(Change<? extends Block> change) {
-        System.out.println("Hello world!");
+        
         if (change.wasAdded()) {
             Block block = change.getElementAdded();
             block.eventBlaster.add("deleted", groupBlockDeletedListener);

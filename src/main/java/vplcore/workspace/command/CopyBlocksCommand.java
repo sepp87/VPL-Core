@@ -11,17 +11,17 @@ import vplcore.workspace.WorkspaceController;
  */
 public class CopyBlocksCommand implements Undoable {
 
-    private final WorkspaceController workspace;
+    private final WorkspaceController workspaceController;
 
-    public CopyBlocksCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public CopyBlocksCommand(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
-        workspace.blocksCopied = FXCollections.observableSet();
-        for (Block block : workspace.blocksSelectedOnWorkspace) {
-            workspace.blocksCopied.add(block);
+        workspaceController.blocksCopied = FXCollections.observableSet();
+        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+            workspaceController.blocksCopied.add(block);
         }
     }
 

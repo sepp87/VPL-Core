@@ -46,7 +46,7 @@ public class PasteBlocksCommand implements Undoable {
         }
         workspaceController.blocksSelectedOnWorkspace.clear();
 
-        List<Connection> alreadyClonedConnectors = new ArrayList<>();
+        List<Connection> alreadyCopiedConnections = new ArrayList<>();
         List<CopiedConnection> copiedConnections = new ArrayList<>();
 
         // copy block from clipboard to canvas
@@ -56,7 +56,7 @@ public class PasteBlocksCommand implements Undoable {
             newBlock.setLayoutX(block.getLayoutX() + delta.getX());
             newBlock.setLayoutY(block.getLayoutY() + delta.getY());
 
-            workspaceController.addBlock(block);
+            workspaceController.addBlock(newBlock);
 
             //Set pasted block(s) as selected
             workspaceController.blocksSelectedOnWorkspace.add(newBlock);
@@ -70,8 +70,7 @@ public class PasteBlocksCommand implements Undoable {
 
             for (Port port : cc.oldBlock.inPorts) {
                 for (Connection connection : port.connectedConnections) {
-                    if (!alreadyClonedConnectors.contains(connection)) {
-                        Connection newConnection = null;
+                    if (!alreadyCopiedConnections.contains(connection)) {
 
                         // start and end block are contained in selection
                         if (workspaceController.blocksCopied.contains(connection.getStartPort().parentBlock)) {
@@ -82,17 +81,15 @@ public class PasteBlocksCommand implements Undoable {
                                     .orElse(null);
 
                             if (cc2 != null) {
-                                newConnection = new Connection(workspaceController, cc2.newBlock.outPorts.get(0), cc.newBlock.inPorts.get(counter));
+                                alreadyCopiedConnections.add(connection);
+                                workspaceController.addConnection(cc2.newBlock.outPorts.get(0), cc.newBlock.inPorts.get(counter));
                             }
                         } else {
                             // only end block is contained in selection
-                            newConnection = new Connection(workspaceController, connection.getStartPort(), cc.newBlock.inPorts.get(counter));
+                            alreadyCopiedConnections.add(connection);
+                            workspaceController.addConnection(connection.getStartPort(), cc.newBlock.inPorts.get(counter));
                         }
 
-                        if (newConnection != null) {
-                            alreadyClonedConnectors.add(connection);
-                            workspaceController.connectionsOnWorkspace.add(newConnection);
-                        }
                     }
                 }
                 counter++;

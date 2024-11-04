@@ -21,7 +21,7 @@ import vplcore.graph.util.PreConnection;
  *
  * @author JoostMeulenkamp
  */
-public class WorkspaceController {
+public class WorkspaceController  {
 
     //isSaved
     public BlockInfoPanel activeBlockInfoPanel;
@@ -60,7 +60,7 @@ public class WorkspaceController {
     private PreConnection preConnection = null;
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
-    public void createConnection(Port port) {
+    public void initiateConnection(Port port) {
         if (preConnection == null) {
             preConnection = new PreConnection(WorkspaceController.this, port);
             view.getChildren().add(0, preConnection);
@@ -160,21 +160,30 @@ public class WorkspaceController {
     public <E extends VplElement> void removeChild(E block) {
 //        blocksOnWorkspace.remove(block);
 //        blocksSelectedOnWorkspace.remove(block);
-
         System.out.println("VPL Extend");
         view.getChildren().remove(block);
     }
 
-    public void removeChild(Block block) {
-//        blocksOnWorkspace.remove(block);
-//        blocksSelectedOnWorkspace.remove(block);
-        System.out.println("BLOCK");
-        view.getChildren().remove(block);
+    public void removeChild(Connection connection) {
+        System.out.println("Connection removed");
+        view.getChildren().remove(connection);
     }
 
-    public void addConnection(Connection connection) {
+    public void addConnection(Port startPort, Port endPort) {
+        Connection connection = new Connection(this, startPort, endPort);
         connectionsOnWorkspace.add(connection);
-//        view.getChildren().add(connection);
+        view.getChildren().add(0, connection);
+// NOT IMPLEMENTED
+    }
+
+    public void addBlockGroup() {
+        if (this.blocksSelectedOnWorkspace.size() <= 1) {
+            return;
+        }
+        BlockGroup blockGroup = new BlockGroup(this);
+        groupsOfBlocks.add(blockGroup);
+        blockGroup.setChildBlocks(this.blocksSelectedOnWorkspace);
+        view.getChildren().add(blockGroup);
     }
 
 }

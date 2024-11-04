@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
 /**
@@ -29,7 +30,6 @@ public class ZoomView extends HBox {
         zoomInButton.getStyleClass().add("zoom-button");
         zoomInButton.setFocusTraversable(false);
 
-
         // Set up the HBox layout
         setSpacing(10);
         setPadding(new Insets(10));
@@ -38,15 +38,15 @@ public class ZoomView extends HBox {
 
         getChildren().addAll(zoomLabel, zoomOutButton, zoomInButton);
     }
-    
+
     public Button getZoomInButton() {
         return zoomInButton;
     }
-    
+
     public Button getZoomOutButton() {
         return zoomOutButton;
     }
-    
+
     public Label getZoomLabel() {
         return zoomLabel;
     }

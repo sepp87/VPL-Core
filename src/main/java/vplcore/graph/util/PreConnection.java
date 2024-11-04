@@ -75,8 +75,6 @@ public class PreConnection extends Line {
                 // Cannot be the same block
                 && !endPort.parentBlock.equals(startPort.parentBlock)) {
 
-            Connection connection;
-
             /**
              * Make a new connection and remove all the existing connections
              * Where is multi connect?
@@ -90,7 +88,7 @@ public class PreConnection extends Line {
                         }
                     }
                 }
-                connection = new Connection(workspaceController, endPort, startPort);
+                workspaceController.addConnection(startPort, endPort);
 
             } else {
                 if (!endPort.connectedConnections.isEmpty()) {
@@ -103,9 +101,8 @@ public class PreConnection extends Line {
                         endPort.connectedConnections.clear();
                     }
                 }
-                connection = new Connection(workspaceController, startPort, endPort);
+                workspaceController.addConnection(startPort, endPort);
             }
-            workspaceController.connectionsOnWorkspace.add(connection);
 
         }
         /**

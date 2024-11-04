@@ -1,6 +1,7 @@
 package vplcore.workspace.command;
 
-import vplcore.graph.model.BlockGroup;
+import vplcore.graph.model.Connection;
+import vplcore.graph.model.Port;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
 
@@ -8,17 +9,21 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class GroupBlocksCommand implements Undoable {
+public class CreateConnectionCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
+    private final Port startPort;
+    private final Port endPort;
 
-    public GroupBlocksCommand(WorkspaceController workspaceController) {
+    public CreateConnectionCommand(WorkspaceController workspaceController, Port startPort, Port endPort) {
         this.workspaceController = workspaceController;
+        this.startPort = startPort;
+        this.endPort = endPort;
     }
 
     @Override
     public void execute() {
-        workspaceController.addBlockGroup();
+        workspaceController.addConnection(startPort, endPort);
     }
 
     @Override

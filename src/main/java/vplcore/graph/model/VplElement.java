@@ -19,7 +19,6 @@ public class VplElement extends GridPane {
     public HBox menuBox;
 
     public WorkspaceController workspaceController;
-    protected WorkspaceView workspaceView;
 
     public final StringProperty name = new SimpleStringProperty(this, "name", "");
     public final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
@@ -31,9 +30,7 @@ public class VplElement extends GridPane {
     private final EventHandler<MouseEvent> vplElementExitedHandler = this::handleVplElementExited;
 
     public VplElement(WorkspaceController workspaceController) {
-
         this.workspaceController = workspaceController;
-        this.workspaceView = workspaceController.getView();
 
         getStyleClass().add("vpl-element");
 

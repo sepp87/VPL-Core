@@ -83,7 +83,7 @@ public class GraphLoader {
 
     }
 
-    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceController workspace) {
+    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceController workspaceController) {
         List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
         if (connectionTagList == null) {
             return;
@@ -98,7 +98,7 @@ public class GraphLoader {
 
             Block startBlock = null;
             Block endBlock = null;
-            for (Block Block : workspace.blocksOnWorkspace) {
+            for (Block Block : workspaceController.blocksOnWorkspace) {
                 if (Block.uuid.compareTo(startBlockUuid) == 0) {
                     startBlock = Block;
                 } else if (Block.uuid.compareTo(endBlockUuid) == 0) {
@@ -109,13 +109,14 @@ public class GraphLoader {
             if (startBlock != null && endBlock != null) {
                 Port startPort = startBlock.outPorts.get(startPortIndex);
                 Port endPort = endBlock.inPorts.get(endPortIndex);
-                Connection connection = new Connection(workspace, startPort, endPort);
-                workspace.connectionsOnWorkspace.add(connection);
+//                Connection connection = new Connection(workspaceController, startPort, endPort);
+//                workspaceController.connectionsOnWorkspace.add(connection);
+                workspaceController.addConnection(startPort, endPort);
             }
         }
     }
 
-    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceController workspace) {
+    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceController workspaceController) {
         if (groupsTag == null) {
             return;
         }
@@ -126,7 +127,7 @@ public class GraphLoader {
         }
 
         for (GroupTag groupTag : groupTagList) {
-            BlockGroup group = new BlockGroup(workspace);
+            BlockGroup group = new BlockGroup(workspaceController);
             group.deserialize(groupTag);
         }
     }

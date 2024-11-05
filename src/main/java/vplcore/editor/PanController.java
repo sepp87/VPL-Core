@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent;
 import vplcore.App;
 import vplcore.context.EventRouter;
 import vplcore.context.StateManager;
+import static vplcore.util.EditorUtils.onFreeSpace;
 
 /**
  *
@@ -34,8 +35,9 @@ public class PanController extends BaseController {
     }
 
     public void handlePanStarted(MouseEvent event) {
+        boolean onFreeSpace = onFreeSpace(event);
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
-        if (state.isIdle() && isSecondary) {
+        if (onFreeSpace && state.isIdle() && isSecondary) {
             state.setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();

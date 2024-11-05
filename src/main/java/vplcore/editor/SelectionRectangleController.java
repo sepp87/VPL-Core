@@ -10,6 +10,7 @@ import vplcore.context.StateManager;
 import vplcore.workspace.Command;
 import vplcore.context.command.DeselectAllBlocksCommand;
 import vplcore.context.command.RectangleSelectCommand;
+import static vplcore.util.EditorUtils.onFreeSpace;
 
 /**
  *
@@ -37,10 +38,10 @@ public class SelectionRectangleController extends BaseController {
     }
 
     public void handleSelectionStarted(MouseEvent event) {
+        boolean onFreeSpace = onFreeSpace(event);
         boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
         boolean isIdle = state.isIdle();
-
-        if (isPrimary && isIdle) {
+        if (onFreeSpace && isPrimary && isIdle) {
             state.setSelecting();
             prepareSelectionRectangle(event);
         }

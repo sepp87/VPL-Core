@@ -18,6 +18,7 @@ import jo.vpl.xml.ConnectionTag;
 import vplcore.util.FileUtils;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceView;
+import static vplcore.util.EventUtils.isLeftClick;
 
 /**
  *
@@ -270,8 +271,10 @@ public class Connection extends Group {
     private final EventHandler<MouseEvent> clickedSnappingCurveHandler = new EventHandler<>() {
         @Override
         public void handle(MouseEvent event) {
-            Connection.this.removeFromCanvas();
-            removeButton.setVisible(false);
+            if (isLeftClick(event)) {
+                Connection.this.removeFromCanvas();
+                removeButton.setVisible(false);
+            }
         }
     };
 

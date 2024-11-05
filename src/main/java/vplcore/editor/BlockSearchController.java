@@ -17,7 +17,8 @@ import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
 import vplcore.context.StateManager;
 import vplcore.context.command.CreateBlockCommand;
-import vplcore.context.event.CustomMouseEvent;
+import static vplcore.util.EditorUtils.onFreeSpace;
+import static vplcore.util.EventUtils.isDoubleClick;
 
 /**
  *
@@ -59,13 +60,14 @@ public class BlockSearchController extends BaseController {
         listView.setOnMouseClicked(this::handleCreateBlock);
         listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
-        eventRouter.addEventListener(CustomMouseEvent.DOUBLE_CLICKED_EVENT_TYPE, this::showBlockSearch);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::showBlockSearch);
         eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideBlockSearch);
     }
 
-    private void showBlockSearch(CustomMouseEvent event) {
+    private void showBlockSearch(MouseEvent event) {
+        boolean onFreeSpace = onFreeSpace(event);
         boolean isIdle = state.isIdle();
-        if (isIdle) {
+        if (isDoubleClick(event) && onFreeSpace && isIdle) {
             showView(event.getSceneX(), event.getSceneY());
         }
     }

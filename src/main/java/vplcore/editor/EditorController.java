@@ -59,29 +59,10 @@ public class EditorController extends BaseController {
 
     private void handleMouseClicked(MouseEvent event) {
         eventRouter.fireEvent(event);
-
-        Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onFreeSpace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
-        if (onFreeSpace) {
-            if (isDoubleClick(event)) {
-                CustomMouseEvent customEvent = new CustomMouseEvent(CustomMouseEvent.DOUBLE_CLICKED_EVENT_TYPE, view, event.getSceneX(), event.getSceneY());
-                eventRouter.fireEvent(customEvent);
-            } else if (isLeftClick(event)) {
-                CustomMouseEvent customEvent = new CustomMouseEvent(CustomMouseEvent.LEFT_CLICKED_EVENT_TYPE, view, event.getSceneX(), event.getSceneY());
-                eventRouter.fireEvent(customEvent);
-            } else if (isRightClick(event)) {
-                CustomMouseEvent customEvent = new CustomMouseEvent(CustomMouseEvent.RIGHT_CLICKED_EVENT_TYPE, view, event.getSceneX(), event.getSceneY());
-                eventRouter.fireEvent(customEvent);
-            }
-        }
     }
 
     private void handleMousePressed(MouseEvent event) {
-        Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onFreeSpace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
-        if (onFreeSpace) {
-            eventRouter.fireEvent(event);
-        }
+        eventRouter.fireEvent(event);
     }
 
     private void handleMouseDragged(MouseEvent event) {

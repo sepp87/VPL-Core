@@ -8,8 +8,9 @@ import vplcore.util.NodeHierarchyUtils;
 import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
 import vplcore.context.StateManager;
-import vplcore.context.event.CustomMouseEvent;
 import vplcore.editor.BaseController;
+import static vplcore.util.EditorUtils.onFreeSpace;
+import static vplcore.util.EventUtils.isRightClick;
 
 /**
  *
@@ -37,13 +38,14 @@ public class RadialMenuController extends BaseController {
 
         this.visibilityToggledHandler = this::handleToggleMouseMode;
         view.getRadialMenu().visibleProperty().addListener(visibilityToggledHandler);
-        eventRouter.addEventListener(CustomMouseEvent.RIGHT_CLICKED_EVENT_TYPE, this::showRadialMenu);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::showRadialMenu);
         eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideRadialMenu);
     }
 
-    private void showRadialMenu(CustomMouseEvent event) {
+    private void showRadialMenu(MouseEvent event) {
+        boolean onFreeSpace = onFreeSpace(event);
         boolean isIdle = state.isIdle();
-        if (isIdle || view.getRadialMenu().isVisible()) {
+        if (isRightClick(event) && onFreeSpace && (isIdle || view.getRadialMenu().isVisible())) {
             showView(event.getSceneX(), event.getSceneY());
         }
     }

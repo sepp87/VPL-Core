@@ -26,7 +26,6 @@ import vplcore.editor.ZoomView;
 import vplcore.graph.io.GraphLoader;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
-import vplcore.editor.EditorModel;
 import vplcore.context.ActionManager;
 import vplcore.workspace.WorkspaceView;
 

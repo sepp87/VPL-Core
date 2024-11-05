@@ -1,24 +1,27 @@
-package vplcore.workspace;
+package vplcore.context;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import vplcore.workspace.command.AlignBottomCommand;
-import vplcore.workspace.command.AlignHorizontallyCommand;
-import vplcore.workspace.command.AlignLeftCommand;
-import vplcore.workspace.command.AlignRightCommand;
-import vplcore.workspace.command.AlignTopCommand;
-import vplcore.workspace.command.AlignVerticallyCommand;
-import vplcore.workspace.command.CopyBlocksCommand;
-import vplcore.workspace.command.DeleteSelectedBlocksCommand;
-import vplcore.workspace.command.GroupBlocksCommand;
-import vplcore.workspace.command.NewFileCommand;
-import vplcore.workspace.command.OpenFileCommand;
-import vplcore.workspace.command.PasteBlocksCommand;
-import vplcore.workspace.command.SaveFileCommand;
-import vplcore.workspace.command.ZoomInCommand;
-import vplcore.workspace.command.ZoomOutCommand;
-import vplcore.workspace.command.ZoomToFitCommand;
+import vplcore.workspace.Command;
+import vplcore.workspace.Undoable;
+import vplcore.workspace.WorkspaceController;
+import vplcore.context.command.AlignBottomCommand;
+import vplcore.context.command.AlignHorizontallyCommand;
+import vplcore.context.command.AlignLeftCommand;
+import vplcore.context.command.AlignRightCommand;
+import vplcore.context.command.AlignTopCommand;
+import vplcore.context.command.AlignVerticallyCommand;
+import vplcore.context.command.CopyBlocksCommand;
+import vplcore.context.command.DeleteSelectedBlocksCommand;
+import vplcore.context.command.GroupBlocksCommand;
+import vplcore.context.command.NewFileCommand;
+import vplcore.context.command.OpenFileCommand;
+import vplcore.context.command.PasteBlocksCommand;
+import vplcore.context.command.SaveFileCommand;
+import vplcore.context.command.ZoomInCommand;
+import vplcore.context.command.ZoomOutCommand;
+import vplcore.context.command.ZoomToFitCommand;
 
 /**
  *

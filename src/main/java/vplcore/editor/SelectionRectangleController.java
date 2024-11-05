@@ -1,61 +1,68 @@
 package vplcore.editor;
 
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import vplcore.workspace.ActionManager;
+import vplcore.App;
+import vplcore.context.ActionManager;
+import vplcore.context.EventRouter;
+import vplcore.context.StateManager;
 import vplcore.workspace.Command;
-import vplcore.workspace.WorkspaceView;
-import vplcore.workspace.command.DeselectAllBlocksCommand;
-import vplcore.workspace.command.RectangleSelectCommand;
+import vplcore.context.command.DeselectAllBlocksCommand;
+import vplcore.context.command.RectangleSelectCommand;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class SelectionRectangleController {
+public class SelectionRectangleController extends BaseController {
 
+    private final EventRouter eventRouter;
     private final ActionManager actionManager;
-    private final EditorModel editorModel;
+    private final StateManager state;
     private final SelectionRectangleView view;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(ActionManager actionManager, EditorModel editorModel, SelectionRectangleView selectionRectangleView) {
-        this.actionManager = actionManager;
-        this.editorModel = editorModel;
+    public SelectionRectangleController(String contextId, SelectionRectangleView selectionRectangleView) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.actionManager = App.getContext(contextId).getActionManager();
+        this.state = App.getContext(contextId).getStateManager();
         this.view = selectionRectangleView;
+
+        eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handleSelectionStarted);
+        eventRouter.addEventListener(MouseEvent.MOUSE_DRAGGED, this::handleSelectionUpdated);
+        eventRouter.addEventListener(MouseEvent.MOUSE_RELEASED, this::handleSelectionFinished);
     }
 
-    public void processEditorSelectionStarted(MouseEvent event) {
-        Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
-        boolean isPrimaryClick = event.getButton() == MouseButton.PRIMARY;
-        boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
+    public void handleSelectionStarted(MouseEvent event) {
+        boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
+        boolean isIdle = state.isIdle();
 
-        if (isPrimaryClick && onEditorOrWorkspace && isIdle) {
-            editorModel.modeProperty().set(EditorMode.SELECTION_MODE);
+        if (isPrimary && isIdle) {
+            state.setSelecting();
             prepareSelectionRectangle(event);
         }
     }
 
-    public void processEditorSelection(MouseEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.SELECTION_MODE && event.isPrimaryButtonDown()) {
+    public void handleSelectionUpdated(MouseEvent event) {
+        boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
+        boolean isSelecting = state.isSelecting();
+
+        if (isSelecting && isPrimary) {
             initializeSelectionRectangle();
             updateSelectionRectangle(event);
             updateSelection();
         }
     }
 
-    public void processEditorSelectionFinished(MouseEvent event) {
-        // Reset the start selection point
-        startPoint = null;
+    public void handleSelectionFinished(MouseEvent event) {
+        // do NOT reset startPoint to null, because this will throw null pointer exceptions, when accidentally clicking another button when selecting
         if (event.getButton() == MouseButton.PRIMARY) {
-
-            if (editorModel.modeProperty().get() == EditorMode.SELECTION_MODE) {
+            if (state.isSelecting()) {
                 // Reset the mouse mode back to idle
-                editorModel.modeProperty().set(EditorMode.IDLE_MODE);
+                state.setIdle();
                 // Check if selection rectangle is active
                 if (view.isVisible()) {
                     // Finalize selection by removing the selection rectangle

@@ -1,7 +1,7 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
-import javafx.collections.FXCollections;
-import vplcore.graph.model.Block;
+import vplcore.graph.model.Connection;
+import vplcore.graph.model.Port;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
 
@@ -9,20 +9,21 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class CopyBlocksCommand implements Undoable {
+public class CreateConnectionCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
+    private final Port startPort;
+    private final Port endPort;
 
-    public CopyBlocksCommand(WorkspaceController workspaceController) {
+    public CreateConnectionCommand(WorkspaceController workspaceController, Port startPort, Port endPort) {
         this.workspaceController = workspaceController;
+        this.startPort = startPort;
+        this.endPort = endPort;
     }
 
     @Override
     public void execute() {
-        workspaceController.blocksCopied = FXCollections.observableSet();
-        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
-            workspaceController.blocksCopied.add(block);
-        }
+        workspaceController.addConnection(startPort, endPort);
     }
 
     @Override

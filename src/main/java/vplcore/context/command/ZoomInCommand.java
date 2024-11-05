@@ -1,4 +1,4 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
 import vplcore.workspace.Command;
 import vplcore.workspace.WorkspaceController;
@@ -7,18 +7,19 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class ZoomOutCommand implements Command {
+public class ZoomInCommand implements Command {
 
     private final WorkspaceController workspace;
 
-    public ZoomOutCommand(WorkspaceController workspace) {
+    public ZoomInCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
-        workspace.zoomOut();
+        workspace.zoomIn();
     }
+
 
 
 }

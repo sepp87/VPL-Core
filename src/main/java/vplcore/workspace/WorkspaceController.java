@@ -10,8 +10,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
-import vplcore.editor.EditorMode;
-import vplcore.editor.EditorModel;
+import vplcore.App;
+import vplcore.context.StateManager;
+import vplcore.editor.BaseController;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.Port;
 import vplcore.graph.model.VplElement;
@@ -21,7 +22,12 @@ import vplcore.graph.util.PreConnection;
  *
  * @author JoostMeulenkamp
  */
-public class WorkspaceController  {
+public class WorkspaceController extends BaseController {
+
+    private final StateManager state;
+    private final WorkspaceModel model;
+    private final WorkspaceView view;
+    private final WorkspaceZoomHelper zoomHelper;
 
     //isSaved
     public BlockInfoPanel activeBlockInfoPanel;
@@ -35,14 +41,10 @@ public class WorkspaceController  {
     //Create connection members
     public boolean typeSensitive = true;
 
-    private final EditorModel editorModel;
-    private final WorkspaceModel model;
-    private final WorkspaceView view;
-    private final WorkspaceZoomHelper zoomHelper;
-
     //Radial menu
-    public WorkspaceController(EditorModel editorModel, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
-        this.editorModel = editorModel;
+    public WorkspaceController(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+        super(contextId);
+        this.state = App.getContext(contextId).getStateManager();
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new WorkspaceZoomHelper(model, view);
@@ -98,8 +100,12 @@ public class WorkspaceController  {
         view.getChildren().clear();
     }
 
-    public void setEditorMode(EditorMode mode) {
-        editorModel.modeProperty().set(mode);
+    public void setIdle() {
+        state.setIdle();
+    }
+
+    public void setSelectingBlockGroup() {
+        state.setSelectingBlockGroup();
     }
 
     public double getZoomFactor() {

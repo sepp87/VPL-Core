@@ -1,5 +1,6 @@
 package vplcore.workspace;
 
+import vplcore.context.ActionManager;
 import java.util.UUID;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;

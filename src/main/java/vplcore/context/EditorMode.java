@@ -1,4 +1,4 @@
-package vplcore.editor;
+package vplcore.context;
 
 /**
  *

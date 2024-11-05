@@ -4,9 +4,9 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 4 BUG group moving does not work
 // 1 IMPROVEMENT add clipboard for copying
 // 1 IMPROVEMENT Add undo/redo functionality
-// 1 IMPROVEMENT introduce global action manager, state manager and event router
 // 4 BUG connections are not pasted when pasting deleted blocks that were copied
 // 1 BUG Info panel does not move down when aligning blocks
 // 4 IMPROVEMENT reload plugins on demand from menu bar
@@ -36,7 +36,7 @@ import vpllib.method.JsonMethods;
 // 4 BUG mouse position is not registered correctly after dragging
 // 4 BUG mouse position is not registered correctly when dragging
 // 4 BUG remove button of connection on copied blocks is shown on connection it was last seen on
-
+// 1 IMPROVEMENT introduce global action manager, state manager and event router
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 
@@ -64,6 +64,8 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
+
+
         if (false) {
             return;
         }
@@ -102,4 +104,3 @@ public class Launcher {
     }
 
 }
-

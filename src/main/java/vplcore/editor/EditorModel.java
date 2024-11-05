@@ -1,5 +1,6 @@
 package vplcore.editor;
 
+import vplcore.context.EditorMode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 

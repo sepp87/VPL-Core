@@ -3,48 +3,58 @@ package vplcore.editor;
 import vplcore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import vplcore.graph.model.Block;
-import vplcore.util.NodeHierarchyUtils;
+import vplcore.App;
+import vplcore.context.EventRouter;
+import vplcore.context.StateManager;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class PanController {
+public class PanController extends BaseController {
 
-    private final EditorModel editorModel;
-    private final WorkspaceModel zoomModel;
+    private final EventRouter eventRouter;
+    private final StateManager state;
+    private final WorkspaceModel workspaceModel;
 
     private double initialX;
     private double initialY;
     private double initialTranslateX;
     private double initialTranslateY;
 
-    public PanController(EditorModel editorModel, WorkspaceModel zoomModel) {
-        this.editorModel = editorModel;
-        this.zoomModel = zoomModel;
+    public PanController(String contextId, WorkspaceModel workspaceModel) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.state = App.getContext(contextId).getStateManager();
+        this.workspaceModel = workspaceModel;
+
+        eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handlePanStarted);
+        eventRouter.addEventListener(MouseEvent.MOUSE_DRAGGED, this::handlePanUpdated);
+        eventRouter.addEventListener(MouseEvent.MOUSE_RELEASED, this::handlePanFinished);
     }
 
-    public void processEditorPanStarted(MouseEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.IDLE_MODE && event.isSecondaryButtonDown() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, Block.class)) {
-            editorModel.modeProperty().set(EditorMode.PAN_MODE);
+    public void handlePanStarted(MouseEvent event) {
+        boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
+        if (state.isIdle() && isSecondary) {
+            state.setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();
-            initialTranslateX = zoomModel.translateXProperty().get();
-            initialTranslateY = zoomModel.translateYProperty().get();
+            initialTranslateX = workspaceModel.translateXProperty().get();
+            initialTranslateY = workspaceModel.translateYProperty().get();
         }
     }
 
-    public void processEditorPan(MouseEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.PAN_MODE && event.isSecondaryButtonDown()) {
-            zoomModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-            zoomModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
+    public void handlePanUpdated(MouseEvent event) {
+        boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
+        if (state.isPanning() && isSecondary) {
+            workspaceModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+            workspaceModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
-    public void processEditorPanFinished(MouseEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.PAN_MODE && event.getButton() == MouseButton.SECONDARY) {
-            editorModel.modeProperty().set(EditorMode.IDLE_MODE);
+    public void handlePanFinished(MouseEvent event) {
+        if (state.isPanning() && event.getButton() == MouseButton.SECONDARY) {
+            state.setIdle();
         }
     }
 

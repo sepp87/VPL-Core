@@ -9,34 +9,41 @@ import static javafx.scene.input.KeyCode.O;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
+import vplcore.App;
 import vplcore.util.EventUtils;
-import vplcore.workspace.ActionManager;
+import vplcore.context.ActionManager;
+import vplcore.context.EventRouter;
 import vplcore.workspace.Command;
-import vplcore.workspace.command.CopyBlocksCommand;
-import vplcore.workspace.command.DeleteSelectedBlocksCommand;
-import vplcore.workspace.command.GroupBlocksCommand;
-import vplcore.workspace.command.NewFileCommand;
-import vplcore.workspace.command.OpenFileCommand;
-import vplcore.workspace.command.PasteBlocksCommand;
-import vplcore.workspace.command.SaveFileCommand;
-import vplcore.workspace.command.SelectAllBlocksCommand;
-import vplcore.workspace.command.ZoomInCommand;
-import vplcore.workspace.command.ZoomOutCommand;
-import vplcore.workspace.command.ZoomToFitCommand;
+import vplcore.context.command.CopyBlocksCommand;
+import vplcore.context.command.DeleteSelectedBlocksCommand;
+import vplcore.context.command.GroupBlocksCommand;
+import vplcore.context.command.NewFileCommand;
+import vplcore.context.command.OpenFileCommand;
+import vplcore.context.command.PasteBlocksCommand;
+import vplcore.context.command.SaveFileCommand;
+import vplcore.context.command.SelectAllBlocksCommand;
+import vplcore.context.command.ZoomInCommand;
+import vplcore.context.command.ZoomOutCommand;
+import vplcore.context.command.ZoomToFitCommand;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class KeyboardController {
+public class KeyboardController extends BaseController {
 
+    private final EventRouter eventRouter;
     private final ActionManager actionManager;
 
-    public KeyboardController(ActionManager actionManager) {
-        this.actionManager = actionManager;
+    public KeyboardController(String contextId) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.actionManager = App.getContext(contextId).getActionManager();
+        
+        eventRouter.addEventListener(KeyEvent.KEY_PRESSED, this::handleShortcutTriggered);
     }
 
-    public void processEditorShortcutAction(KeyEvent event) {
+    public void handleShortcutTriggered(KeyEvent event) {
         Command command = null;
         boolean isModifierDown = EventUtils.isModifierDown(event);
         switch (event.getCode()) {

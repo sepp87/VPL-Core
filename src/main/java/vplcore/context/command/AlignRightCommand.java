@@ -1,5 +1,6 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
+import javafx.geometry.Bounds;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
@@ -8,20 +9,20 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class DeleteSelectedBlocksCommand implements Undoable {
+public class AlignRightCommand implements Undoable {
 
     private final WorkspaceController workspace;
 
-    public DeleteSelectedBlocksCommand(WorkspaceController workspace) {
+    public AlignRightCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public void execute() {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.blocksSelectedOnWorkspace);
         for (Block block : workspace.blocksSelectedOnWorkspace) {
-            block.delete();
+            block.setLayoutX(bBox.getMaxX() - block.getWidth());
         }
-        workspace.blocksSelectedOnWorkspace.clear();
     }
 
     @Override

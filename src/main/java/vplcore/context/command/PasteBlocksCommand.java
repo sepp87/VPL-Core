@@ -1,4 +1,4 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package vplcore;
+package vplcore.context;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;

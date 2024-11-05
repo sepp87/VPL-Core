@@ -4,31 +4,33 @@ import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import vplcore.App;
 import vplcore.graph.util.BlockLoader;
 import vplcore.util.ListViewUtils;
 import vplcore.util.NodeHierarchyUtils;
-import vplcore.workspace.ActionManager;
-import vplcore.workspace.WorkspaceView;
-import vplcore.workspace.command.CreateBlockCommand;
+import vplcore.context.ActionManager;
+import vplcore.context.EventRouter;
+import vplcore.context.StateManager;
+import vplcore.context.command.CreateBlockCommand;
+import vplcore.context.event.CustomMouseEvent;
 
 /**
  *
  * @author Joost
  */
-public class BlockSearchController {
+public class BlockSearchController extends BaseController {
 
     private static final double OFFSET = 20;
     private static final int ROWS_VISIBLE = 17;
 
-    private final EditorModel editorModel;
+    private final EventRouter eventRouter;
     private final ActionManager actionManager;
+    private final StateManager state;
     private final BlockSearchView view;
 
     private Point2D creationPoint;
@@ -38,9 +40,12 @@ public class BlockSearchController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(EditorModel editorModel, BlockSearchView blockSearchView, ActionManager actionManager) {
-        this.editorModel = editorModel;
-        this.actionManager = actionManager;
+    public BlockSearchController(String contextId, BlockSearchView blockSearchView) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.actionManager = App.getContext(contextId).getActionManager();
+        this.state = App.getContext(contextId).getStateManager();
+
         this.view = blockSearchView;
 
         searchField = view.getSearchField();
@@ -54,6 +59,47 @@ public class BlockSearchController {
         listView.setOnMouseClicked(this::handleCreateBlock);
         listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
+        eventRouter.addEventListener(CustomMouseEvent.DOUBLE_CLICKED_EVENT_TYPE, this::showBlockSearch);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideBlockSearch);
+    }
+
+    private void showBlockSearch(CustomMouseEvent event) {
+        boolean isIdle = state.isIdle();
+        if (isIdle) {
+            showView(event.getSceneX(), event.getSceneY());
+        }
+    }
+
+    private void hideBlockSearch(MouseEvent event) {
+        if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, BlockSearchView.class) && view.isVisible()) {
+            hideView();
+        }
+    }
+
+    private void showView(double x, double y) {
+        state.setAwaitingBlockSearch();
+        creationPoint = new Point2D(x - OFFSET, y - OFFSET);
+        view.setVisible(true);
+        view.setTranslateX(x - OFFSET);
+        view.setTranslateY(y - OFFSET);
+        searchField.requestFocus();
+        searchField.focusedProperty().addListener(searchFieldFocusChangedListener);
+        listView.setPrefHeight(ListViewUtils.getCellHeight(listView) * ROWS_VISIBLE);
+        listView.getSelectionModel().select(-1);
+        listView.scrollTo(-1);
+    }
+
+    private void hideView() {
+        view.setVisible(false);
+        state.setIdle();
+        searchField.setText("");
+        searchField.focusedProperty().removeListener(searchFieldFocusChangedListener);
+    }
+
+    private void handleRetainFocus(Object b, boolean o, boolean isFocused) {
+        if (!isFocused) {
+            searchField.requestFocus();
+        }
     }
 
     private void handleSearchAction(Object b, String o, String searchTerm) {
@@ -118,45 +164,4 @@ public class BlockSearchController {
         }
     }
 
-    public void processEditorMouseClicked(MouseEvent event) {
-        Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
-        boolean onBlockSearch = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, BlockSearchView.class);
-        boolean isDoublePrimaryClick = event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && event.isStillSincePress();
-        boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
-
-        if (isDoublePrimaryClick && onEditorOrWorkspace && isIdle) {
-            showView(event.getSceneX(), event.getSceneY());
-        } else if (onBlockSearch) {
-            // keep block search shown if it is clicked on
-        } else if (view.isVisible()) {
-            hideView();
-        }
-    }
-
-    private void showView(double x, double y) {
-        editorModel.modeProperty().set(EditorMode.BLOCK_SEARCH_MODE);
-        creationPoint = new Point2D(x - OFFSET, y - OFFSET);
-        view.setVisible(true);
-        view.setTranslateX(x - OFFSET);
-        view.setTranslateY(y - OFFSET);
-        searchField.requestFocus();
-        searchField.focusedProperty().addListener(searchFieldFocusChangedListener);
-        listView.setPrefHeight(ListViewUtils.getCellHeight(listView) * ROWS_VISIBLE);
-        listView.getSelectionModel().select(-1);
-        listView.scrollTo(-1);
-    }
-
-    private void hideView() {
-        view.setVisible(false);
-        editorModel.modeProperty().set(EditorMode.IDLE_MODE);
-        searchField.setText("");
-        searchField.focusedProperty().removeListener(searchFieldFocusChangedListener);
-    }
-
-    private void handleRetainFocus(Object b, boolean o, boolean isFocused) {
-        if (!isFocused) {
-            searchField.requestFocus();
-        }
-    }
 }

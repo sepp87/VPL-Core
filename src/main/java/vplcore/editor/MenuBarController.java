@@ -3,21 +3,23 @@ package vplcore.editor;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
-import vplcore.workspace.ActionManager;
+import vplcore.App;
+import vplcore.context.ActionManager;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class MenuBarController {
+public class MenuBarController extends BaseController {
 
-    private ActionManager actionManager;
+    private final ActionManager actionManager;
     private final MenuBarView view;
 
     private final EventHandler<ActionEvent> menuBarItemClickedHandler;
 
-    public MenuBarController(ActionManager actionManager, MenuBarView menuBarView) {
-        this.actionManager = actionManager;
+    public MenuBarController(String contextId, MenuBarView menuBarView) {
+        super(contextId);
+        this.actionManager = App.getContext(contextId).getActionManager();
         this.view = menuBarView;
 
         menuBarItemClickedHandler = this::handleMenuBarItemClicked;

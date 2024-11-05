@@ -1,5 +1,6 @@
 package vplcore.editor;
 
+import vplcore.context.EditorMode;
 import vplcore.workspace.WorkspaceModel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
@@ -8,23 +9,26 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
+import vplcore.App;
 import vplcore.Config;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.util.SystemUtils;
-import vplcore.workspace.ActionManager;
+import vplcore.context.ActionManager;
+import vplcore.context.EventRouter;
+import vplcore.context.StateManager;
 import vplcore.workspace.Command;
-import vplcore.workspace.command.ApplyZoomCommand;
-import vplcore.workspace.command.ZoomInCommand;
-import vplcore.workspace.command.ZoomOutCommand;
+import vplcore.context.command.ApplyZoomCommand;
+import vplcore.context.command.ZoomInCommand;
+import vplcore.context.command.ZoomOutCommand;
 
 /**
  * Manages zooming functionality and controls in the workspace.
  */
-public class ZoomController extends HBox {
+public class ZoomController extends BaseController {
 
+    private final EventRouter eventRouter;
     private final ActionManager actionManager;
-    private final EditorModel editorModel;
+    private final StateManager state;
     private final WorkspaceModel model;
     private final ZoomView view;
 
@@ -32,9 +36,11 @@ public class ZoomController extends HBox {
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    public ZoomController(ActionManager actionManager, EditorModel editorModel, WorkspaceModel workspaceModel, ZoomView zoomView) {
-        this.actionManager = actionManager;
-        this.editorModel = editorModel;
+    public ZoomController(String contextId, WorkspaceModel workspaceModel, ZoomView zoomView) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.actionManager = App.getContext(contextId).getActionManager();
+        this.state = App.getContext(contextId).getStateManager();
         this.model = workspaceModel;
         this.view = zoomView;
 
@@ -42,6 +48,10 @@ public class ZoomController extends HBox {
         view.getZoomOutButton().setOnAction(this::handleZoomOut);
         view.getZoomLabel().setOnMouseClicked(this::handleZoomReset);  // Reset zoom to 100% on click
         view.getZoomLabel().textProperty().bind(workspaceModel.zoomFactorProperty().multiply(100).asString("%.0f%%"));
+
+        eventRouter.addEventListener(ScrollEvent.SCROLL_STARTED, this::handleScrollStarted);
+        eventRouter.addEventListener(ScrollEvent.SCROLL, this::handleScrollUpdated);
+        eventRouter.addEventListener(ScrollEvent.SCROLL_FINISHED, this::handleScrollFinished);
     }
 
     private void handleZoomIn(ActionEvent event) {
@@ -60,18 +70,18 @@ public class ZoomController extends HBox {
         actionManager.executeCommand(command);
     }
 
-    public void processEditorScrollStarted(ScrollEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.IDLE_MODE) {
-            editorModel.modeProperty().set(EditorMode.ZOOM_MODE);
+    public void handleScrollStarted(ScrollEvent event) {
+        if (state.isIdle()) {
+            state.setZooming();
         }
     }
 
     // Create and return the ScrollEvent handler for SCROLL
-    public void processEditorScroll(ScrollEvent event) {
+    public void handleScrollUpdated(ScrollEvent event) {
 
         boolean onMac = Config.get().operatingSystem() == SystemUtils.OperatingSystem.MACOS;
-        boolean isZoomModeAndOnMac = editorModel.modeProperty().get() == EditorMode.ZOOM_MODE && onMac;
-        boolean isIdleAndNotOnMac = editorModel.modeProperty().get() == EditorMode.IDLE_MODE && !onMac;
+        boolean isZoomModeAndOnMac = state.isZooming() && onMac;
+        boolean isIdleAndNotOnMac = state.isIdle() && !onMac;
 
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
@@ -96,16 +106,16 @@ public class ZoomController extends HBox {
                 newScale = model.getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
-            
+
             // Zoom from scrolling; keep zoom centered around mouse position
             Command command = new ApplyZoomCommand(actionManager.getWorkspaceController(), newScale, pivotPoint);
             actionManager.executeCommand(command);
         }
     }
 
-    public void processEditorScrollFinished(ScrollEvent event) {
-        if (editorModel.modeProperty().get() == EditorMode.ZOOM_MODE) {
-            editorModel.modeProperty().set(EditorMode.IDLE_MODE);
+    public void handleScrollFinished(ScrollEvent event) {
+        if (state.isZooming()) {
+            state.setIdle();
         }
     }
 

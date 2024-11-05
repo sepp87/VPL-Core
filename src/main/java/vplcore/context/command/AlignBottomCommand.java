@@ -1,4 +1,4 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
 import javafx.geometry.Bounds;
 import vplcore.graph.model.Block;
@@ -9,11 +9,11 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class AlignHorizontallyCommand implements Undoable {
+public class AlignBottomCommand implements Undoable {
 
     private final WorkspaceController workspace;
 
-    public AlignHorizontallyCommand(WorkspaceController workspace) {
+    public AlignBottomCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
@@ -21,7 +21,7 @@ public class AlignHorizontallyCommand implements Undoable {
     public void execute() {
         Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.blocksSelectedOnWorkspace);
         for (Block block : workspace.blocksSelectedOnWorkspace) {
-            block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
+            block.setLayoutY(bBox.getMaxY() - block.getHeight());
         }
     }
 

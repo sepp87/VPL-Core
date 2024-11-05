@@ -1,6 +1,11 @@
 package vplcore;
 
+import vplcore.context.event.FocusNotRequiredEvent;
+import vplcore.context.EditorContext;
+import vplcore.context.EventRouter;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import vplcore.editor.EditorController;
 import vplcore.editor.EditorView;
 import javafx.application.Application;
@@ -22,7 +27,7 @@ import vplcore.graph.io.GraphLoader;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.editor.EditorModel;
-import vplcore.workspace.ActionManager;
+import vplcore.context.ActionManager;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -31,28 +36,22 @@ import vplcore.workspace.WorkspaceView;
  */
 public class App extends Application {
 
+    private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
+
+    private static final double APP_WIDTH = 800;
+    private static final double APP_HEIGHT = 800;
     private static Stage stage;
-    
+
     @Override
     public void start(Stage stage) throws Exception {
-        
-        //always want:
-        //state of editor
-        //position of mouse on workspace
-        //action manager
-        //event router
-        
-        this.stage = stage;
 
-        EventRouter eventRouter = new EventRouter();
-        eventRouter.fireEvent(new FocusReleasedEvent());
+        this.stage = stage;
+        stage.setTitle("Workspace");
 
         // Initialize models
-        EditorModel editorModel = new EditorModel();
         WorkspaceModel workspaceModel = new WorkspaceModel();
 
         // Initialize views
-        // WorkspaceView
         WorkspaceView workspaceView = new WorkspaceView();
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
@@ -61,24 +60,34 @@ public class App extends Application {
         MenuBarView menuBarView = new MenuBarView();
         EditorView editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
-        // Initialize workspace controller and supporting managers
-        WorkspaceController workspaceController = new WorkspaceController(editorModel, workspaceModel, workspaceView);
+        // initialize context
+        EditorContext context = new EditorContext(editorView, workspaceView);
+        String contextId = context.getId();
+        CONTEXTS.put(contextId, context);
+
+        // initialize EventRouter for Context
+        EventRouter eventRouter = new EventRouter();
+        eventRouter.fireEvent(new FocusNotRequiredEvent());
+        context.initializeEventRouter(eventRouter);
+
+        // initialize ActionManager for Context
+        WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
         ActionManager actionManager = new ActionManager(workspaceController);
+        context.initializeActionManager(actionManager);
 
         // Initialize controllers
-        ZoomController zoomController = new ZoomController(actionManager, editorModel, workspaceModel, zoomView);
-        BlockSearchController blockSearchController = new BlockSearchController(editorModel, blockSearchView, actionManager);
-        SelectionRectangleController selectionRectangleController = new SelectionRectangleController(actionManager, editorModel, selectionRectangleView);
-        KeyboardController keyboardController = new KeyboardController(actionManager);
-        PanController panController = new PanController(editorModel, workspaceModel);
-        RadialMenuController radialMenuController = new RadialMenuController(actionManager, editorModel, radialMenuView);
-        MenuBarController menuBarController = new MenuBarController(actionManager, menuBarView);
-        EditorController editorController = new EditorController(editorView, radialMenuController, workspaceController, zoomController, panController, keyboardController, selectionRectangleController, blockSearchController);
+        new ZoomController(contextId, workspaceModel, zoomView);
+        new BlockSearchController(contextId, blockSearchView);
+        new SelectionRectangleController(contextId, selectionRectangleView);
+        new PanController(contextId, workspaceModel);
+        new RadialMenuController(contextId, radialMenuView);
+        new MenuBarController(contextId, menuBarView);
+        new EditorController(contextId, editorView);
+        new KeyboardController(contextId);
 
         // Setup scene
-        Scene scene = new Scene(editorView, 800, 800);
+        Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
         stage.setScene(scene);
-        stage.setTitle("Workspace");
         stage.show();
         stage.setFullScreen(false);
 
@@ -89,6 +98,17 @@ public class App extends Application {
     public static Stage getStage() {
         return stage;
     }
-    
+
+    public static EditorContext getContext(String contextId) {
+        return CONTEXTS.get(contextId);
+    }
 
 }
+
+/**
+ *
+ * Context - id - Action Manager - State Manager - Event Router
+ *
+ * ClipBoard - copied Connections - copied Blocks
+ *
+ */

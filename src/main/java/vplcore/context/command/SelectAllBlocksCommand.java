@@ -1,4 +1,4 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
 import vplcore.graph.model.Block;
 import vplcore.workspace.Command;

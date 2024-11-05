@@ -30,8 +30,6 @@ public class MousePositionHandler {
         @Override
         public void handle(MouseEvent event) {
             position = workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY());
-            System.out.println("MOVE " + position);
-
         }
     };
 

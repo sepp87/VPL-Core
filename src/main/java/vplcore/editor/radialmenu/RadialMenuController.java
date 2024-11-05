@@ -2,31 +2,33 @@ package vplcore.editor.radialmenu;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import vplcore.editor.EditorMode;
-import vplcore.editor.EditorModel;
-import vplcore.editor.EditorView;
+import vplcore.App;
 import vplcore.util.NodeHierarchyUtils;
-import vplcore.workspace.ActionManager;
-import vplcore.workspace.WorkspaceView;
+import vplcore.context.ActionManager;
+import vplcore.context.EventRouter;
+import vplcore.context.StateManager;
+import vplcore.context.event.CustomMouseEvent;
+import vplcore.editor.BaseController;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class RadialMenuController {
+public class RadialMenuController extends BaseController {
 
+    private final EventRouter eventRouter;
     private final ActionManager actionManager;
-    private final EditorModel editorModel;
+    private final StateManager state;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(ActionManager actionManager, EditorModel editorModel, RadialMenuView radialMenuView) {
-        this.actionManager = actionManager;
-        this.editorModel = editorModel;
+    public RadialMenuController(String contextId, RadialMenuView radialMenuView) {
+        super(contextId);
+        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.actionManager = App.getContext(contextId).getActionManager();
+        this.state = App.getContext(contextId).getStateManager();
         this.view = radialMenuView;
 
         for (RadialMenuItem item : view.getAllRadialMenuItems()) {
@@ -35,6 +37,21 @@ public class RadialMenuController {
 
         this.visibilityToggledHandler = this::handleToggleMouseMode;
         view.getRadialMenu().visibleProperty().addListener(visibilityToggledHandler);
+        eventRouter.addEventListener(CustomMouseEvent.RIGHT_CLICKED_EVENT_TYPE, this::showRadialMenu);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideRadialMenu);
+    }
+
+    private void showRadialMenu(CustomMouseEvent event) {
+        boolean isIdle = state.isIdle();
+        if (isIdle || view.getRadialMenu().isVisible()) {
+            showView(event.getSceneX(), event.getSceneY());
+        }
+    }
+
+    private void hideRadialMenu(MouseEvent event) {
+        if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, RadialMenu.class)) {
+            hideView();
+        }
     }
 
     private void handleRadialMenuItemClicked(MouseEvent event) {
@@ -46,26 +63,9 @@ public class RadialMenuController {
 
     private void handleToggleMouseMode(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
         if (isVisble) {
-            editorModel.modeProperty().set(EditorMode.RADIAL_MENU_MODE);
+            state.setAwaitingRadialMenu();
         } else {
-            editorModel.modeProperty().set(EditorMode.IDLE_MODE);
-        }
-    }
-
-    public void processEditorMouseClicked(MouseEvent event) {
-        Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onEditorOrWorkspace = intersectedNode instanceof EditorView || intersectedNode instanceof WorkspaceView;
-        boolean onRadialMenu = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, RadialMenu.class);
-        boolean isSecondaryClick = event.getButton() == MouseButton.SECONDARY && event.isStillSincePress();
-        boolean isIdle = editorModel.modeProperty().get() == EditorMode.IDLE_MODE;
-
-        // TODO additional checks needed when 3D viewer is implemented e.g. check against Control.class and Shape3D.class
-        if (isSecondaryClick && onEditorOrWorkspace && isIdle) {
-            showView(event.getSceneX(), event.getSceneY());
-        } else if (onRadialMenu) {
-            // keep radial menu shown if it is clicked on
-        } else {
-            hideView();
+            state.setIdle();
         }
     }
 

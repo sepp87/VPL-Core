@@ -1,6 +1,7 @@
-package vplcore.workspace.command;
+package vplcore.context.command;
 
-import vplcore.graph.model.BlockGroup;
+import javafx.collections.FXCollections;
+import vplcore.graph.model.Block;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
 
@@ -8,17 +9,20 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class GroupBlocksCommand implements Undoable {
+public class CopyBlocksCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
 
-    public GroupBlocksCommand(WorkspaceController workspaceController) {
+    public CopyBlocksCommand(WorkspaceController workspaceController) {
         this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
-        workspaceController.addBlockGroup();
+        workspaceController.blocksCopied = FXCollections.observableSet();
+        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+            workspaceController.blocksCopied.add(block);
+        }
     }
 
     @Override

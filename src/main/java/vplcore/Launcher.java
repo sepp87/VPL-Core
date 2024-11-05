@@ -5,6 +5,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 // 4 BUG group moving does not work
+// 4 BUG move single blocks does not work
 // 1 IMPROVEMENT add clipboard for copying
 // 1 IMPROVEMENT Add undo/redo functionality
 // 4 BUG connections are not pasted when pasting deleted blocks that were copied

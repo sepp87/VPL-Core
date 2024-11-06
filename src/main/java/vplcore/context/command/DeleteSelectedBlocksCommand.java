@@ -1,5 +1,6 @@
 package vplcore.context.command;
 
+import java.util.Collection;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
@@ -10,18 +11,24 @@ import vplcore.workspace.WorkspaceController;
  */
 public class DeleteSelectedBlocksCommand implements Undoable {
 
-    private final WorkspaceController workspace;
+    private final WorkspaceController workspaceController;
 
-    public DeleteSelectedBlocksCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public DeleteSelectedBlocksCommand(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
-        for (Block block : workspace.blocksSelectedOnWorkspace) {
+        Collection<Block> selectedBlocks = workspaceController.getSelectedBlocks();
+        workspaceController.deselectAllBlocks();
+        for (Block block : selectedBlocks) {
             block.delete();
         }
-        workspace.blocksSelectedOnWorkspace.clear();
+//
+//        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+//            block.delete();
+//        }
+//        workspaceController.blocksSelectedOnWorkspace.clear();
     }
 
     @Override

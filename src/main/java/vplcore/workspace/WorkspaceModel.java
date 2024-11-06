@@ -1,7 +1,13 @@
 package vplcore.workspace;
 
+import java.util.Collection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import vplcore.graph.model.Block;
+import vplcore.graph.model.BlockGroup;
+import vplcore.graph.model.Connection;
 
 /**
  *
@@ -9,29 +15,23 @@ import javafx.beans.property.SimpleDoubleProperty;
  */
 public class WorkspaceModel {
 
+    public static final double DFEAULT_ZOOM = 1.0;
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
 
-    private final DoubleProperty zoomFactor;  // Property to hold zoom factor
+    private final DoubleProperty zoomFactor;
     private final DoubleProperty translateX;
     private final DoubleProperty translateY;
 
+    private final ObservableSet<Block> blocks = FXCollections.observableSet();
+    private final ObservableSet<Connection> connections = FXCollections.observableSet();
+    private final ObservableSet<BlockGroup> blockGroups = FXCollections.observableSet();
+
     public WorkspaceModel() {
-        zoomFactor = new SimpleDoubleProperty(1.0); // Default zoom level
+        zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM); // Default zoom level
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
-
-//        zoomFactor.addListener(this::zoomFactorChanged);
-        translateX.addListener(this::translateXChanged);
-    }
-
-    private void zoomFactorChanged(Object b, Object o, Object n) {
-        System.out.println(n);
-    }
-
-    private void translateXChanged(Object b, Object o, Object n) {
-//        System.out.println(n +  " ZoomModel");
     }
 
     public DoubleProperty zoomFactorProperty() {
@@ -47,7 +47,7 @@ public class WorkspaceModel {
     }
 
     public void resetZoomFactor() {
-        zoomFactor.set(1.0);
+        zoomFactor.set(DFEAULT_ZOOM);
     }
 
     // Increment zoom factor by the defined step size
@@ -62,5 +62,50 @@ public class WorkspaceModel {
 
     public void setZoomFactor(double factor) {
         this.zoomFactor.set(Math.round(factor * 10) / 10.);
+    }
+
+    public Collection<Block> getBlocks() {
+        return blocks;
+    }
+
+    public Collection<Connection> getConnections() {
+        return connections;
+    }
+
+    public Collection<BlockGroup> getBlockGroups() {
+        return blockGroups;
+    }
+
+    public void addBlock(Block block) {
+        blocks.add(block);
+    }
+
+    public void addConnection(Connection connection) {
+        connections.add(connection);
+    }
+
+    public void addBlockGroup(BlockGroup blockGroup) {
+        blockGroups.add(blockGroup);
+    }
+
+    public void removeBlock(Block block) {
+        blocks.remove(block);
+    }
+
+    public void removeConnection(Connection connection) {
+        connections.remove(connection);
+    }
+
+    public void removeBlockGroup(BlockGroup blockGroup) {
+        blockGroups.remove(blockGroup);
+    }
+
+    public void reset() {
+        resetZoomFactor();
+        translateXProperty().set(0.);
+        translateYProperty().set(0.);
+        blocks.clear();
+        connections.clear();
+        blockGroups.clear();
     }
 }

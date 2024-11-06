@@ -19,8 +19,8 @@ public class AlignRightCommand implements Undoable {
 
     @Override
     public void execute() {
-        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.blocksSelectedOnWorkspace);
-        for (Block block : workspace.blocksSelectedOnWorkspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.getSelectedBlocks());
+        for (Block block : workspace.getSelectedBlocks()) {
             block.setLayoutX(bBox.getMaxX() - block.getWidth());
         }
     }

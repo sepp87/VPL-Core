@@ -241,14 +241,13 @@ public abstract class Block extends VplElement {
      */
     private void updateSelection(MouseEvent event) {
 
-        if (workspaceController.blocksSelectedOnWorkspace.contains(this)) {
+        if (workspaceController.getSelectedBlocks().contains(this)) {
             if (EventUtils.isModifierDown(event)) {
                 // Remove this node from selection
-                workspaceController.blocksSelectedOnWorkspace.remove(this);
-                setSelected(false);
+                workspaceController.deselectBlock(this);
             } else {
                 // Subscribe multiselection to MouseMove event
-                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+                for (Block block : workspaceController.getSelectedBlocks()) {
                     block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
                     block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
                 }
@@ -256,19 +255,12 @@ public abstract class Block extends VplElement {
         } else {
             if (EventUtils.isModifierDown(event)) {
                 // add this node to selection
-                workspaceController.blocksSelectedOnWorkspace.add(this);
-                setSelected(true);
+                workspaceController.selectBlock(this);
             } else {
-                // Deselect all blocks that are selected
-                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
-                    block.setSelected(false);
-                }
-
-                workspaceController.blocksSelectedOnWorkspace.clear();
-                workspaceController.blocksSelectedOnWorkspace.add(this);
-                // Select this block as selected
-                setSelected(true);
-                for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+                // Deselect all blocks that are selected and select only this block
+                workspaceController.deselectAllBlocks();
+                workspaceController.selectBlock(this);
+                for (Block block : workspaceController.getSelectedBlocks()) {
                     //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
                     this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
@@ -290,7 +282,7 @@ public abstract class Block extends VplElement {
         double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - oldMousePosition.getX()) / scale;
         double deltaY = (event.getSceneY() - oldMousePosition.getY()) / scale;
-        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
+        for (Block block : workspaceController.getSelectedBlocks()) {
             block.setLayoutX(block.getLayoutX() + deltaX);
             block.setLayoutY(block.getLayoutY() + deltaY);
         }
@@ -421,7 +413,7 @@ public abstract class Block extends VplElement {
         inPorts.clear();
         outPorts.clear();
         controls.clear();
-        workspaceController.blocksOnWorkspace.remove(this);
+        workspaceController.removeChild(this);
         if (infoPanel != null) {
             infoPanel.delete();
         }

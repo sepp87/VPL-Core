@@ -19,8 +19,8 @@ public class AlignHorizontallyCommand implements Undoable {
 
     @Override
     public void execute() {
-        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.blocksSelectedOnWorkspace);
-        for (Block block : workspace.blocksSelectedOnWorkspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.getSelectedBlocks());
+        for (Block block : workspace.getSelectedBlocks()) {
             block.setLayoutY(bBox.getMaxY() - bBox.getHeight() / 2 - block.getHeight());
         }
     }

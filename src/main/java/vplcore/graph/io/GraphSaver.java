@@ -49,17 +49,17 @@ public class GraphSaver {
             documentTag.setTranslateY(zoomModel.translateYProperty().get());
 
             // serialize blocks of graph
-            Collection<Block> blocks = workspace.blocksOnWorkspace;
+            Collection<Block> blocks = workspace.getBlocks();
             BlocksTag blocksTag = serializeBlocks(blocks);
             documentTag.setBlocks(blocksTag);
 
             // serialize connections of graph
-            Collection<Connection> connections = workspace.connectionsOnWorkspace;
+            Collection<Connection> connections = workspace.getConnections();
             ConnectionsTag connectionsTag = serializeConnnections(connections);
             documentTag.setConnections(connectionsTag);
 
             // serialize groups of graph
-            Collection<BlockGroup> groups = workspace.groupsOfBlocks;
+            Collection<BlockGroup> groups = workspace.getBlockGroups();
             if (!groups.isEmpty()) {
                 GroupsTag groupsTag = serializeGroups(groups);
                 documentTag.setGroups(groupsTag);

@@ -27,7 +27,6 @@ import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.IconType;
-import vplcore.context.EditorMode;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.WorkspaceController;
 
@@ -96,23 +95,20 @@ public class BlockGroup extends VplElement {
 
             block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
 
-            block.setSelected(true);
-            workspaceController.blocksSelectedOnWorkspace.add(block);
+            workspaceController.selectBlock(block);
         }
-//        workspaceController.setEditorMode(EditorMode.GROUP_SELECTION_MODE); // prevent group from being deselected
         workspaceController.setSelectingBlockGroup(); // prevent group from being deselected
     }
 
     private void handleGroupReleased(MouseEvent event) {
         workspaceController.setIdle();
-//        workspaceController.setEditorMode(EditorMode.IDLE_MODE);
 //        event.consume();
     }
 
     @Override
     public void delete() {
         unObserveAllChildBlocks();
-        workspaceController.groupsOfBlocks.remove(this);
+        workspaceController.removeChild(this);
         binButton.setOnAction(null);
         super.delete();
     }
@@ -232,7 +228,7 @@ public class BlockGroup extends VplElement {
         List<BlockReferenceTag> blockReferenceTagList = xmlTag.getBlockReference();
         List<Block> blocks = new ArrayList<>();
         for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {
-            for (Block block : workspaceController.blocksOnWorkspace) {
+            for (Block block : workspaceController.getBlocks()) {
                 if (block.uuid.toString().equals(blockReferenceTag.getUUID())) {
                     blocks.add(block);
                     break;

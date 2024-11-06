@@ -1,6 +1,7 @@
 package vplcore.context.command;
 
-import javafx.collections.FXCollections;
+import java.util.Collection;
+import vplcore.context.CopyPasteMemory;
 import vplcore.graph.model.Block;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
@@ -19,14 +20,14 @@ public class CopyBlocksCommand implements Undoable {
 
     @Override
     public void execute() {
-        workspaceController.blocksCopied = FXCollections.observableSet();
-        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
-            workspaceController.blocksCopied.add(block);
-        }
+        Collection<Block> selectedBlocks = workspaceController.getSelectedBlocks();
+        CopyPasteMemory.save(selectedBlocks);
     }
 
     @Override
     public void undo() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+
 }

@@ -19,8 +19,8 @@ public class AlignVerticallyCommand implements Undoable {
 
     @Override
     public void execute() {
-        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.blocksSelectedOnWorkspace);
-        for (Block block : workspace.blocksSelectedOnWorkspace) {
+        Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.getSelectedBlocks());
+        for (Block block : workspace.getSelectedBlocks()) {
             block.setLayoutX(bBox.getMaxX() - bBox.getWidth() / 2 - block.getWidth());
         }
     }

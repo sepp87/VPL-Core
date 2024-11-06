@@ -1,14 +1,9 @@
 package vplcore.workspace;
 
 import java.util.Collection;
-import vplcore.MousePositionHandler;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
 import vplcore.App;
 import vplcore.context.StateManager;
@@ -28,17 +23,9 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceModel model;
     private final WorkspaceView view;
     private final WorkspaceZoomHelper zoomHelper;
+    private final WorkspaceSelectionHelper selectionHelper;
 
-    //isSaved
     public BlockInfoPanel activeBlockInfoPanel;
-
-    public ObservableSet<Block> blocksOnWorkspace;
-    public ObservableSet<Block> blocksCopied;
-    public ObservableSet<Block> blocksSelectedOnWorkspace;
-    public ObservableSet<Connection> connectionsOnWorkspace;
-    public ObservableSet<BlockGroup> groupsOfBlocks;
-
-    //Create connection members
     public boolean typeSensitive = true;
 
     //Radial menu
@@ -48,15 +35,7 @@ public class WorkspaceController extends BaseController {
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new WorkspaceZoomHelper(model, view);
-
-        //Initialize members
-        connectionsOnWorkspace = FXCollections.observableSet();
-        blocksOnWorkspace = FXCollections.observableSet();
-        blocksSelectedOnWorkspace = FXCollections.observableSet();
-        groupsOfBlocks = FXCollections.observableSet();
-
-        view.sceneProperty().addListener(initializationHandler);
-
+        this.selectionHelper = new WorkspaceSelectionHelper(model, view);
     }
 
     private PreConnection preConnection = null;
@@ -75,28 +54,12 @@ public class WorkspaceController extends BaseController {
         this.preConnection = null;
     }
 
-    //Initial modi members
-    public MousePositionHandler mouse;
-
-    private final ChangeListener<Object> initializationHandler = new ChangeListener<>() {
-        @Override
-        public void changed(ObservableValue<? extends Object> observableValue, Object oldObject, Object newObject) {
-
-            mouse = new MousePositionHandler(view);
-
-        }
-    };
-
     public WorkspaceModel getModel() {
         return model;
     }
 
     public void reset() {
-        model.resetZoomFactor();
-        model.translateXProperty().set(0.);
-        model.translateYProperty().set(0.);
-        blocksOnWorkspace.clear();
-        connectionsOnWorkspace.clear();
+        model.reset();
         view.getChildren().clear();
     }
 
@@ -125,33 +88,20 @@ public class WorkspaceController extends BaseController {
     }
 
     public void zoomToFit() {
-        Collection<Block> blocks = !blocksSelectedOnWorkspace.isEmpty() ? blocksSelectedOnWorkspace : blocksOnWorkspace;
+        Collection<Block> blocks = !getSelectedBlocks().isEmpty() ? getSelectedBlocks() : model.getBlocks();
         zoomHelper.zoomToFit(blocks);
     }
 
+    public void selectAllBlocks() {
+        selectionHelper.selectAllBlocks();
+    }
+
     public void deselectAllBlocks() {
-        for (Block block : this.blocksSelectedOnWorkspace) {
-            block.setSelected(false);
-        }
-        this.blocksSelectedOnWorkspace.clear();
+        selectionHelper.deselectAllBlocks();
     }
 
     public void rectangleSelect(Point2D selectionMin, Point2D selectionMax) {
-        for (Block block : this.blocksOnWorkspace) {
-            if (true // unnecessary statement for readability
-                    && block.getLayoutX() >= selectionMin.getX()
-                    && block.getLayoutX() + block.getWidth() <= selectionMax.getX()
-                    && block.getLayoutY() >= selectionMin.getY()
-                    && block.getLayoutY() + block.getHeight() <= selectionMax.getY()) {
-
-                this.blocksSelectedOnWorkspace.add(block);
-                block.setSelected(true);
-
-            } else {
-                this.blocksSelectedOnWorkspace.remove(block);
-                block.setSelected(false);
-            }
-        }
+        selectionHelper.rectangleSelect(selectionMin, selectionMax);
     }
 
     public WorkspaceView getView() {
@@ -159,36 +109,78 @@ public class WorkspaceController extends BaseController {
     }
 
     public void addBlock(Block block) {
-        blocksOnWorkspace.add(block);
+        model.addBlock(block);
+        if (block.isSelected()) {
+            selectionHelper.selectBlock(block);
+        }
         view.getChildren().add(block);
     }
 
+    public void selectBlock(Block block) {
+        selectionHelper.selectBlock(block);
+    }
+
+    public void deselectBlock(Block block) {
+        selectionHelper.deselectBlock(block);
+    }
+
+    public Collection<Block> getBlocks() {
+        return model.getBlocks();
+    }
+
+    public Collection<Block> getSelectedBlocks() {
+        return selectionHelper.getSelectedBlocks();
+    }
+
+    public Collection<Connection> getConnections() {
+        return model.getConnections();
+    }
+
+    public Collection<BlockGroup> getBlockGroups() {
+        return model.getBlockGroups();
+    }
+
     public <E extends VplElement> void removeChild(E element) {
-//        blocksOnWorkspace.remove(block);
-//        blocksSelectedOnWorkspace.remove(block);
-        System.out.println(element.getClass().getSimpleName() + " removed");
-        view.getChildren().remove(element);
+        System.out.println("WorkspaceController REIMPLEMENT " + element.getClass().getSimpleName() + " removed");
     }
 
     public void removeChild(Connection connection) {
-        System.out.println("Connection removed");
+        System.out.println("WorkspaceController Connection removed");
+        model.removeConnection(connection);
         view.getChildren().remove(connection);
+    }
+
+    public void removeChild(Block block) {
+        System.out.println("WorkspaceController " + block.getClass().getSimpleName() + " removed");
+        model.removeBlock(block);
+//        blocksSelectedOnWorkspace.remove(block);
+        view.getChildren().remove(block);
+    }
+
+    public void removeChild(BlockGroup blockGroup) {
+        System.out.println("WorkspaceController " + blockGroup.getClass().getSimpleName() + " removed");
+        model.removeBlockGroup(blockGroup);
+        view.getChildren().remove(blockGroup);
     }
 
     public void addConnection(Port startPort, Port endPort) {
         Connection connection = new Connection(this, startPort, endPort);
-        connectionsOnWorkspace.add(connection);
+        addConnection(connection);
+    }
+
+    public void addConnection(Connection connection) {
+        model.addConnection(connection);
         view.getChildren().add(0, connection);
     }
 
     public void addBlockGroup() {
-        if (this.blocksSelectedOnWorkspace.size() <= 1) {
+        if (getSelectedBlocks().size() <= 1) {
             return;
         }
         BlockGroup blockGroup = new BlockGroup(this);
-        groupsOfBlocks.add(blockGroup);
-        blockGroup.setChildBlocks(this.blocksSelectedOnWorkspace);
-        view.getChildren().add(blockGroup);
+        model.addBlockGroup(blockGroup);
+        blockGroup.setChildBlocks(getSelectedBlocks());
+        view.getChildren().add(0, blockGroup);
     }
 
 }

@@ -4,29 +4,28 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 4 BUG group moving does not work
-// 4 BUG move single blocks does not work
-// 1 IMPROVEMENT add clipboard for copying
 // 1 IMPROVEMENT Add undo/redo functionality
-// 4 BUG connections are not pasted when pasting deleted blocks that were copied
 // 1 BUG Info panel does not move down when aligning blocks
 // 4 IMPROVEMENT reload plugins on demand from menu bar
 // 1 IMPROVEMENT Set block exception panel when block throws exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
+// 1 IMPROVEMENT update overall UI to show port data hints ... 
+// 4 IMPROVEMENT add scrollbars for TextBlock 
+// 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 4 IMPROVEMENT add save and save as commands
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 REFACTOR integer and double slider event handlers
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
-// 4 IMPROVEMENT add scrollbars for TextBlock 
-// 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-// 4 IMPROVEMENT add save and save as commands
+// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
+// ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
+// 4 IMPROVEMENT multi workspace support with copy-paste
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
-// 1 IMPROVEMENT update overall UI to show port data hints ... 
 //
 // DONE
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
@@ -38,6 +37,10 @@ import vpllib.method.JsonMethods;
 // 4 BUG mouse position is not registered correctly when dragging
 // 4 BUG remove button of connection on copied blocks is shown on connection it was last seen on
 // 1 IMPROVEMENT introduce global action manager, state manager and event router
+// 4 BUG group moving does not work
+// 4 BUG move single blocks does not work for group
+// 1 IMPROVEMENT add clipboard for copying
+// 4 BUG connections are not pasted when pasting deleted blocks that were copied > implement clipboard
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 
@@ -65,8 +68,6 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
-
-
         if (false) {
             return;
         }

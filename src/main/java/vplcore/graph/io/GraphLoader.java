@@ -98,7 +98,7 @@ public class GraphLoader {
 
             Block startBlock = null;
             Block endBlock = null;
-            for (Block Block : workspaceController.blocksOnWorkspace) {
+            for (Block Block : workspaceController.getBlocks()) {
                 if (Block.uuid.compareTo(startBlockUuid) == 0) {
                     startBlock = Block;
                 } else if (Block.uuid.compareTo(endBlockUuid) == 0) {
@@ -109,8 +109,6 @@ public class GraphLoader {
             if (startBlock != null && endBlock != null) {
                 Port startPort = startBlock.outPorts.get(startPortIndex);
                 Port endPort = endBlock.inPorts.get(endPortIndex);
-//                Connection connection = new Connection(workspaceController, startPort, endPort);
-//                workspaceController.connectionsOnWorkspace.add(connection);
                 workspaceController.addConnection(startPort, endPort);
             }
         }

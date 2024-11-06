@@ -255,7 +255,7 @@ public class Port extends VBox {
         tip.textProperty().unbind();
 
         for (Connection connection : connectedConnections) {
-
+            connection.removeFromCanvas();
         }
 
         connectedConnections.clear();

@@ -10,19 +10,15 @@ import vplcore.workspace.WorkspaceController;
  */
 public class SelectAllBlocksCommand implements Command {
 
-    private final WorkspaceController workspace;
+    private final WorkspaceController workspaceController;
 
-    public SelectAllBlocksCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public SelectAllBlocksCommand(WorkspaceController workspaceController) {
+        this.workspaceController = workspaceController;
     }
 
     @Override
     public void execute() {
-        workspace.blocksSelectedOnWorkspace.clear();
-        for (Block block : workspace.blocksOnWorkspace) {
-            block.setSelected(true);
-            workspace.blocksSelectedOnWorkspace.add(block);
-        }
+        workspaceController.selectAllBlocks();
     }
 
 

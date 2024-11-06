@@ -1,13 +1,12 @@
 package vplcore.context.command;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import vplcore.App;
+import vplcore.context.CopyPasteMemory;
+import vplcore.context.CopyResult;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.Connection;
-import vplcore.graph.model.Port;
-import vplcore.graph.util.CopiedConnection;
 import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
 
@@ -25,75 +24,35 @@ public class PasteBlocksCommand implements Undoable {
 
     @Override
     public void execute() {
-        if (workspaceController.blocksCopied == null || workspaceController.blocksCopied.isEmpty()) {
+
+        if (!CopyPasteMemory.containsItems()) {
+            return;
+        }
+        CopyResult copy = CopyPasteMemory.getCopyResult();
+        Bounds boundingBox = copy.boundingBox;
+
+        if (boundingBox == null) {
             return;
         }
 
-        Bounds bBox = Block.getBoundingBoxOfBlocks(workspaceController.blocksCopied);
-
-        if (bBox == null) {
-            return;
-        }
-
-        Point2D copyPoint = new Point2D(bBox.getMinX() + bBox.getWidth() / 2, bBox.getMinY() + bBox.getHeight() / 2);
-        Point2D pastePoint = workspaceController.mouse.getPosition();
+        Point2D copyPoint = new Point2D(boundingBox.getMinX() + boundingBox.getWidth() / 2, boundingBox.getMinY() + boundingBox.getHeight() / 2);
+        Point2D pastePoint = App.getContext(workspaceController.getContextId()).getMousePositionOnWorkspace();
 
         Point2D delta = pastePoint.subtract(copyPoint);
 
-        //First deselect selected blocks. Simply said, deselect copied blocks.
-        for (Block block : workspaceController.blocksSelectedOnWorkspace) {
-            block.setSelected(false);
-        }
-        workspaceController.blocksSelectedOnWorkspace.clear();
+        // First deselect selected blocks.
+        workspaceController.deselectAllBlocks();
 
-        List<Connection> alreadyCopiedConnections = new ArrayList<>();
-        List<CopiedConnection> copiedConnections = new ArrayList<>();
-
-        // copy block from clipboard to canvas
-        for (Block block : workspaceController.blocksCopied) {
-            Block newBlock = block.clone();
-
-            newBlock.setLayoutX(block.getLayoutX() + delta.getX());
-            newBlock.setLayoutY(block.getLayoutY() + delta.getY());
-
-            workspaceController.addBlock(newBlock);
-
-            //Set pasted block(s) as selected
-            workspaceController.blocksSelectedOnWorkspace.add(newBlock);
-            newBlock.setSelected(true);
-
-            copiedConnections.add(new CopiedConnection(block, newBlock));
+        // Paste blocks to workspace and set them selected
+        for (Block copiedBlock : copy.blocks) {
+            copiedBlock.setLayoutX(copiedBlock.getLayoutX() + delta.getX());
+            copiedBlock.setLayoutY(copiedBlock.getLayoutY() + delta.getY());
+            copiedBlock.setSelected(true);
+            workspaceController.addBlock(copiedBlock);
         }
 
-        for (CopiedConnection cc : copiedConnections) {
-            int counter = 0;
-
-            for (Port port : cc.oldBlock.inPorts) {
-                for (Connection connection : port.connectedConnections) {
-                    if (!alreadyCopiedConnections.contains(connection)) {
-
-                        // start and end block are contained in selection
-                        if (workspaceController.blocksCopied.contains(connection.getStartPort().parentBlock)) {
-                            CopiedConnection cc2 = copiedConnections
-                                    .stream()
-                                    .filter(i -> i.oldBlock == connection.getStartPort().parentBlock)
-                                    .findFirst()
-                                    .orElse(null);
-
-                            if (cc2 != null) {
-                                alreadyCopiedConnections.add(connection);
-                                workspaceController.addConnection(cc2.newBlock.outPorts.get(0), cc.newBlock.inPorts.get(counter));
-                            }
-                        } else {
-                            // only end block is contained in selection
-                            alreadyCopiedConnections.add(connection);
-                            workspaceController.addConnection(connection.getStartPort(), cc.newBlock.inPorts.get(counter));
-                        }
-
-                    }
-                }
-                counter++;
-            }
+        for (Connection copiedConnection : copy.connections) {
+            workspaceController.addConnection(copiedConnection);
         }
     }
 

@@ -175,7 +175,6 @@ public class Connection extends Group {
         workspaceController.removeChild(this);
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
-        workspaceController.connectionsOnWorkspace.remove(this);
         if (!endPort.multiDockAllowed) {
             endPort.parentBlock.handleIncomingConnectionRemoved(endPort);
         }

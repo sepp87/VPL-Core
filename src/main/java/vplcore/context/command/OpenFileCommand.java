@@ -5,7 +5,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import vplcore.App;
 import vplcore.graph.io.GraphLoader;
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.workspace.WorkspaceController;
 
 /**

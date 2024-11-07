@@ -16,7 +16,7 @@ import vplcore.util.SystemUtils;
 import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
 import vplcore.context.StateManager;
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.context.command.ApplyZoomCommand;
 import vplcore.context.command.ZoomInCommand;
 import vplcore.context.command.ZoomOutCommand;

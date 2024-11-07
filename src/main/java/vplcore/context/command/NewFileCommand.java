@@ -1,6 +1,6 @@
 package vplcore.context.command;
 
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.workspace.WorkspaceController;
 
 /**

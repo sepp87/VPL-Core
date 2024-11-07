@@ -3,8 +3,6 @@ package vplcore.context;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import vplcore.workspace.Command;
-import vplcore.workspace.Undoable;
 import vplcore.workspace.WorkspaceController;
 import vplcore.context.command.AlignBottomCommand;
 import vplcore.context.command.AlignHorizontallyCommand;

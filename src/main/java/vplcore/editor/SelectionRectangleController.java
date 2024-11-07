@@ -7,7 +7,7 @@ import vplcore.App;
 import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
 import vplcore.context.StateManager;
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.context.command.DeselectAllBlocksCommand;
 import vplcore.context.command.RectangleSelectCommand;
 import static vplcore.util.EditorUtils.onFreeSpace;

@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import javafx.geometry.Point2D;
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.workspace.WorkspaceController;
 
 /**

@@ -13,7 +13,7 @@ import vplcore.App;
 import vplcore.util.EventUtils;
 import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
-import vplcore.workspace.Command;
+import vplcore.context.Command;
 import vplcore.context.command.CopyBlocksCommand;
 import vplcore.context.command.DeleteSelectedBlocksCommand;
 import vplcore.context.command.GroupBlocksCommand;

@@ -1,6 +1,10 @@
 package vplcore.workspace;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import javafx.collections.SetChangeListener;
+import javafx.collections.SetChangeListener.Change;
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
@@ -24,6 +28,8 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceView view;
     private final WorkspaceZoomHelper zoomHelper;
     private final WorkspaceSelectionHelper selectionHelper;
+    
+    Map<BlockModel, BlockController> blocks = new HashMap<>();
 
     public BlockInfoPanel activeBlockInfoPanel;
     public boolean typeSensitive = true;
@@ -36,6 +42,32 @@ public class WorkspaceController extends BaseController {
         this.view = workspaceView;
         this.zoomHelper = new WorkspaceZoomHelper(model, view);
         this.selectionHelper = new WorkspaceSelectionHelper(model, view);
+
+        model.addBlockModelsListener(blockModelsListener);
+    }
+
+    SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChange;
+
+    private void onBlockModelsChange(Change<? extends BlockModel> change) {
+        if (change.wasAdded()) {
+            addBlock(change.getElementAdded());
+        } else {
+            removeBlock(change.getElementRemoved());
+        }
+    }
+
+    private void addBlock(BlockModel blockModel) {
+        BlockView blockView = new BlockView();
+        BlockController blockController = new BlockController(blockModel, blockView);
+        view.getChildren().add(blockView);
+        blocks.put(blockModel, blockController);
+    }
+
+    private void removeBlock(BlockModel blockModel) {
+        BlockController blockController = blocks.get(blockModel);
+        blocks.remove(blockModel);
+        view.getChildren().remove(blockController.getView());
+        // controller remove itself
     }
 
     private PreConnection preConnection = null;

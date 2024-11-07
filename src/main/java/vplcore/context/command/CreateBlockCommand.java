@@ -3,7 +3,7 @@ package vplcore.context.command;
 import javafx.geometry.Point2D;
 import vplcore.graph.model.Block;
 import vplcore.graph.util.BlockFactory;
-import vplcore.workspace.Undoable;
+import vplcore.context.Undoable;
 import vplcore.workspace.WorkspaceController;
 
 /**

@@ -4,7 +4,10 @@ import java.util.Collection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
@@ -27,6 +30,8 @@ public class WorkspaceModel {
     private final ObservableSet<Block> blocks = FXCollections.observableSet();
     private final ObservableSet<Connection> connections = FXCollections.observableSet();
     private final ObservableSet<BlockGroup> blockGroups = FXCollections.observableSet();
+
+    private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
 
     public WorkspaceModel() {
         zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM); // Default zoom level
@@ -107,5 +112,25 @@ public class WorkspaceModel {
         blocks.clear();
         connections.clear();
         blockGroups.clear();
+    }
+    
+    public void addBlockModel(BlockModel blockModel) {
+        blockModels.add(blockModel);
+    }
+    
+    public void removeBlockModel(BlockModel blockModel) {
+        blockModels.remove(blockModel);
+    }
+
+    public ObservableSet<BlockModel> getBlockModels() {
+        return FXCollections.unmodifiableObservableSet(blockModels);
+    }
+
+    public void addBlockModelsListener(SetChangeListener<BlockModel> listener) {
+        blockModels.addListener(listener);
+    }
+
+    public void removeBlockModelsListener(SetChangeListener<BlockModel> listener) {
+        blockModels.removeListener(listener);
     }
 }

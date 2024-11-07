@@ -7,7 +7,7 @@ import vplcore.context.CopyPasteMemory;
 import vplcore.context.CopyResult;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.Connection;
-import vplcore.workspace.Undoable;
+import vplcore.context.Undoable;
 import vplcore.workspace.WorkspaceController;
 
 /**

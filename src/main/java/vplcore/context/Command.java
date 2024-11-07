@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.context;
 
 /**
  *

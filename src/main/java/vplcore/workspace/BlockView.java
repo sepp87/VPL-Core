@@ -28,7 +28,7 @@ import vplcore.graph.model.VplButton;
  *
  * @author JoostMeulenkamp
  */
-public class BlockView extends GridPane {
+public class BlockView extends GridPane  {
 
     private final BlockLabel captionLabel;
     private final HBox menuBox;

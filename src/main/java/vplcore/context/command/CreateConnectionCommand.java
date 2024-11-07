@@ -2,7 +2,7 @@ package vplcore.context.command;
 
 import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
-import vplcore.workspace.Undoable;
+import vplcore.context.Undoable;
 import vplcore.workspace.WorkspaceController;
 
 /**

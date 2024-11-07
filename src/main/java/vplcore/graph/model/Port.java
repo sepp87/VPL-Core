@@ -179,7 +179,7 @@ public class Port extends VBox {
                 }
                 data.set(listOfLists);
 
-            } else if (connectedConnections.size() > 0) {
+            } else if (connectedConnections.size() > 0) { // incoming data of one single incoming connection
                 System.out.println("Data Received: " + value);
 
                 //Cast all primitive dataType to String if this port dataType is String
@@ -199,10 +199,10 @@ public class Port extends VBox {
                     data.set(startPort.getData());
                 }
 
-            } else {
+            } else { // if there are no incoming connections, set data to null
                 data.set(null);
             }
-        } else {
+        } else { // if output port then simply set the data
             data.set(value);
         }
         //OnDataChanged();

@@ -2,18 +2,11 @@ package vplcore.editor;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import vplcore.App;
 import vplcore.context.EventRouter;
-import vplcore.context.event.CustomMouseEvent;
-import static vplcore.util.EventUtils.isDoubleClick;
-import static vplcore.util.EventUtils.isLeftClick;
-import static vplcore.util.EventUtils.isRightClick;
-import vplcore.workspace.WorkspaceController;
-import vplcore.workspace.WorkspaceView;
 
 /**
  *

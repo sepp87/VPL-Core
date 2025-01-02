@@ -46,6 +46,9 @@ import vpllib.method.JsonMethods;
 // Mouse position is needed when pasting blocks and when creating a new connection 
 // Code duplication - Radial Menu, Selection Rectangle and Block Search all test if mouse is on Editor View or Workspace View 
 // Check where workspaceController.getView() is used and refactor it
+//
+// GUIDELINES
+// Put everything inside the models that needs to be saved and all business logic needed to make a script work in headless mode
 /**
  *
  * @author JoostMeulenkamp

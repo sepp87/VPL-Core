@@ -34,7 +34,7 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
 
     public WorkspaceModel() {
-        zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM); // Default zoom level
+        zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
     }

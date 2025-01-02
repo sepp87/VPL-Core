@@ -26,4 +26,12 @@ public class BlockController {
     public BlockView getView() {
         return view;
     }
+
+    public void remove() {
+        view.idProperty().unbind();
+        view.layoutXProperty().unbind();
+        view.layoutYProperty().unbind();
+    }
+    
+    
 }

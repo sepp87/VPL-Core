@@ -67,6 +67,7 @@ public class WorkspaceController extends BaseController {
         BlockController blockController = blocks.get(blockModel);
         blocks.remove(blockModel);
         view.getChildren().remove(blockController.getView());
+        blockController.remove();
         // controller remove itself
     }
 

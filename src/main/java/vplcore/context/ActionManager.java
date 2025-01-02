@@ -20,6 +20,7 @@ import vplcore.context.command.SaveFileCommand;
 import vplcore.context.command.ZoomInCommand;
 import vplcore.context.command.ZoomOutCommand;
 import vplcore.context.command.ZoomToFitCommand;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -27,13 +28,15 @@ import vplcore.context.command.ZoomToFitCommand;
  */
 public class ActionManager {
 
+    private final WorkspaceModel workspaceModel;
     private final WorkspaceController workspaceController;
 
     private final Stack<Undoable> undoStack = new Stack<>();
     private final Stack<Undoable> redoStack = new Stack<>();
     private final Map<String, Command> commandRegistry = new HashMap<>();
 
-    public ActionManager(WorkspaceController workspaceController) {
+    public ActionManager(WorkspaceModel workspaceModel, WorkspaceController workspaceController) {
+        this.workspaceModel = workspaceModel;
         this.workspaceController = workspaceController;
         initializeCommands();
     }

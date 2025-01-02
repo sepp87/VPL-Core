@@ -71,7 +71,7 @@ public class App extends Application {
 
         // initialize ActionManager for Context
         WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
-        ActionManager actionManager = new ActionManager(workspaceController);
+        ActionManager actionManager = new ActionManager(workspaceModel, workspaceController);
         context.initializeActionManager(actionManager);
 
         // Initialize controllers

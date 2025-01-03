@@ -4,6 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+
 // 1 IMPROVEMENT Add undo/redo functionality
 // 1 BUG Info panel does not move down when aligning blocks
 // 4 IMPROVEMENT reload plugins on demand from menu bar
@@ -26,6 +27,11 @@ import vpllib.method.JsonMethods;
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
+// 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
+// 1 IMRPOVEMENT Block to MVC Pattern - WorkspaceController handle onConnectionsChanged, onBlockGroupsChanged 
+// 1 IMRPOVEMENT Block to MVC Pattern - BlockMethodModel
+// 1 IMRPOVEMENT Block to MVC Pattern - Input Blocks
+// 1 IMRPOVEMENT Block to MVC Pattern - Block Model, View, Controller
 //
 // DONE
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac

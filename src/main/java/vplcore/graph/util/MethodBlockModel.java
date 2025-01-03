@@ -40,7 +40,6 @@ public class MethodBlockModel extends BlockModel {
         this.method = method;
     }
 
-
     public boolean isListOperator = false;
     public boolean isListReturnType = false;
 
@@ -127,7 +126,7 @@ public class MethodBlockModel extends BlockModel {
             try {
                 return method.invoke(null, a);
             } catch (IllegalAccessException | InvocationTargetException ex) {
-               
+
 //                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
 //                System.out.println("TEST ARGS 1");
                 return null;
@@ -221,10 +220,11 @@ public class MethodBlockModel extends BlockModel {
         MethodBlockModel block = BlockModelFactory.createBlockFromMethod(method, workspace);
         return block;
     }
-}
 
-enum LacingMode {
-    SHORTEST,
-    LONGEST,
-    CROSS_PRODUCT
+    enum LacingMode {
+        SHORTEST,
+        LONGEST,
+        CROSS_PRODUCT
+    }
+
 }

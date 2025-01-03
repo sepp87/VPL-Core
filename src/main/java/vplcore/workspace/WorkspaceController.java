@@ -141,8 +141,13 @@ public class WorkspaceController extends BaseController {
     }
 
     public void zoomToFit() {
-        Collection<Block> blocks = !getSelectedBlocks().isEmpty() ? getSelectedBlocks() : model.getBlocks();
-        zoomHelper.zoomToFit(blocks);
+        if (vplcore.App.BLOCK_MVC) {
+            Collection<BlockController> blockControllers = !getSelectedBlockControllers().isEmpty() ? getSelectedBlockControllers() : blocks.values();
+            zoomHelper.zoomToFitBlockControllers(blockControllers);
+        } else {
+            Collection<Block> blocks = !getSelectedBlocks().isEmpty() ? getSelectedBlocks() : model.getBlocks();
+            zoomHelper.zoomToFit(blocks);
+        }
     }
 
     public void selectAllBlocks() {

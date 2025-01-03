@@ -1,6 +1,8 @@
 package vplcore.workspace;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -96,6 +98,40 @@ public class WorkspaceZoomHelper {
 
         //Pan to fit
         boundingBox = view.localToParent(Block.getBoundingBoxOfBlocks(blocks));
+        double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
+        double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
+        double newTranslateX = model.translateXProperty().get() - dx;
+        double newTranslateY = model.translateYProperty().get() - dy;
+
+        model.translateXProperty().set(newTranslateX);
+        model.translateYProperty().set(newTranslateY);
+    }
+
+    public void zoomToFitBlockControllers(Collection<BlockController> blockControllers) {
+
+        Scene scene = view.getScene();
+        if (blockControllers.isEmpty()) {
+            return;
+        }
+
+        List<BlockView> blockViews = new ArrayList<>();
+        for (BlockController blockController : blockControllers) {
+            blockViews.add(blockController.getView());
+        }
+        
+        //Zoom to fit        
+        Bounds boundingBox = view.localToParent(BlockView.getBoundingBoxOfBlocks(blockViews));
+        double ratioX = boundingBox.getWidth() / scene.getWidth();
+        double ratioY = boundingBox.getHeight() / scene.getHeight();
+        double ratio = Math.max(ratioX, ratioY);
+        // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
+        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
+        scale = scale < WorkspaceModel.MIN_ZOOM ? WorkspaceModel.MIN_ZOOM : scale;
+        scale = scale > WorkspaceModel.MAX_ZOOM ? WorkspaceModel.MAX_ZOOM : scale;
+        model.zoomFactorProperty().set(scale);
+
+        //Pan to fit
+        boundingBox = view.localToParent(BlockView.getBoundingBoxOfBlocks(blockViews));
         double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
         double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
         double newTranslateX = model.translateXProperty().get() - dx;

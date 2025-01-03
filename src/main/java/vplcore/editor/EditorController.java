@@ -34,7 +34,6 @@ public class EditorController extends BaseController {
         this.eventRouter = App.getContext(contextId).getEventRouter();
         this.view = editorView;
 
-        view.sceneProperty().addListener(requestFocusHandler); // request focus immediately after scene is shown, else KeyEvent SPACE is not handled
         view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
         view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
         view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);
@@ -43,6 +42,7 @@ public class EditorController extends BaseController {
         view.addEventHandler(ScrollEvent.SCROLL, scrollUpdatedHandler);
         view.addEventHandler(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
         view.addEventHandler(KeyEvent.KEY_PRESSED, keyPressedHandler);
+        view.sceneProperty().addListener(requestFocusHandler); // request focus immediately after scene is shown, else KeyEvent SPACE is not handled
 
     }
 

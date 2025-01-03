@@ -62,11 +62,12 @@ public class WorkspaceSelectionHelper {
         if (vplcore.App.BLOCK_MVC) {
             for (BlockModel block : model.getBlockModels()) {
                 BlockController blockController = controller.getBlockController(block);
+                BlockView blockView = blockController.getView();
                 if (true // unnecessary statement for readability
                         && block.layoutXProperty().get() >= selectionMin.getX()
-                        && block.layoutXProperty().get() + block.widthProperty().get() <= selectionMax.getX()
+                        && block.layoutXProperty().get() + blockView.getWidth() <= selectionMax.getX()
                         && block.layoutYProperty().get() >= selectionMin.getY()
-                        && block.layoutYProperty().get() + block.heightProperty().get() <= selectionMax.getY()) {
+                        && block.layoutYProperty().get() + blockView.getHeight() <= selectionMax.getY()) {
 
                     selectedBlocks.add(blockController);
                     blockController.selectedProperty().set(true);

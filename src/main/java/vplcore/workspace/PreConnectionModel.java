@@ -19,6 +19,7 @@ public class PreConnectionModel extends Line {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceView workspaceView;
+    private final WorkspaceModel workspaceModel;
     private final PortModel startPort;
 
     private final EventHandler<MouseEvent> mouseMovedHandler = this::handleMouseMoved;
@@ -27,6 +28,7 @@ public class PreConnectionModel extends Line {
     public PreConnectionModel(WorkspaceController workspaceController, PortModel startPort) {
         this.workspaceController = workspaceController;
         this.workspaceView = workspaceController.getView();
+        this.workspaceModel = workspaceController.getModel();
         this.startPort = startPort;
 
         getStyleClass().add("temp-line");
@@ -89,7 +91,7 @@ public class PreConnectionModel extends Line {
                         }
                     }
                 }
-                workspaceController.addConnectionModel(startPort, endPort);
+                workspaceModel.addConnectionModel(startPort, endPort);
 
             } else {
                 if (!endPort.connectedConnections.isEmpty()) {
@@ -102,7 +104,7 @@ public class PreConnectionModel extends Line {
                         endPort.connectedConnections.clear();
                     }
                 }
-                workspaceController.addConnectionModel(startPort, endPort);
+                workspaceModel.addConnectionModel(startPort, endPort);
             }
 
         }

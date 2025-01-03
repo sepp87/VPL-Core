@@ -35,7 +35,6 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
-    
 
     public WorkspaceModel() {
         zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
@@ -118,6 +117,10 @@ public class WorkspaceModel {
         blockGroups.clear();
     }
 
+    /**
+     *
+     * BLOCKS
+     */
     public void addBlockModel(BlockModel blockModel) {
         blockModels.add(blockModel);
     }
@@ -138,6 +141,10 @@ public class WorkspaceModel {
         blockModels.removeListener(listener);
     }
 
+    /**
+     *
+     * CONNECTIONS
+     */
     public void addConnectionModel(PortModel startPort, PortModel endPort) {
         ConnectionModel connectionModel = new ConnectionModel(workspaceController, startPort, endPort);
         addConnectionModel(connectionModel);
@@ -155,12 +162,32 @@ public class WorkspaceModel {
         return FXCollections.unmodifiableObservableSet(connectionModels);
     }
 
+    public void addConnectionModelsListener(SetChangeListener<ConnectionModel> listener) {
+        connectionModels.addListener(listener);
+    }
+
+    public void removeConnectionModelsListener(SetChangeListener<ConnectionModel> listener) {
+        connectionModels.removeListener(listener);
+    }
+
+    /**
+     *
+     * GROUPS
+     */
+    public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
+        blockGroupModels.add(blockGroupModel);
+    }
+
     public ObservableSet<BlockGroupModel> getBlockGroupModels() {
         return FXCollections.unmodifiableObservableSet(blockGroupModels);
     }
-    
-    public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
-        blockGroupModels.add(blockGroupModel);
+
+    public void addBlockGroupModelsListener(SetChangeListener<BlockGroupModel> listener) {
+        blockGroupModels.addListener(listener);
+    }
+
+    public void removeBlockGroupModelsListener(SetChangeListener<BlockGroupModel> listener) {
+        blockGroupModels.removeListener(listener);
     }
 
 }

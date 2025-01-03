@@ -44,8 +44,13 @@ public class WorkspaceController extends BaseController {
         this.selectionHelper = new WorkspaceSelectionHelper(model, view, this);
 
         model.addBlockModelsListener(blockModelsListener);
+        model.addConnectionModelsListener(connectionModelsListener);
+        model.addBlockGroupModelsListener(blockGroupModelsListener);
     }
 
+    /**
+     * BLOCKS
+     */
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
@@ -60,7 +65,7 @@ public class WorkspaceController extends BaseController {
         BlockView blockView = new BlockView();
         BlockController blockController = new BlockController(this, blockModel, blockView);
 
-        // TODO Refactor and remove since the block model should not be aware of the workspace controller
+        // TODO Refactor and remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
         blockModel.workspaceController = WorkspaceController.this;
 
         view.getChildren().add(blockView);
@@ -75,6 +80,51 @@ public class WorkspaceController extends BaseController {
         // controller remove itself
     }
 
+    /**
+     * CONNECTIONS
+     */
+    SetChangeListener<ConnectionModel> connectionModelsListener = this::onConnectionModelsChanged;
+
+    private void onConnectionModelsChanged(Change<? extends ConnectionModel> change) {
+        if (change.wasAdded()) {
+            addConnection(change.getElementAdded());
+        } else {
+            removeConnection(change.getElementRemoved());
+        }
+    }
+
+    private void addConnection(ConnectionModel connectionModel) {
+
+    }
+
+    private void removeConnection(ConnectionModel connectionModel) {
+
+    }
+
+    /**
+     * GROUPS
+     */
+    SetChangeListener<BlockGroupModel> blockGroupModelsListener = this::onBlockGroupModelsChanged;
+
+    private void onBlockGroupModelsChanged(Change<? extends BlockGroupModel> change) {
+        if (change.wasAdded()) {
+            addBlockGroup(change.getElementAdded());
+        } else {
+            removeBlockGroup(change.getElementRemoved());
+        }
+    }
+
+    private void addBlockGroup(BlockGroupModel blockGroupModel) {
+
+    }
+
+    private void removeBlockGroup(BlockGroupModel blockGroupModel) {
+
+    }
+
+    /**
+     * SECTION BREAK
+     */
     private PreConnection preConnection = null;
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
@@ -259,16 +309,15 @@ public class WorkspaceController extends BaseController {
         view.getChildren().add(0, connection);
     }
 
-    public void addConnectionModel(PortModel startPort, PortModel endPort) {
-        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
-        addConnectionModel(connection);
-    }
-
-    public void addConnectionModel(ConnectionModel connection) {
-        model.addConnectionModel(connection);
-        view.getChildren().add(0, connection);
-    }
-
+//    public void addConnectionModel(PortModel startPort, PortModel endPort) {
+//        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
+//        addConnectionModel(connection);
+//    }
+//
+//    public void addConnectionModel(ConnectionModel connection) {
+//        model.addConnectionModel(connection);
+//        view.getChildren().add(0, connection);
+//    }
     public void addBlockGroup() {
         if (getSelectedBlocks().size() <= 1) {
             return;

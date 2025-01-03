@@ -20,6 +20,9 @@ import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.model.BlockGroup;
 import vplcore.graph.model.Connection;
+import vplcore.workspace.BlockGroupModel;
+import vplcore.workspace.BlockModel;
+import vplcore.workspace.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 
 /**
@@ -37,32 +40,52 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, WorkspaceController workspace, WorkspaceModel zoomModel) {
+    public static void serialize(File file, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();
 
             // serialize workspace and settings
             DocumentTag documentTag = factory.createDocumentTag();
-            documentTag.setScale(zoomModel.zoomFactorProperty().get());
-            documentTag.setTranslateX(zoomModel.translateXProperty().get());
-            documentTag.setTranslateY(zoomModel.translateYProperty().get());
+            documentTag.setScale(workspaceModel.zoomFactorProperty().get());
+            documentTag.setTranslateX(workspaceModel.translateXProperty().get());
+            documentTag.setTranslateY(workspaceModel.translateYProperty().get());
 
             // serialize blocks of graph
-            Collection<Block> blocks = workspace.getBlocks();
-            BlocksTag blocksTag = serializeBlocks(blocks);
-            documentTag.setBlocks(blocksTag);
+            if (vplcore.App.BLOCK_MVC) {
+                Collection<BlockModel> blocks = workspaceModel.getBlockModels();
+                BlocksTag blocksTag = serializeBlockModels(blocks);
+                documentTag.setBlocks(blocksTag);
+            } else {
+                Collection<Block> blocks = workspaceController.getBlocks();
+                BlocksTag blocksTag = serializeBlocks(blocks);
+                documentTag.setBlocks(blocksTag);
+            }
 
             // serialize connections of graph
-            Collection<Connection> connections = workspace.getConnections();
-            ConnectionsTag connectionsTag = serializeConnnections(connections);
-            documentTag.setConnections(connectionsTag);
+            if (vplcore.App.BLOCK_MVC) {
+                Collection<ConnectionModel> connections = workspaceModel.getConnectionModels();
+                ConnectionsTag connectionsTag = serializeConnnectionModels(connections);
+                documentTag.setConnections(connectionsTag);
+            } else {
+                Collection<Connection> connections = workspaceController.getConnections();
+                ConnectionsTag connectionsTag = serializeConnnections(connections);
+                documentTag.setConnections(connectionsTag);
+            }
 
             // serialize groups of graph
-            Collection<BlockGroup> groups = workspace.getBlockGroups();
-            if (!groups.isEmpty()) {
-                GroupsTag groupsTag = serializeGroups(groups);
-                documentTag.setGroups(groupsTag);
+            if (vplcore.App.BLOCK_MVC) {
+                Collection<BlockGroupModel> groups = workspaceModel.getBlockGroupModels();
+                if (!groups.isEmpty()) {
+                    GroupsTag groupsTag = serializeGroupModels(groups);
+                    documentTag.setGroups(groupsTag);
+                }
+            } else {
+                Collection<BlockGroup> groups = workspaceController.getBlockGroups();
+                if (!groups.isEmpty()) {
+                    GroupsTag groupsTag = serializeGroups(groups);
+                    documentTag.setGroups(groupsTag);
+                }
             }
 
             // serialize the conplete document and save to file
@@ -75,6 +98,39 @@ public class GraphSaver {
         } catch (JAXBException ex) {
             Logger.getLogger(GraphSaver.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static BlocksTag serializeBlockModels(Collection<BlockModel> blocks) {
+        ObjectFactory factory = getObjectFactory();
+        BlocksTag blocksTag = factory.createBlocksTag();
+        for (BlockModel block : blocks) {
+            BlockTag blockTag = factory.createBlockTag();
+            block.serialize(blockTag);
+            blocksTag.getBlock().add(blockTag);
+        }
+        return blocksTag;
+    }
+
+    private static ConnectionsTag serializeConnnectionModels(Collection<ConnectionModel> connections) {
+        ObjectFactory factory = getObjectFactory();
+        ConnectionsTag connectionsTag = factory.createConnectionsTag();
+        for (ConnectionModel connection : connections) {
+            ConnectionTag connectionTag = factory.createConnectionTag();
+            connection.serialize(connectionTag);
+            connectionsTag.getConnection().add(connectionTag);
+        }
+        return connectionsTag;
+    }
+
+    private static GroupsTag serializeGroupModels(Collection<BlockGroupModel> groups) {
+        ObjectFactory factory = getObjectFactory();
+        GroupsTag groupsTag = factory.createGroupsTag();
+        for (BlockGroupModel group : groups) {
+            GroupTag groupTag = factory.createGroupTag();
+            group.serialize(groupTag);
+            groupsTag.getGroup().add(groupTag);
+        }
+        return groupsTag;
     }
 
     private static BlocksTag serializeBlocks(Collection<Block> blocks) {

@@ -4,7 +4,6 @@ import java.util.UUID;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,22 +16,24 @@ import javafx.beans.property.StringProperty;
 public class BaseModel implements Comparable<BaseModel> {
 
     private final BaseModel parent;
-    private final ReadOnlyStringProperty id;
+    protected final StringProperty id = new SimpleStringProperty();
     private final StringProperty name = new SimpleStringProperty();
     private final DoubleProperty layoutX = new SimpleDoubleProperty();
     private final DoubleProperty layoutY = new SimpleDoubleProperty();
+    private final DoubleProperty width = new SimpleDoubleProperty();
+    private final DoubleProperty height = new SimpleDoubleProperty();
     private final BooleanProperty resizable = new SimpleBooleanProperty(false);
     private final BooleanProperty active = new SimpleBooleanProperty(false);
-    
-    
+    private final BooleanProperty removed = new SimpleBooleanProperty(false);
+
     public BaseModel() {
         this.parent = null;
-        this.id = new ReadOnlyStringWrapper(UUID.randomUUID().toString());
+        this.id.set(UUID.randomUUID().toString());
     }
 
     public BaseModel(BaseModel parent) {
         this.parent = parent;
-        this.id = new ReadOnlyStringWrapper(UUID.randomUUID().toString());
+        this.id.set(UUID.randomUUID().toString());
     }
 
     public ReadOnlyStringProperty idProperty() {
@@ -51,12 +52,28 @@ public class BaseModel implements Comparable<BaseModel> {
         return layoutY;
     }
     
+    public DoubleProperty widthProperty() {
+        return width;
+    }
+    
+    public DoubleProperty heightProperty() {
+        return height;
+    }
+    
+    public BooleanProperty resizableProperty() {
+        return resizable;
+    }
+
     public BooleanProperty activeProperty() {
         return active;
     }
 
-    public void remove() {
+    public BooleanProperty removedProperty() {
+        return removed;
+    }
 
+    public void remove() {
+        removed.set(true);
     }
 
     public void serialize() {

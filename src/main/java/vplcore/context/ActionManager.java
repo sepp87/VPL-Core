@@ -43,12 +43,12 @@ public class ActionManager {
 
     private void initializeCommands() {
         commandRegistry.put("NEW_FILE", new NewFileCommand(workspaceController));
-        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspaceController));
+        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspaceController)); 
         commandRegistry.put("SAVE_FILE", new SaveFileCommand(workspaceController));
         commandRegistry.put("COPY_BLOCKS", new CopyBlocksCommand(workspaceController));
-        commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspaceController));
+        commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspaceController, workspaceModel));
         commandRegistry.put("DELETE_SELECTED_BLOCKS", new DeleteSelectedBlocksCommand(workspaceController));
-        commandRegistry.put("GROUP_BLOCKS", new GroupBlocksCommand(workspaceController));
+        commandRegistry.put("GROUP_BLOCKS", new GroupBlocksCommand(workspaceController, workspaceModel));
         commandRegistry.put("ALIGN_LEFT", new AlignLeftCommand(workspaceController));
         commandRegistry.put("ALIGN_VERTICALLY", new AlignVerticallyCommand(workspaceController));
         commandRegistry.put("ALIGN_RIGHT", new AlignRightCommand(workspaceController));
@@ -62,6 +62,10 @@ public class ActionManager {
 
     public WorkspaceController getWorkspaceController() {
         return workspaceController;
+    }
+    
+    public WorkspaceModel getWorkspaceModel() {
+        return workspaceModel;
     }
 
     public void executeCommand(String id) {

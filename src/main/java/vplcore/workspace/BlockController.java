@@ -9,12 +9,14 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public class BlockController {
 
+    private final WorkspaceController workspaceController;
     private final BlockModel model;
     private final BlockView view;
 
     private final BooleanProperty selected = new SimpleBooleanProperty(false);
 
-    public BlockController(BlockModel blockModel, BlockView blockView) {
+    public BlockController(WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
+        this.workspaceController = workspaceController;
         this.model = blockModel;
         this.view = blockView;
 
@@ -22,9 +24,17 @@ public class BlockController {
         view.layoutXProperty().bind(model.layoutXProperty());
         view.layoutYProperty().bind(model.layoutYProperty());
     }
+    
+    public WorkspaceController getWorkspaceController() {
+        return workspaceController;
+    }
 
     public BlockView getView() {
         return view;
+    }
+    
+    public BlockModel getModel() {
+        return model;
     }
 
     public void remove() {
@@ -33,5 +43,7 @@ public class BlockController {
         view.layoutYProperty().unbind();
     }
     
-    
+    public BooleanProperty selectedProperty() {
+        return selected;
+    }
 }

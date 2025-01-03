@@ -1,8 +1,14 @@
 package vplcore.context.command;
 
-import vplcore.graph.model.BlockGroup;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import vplcore.context.Undoable;
+import vplcore.workspace.BlockController;
+import vplcore.workspace.BlockGroupModel;
+import vplcore.workspace.BlockModel;
 import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -11,14 +17,32 @@ import vplcore.workspace.WorkspaceController;
 public class GroupBlocksCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
+    private final WorkspaceModel workspaceModel;
 
-    public GroupBlocksCommand(WorkspaceController workspaceController) {
+    public GroupBlocksCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         this.workspaceController = workspaceController;
+        this.workspaceModel = workspaceModel;
     }
 
     @Override
     public void execute() {
-        workspaceController.addBlockGroup();
+        if (vplcore.App.BLOCK_MVC) {
+            Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
+            // do not execute if selected blocks is less than two
+            if (selectedBlockControllers.size() < 2) {
+                return;
+            }
+            List<BlockModel> selectedBlockModels = new ArrayList<>();
+            for (BlockController blockController : selectedBlockControllers) {
+                selectedBlockModels.add(blockController.getModel());
+            }
+            BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController, workspaceModel);
+            blockGroupModel.setChildBlocks(selectedBlockModels);
+            workspaceModel.addBlockGroupModel(blockGroupModel);
+        } else {
+            workspaceController.addBlockGroup();
+        }
+
     }
 
     @Override

@@ -1,7 +1,10 @@
 package vplcore.workspace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
@@ -14,6 +17,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
+import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockExceptionPanel;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.BlockLabel;
@@ -28,7 +32,7 @@ import vplcore.graph.model.VplButton;
  *
  * @author JoostMeulenkamp
  */
-public class BlockView extends GridPane  {
+public class BlockView extends GridPane {
 
     private final BlockLabel captionLabel;
     private final HBox menuBox;
@@ -136,4 +140,31 @@ public class BlockView extends GridPane  {
         controls.add(control);
     }
 
+    public static Bounds getBoundingBoxOfBlocks(Collection<? extends BlockView> blocks) {
+        if (blocks == null || blocks.isEmpty()) {
+            return null;
+        }
+        double minLeft = Double.MAX_VALUE;
+        double minTop = Double.MAX_VALUE;
+        double maxLeft = Double.MIN_VALUE;
+        double maxTop = Double.MIN_VALUE;
+
+        for (BlockView block : blocks) {
+            if (block.getLayoutX() < minLeft) {
+                minLeft = block.getLayoutX();
+            }
+            if (block.getLayoutY() < minTop) {
+                minTop = block.getLayoutY();
+            }
+
+            if ((block.getLayoutX() + block.getWidth()) > maxLeft) {
+                maxLeft = block.getLayoutX() + block.getWidth();
+            }
+            if ((block.getLayoutY() + block.getHeight()) > maxTop) {
+                maxTop = block.getLayoutY() + block.getHeight();
+            }
+        }
+
+        return new BoundingBox(minLeft, minTop, maxLeft - minLeft, maxTop - minTop);
+    }
 }

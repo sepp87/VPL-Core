@@ -4,8 +4,6 @@ import java.util.Collection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import vplcore.graph.model.Block;
@@ -17,6 +15,9 @@ import vplcore.graph.model.Connection;
  * @author Joost
  */
 public class WorkspaceModel {
+
+    // TODO remove workspace controller here since the workspace model should not know about it
+    public WorkspaceController workspaceController;
 
     public static final double DFEAULT_ZOOM = 1.0;
     public static final double MAX_ZOOM = 1.5;
@@ -32,6 +33,9 @@ public class WorkspaceModel {
     private final ObservableSet<BlockGroup> blockGroups = FXCollections.observableSet();
 
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
+    private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
+    private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
+    
 
     public WorkspaceModel() {
         zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
@@ -113,11 +117,11 @@ public class WorkspaceModel {
         connections.clear();
         blockGroups.clear();
     }
-    
+
     public void addBlockModel(BlockModel blockModel) {
         blockModels.add(blockModel);
     }
-    
+
     public void removeBlockModel(BlockModel blockModel) {
         blockModels.remove(blockModel);
     }
@@ -133,4 +137,30 @@ public class WorkspaceModel {
     public void removeBlockModelsListener(SetChangeListener<BlockModel> listener) {
         blockModels.removeListener(listener);
     }
+
+    public void addConnectionModel(PortModel startPort, PortModel endPort) {
+        ConnectionModel connectionModel = new ConnectionModel(workspaceController, startPort, endPort);
+        addConnectionModel(connectionModel);
+    }
+
+    public void addConnectionModel(ConnectionModel connectionModel) {
+        connectionModels.add(connectionModel);
+    }
+
+    public void removeConnectionModel(ConnectionModel connectionModel) {
+        connectionModels.remove(connectionModel);
+    }
+
+    public ObservableSet<ConnectionModel> getConnectionModels() {
+        return FXCollections.unmodifiableObservableSet(connectionModels);
+    }
+
+    public ObservableSet<BlockGroupModel> getBlockGroupModels() {
+        return FXCollections.unmodifiableObservableSet(blockGroupModels);
+    }
+    
+    public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
+        blockGroupModels.add(blockGroupModel);
+    }
+
 }

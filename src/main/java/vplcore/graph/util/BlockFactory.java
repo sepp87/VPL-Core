@@ -17,7 +17,7 @@ import vplcore.workspace.WorkspaceController;
  * @author joostmeulenkamp
  */
 public class BlockFactory {
-
+    
     public static Block createBlock(String blockIdentifier, WorkspaceController workspace) {
         Block block = null;
         Object type = BlockLoader.BLOCK_LIBRARY.get(blockIdentifier);

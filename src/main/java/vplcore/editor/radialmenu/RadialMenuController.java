@@ -38,20 +38,15 @@ public class RadialMenuController extends BaseController {
 
         this.visibilityToggledHandler = this::handleToggleMouseMode;
         view.getRadialMenu().visibleProperty().addListener(visibilityToggledHandler);
-        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::showRadialMenu);
-        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideRadialMenu);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::toggleRadialMenu);
     }
 
-    private void showRadialMenu(MouseEvent event) {
-        boolean onFreeSpace = onFreeSpace(event);
-        boolean isIdle = state.isIdle();
-        if (isRightClick(event) && onFreeSpace && (isIdle || view.getRadialMenu().isVisible())) {
+    private void toggleRadialMenu(MouseEvent event) {
+        if (isRightClick(event) && onFreeSpace(event) && (state.isIdle() || view.getRadialMenu().isVisible())) {
             showView(event.getSceneX(), event.getSceneY());
-        }
-    }
-
-    private void hideRadialMenu(MouseEvent event) {
-        if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, RadialMenu.class)) {
+            
+        } else if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, RadialMenu.class)) {
+            // hide radial menu if any kind of click was anywhere else than on the menu
             hideView();
         }
     }

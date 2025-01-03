@@ -60,20 +60,15 @@ public class BlockSearchController extends BaseController {
         listView.setOnMouseClicked(this::handleCreateBlock);
         listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
-        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::showBlockSearch);
-        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::hideBlockSearch);
+        eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::toggleBlockSearch);
     }
 
-    private void showBlockSearch(MouseEvent event) {
-        boolean onFreeSpace = onFreeSpace(event);
-        boolean isIdle = state.isIdle();
-        if (isDoubleClick(event) && onFreeSpace && isIdle) {
+    private void toggleBlockSearch(MouseEvent event) {
+        if (isDoubleClick(event) && onFreeSpace(event) && state.isIdle()) {
             showView(event.getSceneX(), event.getSceneY());
-        }
-    }
-
-    private void hideBlockSearch(MouseEvent event) {
-        if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, BlockSearchView.class) && view.isVisible()) {
+            
+        } else if (view.isVisible() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, BlockSearchView.class)) {
+            // hide block search if it is shown and the click was somewhere else 
             hideView();
         }
     }
@@ -148,7 +143,7 @@ public class BlockSearchController extends BaseController {
         }
 
         System.out.println("Create block " + blockIdentifier);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceController(), blockIdentifier, creationPoint);
+        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel(), blockIdentifier, creationPoint);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();

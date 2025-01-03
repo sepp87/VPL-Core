@@ -2,7 +2,6 @@ package vplcore.context.command;
 
 import java.io.File;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import vplcore.App;
 import vplcore.graph.io.GraphLoader;
 import vplcore.context.Command;

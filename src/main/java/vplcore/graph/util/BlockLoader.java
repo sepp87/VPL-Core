@@ -28,6 +28,7 @@ import javafx.collections.ObservableMap;
 import vplcore.Config;
 import org.reflections.Reflections;
 import vplcore.util.FileUtils;
+import vplcore.workspace.BlockModel;
 
 /**
  *
@@ -36,7 +37,7 @@ import vplcore.util.FileUtils;
 public class BlockLoader {
 
 //    static final Map<String, Class> BLOCK_PATH_MAP = new HashMap<>();
-    static final Map<String, Method> BLOCK_METHOD_MAP = new HashMap<>();
+//    static final Map<String, Method> BLOCK_METHOD_MAP = new HashMap<>();
     public static final Map<String, Class<?>> BLOCK_TYPE_MAP = new HashMap<>();
     public static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
@@ -46,10 +47,17 @@ public class BlockLoader {
      */
     public static void loadInternalBlocks() {
         Reflections reflections = new Reflections("vpllib.input");
-        Set<Class<? extends Block>> blockTypes = reflections.getSubTypesOf(Block.class);
 
-        for (Class<?> type : blockTypes) {
-            addBlockType(type);
+        if (vplcore.App.BLOCK_MVC) {
+            Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
+            for (Class<?> type : blockTypes) {
+                addBlockType(type);
+            }
+        } else {
+            Set<Class<? extends Block>> blockTypes = reflections.getSubTypesOf(Block.class);
+            for (Class<?> type : blockTypes) {
+                addBlockType(type);
+            }
         }
 
         Collections.sort(BLOCK_TYPE_LIST);
@@ -136,8 +144,14 @@ public class BlockLoader {
     private static List<Class<?>> filterEligibleClasses(List<Class<?>> classes) {
         List<Class<?>> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
-            if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
-                result.add(clazz);
+            if (vplcore.App.BLOCK_MVC) {
+                if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
+                    result.add(clazz);
+                }
+            } else {
+                if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
+                    result.add(clazz);
+                }
             }
         }
         return result;
@@ -147,8 +161,8 @@ public class BlockLoader {
      * Retrieve all blocks from static methods
      */
     public static void loadInternalMethodBlocks() {
-        BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
-        BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
+//        BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
+//        BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
         List<Class<?>> classes = List.of(
                 vpllib.method.JsonMethods.class,
                 vpllib.method.ListMethods.class,
@@ -213,7 +227,7 @@ public class BlockLoader {
 
     private static void addMethodBlockType(Method blockMethod) {
         BlockInfo info = blockMethod.getAnnotation(BlockInfo.class);
-        BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
+//        BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
         BLOCK_TYPE_LIST.add(info.identifier());
         BLOCK_LIBRARY.put(info.identifier(), blockMethod);
     }

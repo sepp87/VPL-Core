@@ -1,5 +1,7 @@
 package vplcore.context.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import vplcore.App;
@@ -8,7 +10,11 @@ import vplcore.context.CopyResult;
 import vplcore.graph.model.Block;
 import vplcore.graph.model.Connection;
 import vplcore.context.Undoable;
+import vplcore.workspace.BlockController;
+import vplcore.workspace.BlockModel;
+import vplcore.workspace.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -17,9 +23,11 @@ import vplcore.workspace.WorkspaceController;
 public class PasteBlocksCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
+    private final WorkspaceModel workspaceModel;
 
-    public PasteBlocksCommand(WorkspaceController workspaceController) {
+    public PasteBlocksCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         this.workspaceController = workspaceController;
+        this.workspaceModel = workspaceModel;
     }
 
     @Override
@@ -43,17 +51,37 @@ public class PasteBlocksCommand implements Undoable {
         // First deselect selected blocks.
         workspaceController.deselectAllBlocks();
 
-        // Paste blocks to workspace and set them selected
-        for (Block copiedBlock : copy.blocks) {
-            copiedBlock.setLayoutX(copiedBlock.getLayoutX() + delta.getX());
-            copiedBlock.setLayoutY(copiedBlock.getLayoutY() + delta.getY());
-            copiedBlock.setSelected(true);
-            workspaceController.addBlock(copiedBlock);
+        if (vplcore.App.BLOCK_MVC) {
+            // Paste blocks to workspace and set them selected
+            for (BlockModel copiedBlock : copy.blockModels) {
+                copiedBlock.layoutXProperty().set(copiedBlock.layoutXProperty().get() + delta.getX());
+                copiedBlock.layoutYProperty().set(copiedBlock.layoutYProperty().get() + delta.getY());
+                workspaceModel.addBlockModel(copiedBlock);
+            }
+
+            // Select newly created blocks 
+            // TODO double check if controllers are actually already created at this point
+            for (BlockModel copiedBlock : copy.blockModels) {
+                workspaceController.selectBlock(copiedBlock);
+            }
+           
+            for (ConnectionModel copiedConnection : copy.connectionModels) {
+                workspaceModel.addConnectionModel(copiedConnection);
+            }
+        } else {
+            // Paste blocks to workspace and set them selected
+            for (Block copiedBlock : copy.blocks) {
+                copiedBlock.setLayoutX(copiedBlock.getLayoutX() + delta.getX());
+                copiedBlock.setLayoutY(copiedBlock.getLayoutY() + delta.getY());
+                copiedBlock.setSelected(true);
+                workspaceController.addBlock(copiedBlock);
+            }
+
+            for (Connection copiedConnection : copy.connections) {
+                workspaceController.addConnection(copiedConnection);
+            }
         }
 
-        for (Connection copiedConnection : copy.connections) {
-            workspaceController.addConnection(copiedConnection);
-        }
     }
 
     @Override

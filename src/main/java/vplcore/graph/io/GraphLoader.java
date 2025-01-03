@@ -20,9 +20,12 @@ import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.model.BlockGroup;
-import vplcore.graph.model.Connection;
 import vplcore.graph.model.Port;
 import vplcore.graph.util.BlockFactory;
+import vplcore.graph.util.BlockModelFactory;
+import vplcore.workspace.BlockGroupModel;
+import vplcore.workspace.BlockModel;
+import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceController;
 
 /**
@@ -31,7 +34,7 @@ import vplcore.workspace.WorkspaceController;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file, WorkspaceController workspace, WorkspaceModel workspaceModel) {
+    public static void deserialize(File file, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -46,22 +49,22 @@ public class GraphLoader {
 
             // deserialize blocks of graph
             BlocksTag blocksTag = documentTag.getBlocks();
-            deserializeBlocks(blocksTag, workspace);
+            deserializeBlocks(blocksTag, workspaceController, workspaceModel);
 
             // deserialize connections of graph
             ConnectionsTag connectionsTag = documentTag.getConnections();
-            deserializeConnections(connectionsTag, workspace);
+            deserializeConnections(connectionsTag, workspaceController, workspaceModel);
 
             // deserialize groups of graph
             GroupsTag groups = documentTag.getGroups();
-            deserializeGroups(groups, workspace);
+            deserializeGroups(groups, workspaceController, workspaceModel);
 
         } catch (JAXBException | SecurityException | IllegalArgumentException ex) {
             Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceController workspaceController) {
+    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         List<BlockTag> blockTagList = blocksTag.getBlock();
         if (blockTagList == null) {
             return;
@@ -70,20 +73,28 @@ public class GraphLoader {
         for (BlockTag blockTag : blockTagList) {
 
             String blockIdentifier = blockTag.getType();
-            Block block = BlockFactory.createBlock(blockIdentifier, workspaceController);
 
-            if (block == null) {
-                System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
-                return;
+            if (vplcore.App.BLOCK_MVC) {
+                BlockModel blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
+                if (blockModel == null) {
+                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
+                    return;
+                }
+                blockModel.deserialize(blockTag);
+                workspaceModel.addBlockModel(blockModel);
+            } else {
+                Block block = BlockFactory.createBlock(blockIdentifier, workspaceController);
+                if (block == null) {
+                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
+                    return;
+                }
+                block.deserialize(blockTag);
+                workspaceController.addBlock(block);
             }
-
-            block.deserialize(blockTag);
-            workspaceController.addBlock(block);
         }
-
     }
 
-    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceController workspaceController) {
+    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
         if (connectionTagList == null) {
             return;
@@ -91,30 +102,52 @@ public class GraphLoader {
 
         for (ConnectionTag connectionTag : connectionTagList) {
 
-            UUID startBlockUuid = UUID.fromString(connectionTag.getStartBlock());
-            int startPortIndex = connectionTag.getStartIndex();
-            UUID endBlockUuid = UUID.fromString(connectionTag.getEndBlock());
-            int endPortIndex = connectionTag.getEndIndex();
+            if (vplcore.App.BLOCK_MVC) {
+                String startBlockUuid = connectionTag.getStartBlock();
+                int startPortIndex = connectionTag.getStartIndex();
+                String endBlockUuid = connectionTag.getEndBlock();
+                int endPortIndex = connectionTag.getEndIndex();
 
-            Block startBlock = null;
-            Block endBlock = null;
-            for (Block Block : workspaceController.getBlocks()) {
-                if (Block.uuid.compareTo(startBlockUuid) == 0) {
-                    startBlock = Block;
-                } else if (Block.uuid.compareTo(endBlockUuid) == 0) {
-                    endBlock = Block;
+                BlockModel startBlock = null;
+                BlockModel endBlock = null;
+                for (BlockModel blockModel : workspaceModel.getBlockModels()) {
+                    if (blockModel.idProperty().get().compareTo(startBlockUuid) == 0) {
+                        startBlock = blockModel;
+                    } else if (blockModel.idProperty().get().compareTo(endBlockUuid) == 0) {
+                        endBlock = blockModel;
+                    }
                 }
-            }
 
-            if (startBlock != null && endBlock != null) {
-                Port startPort = startBlock.outPorts.get(startPortIndex);
-                Port endPort = endBlock.inPorts.get(endPortIndex);
-                workspaceController.addConnection(startPort, endPort);
+                if (startBlock != null && endBlock != null) {
+                    PortModel startPort = startBlock.getOutputPorts().get(startPortIndex);
+                    PortModel endPort = endBlock.getInputPorts().get(endPortIndex);
+                    workspaceModel.addConnectionModel(startPort, endPort);
+                }
+            } else {
+                UUID startBlockUuid = UUID.fromString(connectionTag.getStartBlock());
+                int startPortIndex = connectionTag.getStartIndex();
+                UUID endBlockUuid = UUID.fromString(connectionTag.getEndBlock());
+                int endPortIndex = connectionTag.getEndIndex();
+                Block startBlock = null;
+                Block endBlock = null;
+                for (Block block : workspaceController.getBlocks()) {
+                    if (block.uuid.compareTo(startBlockUuid) == 0) {
+                        startBlock = block;
+                    } else if (block.uuid.compareTo(endBlockUuid) == 0) {
+                        endBlock = block;
+                    }
+                }
+
+                if (startBlock != null && endBlock != null) {
+                    Port startPort = startBlock.outPorts.get(startPortIndex);
+                    Port endPort = endBlock.inPorts.get(endPortIndex);
+                    workspaceController.addConnection(startPort, endPort);
+                }
             }
         }
     }
 
-    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceController workspaceController) {
+    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         if (groupsTag == null) {
             return;
         }
@@ -125,8 +158,13 @@ public class GraphLoader {
         }
 
         for (GroupTag groupTag : groupTagList) {
-            BlockGroup group = new BlockGroup(workspaceController);
-            group.deserialize(groupTag);
+            if (vplcore.App.BLOCK_MVC) {
+                BlockGroupModel group = new BlockGroupModel(workspaceController, workspaceModel);
+                group.deserialize(groupTag);
+            } else {
+                BlockGroup group = new BlockGroup(workspaceController);
+                group.deserialize(groupTag);
+            }
         }
     }
 

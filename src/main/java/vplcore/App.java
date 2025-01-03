@@ -35,6 +35,8 @@ import vplcore.workspace.WorkspaceView;
  */
 public class App extends Application {
 
+    public static final boolean BLOCK_MVC = false;
+
     private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
 
     private static final double APP_WIDTH = 800;
@@ -43,6 +45,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        if (vplcore.App.BLOCK_MVC) {
+
+        } else {
+
+        }
 
         this.stage = stage;
         stage.setTitle("Workspace");
@@ -73,6 +81,9 @@ public class App extends Application {
         WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
         ActionManager actionManager = new ActionManager(workspaceModel, workspaceController);
         context.initializeActionManager(actionManager);
+
+        // TODO remove workspace controller here since the workspace model should not know about it
+        workspaceModel.workspaceController = workspaceController;
 
         // Initialize controllers
         new ZoomController(contextId, workspaceModel, zoomView);

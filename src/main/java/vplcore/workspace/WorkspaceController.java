@@ -28,7 +28,7 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceView view;
     private final WorkspaceZoomHelper zoomHelper;
     private final WorkspaceSelectionHelper selectionHelper;
-    
+
     Map<BlockModel, BlockController> blocks = new HashMap<>();
 
     public BlockInfoPanel activeBlockInfoPanel;
@@ -41,14 +41,14 @@ public class WorkspaceController extends BaseController {
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new WorkspaceZoomHelper(model, view);
-        this.selectionHelper = new WorkspaceSelectionHelper(model, view);
+        this.selectionHelper = new WorkspaceSelectionHelper(model, view, this);
 
         model.addBlockModelsListener(blockModelsListener);
     }
 
-    SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChange;
+    SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
-    private void onBlockModelsChange(Change<? extends BlockModel> change) {
+    private void onBlockModelsChanged(Change<? extends BlockModel> change) {
         if (change.wasAdded()) {
             addBlock(change.getElementAdded());
         } else {
@@ -58,7 +58,11 @@ public class WorkspaceController extends BaseController {
 
     private void addBlock(BlockModel blockModel) {
         BlockView blockView = new BlockView();
-        BlockController blockController = new BlockController(blockModel, blockView);
+        BlockController blockController = new BlockController(this, blockModel, blockView);
+
+        // TODO Refactor and remove since the block model should not be aware of the workspace controller
+        blockModel.workspaceController = WorkspaceController.this;
+
         view.getChildren().add(blockView);
         blocks.put(blockModel, blockController);
     }
@@ -85,6 +89,22 @@ public class WorkspaceController extends BaseController {
     public void removeChild(PreConnection preConnection) {
         view.getChildren().remove(preConnection);
         this.preConnection = null;
+    }
+
+    private PreConnectionModel preConnectionModel = null;
+
+    // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
+    public void initiateConnection(PortModel portModel) {
+        if (preConnectionModel == null) {
+            preConnectionModel = new PreConnectionModel(WorkspaceController.this, portModel);
+            view.getChildren().add(0, preConnectionModel);
+        }
+    }
+
+    // method is unneeded if createConnection catches the second click
+    public void removeChild(PreConnectionModel preConnectionModel) {
+        view.getChildren().remove(preConnectionModel);
+        this.preConnectionModel = null;
     }
 
     public WorkspaceModel getModel() {
@@ -157,12 +177,34 @@ public class WorkspaceController extends BaseController {
         selectionHelper.deselectBlock(block);
     }
 
+    public void selectBlock(BlockModel blockModel) {
+        BlockController blockController = blocks.get(blockModel);
+        selectionHelper.selectBlock(blockController);
+    }
+
+    public void deselectBlock(BlockModel blockModel) {
+        BlockController blockController = blocks.get(blockModel);
+        selectionHelper.deselectBlock(blockController);
+    }
+
     public Collection<Block> getBlocks() {
         return model.getBlocks();
     }
 
     public Collection<Block> getSelectedBlocks() {
         return selectionHelper.getSelectedBlocks();
+    }
+
+    public Collection<BlockController> getBlockControllers() {
+        return blocks.values();
+    }
+
+    public BlockController getBlockController(BlockModel blockModel) {
+        return blocks.get(blockModel);
+    }
+
+    public Collection<BlockController> getSelectedBlockControllers() {
+        return selectionHelper.getSelectedBlockControllers();
     }
 
     public Collection<Connection> getConnections() {
@@ -175,6 +217,12 @@ public class WorkspaceController extends BaseController {
 
     public <E extends VplElement> void removeChild(E element) {
         System.out.println("WorkspaceController REIMPLEMENT " + element.getClass().getSimpleName() + " removed");
+    }
+
+    public void removeChild(ConnectionModel connectionModel) {
+        System.out.println("WorkspaceController ConnectionModel removed");
+        model.removeConnectionModel(connectionModel);
+        view.getChildren().remove(connectionModel);
     }
 
     public void removeChild(Connection connection) {
@@ -203,6 +251,16 @@ public class WorkspaceController extends BaseController {
 
     public void addConnection(Connection connection) {
         model.addConnection(connection);
+        view.getChildren().add(0, connection);
+    }
+
+    public void addConnectionModel(PortModel startPort, PortModel endPort) {
+        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
+        addConnectionModel(connection);
+    }
+
+    public void addConnectionModel(ConnectionModel connection) {
+        model.addConnectionModel(connection);
         view.getChildren().add(0, connection);
     }
 

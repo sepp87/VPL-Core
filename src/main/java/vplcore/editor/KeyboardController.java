@@ -58,12 +58,12 @@ public class KeyboardController extends BaseController {
                 break;
             case V:
                 if (isModifierDown) {
-                    command = new PasteBlocksCommand(actionManager.getWorkspaceController());
+                    command = new PasteBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
                 }
                 break;
             case G:
                 if (isModifierDown) {
-                    command = new GroupBlocksCommand(actionManager.getWorkspaceController());
+                    command = new GroupBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
                 }
                 break;
             case N:

@@ -1,10 +1,17 @@
 package vplcore.workspace;
 
+import java.util.Collections;
+import java.util.Map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.BlockInfo;
 
@@ -29,15 +36,23 @@ public abstract class BlockModel extends BaseModel {
     }
 
     // should be private or protected and should be a listener to inputPorts
-    public void onConnectionAdded() {
+    public void onIncomingConnectionAdded() {
         process();
     }
 
     // should be private or protected and should be a listener to outputPorts
-    public void onConnectionRemoved() {
+    public void onIncomingConnectionRemoved() {
         process();
         // previously called handleIncomingConnectionRemoved and overridden by TexBlock 
     }
+
+    public abstract Region getCustomization();
+
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return null;
+    }
+    
+
 
     public abstract void process();
 

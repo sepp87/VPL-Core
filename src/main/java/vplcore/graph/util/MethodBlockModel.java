@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
+import vplcore.IconType;
 import vplcore.workspace.BlockModel;
 import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceModel;
@@ -23,6 +27,7 @@ import vplcore.workspace.WorkspaceModel;
         tags = {"core", "reflection", "block"})
 public class MethodBlockModel extends BlockModel {
 
+    private final BlockInfo info;
     public String identifier;
     public String category;
     public String description;
@@ -32,12 +37,36 @@ public class MethodBlockModel extends BlockModel {
     public MethodBlockModel(WorkspaceModel workspace, Method method) {
         super(workspace);
 
-        BlockInfo info = method.getAnnotation(BlockInfo.class);
+        this.info = method.getAnnotation(BlockInfo.class);
         this.identifier = info.identifier();
         this.category = info.category();
         this.description = info.description();
         this.tags = info.tags();
         this.method = method;
+    }
+
+    @Override
+    public Region getCustomization() {
+        Label label;
+        if (!info.icon().equals(IconType.NULL)) {
+            label = getAwesomeIcon(info.icon());
+            
+        } else if (!info.name().equals("")) {
+            label = new Label(info.name());
+            label.getStyleClass().add("block-text");
+            
+        } else {
+            String shortName = info.identifier().split("\\.")[1];
+            label = new Label(shortName);
+            label.getStyleClass().add("block-text");
+        }
+        return label;
+    }
+
+    public static Label getAwesomeIcon(IconType type) {
+        Label label = new Label(type.getUnicode() + "");
+        label.getStyleClass().add("block-awesome-icon");
+        return label;
     }
 
     public boolean isListOperator = false;

@@ -3,6 +3,7 @@ package vplcore.workspace;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javafx.collections.ObservableList;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
@@ -21,6 +22,7 @@ import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockExceptionPanel;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.BlockLabel;
+import vplcore.graph.model.Port;
 import vplcore.graph.model.ResizeButton;
 import vplcore.graph.model.VplButton;
 
@@ -124,6 +126,14 @@ public class BlockView extends GridPane {
         exceptionButton.setVisible(true);
         menuBox.getChildren().addAll(exceptionButton, infoButton);
 
+    }
+
+    public void addInputPorts(ObservableList<PortModel> ports) {
+        inPortBox.getChildren().addAll(ports);
+    }
+
+    public void addOutputPorts(ObservableList<PortModel> ports) {
+        outPortBox.getChildren().addAll(ports);
     }
 
     /**

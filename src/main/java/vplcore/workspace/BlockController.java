@@ -20,11 +20,18 @@ public class BlockController {
         this.model = blockModel;
         this.view = blockView;
 
+        view.setOnMouseEntered(model.onMouseEntered());
+
         view.idProperty().bind(model.idProperty());
         view.layoutXProperty().bind(model.layoutXProperty());
         view.layoutYProperty().bind(model.layoutYProperty());
+
+        view.addControlToBlock(model.getCustomization());
+        view.addInputPorts(model.getInputPorts());
+        view.addOutputPorts(model.getOutputPorts());
+
     }
-    
+
     public WorkspaceController getWorkspaceController() {
         return workspaceController;
     }
@@ -32,17 +39,20 @@ public class BlockController {
     public BlockView getView() {
         return view;
     }
-    
+
     public BlockModel getModel() {
         return model;
     }
 
     public void remove() {
+        view.setOnMouseEntered(null);
+
         view.idProperty().unbind();
         view.layoutXProperty().unbind();
         view.layoutYProperty().unbind();
+
     }
-    
+
     public BooleanProperty selectedProperty() {
         return selected;
     }

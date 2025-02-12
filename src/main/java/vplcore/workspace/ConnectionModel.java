@@ -106,7 +106,7 @@ public class ConnectionModel extends Group {
 
         //A single incoming connection was made, handle it in the block
         //to forward incoming data type to out port e.g. in getFirstItemOfList
-        endPort.parentBlock.onConnectionAdded();
+        endPort.parentBlock.onIncomingConnectionAdded();
 
         endPort.calculateData(startPort.getData());
 
@@ -217,7 +217,7 @@ public class ConnectionModel extends Group {
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
         if (!endPort.multiDockAllowed) {
-            endPort.parentBlock.onConnectionRemoved();
+            endPort.parentBlock.onIncomingConnectionRemoved();
         }
     }
 

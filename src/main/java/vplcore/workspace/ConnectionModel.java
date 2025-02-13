@@ -57,10 +57,6 @@ import static vplcore.util.EventUtils.isLeftClick;
 //        receiving.dataProperty().unbind();
 //    }
 //}
-
-
-
-
 /**
  *
  * @author JoostMeulenkamp
@@ -194,6 +190,10 @@ public class ConnectionModel extends Group {
     }
 
     private void handleBlockDeleted(ObservableValue arg0, Object arg1, Object arg2) {
+        remove();
+    }
+
+    private void remove() {
         removeFromCanvas();
         removeChangeListeners();
 
@@ -312,7 +312,7 @@ public class ConnectionModel extends Group {
         @Override
         public void handle(MouseEvent event) {
             if (isLeftClick(event)) {
-                ConnectionModel.this.removeFromCanvas();
+                ConnectionModel.this.remove();
                 removeButton.setVisible(false);
             }
         }

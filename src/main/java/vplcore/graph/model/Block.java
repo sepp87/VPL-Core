@@ -233,6 +233,8 @@ public abstract class Block extends VplElement {
         updateSelection(event);
     }
 
+    public boolean dragInit = false;
+
     /**
      * Event handler for selection of blocks and possible followed up dragging
      * of them by the user.
@@ -248,8 +250,11 @@ public abstract class Block extends VplElement {
             } else {
                 // Subscribe multiselection to MouseMove event
                 for (Block block : workspaceController.getSelectedBlocks()) {
-                    block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+                    if (!block.dragInit) {
+                        block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+                    }
                     block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+                    block.dragInit = true;
                 }
             }
         } else {
@@ -260,10 +265,14 @@ public abstract class Block extends VplElement {
                 // Deselect all blocks that are selected and select only this block
                 workspaceController.deselectAllBlocks();
                 workspaceController.selectBlock(this);
+
                 for (Block block : workspaceController.getSelectedBlocks()) {
                     //Add mouse dragged event handler so the block will move
                     //when the user starts dragging it
-                    this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+                    if (!block.dragInit) {
+                        this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+                    }
+                    block.dragInit = true;
 
                     //Get mouse position so there is a value to calculate 
                     //in the mouse dragged event

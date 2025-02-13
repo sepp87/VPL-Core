@@ -99,7 +99,8 @@ public class BlockGroupModel extends VplElement {
     private void handleGroupPressed(MouseEvent event) {
         for (BlockModel block : childBlocks) {
 
-            block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+            BlockController blockController = workspaceController.getBlockController(block);
+            blockController.startPoint = new Point2D(event.getSceneX(), event.getSceneY());
 
             workspaceController.selectBlock(block);
         }

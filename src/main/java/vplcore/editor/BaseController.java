@@ -1,5 +1,8 @@
 package vplcore.editor;
 
+import vplcore.App;
+import vplcore.context.EditorContext;
+
 /**
  *
  * @author Joost
@@ -19,6 +22,10 @@ public class BaseController {
 
     public String getContextId() {
         return contextId == null ? parent.getContextId() : contextId;
+    }
+
+    public EditorContext getEditorContext() {
+        return App.getContext(getContextId());
     }
 
 }

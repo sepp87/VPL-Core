@@ -5,6 +5,14 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
+// 0 remove WorkspaceController from blockmodel
+// 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
+// 0 connect blocks not possible
+// 0 double check if selectBlock function needs isModifiedDown
+// 0 info panel to block
+// 0 info panel move with block
+// 0 remove block not possible
+
 // 1 IMPROVEMENT Add undo/redo functionality
 // 1 BUG Info panel does not move down when aligning blocks
 // 4 IMPROVEMENT reload plugins on demand from menu bar

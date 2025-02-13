@@ -18,10 +18,10 @@ public class BaseModel implements Comparable<BaseModel> {
     private final BaseModel parent;
     protected final StringProperty id = new SimpleStringProperty();
     private final StringProperty name = new SimpleStringProperty();
-    private final DoubleProperty layoutX = new SimpleDoubleProperty();
-    private final DoubleProperty layoutY = new SimpleDoubleProperty();
-    private final DoubleProperty width = new SimpleDoubleProperty();
-    private final DoubleProperty height = new SimpleDoubleProperty();
+    private final DoubleProperty layoutX = new SimpleDoubleProperty(-1);
+    private final DoubleProperty layoutY = new SimpleDoubleProperty(-1);
+    private final DoubleProperty width = new SimpleDoubleProperty(-1);
+    private final DoubleProperty height = new SimpleDoubleProperty(-1);
     private final BooleanProperty resizable = new SimpleBooleanProperty(false);
     private final BooleanProperty active = new SimpleBooleanProperty(false);
     private final BooleanProperty removed = new SimpleBooleanProperty(false);

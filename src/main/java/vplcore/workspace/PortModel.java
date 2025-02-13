@@ -1,7 +1,6 @@
 package vplcore.workspace;
 
 //import javafx.beans.property.DoubleProperty;
-
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -107,7 +106,6 @@ import vplcore.graph.util.TypeExtensions;
 //        }
 //    }
 //}
-
 /**
  *
  * @author JoostMeulenkamp
@@ -196,11 +194,14 @@ public class PortModel extends VBox {
     }
 
     private void calcOrigin() {
-        Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
-        Point2D centerInLocal = parentBlock.workspaceController.getView().sceneToLocal(centerInScene);
+        try {
+            Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
+            Point2D centerInLocal = parentBlock.workspaceController.getView().sceneToLocal(centerInScene);
 
-        centerXProperty.set(centerInLocal.getX());
-        centerYProperty.set(centerInLocal.getY());
+            centerXProperty.set(centerInLocal.getX());
+            centerYProperty.set(centerInLocal.getY());
+        } catch (Exception e) {
+        }
     }
 
     private void handlePortCoordinatesChanged(ObservableValue<? extends Object> b, Object o, Object n) {

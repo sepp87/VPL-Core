@@ -41,7 +41,7 @@ public class WorkspaceController extends BaseController {
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new WorkspaceZoomHelper(model, view);
-        this.selectionHelper = new WorkspaceSelectionHelper(model, view, this);
+        this.selectionHelper = new WorkspaceSelectionHelper(contextId, model, view, this);
 
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
@@ -62,13 +62,14 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlock(BlockModel blockModel) {
-        BlockView blockView = new BlockView();
-        BlockController blockController = new BlockController(this, blockModel, blockView);
-
         // TODO Refactor and remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
         blockModel.workspaceController = WorkspaceController.this;
 
+        BlockView blockView = new BlockView();
         view.getChildren().add(blockView);
+
+        BlockController blockController = new BlockController(this, blockModel, blockView);
+
         blocks.put(blockModel, blockController);
     }
 
@@ -94,11 +95,13 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addConnection(ConnectionModel connectionModel) {
-
+        view.getChildren().add(0, connectionModel);
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
+        view.getChildren().remove(connectionModel);
 
+        connectionModel.removeFromCanvas();
     }
 
     /**
@@ -198,6 +201,14 @@ public class WorkspaceController extends BaseController {
             Collection<Block> blocks = !getSelectedBlocks().isEmpty() ? getSelectedBlocks() : model.getBlocks();
             zoomHelper.zoomToFit(blocks);
         }
+    }
+
+    public void updateSelection(BlockController block, boolean isModifierDown) {
+        selectionHelper.updateSelection(block, isModifierDown);
+    }
+
+    public void selectBlock(BlockController block) {
+        selectionHelper.selectBlock(block);
     }
 
     public void selectAllBlocks() {

@@ -1,15 +1,10 @@
 package vplcore.workspace;
 
-import java.util.Collections;
-import java.util.Map;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
@@ -23,13 +18,13 @@ public abstract class BlockModel extends BaseModel {
 
     // TODO remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
     public WorkspaceController workspaceController;
-    // TODO remove since the block model should not be aware of the mouse position that the block group model is trying to set here
-    public Point2D oldMousePosition;
 
     protected WorkspaceModel workspace;
 
     protected ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
+    
+    
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;

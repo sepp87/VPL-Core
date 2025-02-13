@@ -5,13 +5,14 @@ import java.util.Collection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
+import vplcore.editor.BaseController;
 import vplcore.graph.model.Block;
 
 /**
  *
  * @author Joost
  */
-public class WorkspaceSelectionHelper {
+public class WorkspaceSelectionHelper extends BaseController {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -20,7 +21,8 @@ public class WorkspaceSelectionHelper {
     private final ObservableSet<Block> blocksSelectedOnWorkspace = FXCollections.observableSet();
     private final ObservableSet<BlockController> selectedBlocks = FXCollections.observableSet();
 
-    public WorkspaceSelectionHelper(WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
+    public WorkspaceSelectionHelper(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
+        super(contextId);
         this.model = workspaceModel;
         this.view = workspaceView;
         this.controller = workspaceController;
@@ -106,9 +108,65 @@ public class WorkspaceSelectionHelper {
         blocksSelectedOnWorkspace.remove(block);
     }
 
+    public void updateSelection(BlockController block, boolean isModifierDown) {
+        if (selectedBlocks.contains(block)) {
+            if (isModifierDown) {
+                // Remove this node from selection
+                deselectBlock(block);
+            } else {
+                // Subscribe multiselection to MouseMove event
+                for (BlockController selectedBlock : selectedBlocks) {
+//                    selectedBlock.prepareMove();
+                }
+            }
+        } else {
+            if (isModifierDown) {
+                // add this node to selection
+                selectBlock(block);
+            } else {
+                // Deselect all blocks that are selected and select only this block
+                deselectAllBlocks();
+                selectBlock(block);
+//                block.prepareMove();
+            }
+        }
+    }
+
     public void selectBlock(BlockController block) {
         block.selectedProperty().set(true);
         selectedBlocks.add(block);
+
+//        if (workspaceController.getSelectedBlocks().contains(this)) {
+//            if (EventUtils.isModifierDown(event)) {
+//                // Remove this node from selection
+//                workspaceController.deselectBlock(this);
+//            } else {
+//                // Subscribe multiselection to MouseMove event
+//                for (Block block : workspaceController.getSelectedBlocks()) {
+//                    block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+//                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+//                }
+//            }
+//        } else {
+//            if (EventUtils.isModifierDown(event)) {
+//                // add this node to selection
+//                workspaceController.selectBlock(this);
+//            } else {
+//                // Deselect all blocks that are selected and select only this block
+//                workspaceController.deselectAllBlocks();
+//                workspaceController.selectBlock(this);
+//                for (Block block : workspaceController.getSelectedBlocks()) {
+//                    //Add mouse dragged event handler so the block will move
+//                    //when the user starts dragging it
+//                    this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
+//
+//                    //Get mouse position so there is a value to calculate 
+//                    //in the mouse dragged event
+//                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+//                }
+//            }
+//        }
+//        event.consume();
     }
 
     public void deselectBlock(BlockController block) {

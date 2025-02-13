@@ -128,6 +128,10 @@ public class BlockView extends GridPane {
 
     }
 
+    public GridPane getContentGrid() {
+        return contentGrid;
+    }
+
     public void addInputPorts(ObservableList<PortModel> ports) {
         inPortBox.getChildren().addAll(ports);
     }
@@ -176,5 +180,14 @@ public class BlockView extends GridPane {
         }
 
         return new BoundingBox(minLeft, minTop, maxLeft - minLeft, maxTop - minTop);
+    }
+
+    public void setSelected(boolean isSelected) {
+        if (isSelected) {
+            contentGrid.getStyleClass().add("block-selected");
+        } else {
+            contentGrid.getStyleClass().clear();
+            contentGrid.getStyleClass().add("block");
+        }
     }
 }

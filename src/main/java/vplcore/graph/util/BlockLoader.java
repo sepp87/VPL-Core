@@ -1,7 +1,6 @@
 package vplcore.graph.util;
 
 import vplcore.graph.model.Block;
-import vplcore.graph.model.BlockInfo;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -29,6 +28,7 @@ import vplcore.Config;
 import org.reflections.Reflections;
 import vplcore.util.FileUtils;
 import vplcore.workspace.BlockModel;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -81,7 +81,7 @@ public class BlockLoader {
     }
 
     private static void addBlockType(Class<?> blockType) {
-        BlockInfo info = blockType.getAnnotation(BlockInfo.class);
+        BlockMetadata info = blockType.getAnnotation(BlockMetadata.class);
         BLOCK_TYPE_MAP.put(info.identifier(), blockType);
         BLOCK_TYPE_LIST.add(info.identifier());
         BLOCK_LIBRARY.put(info.identifier(), blockType);
@@ -145,11 +145,11 @@ public class BlockLoader {
         List<Class<?>> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
             if (vplcore.App.BLOCK_MVC) {
-                if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
+                if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
                     result.add(clazz);
                 }
             } else {
-                if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockInfo.class)) {
+                if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
                     result.add(clazz);
                 }
             }
@@ -197,7 +197,7 @@ public class BlockLoader {
     private static List<Method> filterEligibleMethods(List<Method> methods) {
         List<Method> result = new ArrayList<>();
         for (Method method : methods) {
-            if (method.isAnnotationPresent(BlockInfo.class)) {
+            if (method.isAnnotationPresent(BlockMetadata.class)) {
                 result.add(method);
             }
         }
@@ -226,7 +226,7 @@ public class BlockLoader {
     }
 
     private static void addMethodBlockType(Method blockMethod) {
-        BlockInfo info = blockMethod.getAnnotation(BlockInfo.class);
+        BlockMetadata info = blockMethod.getAnnotation(BlockMetadata.class);
 //        BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
         BLOCK_TYPE_LIST.add(info.identifier());
         BLOCK_LIBRARY.put(info.identifier(), blockMethod);

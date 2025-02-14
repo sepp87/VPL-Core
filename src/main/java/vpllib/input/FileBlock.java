@@ -14,13 +14,13 @@ import javax.xml.namespace.QName;
 import vplcore.graph.model.VplButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.file",
         category = "Input",
         description = "Open a file",

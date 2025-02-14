@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -21,7 +21,7 @@ public class JsonMethods {
             .setPrettyPrinting()
             .create();
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
@@ -83,7 +83,7 @@ public class JsonMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Json.getKey",
             category = "Core",
             description = "Returns the element with the specified key in this JSON object.")
@@ -91,7 +91,7 @@ public class JsonMethods {
         return PARSER.parse(json).getAsJsonObject().get(key).toString();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Json.getIndex",
             category = "Core",
             description = "Returns the element as string at the specified position in this JSON array.")
@@ -99,7 +99,7 @@ public class JsonMethods {
         return PARSER.parse(json).getAsJsonArray().get(index).toString();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Json.toJson",
             category = "Core",
             description = "This method serializes the specified object into its equivalent Json representation.")

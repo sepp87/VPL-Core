@@ -25,7 +25,7 @@ public class CopyBlocksCommand implements Undoable {
     @Override
     public void execute() {
         if (vplcore.App.BLOCK_MVC) {
-            Collection<BlockController> selectedBlockControllers = workspaceController.getBlockControllers();
+            Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
             List<BlockModel> selectedBlockModels = new ArrayList<>();
             for (BlockController blockController : selectedBlockControllers) {
                 selectedBlockModels.add(blockController.getModel());

@@ -15,19 +15,23 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import vplcore.FontAwesomeIcon;
-import vplcore.graph.util.MethodBlock;
+import vplcore.graph.util.MethodBlockModel;
+import vplcore.workspace.BlockModel;
+import vplcore.workspace.BlockView;
+import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceView;
 
 /**
  *
  * @author Joost
  */
-public class BlockInfoPanel extends Pane {
+public class BlockModelInfoPanel extends Pane {
 
     // specify types info, warning and error
     // style panel by severity 
     protected final WorkspaceView workspaceView;
-    protected final Block block;
+    protected final BlockModel blockModel;
+    protected final BlockView blockView;
 
     protected Button closeButton;
     protected VBox infoBubble;
@@ -36,9 +40,10 @@ public class BlockInfoPanel extends Pane {
 
     public static final double MAX_HEIGHT = 420;
 
-    public BlockInfoPanel(Block block) {
-        this.workspaceView = block.workspaceController.getView();
-        this.block = block;
+    public BlockModelInfoPanel(BlockModel blockModel) {
+        this.workspaceView = blockModel.workspaceController.getView();
+        this.blockModel = blockModel;
+        this.blockView = blockModel.workspaceController.getBlockController(blockModel).getView();
 
         VBox container = new VBox(-2);
         container.setPrefHeight(MAX_HEIGHT);
@@ -59,8 +64,8 @@ public class BlockInfoPanel extends Pane {
     }
 
     protected void setPosition() {
-        double layoutX = block.getLayoutX() + block.getWidth() - 63;
-        double layoutY = block.getLayoutY() - MAX_HEIGHT + 25;
+        double layoutX = blockView.layoutXProperty().get() + blockView.getWidth() - 63;
+        double layoutY = blockView.layoutYProperty().get() - MAX_HEIGHT + 25;
         this.setLayoutX(layoutX);
         this.setLayoutY(layoutY);
     }
@@ -125,10 +130,10 @@ public class BlockInfoPanel extends Pane {
 
     private Label buildDescription() {
         BlockMetadata info;
-        if (block instanceof MethodBlock methodBlock) {
+        if (blockModel instanceof MethodBlockModel methodBlock) {
             info = methodBlock.method.getAnnotation(BlockMetadata.class);
         } else {
-            info = block.getClass().getAnnotation(BlockMetadata.class);
+            info = blockModel.getClass().getAnnotation(BlockMetadata.class);
         }
         String description = info.description().isEmpty() ? "n/a" : info.description();
         Label label = buildLabel(description);
@@ -143,23 +148,23 @@ public class BlockInfoPanel extends Pane {
     }
 
     private Label buildInput() {
-        Label label = buildPortsDescription(block.inPorts);
+        Label label = buildPortsDescription(blockModel.getInputPorts());
         return label;
     }
 
     private Label buildOutput() {
-        Label label = buildPortsDescription(block.outPorts);
+        Label label = buildPortsDescription(blockModel.getOutputPorts());
         return label;
     }
 
-    private Label buildPortsDescription(List<Port> ports) {
+    private Label buildPortsDescription(List<PortModel> ports) {
         Label label = new Label();
         if (ports.isEmpty()) {
             label.setText("n/a");
             return label;
         }
         String result = "";
-        for (Port port : ports) {
+        for (PortModel port : ports) {
             result += port.getName() + " : " + port.dataType.getSimpleName() + "\n";
 
         }
@@ -210,9 +215,9 @@ public class BlockInfoPanel extends Pane {
     }
 
     public void delete() {
-        workspaceView.getChildren().remove(BlockInfoPanel.this);
+        workspaceView.getChildren().remove(BlockModelInfoPanel.this);
         closeButton.setOnAction(null);
-        block.infoPanel = null;
+        blockView.removeInfoPanel();
         messagePane.setOnMousePressed(null);
         // remove block info panel
         // remove block port labels

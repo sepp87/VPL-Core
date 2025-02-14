@@ -14,7 +14,6 @@ import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.Port;
-import vplcore.graph.model.VplElement;
 import vplcore.graph.util.PreConnection;
 
 /**
@@ -120,11 +119,12 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlockGroup(BlockGroupModel blockGroupModel) {
-
+        view.getChildren().add(0,blockGroupModel);
     }
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
-
+        view.getChildren().remove(blockGroupModel);
+        blockGroupModel.delete();
     }
 
     /**
@@ -281,10 +281,6 @@ public class WorkspaceController extends BaseController {
 
     public Collection<BlockGroup> getBlockGroups() {
         return model.getBlockGroups();
-    }
-
-    public <E extends VplElement> void removeChild(E element) {
-        System.out.println("WorkspaceController REIMPLEMENT " + element.getClass().getSimpleName() + " removed");
     }
 
     public void removeChild(ConnectionModel connectionModel) {

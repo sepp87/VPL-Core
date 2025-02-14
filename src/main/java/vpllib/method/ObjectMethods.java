@@ -1,6 +1,6 @@
 package vpllib.method;
 
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -8,7 +8,7 @@ import vplcore.graph.model.BlockInfo;
  */
 public class ObjectMethods {
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Object.getClass",
             category = "Core",
             description = "Returns the runtime class of this Object.")
@@ -16,7 +16,7 @@ public class ObjectMethods {
         return object.getClass();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "Object.toString",
             category = "Core",
             description = "Returns a string representation of the object.")

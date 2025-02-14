@@ -9,6 +9,9 @@ import vpllib.method.JsonMethods;
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 info panel to block
 // 0 info panel move with block
+// 0 text block transfer min & pref size to content grid
+// 0 group extents
+// 0 color / double / file / integer blocks
 // 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
 
 // 1 IMPROVEMENT Add undo/redo functionality
@@ -61,6 +64,7 @@ import vpllib.method.JsonMethods;
 //
 // GUIDELINES
 // Put everything inside the models that needs to be saved and all business logic needed to make a script work in headless mode
+// TODO naming conventions for event handlers & change listeners and placement of handlers / listeners in code
 /**
  *
  * @author JoostMeulenkamp

@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 import javafx.scene.control.Label;
 import vplcore.IconType;
 import vplcore.graph.model.Block;
-import vplcore.graph.model.BlockInfo;
 import vplcore.workspace.WorkspaceController;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -45,7 +45,7 @@ public class BlockFactory {
     public static MethodBlock createBlockFromMethod(Method method, WorkspaceController workspace) {
         MethodBlock block = null;
         try {
-            BlockInfo info = method.getAnnotation(BlockInfo.class);
+            BlockMetadata info = method.getAnnotation(BlockMetadata.class);
             block = new MethodBlock(workspace, method);
 
             Class<?> returnType = method.getReturnType();

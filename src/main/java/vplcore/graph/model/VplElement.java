@@ -68,7 +68,7 @@ public class VplElement extends GridPane {
 
         captionLabel.textProperty().unbindBidirectional(name);
         captionLabel.delete();
-        workspaceController.removeChild( this);
+//        workspaceController.removeChild( this);
 //        workspaceView.getChildren().remove(this);
         setDeleted(true);
     }

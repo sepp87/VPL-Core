@@ -6,13 +6,13 @@ import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import vpllib.util.CustomColorBox;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.color",
         category = "Input",
         description = "Pick a nice color from the palette",

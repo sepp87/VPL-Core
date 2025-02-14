@@ -13,13 +13,13 @@ import static vplcore.util.DataParsingUtils.getDoubleValue;
 import static vplcore.util.DataParsingUtils.getIntegerValue;
 import static vplcore.util.DataParsingUtils.getLongValue;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.string",
         category = "Input",
         description = "Input a line of text",

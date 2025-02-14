@@ -159,7 +159,7 @@ public class GraphLoader {
 
         for (GroupTag groupTag : groupTagList) {
             if (vplcore.App.BLOCK_MVC) {
-                BlockGroupModel group = new BlockGroupModel(workspaceController, workspaceModel);
+                BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
                 group.deserialize(groupTag);
             } else {
                 BlockGroup group = new BlockGroup(workspaceController);

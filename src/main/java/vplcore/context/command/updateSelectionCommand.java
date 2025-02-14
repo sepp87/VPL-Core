@@ -24,6 +24,7 @@ public class UpdateSelectionCommand implements Command {
     @Override
     public void execute() {
         workspaceController.updateSelection(blockController, isModifierDown);
+        
     }
 
 

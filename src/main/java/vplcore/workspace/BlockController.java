@@ -7,12 +7,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import vplcore.App;
 import vplcore.context.ActionManager;
 import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
-import vplcore.graph.model.Block;
 import vplcore.util.EventUtils;
 
 /**

@@ -179,6 +179,10 @@ public class WorkspaceModel {
         blockGroupModels.add(blockGroupModel);
     }
 
+    public void removeBlockGroupModel(BlockGroupModel blockGroupModel) {
+        blockGroupModels.remove(blockGroupModel);
+    }
+
     public ObservableSet<BlockGroupModel> getBlockGroupModels() {
         return FXCollections.unmodifiableObservableSet(blockGroupModels);
     }

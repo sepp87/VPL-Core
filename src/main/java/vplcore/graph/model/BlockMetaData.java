@@ -12,7 +12,7 @@ import vplcore.IconType;
  */
 @Target({ElementType.TYPE, ElementType.METHOD}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BlockInfo {
+public @interface BlockMetadata {
 
     String name() default "";
 

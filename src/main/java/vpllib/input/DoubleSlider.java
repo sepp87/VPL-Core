@@ -18,13 +18,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(identifier = "Input.doubleSlider",
+@BlockMetadata(identifier = "Input.doubleSlider",
         category = "Input",
         description = "Number Slider",
         tags = {"input", "slider"})

@@ -29,7 +29,10 @@ import javafx.scene.paint.Color;
 import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
+import vplcore.App;
 import vplcore.IconType;
+import vplcore.context.ActionManager;
+import vplcore.context.command.RemoveGroupCommand;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 
 /**
@@ -37,6 +40,8 @@ import static vplcore.graph.io.GraphSaver.getObjectFactory;
  * @author JoostMeulenkamp
  */
 public class BlockGroupModel extends VplElement {
+
+    private ActionManager actionManager;
 
     public int id;
 
@@ -55,9 +60,10 @@ public class BlockGroupModel extends VplElement {
 
     private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
-    public BlockGroupModel(WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    public BlockGroupModel(String contextId, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         super(workspaceController);
         this.workspaceModel = workspaceModel;
+        actionManager = App.getContext(contextId).getActionManager();
 
         getStyleClass().add("block-group");
 
@@ -76,7 +82,8 @@ public class BlockGroupModel extends VplElement {
     }
 
     public void handleBinButtonClicked(ActionEvent event) {
-        delete();
+        RemoveGroupCommand command = new RemoveGroupCommand(actionManager.getWorkspaceModel(), this);
+        actionManager.executeCommand(command);
     }
 
     public void handleVplElementEntered(MouseEvent event) {
@@ -115,7 +122,6 @@ public class BlockGroupModel extends VplElement {
     @Override
     public void delete() {
         unObserveAllChildBlocks();
-        workspaceController.removeChild(this);
         binButton.setOnAction(null);
         super.delete();
     }
@@ -200,18 +206,19 @@ public class BlockGroupModel extends VplElement {
         double maxY = -Double.MAX_VALUE;
 
         for (BlockModel block : childBlocks) {
-
+            BlockView blockView = workspaceController.getBlockController(block).getView();
+            
             if (block.layoutXProperty().get() < minX) {
                 minX = block.layoutXProperty().get();
             }
             if (block.layoutYProperty().get() < minY) {
                 minY = block.layoutYProperty().get();
             }
-            if ((block.layoutXProperty().get() + block.widthProperty().get()) > maxX) {
-                maxX = block.layoutXProperty().get() + block.widthProperty().get();
+            if ((block.layoutXProperty().get() + blockView.widthProperty().get()) > maxX) {
+                maxX = block.layoutXProperty().get() + blockView.widthProperty().get();
             }
-            if ((block.layoutYProperty().get() + block.heightProperty().get()) > maxY) {
-                maxY = block.layoutYProperty().get() + block.heightProperty().get();
+            if ((block.layoutYProperty().get() + blockView.heightProperty().get()) > maxY) {
+                maxY = block.layoutYProperty().get() + blockView.heightProperty().get();
             }
         }
 

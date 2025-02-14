@@ -1,7 +1,6 @@
 package vpllib.template;
 
 import vplcore.graph.model.Port;
-import vplcore.graph.model.BlockInfo;
 import vplcore.graph.model.Block;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +12,13 @@ import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.model.Port;
 import vplcore.workspace.WorkspaceController;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Util.Template",
         category = "General",
         description = "A template block for further customization",

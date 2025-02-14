@@ -27,6 +27,7 @@ public class GroupBlocksCommand implements Undoable {
     @Override
     public void execute() {
         if (vplcore.App.BLOCK_MVC) {
+            System.out.println("Group Blocks");
             Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
             // do not execute if selected blocks is less than two
             if (selectedBlockControllers.size() < 2) {
@@ -36,7 +37,7 @@ public class GroupBlocksCommand implements Undoable {
             for (BlockController blockController : selectedBlockControllers) {
                 selectedBlockModels.add(blockController.getModel());
             }
-            BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController, workspaceModel);
+            BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
             blockGroupModel.setChildBlocks(selectedBlockModels);
             workspaceModel.addBlockGroupModel(blockGroupModel);
         } else {

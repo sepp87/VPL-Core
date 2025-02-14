@@ -15,16 +15,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
 import vplcore.workspace.BlockModel;
 import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.text",
         category = "Input",
         description = "Input text or observe output as text",

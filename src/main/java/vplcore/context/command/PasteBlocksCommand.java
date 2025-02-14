@@ -52,6 +52,7 @@ public class PasteBlocksCommand implements Undoable {
         workspaceController.deselectAllBlocks();
 
         if (vplcore.App.BLOCK_MVC) {
+            
             // Paste blocks to workspace and set them selected
             for (BlockModel copiedBlock : copy.blockModels) {
                 copiedBlock.layoutXProperty().set(copiedBlock.layoutXProperty().get() + delta.getX());
@@ -64,7 +65,7 @@ public class PasteBlocksCommand implements Undoable {
             for (BlockModel copiedBlock : copy.blockModels) {
                 workspaceController.selectBlock(copiedBlock);
             }
-           
+
             for (ConnectionModel copiedConnection : copy.connectionModels) {
                 workspaceModel.addConnectionModel(copiedConnection);
             }

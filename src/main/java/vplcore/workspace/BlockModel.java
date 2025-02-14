@@ -8,7 +8,11 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.IconType;
+import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.model.BlockModelExceptionPanel;
+import vplcore.graph.model.BlockModelInfoPanel;
+import vplcore.graph.model.VplButton;
 
 /**
  *
@@ -23,8 +27,6 @@ public abstract class BlockModel extends BaseModel {
 
     protected ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
-    
-    
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;
@@ -46,8 +48,6 @@ public abstract class BlockModel extends BaseModel {
     public EventHandler<MouseEvent> onMouseEntered() {
         return null;
     }
-    
-
 
     public abstract void process();
 
@@ -87,7 +87,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void serialize(BlockTag xmlTag) {
-        xmlTag.setType(this.getClass().getAnnotation(BlockInfo.class).identifier());
+        xmlTag.setType(this.getClass().getAnnotation(BlockMetadata.class).identifier());
         xmlTag.setUUID(idProperty().get());
         xmlTag.setX(layoutXProperty().get());
         xmlTag.setY(layoutYProperty().get());
@@ -106,5 +106,7 @@ public abstract class BlockModel extends BaseModel {
             heightProperty().set(xmlTag.getHeight());
         }
     }
+
+
 
 }

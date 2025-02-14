@@ -3,7 +3,7 @@ package vpllib.method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -11,7 +11,7 @@ import vplcore.graph.model.BlockInfo;
  */
 public class ListMethods {
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.create",
             category = "Core",
             description = "")
@@ -19,7 +19,7 @@ public class ListMethods {
         return new ArrayList<>();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.clear",
             category = "Core",
             description = "Removes all of the elements from this list. The list will be empty after this call returns.")
@@ -27,7 +27,7 @@ public class ListMethods {
         return new ArrayList<>();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.get",
             category = "Core",
             description = "Returns the element at the specified position in this list.")
@@ -35,7 +35,7 @@ public class ListMethods {
         return list.get(index);
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.getFirst",
             category = "Core",
             description = "Gets the first element of this collection.")
@@ -43,7 +43,7 @@ public class ListMethods {
         return list.getFirst();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.getLast",
             category = "Core",
             description = "Gets the last element of this collection.")
@@ -51,7 +51,7 @@ public class ListMethods {
         return list.getLast();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.isEmpty",
             category = "Core",
             description = "Returns true if this list contains no elements.")
@@ -59,7 +59,7 @@ public class ListMethods {
         return list.isEmpty();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.reversed",
             category = "Core",
             description = "Returns a reverse-ordered view of this collection.")
@@ -67,7 +67,7 @@ public class ListMethods {
         return list.reversed();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.size",
             category = "Core",
             description = "Returns the number of elements in this list.")
@@ -76,7 +76,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.remove",
             category = "Core",
             description = "Removes the element at the specified position in this list. ")
@@ -87,7 +87,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.removeFirst",
             category = "Core",
             description = "Removes the first element of this collection.")
@@ -98,7 +98,7 @@ public class ListMethods {
     }
 
     // TODO return the removed item
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.removeLast",
             category = "Core",
             description = "Removes the last element of this collection.")
@@ -109,7 +109,7 @@ public class ListMethods {
     }
 
     // TODO return the replaced item
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.set",
             category = "Core",
             description = "Replaces the element at the specified position in this list with the specified element.")
@@ -119,7 +119,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.flatten",
             category = "Core",
             description = "Removes all nested lists and adds all leaf items to the root list.")
@@ -140,7 +140,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.add",
             category = "Core",
             description = "Appends the specified element to the end of this list, if no index is provided.")
@@ -154,7 +154,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.addFirst",
             category = "Core",
             description = "Adds an element as the first element of this collection.")
@@ -164,7 +164,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.addLast",
             category = "Core",
             description = "Adds an element as the last element of this collection.")
@@ -174,7 +174,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.addAll",
             category = "Core",
             description = "Inserts all of the elements in the specified collection into this list at the specified position. If no index is specified, all items are appended to the end of the list.")
@@ -188,7 +188,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.shuffle",
             category = "Core",
             description = "Randomly permutes the specified list using a default source of randomness. All permutations occur with approximately equal likelihood.")
@@ -198,7 +198,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.rotate",
             category = "Core",
             description = "Rotates the elements in the specified list by the specified distance. After calling this method, the element at index i will be the element previously at index (i - distance) mod list.size(), for all values of i between 0 and list.size()-1, inclusive. (This method has no effect on the size of the list.)")
@@ -209,7 +209,7 @@ public class ListMethods {
         return result;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             identifier = "List.sort",
             category = "Core",
             description = "Sorts the specified list into ascending order, according to the natural ordering of its elements. All elements in the list must implement the Comparable interface. Furthermore, all elements in the list must be mutually comparable (that is, e1.compareTo(e2) must not throw a ClassCastException for any elements e1 and e2 in the list).")

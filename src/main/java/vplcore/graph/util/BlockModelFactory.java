@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vplcore.IconType;
-import vplcore.graph.model.BlockInfo;
 import vplcore.workspace.BlockModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.graph.model.BlockMetadata;
 
 /**
  *
@@ -44,7 +44,7 @@ public class BlockModelFactory {
     public static MethodBlockModel createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
         MethodBlockModel blockModel = null;
         try {
-            BlockInfo info = method.getAnnotation(BlockInfo.class);
+            BlockMetadata info = method.getAnnotation(BlockMetadata.class);
             blockModel = new MethodBlockModel(workspaceModel, method);
 
             Class<?> returnType = method.getReturnType();

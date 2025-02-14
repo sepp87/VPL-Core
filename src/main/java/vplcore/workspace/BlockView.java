@@ -8,7 +8,6 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -18,11 +17,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
-import vplcore.graph.model.Block;
 import vplcore.graph.model.BlockExceptionPanel;
 import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.BlockLabel;
-import vplcore.graph.model.Port;
+import vplcore.graph.model.BlockModelExceptionPanel;
+import vplcore.graph.model.BlockModelInfoPanel;
 import vplcore.graph.model.ResizeButton;
 import vplcore.graph.model.VplButton;
 
@@ -45,12 +44,13 @@ public class BlockView extends GridPane {
     private final GridPane contentGrid;
     private final GridPane mainContentGrid;
 
-    private BlockInfoPanel infoPanel;
-    private BlockExceptionPanel exceptionPanel;
+    private final VplButton infoButton = new VplButton(IconType.FA_INFO_CIRCLE);
+    private BlockModelInfoPanel infoPanel;
+
+    private final VplButton exceptionButton = new VplButton(IconType.FA_WARNING);
+    private BlockModelExceptionPanel exceptionPanel;
 
     private ResizeButton resizeButton;
-    private final VplButton infoButton = new VplButton(IconType.FA_INFO_CIRCLE);
-    private final VplButton exceptionButton = new VplButton(IconType.FA_WARNING);
 
     public BlockView() {
 
@@ -130,6 +130,23 @@ public class BlockView extends GridPane {
 
     public GridPane getContentGrid() {
         return contentGrid;
+    }
+
+    public void removeInfoPanel() {
+        infoPanel = null;
+    }
+
+    public void removeExceptionPanel() {
+        exceptionPanel = null;
+        exceptionButton.setVisible(true);
+    }
+
+    public VplButton getInfoButton() {
+        return infoButton;
+    }
+
+    public VplButton getExceptionButton() {
+        return exceptionButton;
     }
 
     public void addInputPorts(ObservableList<PortModel> ports) {

@@ -54,9 +54,11 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
+        System.out.println("onBlockModelsChanged");
         if (change.wasAdded()) {
             addBlock(change.getElementAdded());
         } else {
+
             removeBlock(change.getElementRemoved());
         }
     }
@@ -74,6 +76,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeBlock(BlockModel blockModel) {
+        System.out.println("delete block");
         BlockController blockController = blocks.get(blockModel);
         blocks.remove(blockModel);
         view.getChildren().remove(blockController.getView());
@@ -100,8 +103,7 @@ public class WorkspaceController extends BaseController {
 
     private void removeConnection(ConnectionModel connectionModel) {
         view.getChildren().remove(connectionModel);
-
-        connectionModel.removeFromCanvas();
+        connectionModel.remove();
     }
 
     /**

@@ -25,7 +25,7 @@ public class EditorContext {
 
     private final ChangeListener<Object> setupMouseTracking = this::setupMouseTracking;
     private final EventHandler<MouseEvent> trackMouseAndKeyboard = this::trackMouseAndKeyboard;
-    private final EventHandler<KeyEvent> trackKeyboard = this::trackKeyboard;
+//    private final EventHandler<KeyEvent> trackKeyboard = this::trackKeyboard;
 
     public EditorContext(EditorView editorView, WorkspaceView workspaceView) {
         this.id = UUID.randomUUID().toString();
@@ -45,6 +45,8 @@ public class EditorContext {
     }
 
     private void trackMouseAndKeyboard(MouseEvent event) {
+//        System.out.println(editorView.getScene().focusOwnerProperty().toString());
+
         mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
 //        System.out.println(event.isControlDown());
     }
@@ -95,6 +97,10 @@ public class EditorContext {
 
     public Point2D sceneToWorkspace(Point2D sceneCoordinates) {
         return workspaceView.sceneToLocal(sceneCoordinates);
+    }
+    
+    public void returnFocusToEditor() {
+        editorView.requestFocus();
     }
 
 }

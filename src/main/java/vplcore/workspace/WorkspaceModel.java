@@ -127,6 +127,7 @@ public class WorkspaceModel {
 
     public void removeBlockModel(BlockModel blockModel) {
         blockModels.remove(blockModel);
+        blockModel.remove();
     }
 
     public ObservableSet<BlockModel> getBlockModels() {

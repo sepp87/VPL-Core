@@ -39,11 +39,14 @@ public class KeyboardController extends BaseController {
         super(contextId);
         this.eventRouter = App.getContext(contextId).getEventRouter();
         this.actionManager = App.getContext(contextId).getActionManager();
-        
+
         eventRouter.addEventListener(KeyEvent.KEY_PRESSED, this::handleShortcutTriggered);
     }
 
     public void handleShortcutTriggered(KeyEvent event) {
+        if (App.FUTURE_TESTS) {
+            System.out.println("TEST handleShortcutTriggered");
+        }
         Command command = null;
         boolean isModifierDown = EventUtils.isModifierDown(event);
         switch (event.getCode()) {

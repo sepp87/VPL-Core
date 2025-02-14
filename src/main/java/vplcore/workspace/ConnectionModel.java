@@ -193,7 +193,7 @@ public class ConnectionModel extends Group {
         remove();
     }
 
-    private void remove() {
+    public void remove() {
         removeFromCanvas();
         removeChangeListeners();
 

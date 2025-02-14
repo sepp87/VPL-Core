@@ -35,6 +35,7 @@ import vplcore.workspace.WorkspaceView;
  */
 public class App extends Application {
 
+    public static final boolean FUTURE_TESTS = true;
     public static final boolean BLOCK_MVC = true;
 
     private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();

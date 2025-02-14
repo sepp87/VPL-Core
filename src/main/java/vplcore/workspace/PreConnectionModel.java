@@ -49,8 +49,10 @@ public class PreConnectionModel extends Line {
     }
 
     private void handleMouseClicked(MouseEvent event) {
+                        System.out.println("handleMouseClicked");
+
         Node intersectedNode = event.getPickResult().getIntersectedNode();
-        boolean onPort = intersectedNode instanceof Port;
+        boolean onPort = intersectedNode instanceof PortModel;
         boolean isPrimaryButton = event.getButton() == MouseButton.PRIMARY;
         if (isPrimaryButton && onPort) {
             createConnection((PortModel) intersectedNode);
@@ -62,6 +64,7 @@ public class PreConnectionModel extends Line {
     }
 
     private void createConnection(PortModel endPort) {
+                System.out.println("createConnection");
 
         /**
          * Check if the data type from the sending port is the same or a sub
@@ -91,6 +94,7 @@ public class PreConnectionModel extends Line {
                         }
                     }
                 }
+                System.out.println("createConnection");
                 workspaceModel.addConnectionModel(startPort, endPort);
 
             } else {
@@ -104,6 +108,7 @@ public class PreConnectionModel extends Line {
                         endPort.connectedConnections.clear();
                     }
                 }
+                System.out.println("createConnection");
                 workspaceModel.addConnectionModel(startPort, endPort);
             }
 

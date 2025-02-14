@@ -4,6 +4,7 @@ import java.util.Collection;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import vplcore.App;
@@ -11,6 +12,7 @@ import vplcore.context.ActionManager;
 import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
+import vplcore.graph.model.Block;
 import vplcore.util.EventUtils;
 
 /**
@@ -38,10 +40,11 @@ public class BlockController extends BaseController {
 
         selected.addListener(selectionListener);
 
-        view.setOnMouseEntered(model.onMouseEntered());
+        view.getContentGrid().setOnMouseEntered(model.onMouseEntered());
         view.getContentGrid().setOnMousePressed(this::handleMoveStartedAndUpdateSelection);
         view.getContentGrid().setOnMouseDragged(this::handleMoveUpdated);
         view.getContentGrid().setOnMouseDragReleased(this::handleMoveFinished);
+        view.getContentGrid().addEventHandler(MouseEvent.MOUSE_EXITED, blockExitedHandler);
 
         view.idProperty().bind(model.idProperty());
         view.layoutXProperty().bindBidirectional(model.layoutXProperty());
@@ -51,6 +54,14 @@ public class BlockController extends BaseController {
         view.addInputPorts(model.getInputPorts());
         view.addOutputPorts(model.getOutputPorts());
 
+    }
+
+    private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
+
+
+    protected void handleBlockExited(MouseEvent event) {
+        //Change focus on exit to workspace so controls do not interrupt key events
+        this.getEditorContext().returnFocusToEditor();
     }
 
     ChangeListener<Boolean> selectionListener = this::onSelectionChanged;

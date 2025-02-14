@@ -7,11 +7,9 @@ import vpllib.method.JsonMethods;
 
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
-// 0 connect blocks not possible
-// 0 double check if selectBlock function needs isModifiedDown
 // 0 info panel to block
 // 0 info panel move with block
-// 0 remove block not possible
+// 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
 
 // 1 IMPROVEMENT Add undo/redo functionality
 // 1 BUG Info panel does not move down when aligning blocks

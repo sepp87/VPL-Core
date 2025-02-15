@@ -4,6 +4,7 @@ import java.util.Collection;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -11,6 +12,8 @@ import vplcore.context.ActionManager;
 import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
+import vplcore.graph.model.BlockInfoPanel;
+import vplcore.graph.model.BlockModelInfoPanel;
 import vplcore.util.EventUtils;
 
 /**
@@ -43,6 +46,7 @@ public class BlockController extends BaseController {
         view.getContentGrid().setOnMouseDragged(this::handleMoveUpdated);
         view.getContentGrid().setOnMouseDragReleased(this::handleMoveFinished);
         view.getContentGrid().addEventHandler(MouseEvent.MOUSE_EXITED, blockExitedHandler);
+        view.widthProperty().addListener(widthListener);
 
         view.idProperty().bind(model.idProperty());
         view.layoutXProperty().bindBidirectional(model.layoutXProperty());
@@ -54,8 +58,27 @@ public class BlockController extends BaseController {
 
     }
 
-    private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
+    private void handleInfoButtonClicked(ActionEvent event) {
+        if (workspaceController.activeBlockModelInfoPanel != null) {
+            workspaceController.activeBlockModelInfoPanel.delete();
+        }
+        BlockModelInfoPanel infoPanel = new BlockModelInfoPanel(model);
+        workspaceController.activeBlockModelInfoPanel = infoPanel;
+        view.setInfoPanel(infoPanel);
+        view.getInfoButton().setVisible(false);
+    }
 
+    private final ChangeListener<Number> widthListener = this::onWidthChanged;
+
+    private void onWidthChanged(Object b, Number o, Number n) {
+        BlockModelInfoPanel infoPanel = view.getInfoPanel();
+        if (infoPanel != null) {
+            double dX = n.doubleValue() - o.doubleValue();
+            infoPanel.move(dX, 0);
+        }
+    }
+
+    private final EventHandler<MouseEvent> blockExitedHandler = this::handleBlockExited;
 
     protected void handleBlockExited(MouseEvent event) {
         //Change focus on exit to workspace so controls do not interrupt key events

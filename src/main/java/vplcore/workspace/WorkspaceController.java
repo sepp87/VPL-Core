@@ -13,6 +13,7 @@ import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
 import vplcore.graph.model.BlockInfoPanel;
+import vplcore.graph.model.BlockModelInfoPanel;
 import vplcore.graph.model.Port;
 import vplcore.graph.util.PreConnection;
 
@@ -30,7 +31,9 @@ public class WorkspaceController extends BaseController {
 
     Map<BlockModel, BlockController> blocks = new HashMap<>();
 
+    // TODO Remove public access to info panel 
     public BlockInfoPanel activeBlockInfoPanel;
+    public BlockModelInfoPanel activeBlockModelInfoPanel;
     public boolean typeSensitive = true;
 
     //Radial menu
@@ -119,7 +122,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlockGroup(BlockGroupModel blockGroupModel) {
-        view.getChildren().add(0,blockGroupModel);
+        view.getChildren().add(0, blockGroupModel);
     }
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {

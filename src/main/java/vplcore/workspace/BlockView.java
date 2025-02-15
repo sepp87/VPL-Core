@@ -17,8 +17,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
-import vplcore.graph.model.BlockExceptionPanel;
-import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.BlockLabel;
 import vplcore.graph.model.BlockModelExceptionPanel;
 import vplcore.graph.model.BlockModelInfoPanel;
@@ -132,17 +130,33 @@ public class BlockView extends GridPane {
         return contentGrid;
     }
 
+    public VplButton getInfoButton() {
+        return infoButton;
+    }
+
+    public void setInfoPanel(BlockModelInfoPanel infoPanel) {
+        this.infoPanel = infoPanel;
+    }
+    
+    public BlockModelInfoPanel getInfoPanel() {
+        return infoPanel;
+    }
+
     public void removeInfoPanel() {
         infoPanel = null;
+    }
+    
+    public void setExceptionPanel(BlockModelExceptionPanel exceptionPanel) {
+        this.exceptionPanel = exceptionPanel;
+    }
+    
+    public BlockModelExceptionPanel getExceptionPanel() {
+        return exceptionPanel;
     }
 
     public void removeExceptionPanel() {
         exceptionPanel = null;
         exceptionButton.setVisible(true);
-    }
-
-    public VplButton getInfoButton() {
-        return infoButton;
     }
 
     public VplButton getExceptionButton() {

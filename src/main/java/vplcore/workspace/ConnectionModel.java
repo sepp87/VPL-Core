@@ -15,6 +15,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.SVGPath;
 import jo.vpl.xml.ConnectionTag;
+import vplcore.context.ActionManager;
+import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.util.FileUtils;
 import static vplcore.util.EventUtils.isLeftClick;
 
@@ -190,11 +192,13 @@ public class ConnectionModel extends Group {
     }
 
     private void handleBlockDeleted(ObservableValue arg0, Object arg1, Object arg2) {
-        remove();
+        ActionManager actionManager = workspaceController.getEditorContext().getActionManager();
+        RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), this);
+        actionManager.executeCommand(command);
+//        remove();
     }
 
     public void remove() {
-        removeFromCanvas();
         removeChangeListeners();
 
         startPort.connectedConnections.remove(ConnectionModel.this);
@@ -210,10 +214,12 @@ public class ConnectionModel extends Group {
         }
 
         endPort.calculateData();
+        removeFromCanvas();
+
     }
 
-    public void removeFromCanvas() {
-        workspaceController.removeChild(this);
+    private void removeFromCanvas() {
+//        workspaceController.removeChild(this);
         unbindCurve(connectionCurve);
         unbindCurve(snappingCurve);
         if (!endPort.multiDockAllowed) {
@@ -312,7 +318,10 @@ public class ConnectionModel extends Group {
         @Override
         public void handle(MouseEvent event) {
             if (isLeftClick(event)) {
-                ConnectionModel.this.remove();
+                ActionManager actionManager = workspaceController.getEditorContext().getActionManager();
+                RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), ConnectionModel.this);
+                actionManager.executeCommand(command);
+//                ConnectionModel.this.remove();
                 removeButton.setVisible(false);
             }
         }

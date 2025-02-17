@@ -15,7 +15,7 @@ import vplcore.context.ActionManager;
 import vplcore.context.EventRouter;
 import vplcore.context.Command;
 import vplcore.context.command.CopyBlocksCommand;
-import vplcore.context.command.DeleteSelectedBlocksCommand;
+import vplcore.context.command.RemoveSelectedBlocksCommand;
 import vplcore.context.command.GroupBlocksCommand;
 import vplcore.context.command.NewFileCommand;
 import vplcore.context.command.OpenFileCommand;
@@ -52,7 +52,7 @@ public class KeyboardController extends BaseController {
         switch (event.getCode()) {
             case BACK_SPACE:
             case DELETE:
-                command = new DeleteSelectedBlocksCommand(actionManager.getWorkspaceController());
+                command = new RemoveSelectedBlocksCommand(actionManager.getWorkspaceController());
                 break;
             case C:
                 if (isModifierDown) {

@@ -12,11 +12,11 @@ import vplcore.workspace.WorkspaceModel;
  *
  * @author Joost
  */
-public class DeleteSelectedBlocksCommand implements Undoable {
+public class RemoveSelectedBlocksCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
 
-    public DeleteSelectedBlocksCommand(WorkspaceController workspaceController) {
+    public RemoveSelectedBlocksCommand(WorkspaceController workspaceController) {
         this.workspaceController = workspaceController;
     }
 

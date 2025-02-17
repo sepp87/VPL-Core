@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
+import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.graph.util.TypeExtensions;
 
 /**
@@ -45,7 +46,7 @@ public class PreConnectionModel extends Line {
     }
 
     private void handleMouseClicked(MouseEvent event) {
-                        System.out.println("handleMouseClicked");
+        System.out.println("handleMouseClicked");
 
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onPort = intersectedNode instanceof PortModel;
@@ -60,7 +61,7 @@ public class PreConnectionModel extends Line {
     }
 
     private void createConnection(PortModel endPort) {
-                System.out.println("createConnection");
+        System.out.println("createConnection");
 
         /**
          * Check if the data type from the sending port is the same or a sub
@@ -85,22 +86,29 @@ public class PreConnectionModel extends Line {
                 if (!startPort.connectedConnections.isEmpty()) {
 
                     if (!startPort.multiDockAllowed) {
-                        for (ConnectionModel c : startPort.connectedConnections) {
-                            c.removeFromCanvas();
+                        for (ConnectionModel c : startPort.getConnectedConnections()) {
+                            RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
+                            workspaceController.getEditorContext().getActionManager().executeCommand(command);
+//                            c.remove();
+//                            c.removeFromCanvas();
                         }
                     }
                 }
                 System.out.println("createConnection");
                 workspaceModel.addConnectionModel(startPort, endPort);
 
-            } else {
+            } else { // endPort is INPUT
                 if (!endPort.connectedConnections.isEmpty()) {
 
                     if (!endPort.multiDockAllowed) {
-                        for (ConnectionModel c : endPort.connectedConnections) {
-                            c.removeFromCanvas();
-                            c.getStartPort().connectedConnections.remove(c);
+                        for (ConnectionModel c : endPort.getConnectedConnections()) {
+                            RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
+                            workspaceController.getEditorContext().getActionManager().executeCommand(command);
+//                            c.remove();
+//                            c.removeFromCanvas();
+//                            c.getStartPort().connectedConnections.remove(c);
                         }
+                        System.out.println("PreConnectionModel endPort.connectedConnections.size()" + endPort.connectedConnections.size()); // through c.remove() all connection should already be removed so this should print 0
                         endPort.connectedConnections.clear();
                     }
                 }

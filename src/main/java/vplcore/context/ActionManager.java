@@ -11,7 +11,7 @@ import vplcore.context.command.AlignRightCommand;
 import vplcore.context.command.AlignTopCommand;
 import vplcore.context.command.AlignVerticallyCommand;
 import vplcore.context.command.CopyBlocksCommand;
-import vplcore.context.command.DeleteSelectedBlocksCommand;
+import vplcore.context.command.RemoveSelectedBlocksCommand;
 import vplcore.context.command.GroupBlocksCommand;
 import vplcore.context.command.NewFileCommand;
 import vplcore.context.command.OpenFileCommand;
@@ -47,7 +47,7 @@ public class ActionManager {
         commandRegistry.put("SAVE_FILE", new SaveFileCommand(workspaceController));
         commandRegistry.put("COPY_BLOCKS", new CopyBlocksCommand(workspaceController));
         commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspaceController, workspaceModel));
-        commandRegistry.put("DELETE_SELECTED_BLOCKS", new DeleteSelectedBlocksCommand(workspaceController));
+        commandRegistry.put("DELETE_SELECTED_BLOCKS", new RemoveSelectedBlocksCommand(workspaceController));
         commandRegistry.put("GROUP_BLOCKS", new GroupBlocksCommand(workspaceController, workspaceModel));
         commandRegistry.put("ALIGN_LEFT", new AlignLeftCommand(workspaceController));
         commandRegistry.put("ALIGN_VERTICALLY", new AlignVerticallyCommand(workspaceController));

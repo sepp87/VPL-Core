@@ -4,13 +4,15 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 add new connection to port with existing connection throws error
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 block size save to model
 // 0 saving / loading
-// 0 color / double / file / integer blocks
 // 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
+// 0 DoubleSlider add value without UI
+// 0 IntegerSlide add value without UI
+// 0 remove connection command in conjunction with removal of block
+// 0 remove connection command in conjunction with connection created for occupied port
 
 // 1 IMPROVEMENT Add undo/redo functionality
 // 1 BUG Info panel does not move down when aligning blocks

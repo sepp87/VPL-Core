@@ -286,11 +286,11 @@ public class WorkspaceController extends BaseController {
         return model.getBlockGroups();
     }
 
-    public void removeChild(ConnectionModel connectionModel) {
-        System.out.println("WorkspaceController ConnectionModel removed");
-        model.removeConnectionModel(connectionModel);
-        view.getChildren().remove(connectionModel);
-    }
+//    public void removeChild(ConnectionModel connectionModel) {
+//        System.out.println("WorkspaceController ConnectionModel removed");
+//        model.removeConnectionModel(connectionModel);
+//        view.getChildren().remove(connectionModel);
+//    }
 
     public void removeChild(Connection connection) {
         System.out.println("WorkspaceController Connection removed");

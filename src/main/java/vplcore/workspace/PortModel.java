@@ -171,6 +171,10 @@ public class PortModel extends VBox {
         boundsInParentProperty().addListener(portCoordinatesChangedListener);
     }
 
+    public List<ConnectionModel> getConnectedConnections() {
+        return new ArrayList<>(connectedConnections);
+    }
+
     public void handlePortClickedForNewConnection(MouseEvent event) {
         if (event.isStillSincePress()) {
             parentBlock.workspaceController.initiateConnection(PortModel.this);
@@ -346,10 +350,10 @@ public class PortModel extends VBox {
 
         tip.textProperty().unbind();
 
-        for (ConnectionModel connection : connectedConnections) {
-            connection.removeFromCanvas();
+        for (ConnectionModel connection : getConnectedConnections()) {
+            connection.remove();
         }
 
-        connectedConnections.clear();
+//        connectedConnections.clear();
     }
 }

@@ -8,11 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
-import vplcore.IconType;
 import vplcore.graph.model.BlockMetadata;
-import vplcore.graph.model.BlockModelExceptionPanel;
-import vplcore.graph.model.BlockModelInfoPanel;
-import vplcore.graph.model.VplButton;
 
 /**
  *

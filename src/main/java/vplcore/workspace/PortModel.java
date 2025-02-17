@@ -21,8 +21,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import vplcore.graph.model.Block;
-import vplcore.graph.model.Connection;
 import vplcore.graph.util.TypeExtensions;
 
 //import javafx.beans.property.ObjectProperty;

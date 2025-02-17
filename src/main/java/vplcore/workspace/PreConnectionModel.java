@@ -5,11 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
-import vplcore.graph.model.Connection;
-import vplcore.graph.model.Port;
 import vplcore.graph.util.TypeExtensions;
-import vplcore.workspace.WorkspaceController;
-import vplcore.workspace.WorkspaceView;
 
 /**
  *

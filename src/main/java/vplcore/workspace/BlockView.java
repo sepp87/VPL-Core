@@ -61,7 +61,7 @@ public class BlockView extends GridPane {
         menuBox.getStyleClass().add("block-header");
         menuBox.getChildren().addAll(captionLabel);
 
-        add(menuBox, 1, 0);
+        this.add(menuBox, 1, 0);
 
         controls = new ArrayList<>();
 
@@ -125,6 +125,10 @@ public class BlockView extends GridPane {
         menuBox.getChildren().addAll(exceptionButton, infoButton);
 
     }
+    
+    public BlockLabel getCaptionLabel() {
+        return captionLabel;
+    }
 
     public GridPane getContentGrid() {
         return contentGrid;
@@ -137,7 +141,7 @@ public class BlockView extends GridPane {
     public void setInfoPanel(BlockModelInfoPanel infoPanel) {
         this.infoPanel = infoPanel;
     }
-    
+
     public BlockModelInfoPanel getInfoPanel() {
         return infoPanel;
     }
@@ -145,11 +149,11 @@ public class BlockView extends GridPane {
     public void removeInfoPanel() {
         infoPanel = null;
     }
-    
+
     public void setExceptionPanel(BlockModelExceptionPanel exceptionPanel) {
         this.exceptionPanel = exceptionPanel;
     }
-    
+
     public BlockModelExceptionPanel getExceptionPanel() {
         return exceptionPanel;
     }
@@ -161,6 +165,16 @@ public class BlockView extends GridPane {
 
     public VplButton getExceptionButton() {
         return exceptionButton;
+    }
+
+    ResizeButton getResizeButton() {
+        if (resizeButton == null) {
+            resizeButton = new ResizeButton();
+            resizeButton.setVisible(false);
+            contentGrid.setStyle("-fx-padding: 10 0 0 0");
+            contentGrid.add(resizeButton, 2, 3);
+        }
+        return resizeButton;
     }
 
     public void addInputPorts(ObservableList<PortModel> ports) {

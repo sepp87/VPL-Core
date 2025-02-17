@@ -74,6 +74,13 @@ public class BaseModel implements Comparable<BaseModel> {
 
     public void remove() {
         removed.set(true);
+//        for (PortModel port : model.inputPorts) {
+//            port.dataProperty().removeListener(portDataChangedListener);
+//            port.delete();
+//        }
+//        inPorts.clear();
+//        outPorts.clear();
+//        controls.clear();
     }
 
     public void serialize() {

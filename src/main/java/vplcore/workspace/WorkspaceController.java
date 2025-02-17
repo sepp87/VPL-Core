@@ -5,17 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
-import vplcore.graph.model.Connection;
-import vplcore.graph.model.Block;
-import vplcore.graph.model.BlockGroup;
 import javafx.geometry.Point2D;
 import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
-import vplcore.graph.model.BlockInfoPanel;
 import vplcore.graph.model.BlockModelInfoPanel;
-import vplcore.graph.model.Port;
-import vplcore.graph.util.PreConnection;
 
 /**
  *
@@ -32,7 +26,6 @@ public class WorkspaceController extends BaseController {
     Map<BlockModel, BlockController> blocks = new HashMap<>();
 
     // TODO Remove public access to info panel 
-    public BlockInfoPanel activeBlockInfoPanel;
     public BlockModelInfoPanel activeBlockModelInfoPanel;
     public boolean typeSensitive = true;
 
@@ -130,25 +123,6 @@ public class WorkspaceController extends BaseController {
         blockGroupModel.delete();
     }
 
-    /**
-     * SECTION BREAK
-     */
-    private PreConnection preConnection = null;
-
-    // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
-    public void initiateConnection(Port port) {
-        if (preConnection == null) {
-            preConnection = new PreConnection(WorkspaceController.this, port);
-            view.getChildren().add(0, preConnection);
-        }
-    }
-
-    // method is unneeded if createConnection catches the second click
-    public void removeChild(PreConnection preConnection) {
-        view.getChildren().remove(preConnection);
-        this.preConnection = null;
-    }
-
     private PreConnectionModel preConnectionModel = null;
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
@@ -174,10 +148,12 @@ public class WorkspaceController extends BaseController {
         view.getChildren().clear();
     }
 
+    // TODO Remove
     public void setIdle() {
         state.setIdle();
     }
 
+    // TODO Remove
     public void setSelectingBlockGroup() {
         state.setSelectingBlockGroup();
     }
@@ -199,13 +175,8 @@ public class WorkspaceController extends BaseController {
     }
 
     public void zoomToFit() {
-        if (vplcore.App.BLOCK_MVC) {
-            Collection<BlockController> blockControllers = !getSelectedBlockControllers().isEmpty() ? getSelectedBlockControllers() : blocks.values();
-            zoomHelper.zoomToFitBlockControllers(blockControllers);
-        } else {
-            Collection<Block> blocks = !getSelectedBlocks().isEmpty() ? getSelectedBlocks() : model.getBlocks();
-            zoomHelper.zoomToFit(blocks);
-        }
+        Collection<BlockController> blockControllers = !getSelectedBlockControllers().isEmpty() ? getSelectedBlockControllers() : blocks.values();
+        zoomHelper.zoomToFitBlockControllers(blockControllers);
     }
 
     public void updateSelection(BlockController block, boolean isModifierDown) {
@@ -232,22 +203,6 @@ public class WorkspaceController extends BaseController {
         return view;
     }
 
-    public void addBlock(Block block) {
-        model.addBlock(block);
-        if (block.isSelected()) {
-            selectionHelper.selectBlock(block);
-        }
-        view.getChildren().add(block);
-    }
-
-    public void selectBlock(Block block) {
-        selectionHelper.selectBlock(block);
-    }
-
-    public void deselectBlock(Block block) {
-        selectionHelper.deselectBlock(block);
-    }
-
     public void selectBlock(BlockModel blockModel) {
         BlockController blockController = blocks.get(blockModel);
         selectionHelper.selectBlock(blockController);
@@ -256,14 +211,6 @@ public class WorkspaceController extends BaseController {
     public void deselectBlock(BlockModel blockModel) {
         BlockController blockController = blocks.get(blockModel);
         selectionHelper.deselectBlock(blockController);
-    }
-
-    public Collection<Block> getBlocks() {
-        return model.getBlocks();
-    }
-
-    public Collection<Block> getSelectedBlocks() {
-        return selectionHelper.getSelectedBlocks();
     }
 
     public Collection<BlockController> getBlockControllers() {
@@ -276,68 +223,6 @@ public class WorkspaceController extends BaseController {
 
     public Collection<BlockController> getSelectedBlockControllers() {
         return selectionHelper.getSelectedBlockControllers();
-    }
-
-    public Collection<Connection> getConnections() {
-        return model.getConnections();
-    }
-
-    public Collection<BlockGroup> getBlockGroups() {
-        return model.getBlockGroups();
-    }
-
-//    public void removeChild(ConnectionModel connectionModel) {
-//        System.out.println("WorkspaceController ConnectionModel removed");
-//        model.removeConnectionModel(connectionModel);
-//        view.getChildren().remove(connectionModel);
-//    }
-
-    public void removeChild(Connection connection) {
-        System.out.println("WorkspaceController Connection removed");
-        model.removeConnection(connection);
-        view.getChildren().remove(connection);
-    }
-
-    public void removeChild(Block block) {
-        System.out.println("WorkspaceController " + block.getClass().getSimpleName() + " removed");
-        model.removeBlock(block);
-//        blocksSelectedOnWorkspace.remove(block);
-        view.getChildren().remove(block);
-    }
-
-    public void removeChild(BlockGroup blockGroup) {
-        System.out.println("WorkspaceController " + blockGroup.getClass().getSimpleName() + " removed");
-        model.removeBlockGroup(blockGroup);
-        view.getChildren().remove(blockGroup);
-    }
-
-    public void addConnection(Port startPort, Port endPort) {
-        Connection connection = new Connection(this, startPort, endPort);
-        addConnection(connection);
-    }
-
-    public void addConnection(Connection connection) {
-        model.addConnection(connection);
-        view.getChildren().add(0, connection);
-    }
-
-//    public void addConnectionModel(PortModel startPort, PortModel endPort) {
-//        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
-//        addConnectionModel(connection);
-//    }
-//
-//    public void addConnectionModel(ConnectionModel connection) {
-//        model.addConnectionModel(connection);
-//        view.getChildren().add(0, connection);
-//    }
-    public void addBlockGroup() {
-        if (getSelectedBlocks().size() <= 1) {
-            return;
-        }
-        BlockGroup blockGroup = new BlockGroup(this);
-        model.addBlockGroup(blockGroup);
-        blockGroup.setChildBlocks(getSelectedBlocks());
-        view.getChildren().add(0, blockGroup);
     }
 
 }

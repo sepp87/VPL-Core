@@ -1,18 +1,20 @@
 package vpllib.template;
 
-import vplcore.graph.model.Port;
-import vplcore.graph.model.Block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import vplcore.workspace.WorkspaceController;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.Port;
-import vplcore.workspace.WorkspaceController;
 import vplcore.graph.model.BlockMetadata;
+import vplcore.workspace.BlockModel;
+import vplcore.workspace.BlockView;
+import vplcore.workspace.PortModel;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -23,29 +25,34 @@ import vplcore.graph.model.BlockMetadata;
         category = "General",
         description = "A template block for further customization",
         tags = {"template", "dummy", "example"})
-public class TemplateBlock extends Block {
+public class TemplateBlock extends BlockModel {
 
-    public TemplateBlock(WorkspaceController hostCanvas) {
-        super(hostCanvas);
+    public TemplateBlock(WorkspaceModel workspace) {
+        super(workspace);
+        nameProperty().set("Template");
 
-        setName("Template");
+        addInputPort("Object", Object.class);
+        addOutputPort("String", String.class);
+    }
 
-        addInPortToBlock("Object", Object.class);
+    @Override
+    public Region getCustomization() {
+        Label label = BlockView.getAwesomeIcon(IconType.FA_PAPER_PLANE);
+        return label;
+    }
 
-        addOutPortToBlock("String", String.class);
-
-        Label label = getAwesomeIcon(IconType.FA_PAPER_PLANE);
-        addControlToBlock(label);
+    @Override
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return null;
     }
 
     /**
      * Function to handle data when a connection is added and before calculate
      * is called
      */
-    @Override
-    public void handleIncomingConnectionAdded(Port source, Port incoming) {
+    public void handleIncomingConnectionAdded(PortModel source, PortModel incoming) {
         //Sample code for handling just specific ports
-        int index = inPorts.indexOf(source);
+        int index = inputPorts.indexOf(source);
         if (index == 0) {
 
         }
@@ -54,10 +61,9 @@ public class TemplateBlock extends Block {
     /**
      * Function to handle data when a connection is removed
      */
-    @Override
-    public void handleIncomingConnectionRemoved(Port source) {
+    public void handleIncomingConnectionRemoved(PortModel source) {
         //Sample code for handling just specific ports
-        int index = inPorts.indexOf(source);
+        int index = inputPorts.indexOf(source);
         if (index == 0) {
 
         }
@@ -67,14 +73,14 @@ public class TemplateBlock extends Block {
      * calculate function is called whenever new data is incoming
      */
     @Override
-    public void calculate() {
+    public void process() {
 
         //Get incoming data
-        Object raw = inPorts.get(0).getData();
+        Object raw = inputPorts.get(0).getData();
 
         //Finish calculate if there is no incoming data
         if (raw == null) {
-            outPorts.get(0).setData(null);
+            outputPorts.get(0).setData(null);
             return;
         }
 
@@ -88,14 +94,14 @@ public class TemplateBlock extends Block {
                     .collect(Collectors.toCollection(ArrayList<String>::new));
 
             //Set outgoing data
-            outPorts.get(0).setData(strList);
+            outputPorts.get(0).setData(strList);
 
         } else {
             //Example code to handle a single object instance
             String str = ((Object) raw).toString();
 
             //Set outgoing data
-            outPorts.get(0).setData(str);
+            outputPorts.get(0).setData(str);
         }
     }
 
@@ -112,12 +118,12 @@ public class TemplateBlock extends Block {
         //Retrieval of custom attribute
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("key"));
         //Specify further initialization statements here
-        this.calculate();
+        this.process();
     }
 
     @Override
-    public Block clone() {
-        TemplateBlock block = new TemplateBlock(workspaceController);
+    public BlockModel copy() {
+        TemplateBlock block = new TemplateBlock(workspace);
         //Specify further copy statements here
         return block;
     }

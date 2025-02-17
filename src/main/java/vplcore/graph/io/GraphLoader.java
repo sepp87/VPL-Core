@@ -1,13 +1,11 @@
 package vplcore.graph.io;
 
-import vplcore.graph.model.Block;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jo.vpl.xml.ConnectionTag;
@@ -19,9 +17,6 @@ import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.model.BlockGroup;
-import vplcore.graph.model.Port;
-import vplcore.graph.util.BlockFactory;
 import vplcore.graph.util.BlockModelFactory;
 import vplcore.workspace.BlockGroupModel;
 import vplcore.workspace.BlockModel;
@@ -74,23 +69,14 @@ public class GraphLoader {
 
             String blockIdentifier = blockTag.getType();
 
-            if (vplcore.App.BLOCK_MVC) {
-                BlockModel blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
-                if (blockModel == null) {
-                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
-                    return;
-                }
-                blockModel.deserialize(blockTag);
-                workspaceModel.addBlockModel(blockModel);
-            } else {
-                Block block = BlockFactory.createBlock(blockIdentifier, workspaceController);
-                if (block == null) {
-                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
-                    return;
-                }
-                block.deserialize(blockTag);
-                workspaceController.addBlock(block);
+            BlockModel blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
+            if (blockModel == null) {
+                System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
+                return;
             }
+            blockModel.deserialize(blockTag);
+            workspaceModel.addBlockModel(blockModel);
+
         }
     }
 
@@ -101,48 +87,25 @@ public class GraphLoader {
         }
 
         for (ConnectionTag connectionTag : connectionTagList) {
+            String startBlockUuid = connectionTag.getStartBlock();
+            int startPortIndex = connectionTag.getStartIndex();
+            String endBlockUuid = connectionTag.getEndBlock();
+            int endPortIndex = connectionTag.getEndIndex();
 
-            if (vplcore.App.BLOCK_MVC) {
-                String startBlockUuid = connectionTag.getStartBlock();
-                int startPortIndex = connectionTag.getStartIndex();
-                String endBlockUuid = connectionTag.getEndBlock();
-                int endPortIndex = connectionTag.getEndIndex();
+            BlockModel startBlock = null;
+            BlockModel endBlock = null;
+            for (BlockModel blockModel : workspaceModel.getBlockModels()) {
+                if (blockModel.idProperty().get().compareTo(startBlockUuid) == 0) {
+                    startBlock = blockModel;
+                } else if (blockModel.idProperty().get().compareTo(endBlockUuid) == 0) {
+                    endBlock = blockModel;
+                }
+            }
 
-                BlockModel startBlock = null;
-                BlockModel endBlock = null;
-                for (BlockModel blockModel : workspaceModel.getBlockModels()) {
-                    if (blockModel.idProperty().get().compareTo(startBlockUuid) == 0) {
-                        startBlock = blockModel;
-                    } else if (blockModel.idProperty().get().compareTo(endBlockUuid) == 0) {
-                        endBlock = blockModel;
-                    }
-                }
-
-                if (startBlock != null && endBlock != null) {
-                    PortModel startPort = startBlock.getOutputPorts().get(startPortIndex);
-                    PortModel endPort = endBlock.getInputPorts().get(endPortIndex);
-                    workspaceModel.addConnectionModel(startPort, endPort);
-                }
-            } else {
-                UUID startBlockUuid = UUID.fromString(connectionTag.getStartBlock());
-                int startPortIndex = connectionTag.getStartIndex();
-                UUID endBlockUuid = UUID.fromString(connectionTag.getEndBlock());
-                int endPortIndex = connectionTag.getEndIndex();
-                Block startBlock = null;
-                Block endBlock = null;
-                for (Block block : workspaceController.getBlocks()) {
-                    if (block.uuid.compareTo(startBlockUuid) == 0) {
-                        startBlock = block;
-                    } else if (block.uuid.compareTo(endBlockUuid) == 0) {
-                        endBlock = block;
-                    }
-                }
-
-                if (startBlock != null && endBlock != null) {
-                    Port startPort = startBlock.outPorts.get(startPortIndex);
-                    Port endPort = endBlock.inPorts.get(endPortIndex);
-                    workspaceController.addConnection(startPort, endPort);
-                }
+            if (startBlock != null && endBlock != null) {
+                PortModel startPort = startBlock.getOutputPorts().get(startPortIndex);
+                PortModel endPort = endBlock.getInputPorts().get(endPortIndex);
+                workspaceModel.addConnectionModel(startPort, endPort);
             }
         }
     }
@@ -158,13 +121,8 @@ public class GraphLoader {
         }
 
         for (GroupTag groupTag : groupTagList) {
-            if (vplcore.App.BLOCK_MVC) {
-                BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
-                group.deserialize(groupTag);
-            } else {
-                BlockGroup group = new BlockGroup(workspaceController);
-                group.deserialize(groupTag);
-            }
+            BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
+            group.deserialize(groupTag);
         }
     }
 

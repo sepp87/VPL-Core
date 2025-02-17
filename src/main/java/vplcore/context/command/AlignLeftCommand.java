@@ -3,7 +3,6 @@ package vplcore.context.command;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
-import vplcore.graph.model.Block;
 import vplcore.context.Undoable;
 import vplcore.workspace.BlockController;
 import vplcore.workspace.BlockModel;
@@ -24,22 +23,16 @@ public class AlignLeftCommand implements Undoable {
 
     @Override
     public void execute() {
-        if (vplcore.App.BLOCK_MVC) {
-            List<BlockView> blockViews = new ArrayList<>();
-            for (BlockController blockController : workspace.getSelectedBlockControllers()) {
-                blockViews.add(blockController.getView());
-            }
-            Bounds bBox = BlockView.getBoundingBoxOfBlocks(blockViews);
-            for (BlockController blockController : workspace.getSelectedBlockControllers()) {
-                BlockModel blockModel = blockController.getModel();
-                blockModel.layoutXProperty().set(bBox.getMinX());
-            }
-        } else {
-            Bounds bBox = Block.getBoundingBoxOfBlocks(workspace.getSelectedBlocks());
-            for (Block block : workspace.getSelectedBlocks()) {
-                block.setLayoutX(bBox.getMinX());
-            }
+        List<BlockView> blockViews = new ArrayList<>();
+        for (BlockController blockController : workspace.getSelectedBlockControllers()) {
+            blockViews.add(blockController.getView());
         }
+        Bounds bBox = BlockView.getBoundingBoxOfBlocks(blockViews);
+        for (BlockController blockController : workspace.getSelectedBlockControllers()) {
+            BlockModel blockModel = blockController.getModel();
+            blockModel.layoutXProperty().set(bBox.getMinX());
+        }
+
     }
 
     @Override

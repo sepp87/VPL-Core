@@ -8,6 +8,7 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -125,7 +126,7 @@ public class BlockView extends GridPane {
         menuBox.getChildren().addAll(exceptionButton, infoButton);
 
     }
-    
+
     public BlockLabel getCaptionLabel() {
         return captionLabel;
     }
@@ -234,5 +235,11 @@ public class BlockView extends GridPane {
             contentGrid.getStyleClass().clear();
             contentGrid.getStyleClass().add("block");
         }
+    }
+
+    public static Label getAwesomeIcon(IconType type) {
+        Label label = new Label(type.getUnicode() + "");
+        label.getStyleClass().add("block-awesome-icon");
+        return label;
     }
 }

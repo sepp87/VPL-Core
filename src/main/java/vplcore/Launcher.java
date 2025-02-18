@@ -4,10 +4,8 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 text block copy width and height of block
 // 0 file block throw file not exists exception
-// 0 allign horizontally
-// 0 allign vertically
-// 0 cannot copy double slider / integer slider / file input
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 block size save to model

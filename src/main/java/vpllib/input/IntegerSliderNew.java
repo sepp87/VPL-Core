@@ -29,10 +29,10 @@ import vplcore.workspace.WorkspaceModel;
 public class IntegerSliderNew extends BlockModel {
 
     private Slider slider;
-    private final IntegerProperty integerValue = new SimpleIntegerProperty();
-    private final IntegerProperty integerMin = new SimpleIntegerProperty();
-    private final IntegerProperty integerMax = new SimpleIntegerProperty();
-    private final IntegerProperty integerStep = new SimpleIntegerProperty();
+    private final IntegerProperty integerValue = new SimpleIntegerProperty(0);
+    private final IntegerProperty integerMin = new SimpleIntegerProperty(0);
+    private final IntegerProperty integerMax = new SimpleIntegerProperty(10);
+    private final IntegerProperty integerStep = new SimpleIntegerProperty(1);
 
     public IntegerSliderNew(WorkspaceModel workspaceModel) {
         super(workspaceModel);
@@ -50,19 +50,18 @@ public class IntegerSliderNew extends BlockModel {
         slider.setMinorTickCount(0);
         outputPorts.get(0).dataProperty().bind(integerValue);
 
-        integerValue.bindBidirectional(slider.valueProperty());
-        integerMin.bindBidirectional(slider.minProperty());
-        integerMax.bindBidirectional(slider.maxProperty());
-        integerStep.bindBidirectional(slider.blockIncrementProperty());
-
-        Expander expand = new Expander();
+        slider.valueProperty().bindBidirectional(integerValue);
+        slider.minProperty().bindBidirectional(integerMin);
+        slider.maxProperty().bindBidirectional(integerMax);
+        slider.blockIncrementProperty().bindBidirectional(integerStep);
 
         Pane container = new Pane();
-        expand.setLayoutX(0);
-        expand.setLayoutY(0);
+        Expander expander = new Expander();
+        expander.setLayoutX(0);
+        expander.setLayoutY(0);
         slider.setLayoutX(30);
         slider.setLayoutY(4);
-        container.getChildren().addAll(expand, slider);
+        container.getChildren().addAll(expander, slider);
         return container;
     }
 
@@ -213,7 +212,7 @@ public class IntegerSliderNew extends BlockModel {
 //            String regExp = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
 //            boolean isDouble = rawValue.matches(regExp);
             //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
-            String regExp = "^\\d+$";
+            String regExp = "^-?\\d+$";
             boolean isInteger = rawValue.matches(regExp);
 
             if (isInteger) {
@@ -244,19 +243,19 @@ public class IntegerSliderNew extends BlockModel {
         Integer min = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("min")));
         Integer max = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("max")));
         Integer step = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("step")));
-        this.slider.setValue(value);
-        this.slider.setMin(min);
-        this.slider.setMax(max);
-        this.slider.setBlockIncrement(step);
+        this.integerValue.set(value);
+        this.integerMin.set(min);
+        this.integerMax.set(max);
+        this.integerStep.set(step);
     }
 
     @Override
     public BlockModel copy() {
         IntegerSliderNew block = new IntegerSliderNew(workspace);
-        block.slider.setValue(this.slider.getValue());
-        block.slider.setMin(this.slider.getMin());
-        block.slider.setMax(this.slider.getMax());
-        block.slider.setBlockIncrement(this.slider.getBlockIncrement());
+        block.integerValue.set(this.integerValue.get());
+        block.integerMin.set(this.integerMin.get());
+        block.integerMax.set(this.integerMax.get());
+        block.integerStep.set(this.integerStep.get());
         return block;
     }
 

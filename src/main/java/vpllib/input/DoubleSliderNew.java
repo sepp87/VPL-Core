@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -30,12 +33,18 @@ import vplcore.workspace.WorkspaceModel;
 public class DoubleSliderNew extends BlockModel {
 
     private Slider slider;
-    private DoubleBinding doubleValue;
+    private DoubleBinding doubleValueFormatted;
+
+    private final DoubleProperty doubleValue = new SimpleDoubleProperty(0);
+    private final DoubleProperty doubleMin = new SimpleDoubleProperty(0);
+    private final DoubleProperty doubleMax = new SimpleDoubleProperty(10);
+    private final DoubleProperty doubleStep = new SimpleDoubleProperty(0.1);
 
     public DoubleSliderNew(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("Double");
         addOutputPort("double", Double.class);
+        outputPorts.get(0).dataProperty().bind(doubleValue);
     }
 
     @Override
@@ -47,7 +56,7 @@ public class DoubleSliderNew extends BlockModel {
         slider.setMinorTickCount(0);
 
         DoubleProperty sliderStep = slider.blockIncrementProperty();
-        doubleValue = new DoubleBinding() {
+        doubleValueFormatted = new DoubleBinding() {
 
             {
                 super.bind(sliderStep, slider.valueProperty());
@@ -60,7 +69,13 @@ public class DoubleSliderNew extends BlockModel {
                 return bd;
             }
         };
-        outputPorts.get(0).dataProperty().bind(doubleValue);
+//        outputPorts.get(0).dataProperty().bind(doubleValueFormatted);
+//        doubleValue.bindBidirectional(doubleValueFormatted);
+
+        slider.valueProperty().bindBidirectional(doubleValue);
+        slider.minProperty().bindBidirectional(doubleMin);
+        slider.maxProperty().bindBidirectional(doubleMax);
+        slider.blockIncrementProperty().bindBidirectional(doubleStep);
 
         Pane container = new Pane();
         Expander expand = new Expander();
@@ -131,10 +146,14 @@ public class DoubleSliderNew extends BlockModel {
             stepField.focusedProperty().addListener(stepFieldFocusChangedHandler);
 
             valueField.textProperty().bind(doubleValue.asString());
-            minField.textProperty().bind(slider.minProperty().asString());
-            maxField.textProperty().bind(slider.maxProperty().asString());
-            stepField.textProperty().bind(slider.blockIncrementProperty().asString());
+            minField.textProperty().bind(doubleMin.asString());
+            maxField.textProperty().bind(doubleMax.asString());
+            stepField.textProperty().bind(doubleStep.asString());
 
+//            valueField.textProperty().bind(doubleValueFormatted.asString());
+//            minField.textProperty().bind(slider.minProperty().asString());
+//            maxField.textProperty().bind(slider.maxProperty().asString());
+//            stepField.textProperty().bind(slider.blockIncrementProperty().asString());
             grid.add(valueField, 1, 0);
             grid.add(minField, 1, 1);
             grid.add(maxField, 1, 2);
@@ -158,7 +177,7 @@ public class DoubleSliderNew extends BlockModel {
                         slider.setValue(newValue);
                     }
                 }
-                valueField.textProperty().bind(doubleValue.asString());
+                valueField.textProperty().bind(doubleValueFormatted.asString());
             }
         }
 
@@ -255,19 +274,19 @@ public class DoubleSliderNew extends BlockModel {
         Double min = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("min")));
         Double max = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("max")));
         Double step = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("step")));
-        this.slider.setValue(value);
-        this.slider.setMin(min);
-        this.slider.setMax(max);
-        this.slider.setBlockIncrement(step);
+        this.doubleValue.set(value);
+        this.doubleMin.set(min);
+        this.doubleMax.set(max);
+        this.doubleStep.set(step);
     }
 
     @Override
     public BlockModel copy() {
         DoubleSliderNew block = new DoubleSliderNew(workspace);
-        block.slider.setValue(this.slider.getValue());
-        block.slider.setMin(this.slider.getMin());
-        block.slider.setMax(this.slider.getMax());
-        block.slider.setBlockIncrement(this.slider.getBlockIncrement());
+        block.doubleValue.set(this.doubleValue.get());
+        block.doubleMin.set(this.doubleMin.get());
+        block.doubleMax.set(this.doubleMax.get());
+        block.doubleStep.set(this.doubleStep.get());
         return block;
     }
 }

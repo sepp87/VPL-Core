@@ -31,7 +31,7 @@ public class AlignHorizontallyCommand implements Undoable {
         for (BlockController blockController : workspace.getSelectedBlockControllers()) {
             BlockModel blockModel = blockController.getModel();
             BlockView blockView = blockController.getView();
-            blockModel.layoutYProperty().set(bBox.getMaxY() - bBox.getHeight() / 2 - blockView.getHeight());
+            blockModel.layoutYProperty().set(bBox.getMaxY() - bBox.getHeight() / 2 - blockView.getHeight() / 2);
         }
     }
 

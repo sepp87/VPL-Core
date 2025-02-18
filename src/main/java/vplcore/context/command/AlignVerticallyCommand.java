@@ -31,9 +31,9 @@ public class AlignVerticallyCommand implements Undoable {
         for (BlockController blockController : workspace.getSelectedBlockControllers()) {
             BlockModel blockModel = blockController.getModel();
             BlockView blockView = blockController.getView();
-            blockModel.layoutYProperty().set(bBox.getMaxX() - bBox.getWidth() / 2 - blockView.getWidth());
+            blockModel.layoutXProperty().set(bBox.getMaxX() - bBox.getWidth() / 2 - blockView.getWidth() / 2);
+//            blockModel.layoutYProperty().set(bBox.getMaxX() - bBox.getWidth() / 2 - blockView.getWidth());
         }
-
     }
 
     @Override

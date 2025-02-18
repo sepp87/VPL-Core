@@ -87,6 +87,7 @@ public class GraphLoader {
         }
 
         for (ConnectionTag connectionTag : connectionTagList) {
+
             String startBlockUuid = connectionTag.getStartBlock();
             int startPortIndex = connectionTag.getStartIndex();
             String endBlockUuid = connectionTag.getEndBlock();
@@ -107,6 +108,7 @@ public class GraphLoader {
                 PortModel endPort = endBlock.getInputPorts().get(endPortIndex);
                 workspaceModel.addConnectionModel(startPort, endPort);
             }
+
         }
     }
 

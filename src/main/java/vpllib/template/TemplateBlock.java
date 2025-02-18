@@ -3,9 +3,7 @@ package vpllib.template;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import vplcore.IconType;
@@ -29,8 +27,7 @@ public class TemplateBlock extends BlockModel {
 
     public TemplateBlock(WorkspaceModel workspace) {
         super(workspace);
-        nameProperty().set("Template");
-
+        this.nameProperty().set("Template");
         addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
     }
@@ -39,11 +36,6 @@ public class TemplateBlock extends BlockModel {
     public Region getCustomization() {
         Label label = BlockView.getAwesomeIcon(IconType.FA_PAPER_PLANE);
         return label;
-    }
-
-    @Override
-    public EventHandler<MouseEvent> onMouseEntered() {
-        return null;
     }
 
     /**

@@ -1,10 +1,12 @@
 package vpllib.input;
 
 import java.io.File;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -30,19 +32,21 @@ import vplcore.workspace.WorkspaceModel;
 )
 public class FileBlockNew extends BlockModel {
 
+    private final StringProperty path = new SimpleStringProperty();
+
     private VplButton button;
     private TextField textField;
 
     private final EventHandler<ActionEvent> openFileHandler = this::handleOpenFile;
-    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
+//    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
     private final EventHandler<MouseEvent> textFieldEnteredHandler = this::handleTextFieldMouseEntered;
 
     public FileBlockNew(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("File");
-
         addOutputPort("file", File.class);
-
+        path.addListener(pathListener);
+//        outputPorts.get(0).dataProperty().bind(path);
     }
 
     @Override
@@ -57,15 +61,22 @@ public class FileBlockNew extends BlockModel {
         HBox box = new HBox(5);
         box.getChildren().addAll(textField, button);
 
-        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
+//        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
         textField.setOnMouseEntered(textFieldEnteredHandler);
+        textField.textProperty().bindBidirectional(path);
         return box;
     }
 
-    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
-        process();
+    ChangeListener<String> pathListener = this::onPathChanged;
+
+    private void onPathChanged(Object b, String o, String n) {
+        File file = new File(n);
+        outputPorts.get(0).setData(file);
     }
 
+//    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
+//        process();
+//    }
     private void handleTextFieldMouseEntered(MouseEvent event) {
         textField.requestFocus();
     }
@@ -80,55 +91,56 @@ public class FileBlockNew extends BlockModel {
 
         //Set Data
         if (file != null) {
-            String path = file.getPath();
-            setPath(path);
-            outputPorts.get(0).setData(file);
+            String filePath = file.getPath();
+            this.path.set(filePath);
         } else {
+            this.path.set(null);
             outputPorts.get(0).setData(null);
         }
     }
 
-    public void setPath(String path) {
-        textField.setText(path);
+    public StringProperty pathProperty() {
+        return path;
     }
 
-    public String getPath() {
-        return textField.getText();
-    }
-
+//    public void setPath(String path) {
+//        textField.setText(path);
+//    }
+//
+//    public String getPath() {
+//        return textField.getText();
+//    }
     @Override
     public void process() {
-        //Do Action
-        String path = getPath();
-        File newFile = new File(path);
-
-        //Set Data
-        if (newFile.exists() && newFile.isFile()) {
-            outputPorts.get(0).setData(newFile);
-        } else {
-            outputPorts.get(0).setData(null);
-        }
+//        //Do Action
+//        String path = getPath();
+//        File newFile = new File(path);
+//
+//        //Set Data
+//        if (newFile.exists() && newFile.isFile()) {
+//            outputPorts.get(0).setData(newFile);
+//        } else {
+//            outputPorts.get(0).setData(null);
+//        }
     }
 
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("path"), getPath());
+        xmlTag.getOtherAttributes().put(QName.valueOf("path"), path.get());
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
-        String path = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
-        this.setPath(path);
-        this.process();
+        String filePath = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
+        this.path.set(filePath);
     }
 
     @Override
     public BlockModel copy() {
         FileBlockNew block = new FileBlockNew(workspace);
-        block.setPath(this.getPath());
-        block.process();
+        block.path.set(this.path.get());
         return block;
     }
 

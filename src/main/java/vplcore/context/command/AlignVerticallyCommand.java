@@ -33,6 +33,7 @@ public class AlignVerticallyCommand implements Undoable {
             BlockView blockView = blockController.getView();
             blockModel.layoutYProperty().set(bBox.getMaxX() - bBox.getWidth() / 2 - blockView.getWidth());
         }
+
     }
 
     @Override

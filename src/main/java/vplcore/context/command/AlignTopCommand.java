@@ -32,6 +32,7 @@ public class AlignTopCommand implements Undoable {
             BlockModel blockModel = blockController.getModel();
             blockModel.layoutYProperty().set(bBox.getMinY());
         }
+
     }
 
     @Override

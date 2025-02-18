@@ -63,6 +63,7 @@ public class WorkspaceModel {
     public void setZoomFactor(double factor) {
         this.zoomFactor.set(Math.round(factor * 10) / 10.);
     }
+
     public void reset() {
         resetZoomFactor();
         translateXProperty().set(0.);

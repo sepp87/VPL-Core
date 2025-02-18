@@ -39,6 +39,7 @@ public class GroupBlocksCommand implements Undoable {
         BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
         blockGroupModel.setChildBlocks(selectedBlockModels);
         workspaceModel.addBlockGroupModel(blockGroupModel);
+
     }
 
     @Override

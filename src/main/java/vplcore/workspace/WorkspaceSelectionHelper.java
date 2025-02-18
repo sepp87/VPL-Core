@@ -27,18 +27,22 @@ public class WorkspaceSelectionHelper extends BaseController {
     }
 
     public void selectAllBlocks() {
+
         this.selectedBlocks.clear();
         for (BlockController block : controller.getBlockControllers()) {
             block.selectedProperty().set(true);
             selectedBlocks.add(block);
         }
+
     }
 
     public void deselectAllBlocks() {
+
         for (BlockController block : selectedBlocks) {
             block.selectedProperty().set(false);
         }
         this.selectedBlocks.clear();
+
     }
 
     public void rectangleSelect(Point2D selectionMin, Point2D selectionMax) {
@@ -60,7 +64,7 @@ public class WorkspaceSelectionHelper extends BaseController {
             }
         }
     }
-
+   
     public void updateSelection(BlockController block, boolean isModifierDown) {
         if (selectedBlocks.contains(block)) {
             if (isModifierDown) {

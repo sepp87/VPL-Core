@@ -46,7 +46,6 @@ public class BlockLoader {
      */
     public static void loadInternalBlocks() {
         Reflections reflections = new Reflections("vpllib.input");
-
         Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
         for (Class<?> type : blockTypes) {
             addBlockType(type);
@@ -91,7 +90,7 @@ public class BlockLoader {
 
     private static List<String> getClassNamesFromJarFile(File file) {
         List<String> result = new ArrayList<>();
-        try (JarFile jarFile = new JarFile(file)) {
+        try ( JarFile jarFile = new JarFile(file)) {
 
             Enumeration<JarEntry> e = jarFile.entries();
             String packageName = jarFile.getManifest().getMainAttributes().getValue("package");

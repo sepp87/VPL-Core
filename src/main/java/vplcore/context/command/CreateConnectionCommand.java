@@ -15,7 +15,6 @@ public class CreateConnectionCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
-
     private PortModel startPortModel;
     private PortModel endPortModel;
 

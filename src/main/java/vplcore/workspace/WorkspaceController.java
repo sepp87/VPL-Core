@@ -148,12 +148,10 @@ public class WorkspaceController extends BaseController {
         view.getChildren().clear();
     }
 
-    // TODO Remove
     public void setIdle() {
         state.setIdle();
     }
 
-    // TODO Remove
     public void setSelectingBlockGroup() {
         state.setSelectingBlockGroup();
     }
@@ -224,5 +222,23 @@ public class WorkspaceController extends BaseController {
     public Collection<BlockController> getSelectedBlockControllers() {
         return selectionHelper.getSelectedBlockControllers();
     }
+
+//    public void removeChild(ConnectionModel connectionModel) {
+//        System.out.println("WorkspaceController ConnectionModel removed");
+//        model.removeConnectionModel(connectionModel);
+//        view.getChildren().remove(connectionModel);
+//    }
+ 
+
+//    public void addConnectionModel(PortModel startPort, PortModel endPort) {
+//        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
+//        addConnectionModel(connection);
+//    }
+//
+//    public void addConnectionModel(ConnectionModel connection) {
+//        model.addConnectionModel(connection);
+//        view.getChildren().add(0, connection);
+//    }
+
 
 }

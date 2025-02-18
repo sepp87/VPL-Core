@@ -33,7 +33,6 @@ public class AlignBottomCommand implements Undoable {
             BlockView blockView = blockController.getView();
             blockModel.layoutYProperty().set(bBox.getMaxY() - blockView.getHeight());
         }
-
     }
 
     @Override

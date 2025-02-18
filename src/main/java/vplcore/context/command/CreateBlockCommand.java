@@ -28,12 +28,10 @@ public class CreateBlockCommand implements Undoable {
 
     @Override
     public void execute() {
-            this.blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
-            blockModel.layoutXProperty().set(location.getX());
-            blockModel.layoutYProperty().set(location.getY());
-            workspaceModel.addBlockModel(blockModel);
-       
-
+        this.blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
+        blockModel.layoutXProperty().set(location.getX());
+        blockModel.layoutYProperty().set(location.getY());
+        workspaceModel.addBlockModel(blockModel);
     }
 
     @Override

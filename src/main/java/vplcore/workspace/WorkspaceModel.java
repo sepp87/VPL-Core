@@ -1,14 +1,10 @@
 package vplcore.workspace;
 
-import java.util.Collection;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import vplcore.graph.model.Block;
-import vplcore.graph.model.BlockGroup;
-import vplcore.graph.model.Connection;
 
 /**
  *
@@ -27,10 +23,6 @@ public class WorkspaceModel {
     private final DoubleProperty zoomFactor;
     private final DoubleProperty translateX;
     private final DoubleProperty translateY;
-
-    private final ObservableSet<Block> blocks = FXCollections.observableSet();
-    private final ObservableSet<Connection> connections = FXCollections.observableSet();
-    private final ObservableSet<BlockGroup> blockGroups = FXCollections.observableSet();
 
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
@@ -72,49 +64,13 @@ public class WorkspaceModel {
         this.zoomFactor.set(Math.round(factor * 10) / 10.);
     }
 
-    public Collection<Block> getBlocks() {
-        return blocks;
-    }
-
-    public Collection<Connection> getConnections() {
-        return connections;
-    }
-
-    public Collection<BlockGroup> getBlockGroups() {
-        return blockGroups;
-    }
-
-    public void addBlock(Block block) {
-        blocks.add(block);
-    }
-
-    public void addConnection(Connection connection) {
-        connections.add(connection);
-    }
-
-    public void addBlockGroup(BlockGroup blockGroup) {
-        blockGroups.add(blockGroup);
-    }
-
-    public void removeBlock(Block block) {
-        blocks.remove(block);
-    }
-
-    public void removeConnection(Connection connection) {
-        connections.remove(connection);
-    }
-
-    public void removeBlockGroup(BlockGroup blockGroup) {
-        blockGroups.remove(blockGroup);
-    }
-
     public void reset() {
         resetZoomFactor();
         translateXProperty().set(0.);
         translateYProperty().set(0.);
-        blocks.clear();
-        connections.clear();
-        blockGroups.clear();
+        blockModels.clear();
+        connectionModels.clear();
+        blockGroupModels.clear();
     }
 
     /**

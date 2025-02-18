@@ -4,6 +4,12 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 allign horizontally
+// 0 allign vertically
+// 0 cannot copy color block / double slider / integer slider / file input
+// 0 link backward 
+    // color > text then text to string (wrong direction of connection)
+    // string > text then text to color (no connection created) > A bound value cannot be set
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 block size save to model
@@ -66,6 +72,9 @@ import vpllib.method.JsonMethods;
 // Put everything inside the models that needs to be saved and all business logic needed to make a script work in headless mode
 // TODO naming conventions for event handlers & change listeners and placement of handlers / listeners in code
 // When a dedicated listener is needed, it should be declared directly above the method it calls, so it easier to find it
+//
+// TESTS 
+// Link backward
 /**
  *
  * @author JoostMeulenkamp

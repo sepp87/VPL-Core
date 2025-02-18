@@ -1,6 +1,5 @@
 package vplcore.graph.util;
 
-import vplcore.graph.model.Block;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -47,17 +46,9 @@ public class BlockLoader {
      */
     public static void loadInternalBlocks() {
         Reflections reflections = new Reflections("vpllib.input");
-
-        if (vplcore.App.BLOCK_MVC) {
-            Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
-            for (Class<?> type : blockTypes) {
-                addBlockType(type);
-            }
-        } else {
-            Set<Class<? extends Block>> blockTypes = reflections.getSubTypesOf(Block.class);
-            for (Class<?> type : blockTypes) {
-                addBlockType(type);
-            }
+        Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
+        for (Class<?> type : blockTypes) {
+            addBlockType(type);
         }
 
         Collections.sort(BLOCK_TYPE_LIST);
@@ -144,14 +135,8 @@ public class BlockLoader {
     private static List<Class<?>> filterEligibleClasses(List<Class<?>> classes) {
         List<Class<?>> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
-            if (vplcore.App.BLOCK_MVC) {
-                if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
-                    result.add(clazz);
-                }
-            } else {
-                if (Block.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
-                    result.add(clazz);
-                }
+            if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
+                result.add(clazz);
             }
         }
         return result;

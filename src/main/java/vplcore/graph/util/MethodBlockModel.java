@@ -15,6 +15,7 @@ import vplcore.workspace.BlockModel;
 import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.model.BlockMetadata;
+import vplcore.workspace.BlockView;
 
 /**
  *
@@ -49,7 +50,7 @@ public class MethodBlockModel extends BlockModel {
     public Region getCustomization() {
         Label label;
         if (!info.icon().equals(IconType.NULL)) {
-            label = getAwesomeIcon(info.icon());
+            label = BlockView.getAwesomeIcon(info.icon());
             
         } else if (!info.name().equals("")) {
             label = new Label(info.name());
@@ -60,12 +61,6 @@ public class MethodBlockModel extends BlockModel {
             label = new Label(shortName);
             label.getStyleClass().add("block-text");
         }
-        return label;
-    }
-
-    public static Label getAwesomeIcon(IconType type) {
-        Label label = new Label(type.getUnicode() + "");
-        label.getStyleClass().add("block-awesome-icon");
         return label;
     }
 

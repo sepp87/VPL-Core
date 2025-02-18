@@ -1,6 +1,8 @@
 package vpllib.input;
 
 import java.io.File;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
@@ -30,6 +32,8 @@ import vplcore.workspace.WorkspaceModel;
 )
 public class FileBlockNew extends BlockModel {
 
+    private final StringProperty path = new SimpleStringProperty();
+    
     private VplButton button;
     private TextField textField;
 
@@ -40,9 +44,7 @@ public class FileBlockNew extends BlockModel {
     public FileBlockNew(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("File");
-
         addOutputPort("file", File.class);
-
     }
 
     @Override
@@ -86,6 +88,10 @@ public class FileBlockNew extends BlockModel {
         } else {
             outputPorts.get(0).setData(null);
         }
+    }
+    
+    public StringProperty pathProperty() {
+        return path;
     }
 
     public void setPath(String path) {

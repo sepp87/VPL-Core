@@ -6,10 +6,7 @@ import vpllib.method.JsonMethods;
 
 // 0 allign horizontally
 // 0 allign vertically
-// 0 cannot copy color block / double slider / integer slider / file input
-// 0 link backward 
-    // color > text then text to string (wrong direction of connection)
-    // string > text then text to color (no connection created) > A bound value cannot be set
+// 0 cannot copy double slider / integer slider / file input
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 block size save to model

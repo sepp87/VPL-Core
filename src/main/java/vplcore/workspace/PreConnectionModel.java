@@ -94,8 +94,8 @@ public class PreConnectionModel extends Line {
                         }
                     }
                 }
-                System.out.println("createConnection");
-                workspaceModel.addConnectionModel(startPort, endPort);
+                System.out.println("createConnection INPUT to OUTPUT");
+                workspaceModel.addConnectionModel(endPort, startPort);
 
             } else { // endPort is INPUT
                 if (!endPort.connectedConnections.isEmpty()) {
@@ -112,7 +112,7 @@ public class PreConnectionModel extends Line {
                         endPort.connectedConnections.clear();
                     }
                 }
-                System.out.println("createConnection");
+                System.out.println("createConnection OUTPUT to INPUT");
                 workspaceModel.addConnectionModel(startPort, endPort);
             }
 

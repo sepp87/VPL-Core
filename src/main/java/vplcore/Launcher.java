@@ -4,6 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 file block throw file not exists exception
 // 0 allign horizontally
 // 0 allign vertically
 // 0 cannot copy double slider / integer slider / file input

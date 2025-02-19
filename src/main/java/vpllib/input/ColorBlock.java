@@ -20,12 +20,12 @@ import vplcore.workspace.WorkspaceModel;
         category = "Input",
         description = "Pick a nice color from the palette",
         tags = {"input", "color"})
-public class ColorBlockNew extends BlockModel {
+public class ColorBlock extends BlockModel {
 
     private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.WHITE);
     private CustomColorBox picker;
 
-    public ColorBlockNew(WorkspaceModel workspaceModel) {
+    public ColorBlock(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("Color Picker");
         addOutputPort("color", Color.class);
@@ -62,10 +62,18 @@ public class ColorBlockNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        ColorBlockNew block = new ColorBlockNew(workspace);
-        System.out.println(this.color.get());
+        ColorBlock block = new ColorBlock(workspace);
         block.color.set(this.color.get());
         return block;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (picker != null) {
+            picker.customColorProperty().unbindBidirectional(color);
+        }
     }
 
 }

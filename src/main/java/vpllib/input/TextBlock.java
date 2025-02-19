@@ -29,46 +29,42 @@ import vplcore.graph.model.BlockMetadata;
         category = "Input",
         description = "Input text or observe output as text",
         tags = {"input", "panel", "text"})
-public class TextBlockNew extends BlockModel {
+public class TextBlock extends BlockModel {
 
     private final StringProperty string = new SimpleStringProperty();
     private final BooleanProperty editable = new SimpleBooleanProperty();
     private TextArea textArea;
 
-    public TextBlockNew(WorkspaceModel workspace) {
+    public TextBlock(WorkspaceModel workspace) {
         super(workspace);
         nameProperty().set("Panel");
         resizableProperty().set(true);
         PortModel input = addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
-        string.addListener(calculateOnChangeHandler);
+        string.addListener(stringListener);
         editable.bind(input.activeProperty().not());
     }
 
     @Override
     public Region getCustomization() {
         textArea = new TextArea();
-        
-        // TODO Actually should be ContentGrid that is resizing
         textArea.setMinSize(220, 220);
         textArea.setPrefSize(220, 220);
-        textArea.layoutBoundsProperty().addListener(e -> {
-            ScrollBar scrollBarv = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
-            scrollBarv.setDisable(true);
-
-            ScrollPane pane = (ScrollPane) textArea.lookup(".scroll-pane");
-            pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        });
+        textArea.layoutBoundsProperty().addListener(layoutBoundsListener);
         textArea.textProperty().bindBidirectional(string);
         textArea.setOnKeyPressed(this::ignoreShortcuts);
         textArea.editableProperty().bind(editable); // set text area to editable when there is no active connection
         return textArea;
     }
 
-    @Override
-    public void remove() {
-        super.remove();
+    ChangeListener layoutBoundsListener = this::onLayoutBoundsChanged;
+
+    private void onLayoutBoundsChanged(Object b, Object o, Object n) {
+        ScrollBar scrollBarv = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
+        scrollBarv.setDisable(true);
+        ScrollPane pane = (ScrollPane) textArea.lookup(".scroll-pane");
+        pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
     @Override
@@ -76,9 +72,9 @@ public class TextBlockNew extends BlockModel {
         return this::focusOnTextArea;
     }
 
-    private final ChangeListener<String> calculateOnChangeHandler = this::handleCalculateOnChange;
+    private final ChangeListener<String> stringListener = this::onStringChanged;
 
-    private void handleCalculateOnChange(Object b, Object o, Object n) {
+    private void onStringChanged(Object b, Object o, Object n) {
         process();
     }
 
@@ -167,11 +163,24 @@ public class TextBlockNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        TextBlockNew block = new TextBlockNew(workspace);
+        TextBlock block = new TextBlock(workspace);
         if (editable.get()) {
             block.string.set(this.string.get());
         }
         return block;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        string.removeListener(stringListener);
+        editable.unbind();
+        if (textArea != null) {
+            textArea.layoutBoundsProperty().removeListener(layoutBoundsListener);
+            textArea.textProperty().unbindBidirectional(string);
+            textArea.setOnKeyPressed(null);
+            textArea.editableProperty().unbind();
+        }
     }
 
 }

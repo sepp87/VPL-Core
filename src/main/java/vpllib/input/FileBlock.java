@@ -30,18 +30,15 @@ import vplcore.workspace.WorkspaceModel;
         description = "Open a file",
         tags = {"file", "open", "load"}
 )
-public class FileBlockNew extends BlockModel {
+public class FileBlock extends BlockModel {
 
     private final StringProperty path = new SimpleStringProperty();
 
     private VplButton button;
     private TextField textField;
 
-    private final EventHandler<ActionEvent> openFileHandler = this::handleOpenFile;
 //    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
-    private final EventHandler<MouseEvent> textFieldEnteredHandler = this::handleTextFieldMouseEntered;
-
-    public FileBlockNew(WorkspaceModel workspaceModel) {
+    public FileBlock(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("File");
         addOutputPort("file", File.class);
@@ -56,13 +53,13 @@ public class FileBlockNew extends BlockModel {
         textField.setFocusTraversable(false);
 
         button = new VplButton(IconType.FA_FOLDER_OPEN);
-        button.setOnAction(openFileHandler);
+        button.setOnAction(this::handleOpenFile);
 
         HBox box = new HBox(5);
         box.getChildren().addAll(textField, button);
 
 //        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
-        textField.setOnMouseEntered(textFieldEnteredHandler);
+        textField.setOnMouseEntered(this::focusOnTextField);
         textField.textProperty().bindBidirectional(path);
         return box;
     }
@@ -77,7 +74,7 @@ public class FileBlockNew extends BlockModel {
 //    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
 //        process();
 //    }
-    private void handleTextFieldMouseEntered(MouseEvent event) {
+    private void focusOnTextField(MouseEvent event) {
         textField.requestFocus();
     }
 
@@ -139,9 +136,24 @@ public class FileBlockNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        FileBlockNew block = new FileBlockNew(workspace);
+        FileBlock block = new FileBlock(workspace);
         block.path.set(this.path.get());
         return block;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        path.removeListener(pathListener);
+
+        if (textField != null) {
+            textField.setOnMouseEntered(null);
+            textField.textProperty().unbindBidirectional(path);
+        }
+
+        if (button != null) {
+            button.setOnAction(null);
+        }
     }
 
 }

@@ -26,15 +26,17 @@ import vplcore.workspace.WorkspaceModel;
         category = "Input",
         description = "Number Slider",
         tags = {"input", "slider"})
-public class IntegerSliderNew extends BlockModel {
+public class IntegerSlider extends BlockModel {
 
     private Slider slider;
+    private Expander expander;
+
     private final IntegerProperty integerValue = new SimpleIntegerProperty(0);
     private final IntegerProperty integerMin = new SimpleIntegerProperty(0);
     private final IntegerProperty integerMax = new SimpleIntegerProperty(10);
     private final IntegerProperty integerStep = new SimpleIntegerProperty(1);
 
-    public IntegerSliderNew(WorkspaceModel workspaceModel) {
+    public IntegerSlider(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("Integer");
 
@@ -220,6 +222,23 @@ public class IntegerSliderNew extends BlockModel {
             }
             return newValue;
         }
+
+        private void remove() {
+            valueField.setOnKeyPressed(null);
+            minField.setOnKeyPressed(null);
+            maxField.setOnKeyPressed(null);
+            stepField.setOnKeyPressed(null);
+
+            valueField.focusedProperty().removeListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().removeListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().removeListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().removeListener(stepFieldFocusChangedHandler);
+
+            valueField.textProperty().unbind();
+            minField.textProperty().unbind();
+            maxField.textProperty().unbind();
+            stepField.textProperty().unbind();
+        }
     }
 
     @Override
@@ -251,7 +270,7 @@ public class IntegerSliderNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        IntegerSliderNew block = new IntegerSliderNew(workspace);
+        IntegerSlider block = new IntegerSlider(workspace);
         block.integerValue.set(this.integerValue.get());
         block.integerMin.set(this.integerMin.get());
         block.integerMax.set(this.integerMax.get());
@@ -273,5 +292,21 @@ public class IntegerSliderNew extends BlockModel {
 
     IntegerProperty integerStepProperty() {
         return integerStep;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (slider != null) {
+            slider.valueProperty().unbindBidirectional(integerValue);
+            slider.minProperty().unbindBidirectional(integerMin);
+            slider.maxProperty().unbindBidirectional(integerMax);
+            slider.blockIncrementProperty().unbindBidirectional(integerStep);
+        }
+
+        if (expander != null) {
+            expander.remove();
+        }
     }
 }

@@ -11,8 +11,6 @@ import vpllib.method.JsonMethods;
 // 0 block size save to model
 // 0 saving / loading
 // 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
-// 0 DoubleSlider add value without UI
-// 0 IntegerSlide add value without UI
 // 0 remove connection command in conjunction with removal of block
 // 0 remove connection command in conjunction with connection created for occupied port
 
@@ -31,7 +29,6 @@ import vpllib.method.JsonMethods;
 // 3 REFACTOR integer and double slider event handlers
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 4 IMPROVEMENT create elaborate tests TBD what to test
-// 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 // 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 4 IMPROVEMENT multi workspace support with copy-paste
@@ -45,6 +42,9 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // DONE
+// 0 DoubleSlider add value without UI
+// 0 IntegerSlide add value without UI
+// 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
 // 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
 // 1 BUG selection discarded when clicking on menu bar
 // 1 BUG selection discarded when exiting radial menu

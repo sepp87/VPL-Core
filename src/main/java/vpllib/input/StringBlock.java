@@ -1,12 +1,9 @@
 package vpllib.input;
 
-import java.util.Map;
-import java.util.TreeMap;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -30,16 +27,16 @@ import vplcore.graph.model.BlockMetadata;
         category = "Input",
         description = "Input a line of text",
         tags = {"input", "line", "string"})
-public class StringBlockNew extends BlockModel {
+public class StringBlock extends BlockModel {
 
     private final StringProperty string = new SimpleStringProperty();
     private TextField textField;
 
-    public StringBlockNew(WorkspaceModel workspace) {
+    public StringBlock(WorkspaceModel workspace) {
         super(workspace);
         this.nameProperty().set("String");
         addOutputPort("String : Value", String.class);
-        string.addListener(calculateOnChangeHandler);
+        string.addListener(stringListener);
     }
 
     @Override
@@ -57,24 +54,13 @@ public class StringBlockNew extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
-        string.removeListener(calculateOnChangeHandler);
-        if (textField == null) {
-            return;
-        }
-        textField.textProperty().unbindBidirectional(string);
-        textField.setOnKeyPressed(null);
-    }
-
-    @Override
     public EventHandler<MouseEvent> onMouseEntered() {
         return this::focusOnTextField;
     }
 
-    private final ChangeListener<String> calculateOnChangeHandler = this::handleCalculateOnChange;
+    private final ChangeListener<String> stringListener = this::onStringChanged;
 
-    private void handleCalculateOnChange(Object b, Object o, Object n) {
+    private void onStringChanged(Object b, Object o, Object n) {
         process();
     }
 
@@ -190,9 +176,19 @@ public class StringBlockNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        StringBlockNew block = new StringBlockNew(workspace);
+        StringBlock block = new StringBlock(workspace);
         block.string.set(this.string.get());
         return block;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        string.removeListener(stringListener);
+        if (textField != null) {
+            textField.textProperty().unbindBidirectional(string);
+            textField.setOnKeyPressed(null);
+        }
     }
 
 }

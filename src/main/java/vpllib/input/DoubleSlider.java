@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -30,9 +28,10 @@ import vplcore.workspace.WorkspaceModel;
         category = "Input",
         description = "Number Slider",
         tags = {"input", "slider"})
-public class DoubleSliderNew extends BlockModel {
+public class DoubleSlider extends BlockModel {
 
     private Slider slider;
+    private Expander expander;
     private DoubleBinding doubleValueFormatted;
 
     private final DoubleProperty doubleValue = new SimpleDoubleProperty(0);
@@ -40,7 +39,7 @@ public class DoubleSliderNew extends BlockModel {
     private final DoubleProperty doubleMax = new SimpleDoubleProperty(10);
     private final DoubleProperty doubleStep = new SimpleDoubleProperty(0.1);
 
-    public DoubleSliderNew(WorkspaceModel workspaceModel) {
+    public DoubleSlider(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("Double");
         addOutputPort("double", Double.class);
@@ -78,12 +77,12 @@ public class DoubleSliderNew extends BlockModel {
         slider.blockIncrementProperty().bindBidirectional(doubleStep);
 
         Pane container = new Pane();
-        Expander expand = new Expander();
-        expand.setLayoutX(0);
-        expand.setLayoutY(0);
+        expander = new Expander();
+        expander.setLayoutX(0);
+        expander.setLayoutY(0);
         slider.setLayoutX(30);
         slider.setLayoutY(4);
-        container.getChildren().addAll(expand, slider);
+        container.getChildren().addAll(expander, slider);
         return container;
     }
 
@@ -251,6 +250,23 @@ public class DoubleSliderNew extends BlockModel {
             }
             return newValue;
         }
+
+        private void remove() {
+            valueField.setOnKeyPressed(null);
+            minField.setOnKeyPressed(null);
+            maxField.setOnKeyPressed(null);
+            stepField.setOnKeyPressed(null);
+
+            valueField.focusedProperty().removeListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().removeListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().removeListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().removeListener(stepFieldFocusChangedHandler);
+
+            valueField.textProperty().unbind();
+            minField.textProperty().unbind();
+            maxField.textProperty().unbind();
+            stepField.textProperty().unbind();
+        }
     }
 
     @Override
@@ -282,11 +298,28 @@ public class DoubleSliderNew extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        DoubleSliderNew block = new DoubleSliderNew(workspace);
+        DoubleSlider block = new DoubleSlider(workspace);
         block.doubleValue.set(this.doubleValue.get());
         block.doubleMin.set(this.doubleMin.get());
         block.doubleMax.set(this.doubleMax.get());
         block.doubleStep.set(this.doubleStep.get());
         return block;
     }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (slider != null) {
+            slider.valueProperty().unbindBidirectional(doubleValue);
+            slider.minProperty().unbindBidirectional(doubleMin);
+            slider.maxProperty().unbindBidirectional(doubleMax);
+            slider.blockIncrementProperty().unbindBidirectional(doubleStep);
+        }
+
+        if (expander != null) {
+            expander.remove();
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package vplcore.graph.model;
+package vplcore.graph.block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import vplcore.FontAwesomeIcon;
-import vplcore.workspace.BlockModel;
 
 // TODO Block should llsten to when the exception panel is removed and as such decide to show the exception button again only in case the exception is still present
 /**

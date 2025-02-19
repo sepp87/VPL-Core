@@ -3,8 +3,8 @@ package vplcore.context;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.ConnectionModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 
 /**

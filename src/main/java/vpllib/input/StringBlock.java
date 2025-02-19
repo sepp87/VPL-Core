@@ -14,9 +14,9 @@ import static vplcore.util.DataParsingUtils.getDoubleValue;
 import static vplcore.util.DataParsingUtils.getIntegerValue;
 import static vplcore.util.DataParsingUtils.getLongValue;
 import jo.vpl.xml.BlockTag;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

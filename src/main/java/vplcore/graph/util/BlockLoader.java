@@ -26,8 +26,8 @@ import javafx.collections.ObservableMap;
 import vplcore.Config;
 import org.reflections.Reflections;
 import vplcore.util.FileUtils;
-import vplcore.workspace.BlockModel;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

@@ -1,6 +1,7 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
-import vplcore.graph.model.*;
+import vplcore.graph.block.VplElement;
+import vplcore.graph.block.VplButton;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ import vplcore.App;
 import vplcore.IconType;
 import vplcore.context.ActionManager;
 import vplcore.context.command.RemoveGroupCommand;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 
 /**

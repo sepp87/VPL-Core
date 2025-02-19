@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 //import javafx.beans.property.DoubleProperty;
 import java.util.ArrayList;

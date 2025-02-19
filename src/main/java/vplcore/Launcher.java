@@ -4,8 +4,6 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 text block copy width and height of block
-// 0 file block throw file not exists exception
 // 0 remove WorkspaceController from blockmodel
 // 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
 // 0 block size save to model
@@ -13,35 +11,37 @@ import vpllib.method.JsonMethods;
 // 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
 // 0 remove connection command in conjunction with removal of block
 // 0 remove connection command in conjunction with connection created for occupied port
-
-// 1 IMPROVEMENT Add undo/redo functionality
-// 1 BUG Info panel does not move down when aligning blocks
-// 4 IMPROVEMENT reload plugins on demand from menu bar
-// 1 IMPROVEMENT Set block exception panel when block throws exception
+// 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
-// 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-// 4 IMPROVEMENT add save and save as commands
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
-// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
-// 3 REFACTOR integer and double slider event handlers
-// 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
-// 4 IMPROVEMENT create elaborate tests TBD what to test
-// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
+// 3 REFACTOR merge integer and double slider and refactor event handlers
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
-// 4 IMPROVEMENT multi workspace support with copy-paste
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
+// 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
+//
+// BACKLOG
+// 0 text block copy width and height of block
+// 1 IMPROVEMENT update overall UI to show port data hints ... 
+// 1 IMPROVEMENT Add undo/redo functionality
+// 4 IMPROVEMENT create elaborate tests TBD what to test
+// 4 IMPROVEMENT add save and save as commands
+// 4 IMPROVEMENT reload plugins on demand from menu bar
+// 4 IMPROVEMENT multi workspace support with copy-paste
+// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
+// 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
+// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
+//
+// DONE
+// 1 BUG Info panel does not move down when aligning blocks
 // 1 IMPROVEMENT Block to MVC Pattern - WorkspaceController handle onConnectionsChanged, onBlockGroupsChanged 
 // 1 IMPROVEMENT Block to MVC Pattern - BlockMethodModel
 // 1 IMPROVEMENT Block to MVC Pattern - Input Blocks
 // 1 IMPROVEMENT Block to MVC Pattern - Block Model, View, Controller
-// 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
-//
-// DONE
 // 0 DoubleSlider add value without UI
 // 0 IntegerSlide add value without UI
 // 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks

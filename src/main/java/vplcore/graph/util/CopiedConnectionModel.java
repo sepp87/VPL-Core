@@ -1,6 +1,6 @@
 package vplcore.graph.util;
 
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockModel;
 
 /**
  *

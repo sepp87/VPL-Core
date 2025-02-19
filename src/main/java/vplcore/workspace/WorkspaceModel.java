@@ -1,5 +1,9 @@
 package vplcore.workspace;
 
+import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.PortModel;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;

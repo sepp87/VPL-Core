@@ -15,10 +15,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.PortModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.PortModel;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

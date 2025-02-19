@@ -6,8 +6,8 @@ import vplcore.App;
 import vplcore.context.CopyPasteMemory;
 import vplcore.context.CopyResult;
 import vplcore.context.Undoable;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.ConnectionModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 

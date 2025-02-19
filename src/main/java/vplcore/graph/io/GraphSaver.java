@@ -17,9 +17,9 @@ import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.workspace.BlockGroupModel;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.ConnectionModel;
+import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 
 /**

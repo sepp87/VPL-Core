@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 import java.io.File;
 import javafx.beans.property.DoubleProperty;
@@ -18,6 +18,8 @@ import jo.vpl.xml.ConnectionTag;
 import vplcore.context.ActionManager;
 import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.util.FileUtils;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceView;
 import static vplcore.util.EventUtils.isLeftClick;
 
 ///**

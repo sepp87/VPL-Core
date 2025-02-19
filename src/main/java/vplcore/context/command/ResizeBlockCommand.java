@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import vplcore.context.Undoable;
-import vplcore.workspace.BlockController;
+import vplcore.graph.block.BlockController;
 
 /**
  *

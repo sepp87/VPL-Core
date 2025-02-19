@@ -1,4 +1,4 @@
-package vplcore.graph.model;
+package vplcore.graph.block;
 
 import javafx.beans.property.*;
 import javafx.event.EventHandler;

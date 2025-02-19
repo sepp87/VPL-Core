@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import vplcore.graph.util.CopiedConnectionModel;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.BlockView;
-import vplcore.workspace.ConnectionModel;
-import vplcore.workspace.PortModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.BlockView;
+import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.block.PortModel;
 import vplcore.workspace.WorkspaceController;
 
 /**

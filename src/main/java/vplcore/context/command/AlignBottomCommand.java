@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
 import vplcore.context.Undoable;
-import vplcore.workspace.BlockController;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.BlockView;
+import vplcore.graph.block.BlockController;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.BlockView;
 import vplcore.workspace.WorkspaceController;
 
 /**

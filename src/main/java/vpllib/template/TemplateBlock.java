@@ -8,10 +8,10 @@ import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockMetadata;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.BlockView;
-import vplcore.workspace.PortModel;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.BlockView;
+import vplcore.graph.block.PortModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**

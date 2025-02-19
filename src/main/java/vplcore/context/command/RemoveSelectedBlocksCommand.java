@@ -3,7 +3,7 @@ package vplcore.context.command;
 import java.util.Collection;
 import vplcore.App;
 import vplcore.context.Undoable;
-import vplcore.workspace.BlockController;
+import vplcore.graph.block.BlockController;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 

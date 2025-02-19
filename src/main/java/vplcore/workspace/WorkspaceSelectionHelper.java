@@ -1,5 +1,8 @@
 package vplcore.workspace;
 
+import vplcore.graph.block.BlockController;
+import vplcore.graph.block.BlockView;
+import vplcore.graph.block.BlockModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import javafx.collections.FXCollections;

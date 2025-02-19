@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import vplcore.context.Undoable;
-import vplcore.workspace.PortModel;
+import vplcore.graph.block.PortModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 

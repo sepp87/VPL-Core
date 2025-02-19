@@ -1,4 +1,4 @@
-package vplcore.graph.model;
+package vplcore.graph.block;
 
 import java.util.List;
 import javafx.geometry.Point2D;
@@ -16,9 +16,6 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import vplcore.FontAwesomeIcon;
 import vplcore.graph.util.MethodBlockModel;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.BlockView;
-import vplcore.workspace.PortModel;
 import vplcore.workspace.WorkspaceView;
 
 /**

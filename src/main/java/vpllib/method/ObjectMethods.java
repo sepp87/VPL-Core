@@ -1,6 +1,6 @@
 package vpllib.method;
 
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

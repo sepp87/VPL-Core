@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vplcore.IconType;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

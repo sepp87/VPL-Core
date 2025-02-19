@@ -13,8 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockMetadata;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**

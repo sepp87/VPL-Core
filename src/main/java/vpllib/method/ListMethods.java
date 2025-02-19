@@ -3,7 +3,7 @@ package vpllib.method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *

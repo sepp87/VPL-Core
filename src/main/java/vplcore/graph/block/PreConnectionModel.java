@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -7,6 +7,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.graph.util.TypeExtensions;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *

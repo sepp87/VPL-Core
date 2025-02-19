@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -8,7 +8,9 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockMetadata;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *

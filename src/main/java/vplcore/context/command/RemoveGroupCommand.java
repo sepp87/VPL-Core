@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import vplcore.context.Undoable;
-import vplcore.workspace.BlockController;
-import vplcore.workspace.BlockGroupModel;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockController;
+import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 

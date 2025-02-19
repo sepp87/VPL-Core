@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import vplcore.context.Command;
-import vplcore.workspace.BlockController;
+import vplcore.graph.block.BlockController;
 import vplcore.workspace.WorkspaceController;
 
 /**

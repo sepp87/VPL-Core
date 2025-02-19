@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,11 +15,12 @@ import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.ResizeBlockCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
-import vplcore.graph.model.BlockModelExceptionPanel;
-import vplcore.graph.model.BlockModelExceptionPanel.BlockException;
-import vplcore.graph.model.BlockModelInfoPanel;
-import vplcore.graph.model.ResizeButton;
+import vplcore.graph.block.BlockModelExceptionPanel;
+import vplcore.graph.block.BlockModelExceptionPanel.BlockException;
+import vplcore.graph.block.BlockModelInfoPanel;
+import vplcore.graph.block.ResizeButton;
 import vplcore.util.EventUtils;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -290,7 +291,6 @@ public class BlockController extends BaseController {
         if (infoPanel != null) {
             infoPanel.delete();
         }
-
 
     }
 

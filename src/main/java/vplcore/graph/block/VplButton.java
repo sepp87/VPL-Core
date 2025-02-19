@@ -1,4 +1,4 @@
-package vplcore.graph.model;
+package vplcore.graph.block;
 
 import javafx.scene.control.Button;
 import vplcore.IconType;

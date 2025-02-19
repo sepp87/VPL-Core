@@ -1,4 +1,4 @@
-package vplcore.graph.model;
+package vplcore.graph.block;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;

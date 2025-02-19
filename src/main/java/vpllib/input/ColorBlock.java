@@ -7,8 +7,8 @@ import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import vpllib.util.CustomColorBox;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockMetadata;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**

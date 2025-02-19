@@ -1,4 +1,4 @@
-package vplcore.workspace;
+package vplcore.graph.block;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,11 +18,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
-import vplcore.graph.model.BlockLabel;
-import vplcore.graph.model.BlockModelExceptionPanel;
-import vplcore.graph.model.BlockModelInfoPanel;
-import vplcore.graph.model.ResizeButton;
-import vplcore.graph.model.VplButton;
+import vplcore.graph.block.BlockLabel;
+import vplcore.graph.block.BlockModelExceptionPanel;
+import vplcore.graph.block.BlockModelInfoPanel;
+import vplcore.graph.block.ResizeButton;
+import vplcore.graph.block.VplButton;
 
 /**
  *

@@ -1,5 +1,12 @@
 package vplcore.workspace;
 
+import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.block.PreConnectionModel;
+import vplcore.graph.block.BlockController;
+import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.block.BlockView;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.PortModel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +16,7 @@ import javafx.geometry.Point2D;
 import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
-import vplcore.graph.model.BlockModelInfoPanel;
+import vplcore.graph.block.BlockModelInfoPanel;
 
 /**
  *

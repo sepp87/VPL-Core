@@ -1,5 +1,7 @@
 package vplcore.workspace;
 
+import vplcore.graph.block.BlockController;
+import vplcore.graph.block.BlockView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

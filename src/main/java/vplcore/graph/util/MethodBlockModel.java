@@ -11,11 +11,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
 import vplcore.IconType;
-import vplcore.workspace.BlockModel;
-import vplcore.workspace.PortModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.block.PortModel;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.model.BlockMetadata;
-import vplcore.workspace.BlockView;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockView;
 
 /**
  *

@@ -13,11 +13,11 @@ import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import vplcore.graph.model.VplButton;
+import vplcore.graph.block.VplButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockMetadata;
-import vplcore.workspace.BlockModel;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**

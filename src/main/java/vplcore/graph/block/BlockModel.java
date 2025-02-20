@@ -1,5 +1,6 @@
 package vplcore.graph.block;
 
+import vplcore.graph.port.PortModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.block.BlockMetadata;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 
@@ -19,7 +19,7 @@ import vplcore.workspace.WorkspaceModel;
 public abstract class BlockModel extends BaseModel {
 
     // TODO remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
-//    public WorkspaceController workspaceController;
+    public WorkspaceController workspaceController;
 
     protected WorkspaceModel workspace;
 

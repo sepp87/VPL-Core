@@ -1,13 +1,12 @@
-package vplcore.graph.block;
+package vplcore.graph.group;
 
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import vplcore.EventBlaster;
+import vplcore.graph.block.BaseLabel;
 import vplcore.workspace.WorkspaceController;
-import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -15,7 +14,7 @@ import vplcore.workspace.WorkspaceView;
  */
 public class VplElement extends GridPane {
 
-    public BlockLabel captionLabel;
+    public BaseLabel captionLabel;
     public HBox menuBox;
 
     public WorkspaceController workspaceController;
@@ -24,7 +23,6 @@ public class VplElement extends GridPane {
     public final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
     public final BooleanProperty deleted = new SimpleBooleanProperty(this, "deleted", false);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
-    public EventBlaster eventBlaster = new EventBlaster(this);
 
     private final EventHandler<MouseEvent> vplElementEnteredHandler = this::handleVplElementEntered;
     private final EventHandler<MouseEvent> vplElementExitedHandler = this::handleVplElementExited;
@@ -34,19 +32,9 @@ public class VplElement extends GridPane {
 
         getStyleClass().add("vpl-element");
 
-        //@TODO might want to split up into geometry and semantics
-        eventBlaster.set("left", layoutXProperty());
-        eventBlaster.set("top", layoutYProperty());
-        eventBlaster.set("translateLeft", translateXProperty());
-        eventBlaster.set("translateTop", translateYProperty());
-        eventBlaster.set("size", boundsInParentProperty());
-        eventBlaster.set("name", name);
-        eventBlaster.set("selected", selected);
-        eventBlaster.set("deleted", deleted);
-
         menuBox = new HBox(5);
 
-        captionLabel = new BlockLabel(menuBox);
+        captionLabel = new BaseLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.textProperty().bindBidirectional(name);
         captionLabel.setVisible(false);
@@ -79,10 +67,6 @@ public class VplElement extends GridPane {
 
     public void handleVplElementExited(MouseEvent event) {
         captionLabel.setVisible(false);
-    }
-
-    private void toggleControlsVisibility(boolean isVisible) {
-        captionLabel.setVisible(isVisible);
     }
 
     public final StringProperty nameProperty() {

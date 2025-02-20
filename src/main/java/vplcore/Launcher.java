@@ -4,26 +4,25 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-
-// 0 BlockGroup to MVC
-//      When loading a vplxml, the size of the group is not right. MVC pattern might automatically solve this issue
+// 0 BlockGroup remove single block
+// 0 BlockGroup blocks only in single group
 // 0 Connection to MVC
 // 0 Port to MVC
 // 0 BlockModelInfoPanel to MVC 
 //      0 remove WorkspaceController from blockmodel
-
 // 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // BACKLOG
+// 0 REFACTOR Block MVC
+// 0 REFACTOR BlockGroup MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 1 IMPROVEMENT Add undo/redo functionality
 //      0 remove connection command in conjunction with removal of block
@@ -42,6 +41,8 @@ import vpllib.method.JsonMethods;
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 //
 // DONE
+// 0 BlockGroup to MVC
+//      When loading a vplxml, the size of the group is not right. MVC pattern might automatically solve this issue
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

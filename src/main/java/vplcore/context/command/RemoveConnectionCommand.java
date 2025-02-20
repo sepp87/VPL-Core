@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import vplcore.context.Undoable;
-import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**

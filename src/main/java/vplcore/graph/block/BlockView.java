@@ -1,5 +1,6 @@
 package vplcore.graph.block;
 
+import vplcore.graph.port.PortModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +30,7 @@ import vplcore.IconType;
  */
 public class BlockView extends GridPane {
 
-    private final BlockLabel captionLabel;
+    private final BaseLabel captionLabel;
     private final HBox menuBox;
 
     private final Pane inPortBox;
@@ -38,10 +39,10 @@ public class BlockView extends GridPane {
     private final GridPane contentGrid;
     private final GridPane mainContentGrid;
 
-    private final VplButton infoButton = new VplButton(IconType.FA_INFO_CIRCLE);
+    private final BaseButton infoButton = new BaseButton(IconType.FA_INFO_CIRCLE);
     private BlockModelInfoPanel infoPanel;
 
-    private final VplButton exceptionButton = new VplButton(IconType.FA_WARNING);
+    private final BaseButton exceptionButton = new BaseButton(IconType.FA_WARNING);
     private BlockModelExceptionPanel exceptionPanel;
 
     private ResizeButton resizeButton;
@@ -49,7 +50,7 @@ public class BlockView extends GridPane {
     public BlockView() {
 
         menuBox = new HBox(5);
-        captionLabel = new BlockLabel(menuBox);
+        captionLabel = new BaseLabel(menuBox);
         captionLabel.getStyleClass().add("vpl-tag");
         captionLabel.setVisible(false);
 
@@ -122,7 +123,7 @@ public class BlockView extends GridPane {
 
     }
 
-    public BlockLabel getCaptionLabel() {
+    public BaseLabel getCaptionLabel() {
         return captionLabel;
     }
 
@@ -130,7 +131,7 @@ public class BlockView extends GridPane {
         return contentGrid;
     }
 
-    public VplButton getInfoButton() {
+    public BaseButton getInfoButton() {
         return infoButton;
     }
 
@@ -159,7 +160,7 @@ public class BlockView extends GridPane {
         exceptionButton.setVisible(true);
     }
 
-    public VplButton getExceptionButton() {
+    public BaseButton getExceptionButton() {
         return exceptionButton;
     }
 

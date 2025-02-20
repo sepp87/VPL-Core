@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
-import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
@@ -36,8 +36,9 @@ public class GroupBlocksCommand implements Undoable {
         for (BlockController blockController : selectedBlockControllers) {
             selectedBlockModels.add(blockController.getModel());
         }
-        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
-        blockGroupModel.setChildBlocks(selectedBlockModels);
+//        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
+        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceModel);
+        blockGroupModel.setBlocks(selectedBlockModels);
         workspaceModel.addBlockGroupModel(blockGroupModel);
 
     }

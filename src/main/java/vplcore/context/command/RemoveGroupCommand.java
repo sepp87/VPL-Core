@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
-import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;

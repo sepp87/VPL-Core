@@ -15,7 +15,7 @@ import javafx.scene.layout.Priority;
  *
  * @author JoostMeulenkamp
  */
-public class BlockLabel extends Button {
+public class BaseLabel extends Button {
 
     HBox hostElement;
     private final TextField textField;
@@ -25,7 +25,7 @@ public class BlockLabel extends Button {
     private final EventHandler<MouseEvent> fieldExitedHandler = this::handleFieldExited;
     private final EventHandler<MouseEvent> blockLabelClickedHandler = this::handleBlockLabelClicked;
 
-    public BlockLabel(HBox box) {
+    public BaseLabel(HBox box) {
         hostElement = box;
         textField = new TextField();
 

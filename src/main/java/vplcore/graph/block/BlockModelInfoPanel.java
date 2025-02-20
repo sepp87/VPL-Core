@@ -1,5 +1,6 @@
 package vplcore.graph.block;
 
+import vplcore.graph.port.PortModel;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;

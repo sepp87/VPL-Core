@@ -1,9 +1,10 @@
 package vplcore.workspace;
 
-import vplcore.graph.block.BlockGroupModel;
-import vplcore.graph.block.ConnectionModel;
+import java.util.List;
+import vplcore.graph.group.BlockGroupModel;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.PortModel;
+import vplcore.graph.port.PortModel;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
@@ -24,6 +25,8 @@ public class WorkspaceModel {
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
 
+    private final WorkspaceBlockGroupHelper blockGroupHelper;
+
     private final DoubleProperty zoomFactor;
     private final DoubleProperty translateX;
     private final DoubleProperty translateY;
@@ -33,6 +36,8 @@ public class WorkspaceModel {
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
 
     public WorkspaceModel() {
+        blockGroupHelper = new WorkspaceBlockGroupHelper(this);
+        
         zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
@@ -135,6 +140,10 @@ public class WorkspaceModel {
      *
      * GROUPS
      */
+    public void createBlockGroup(List<BlockModel> blockModels) {
+        blockGroupHelper.createBlockGroup(blockModels);
+    }
+
     public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
         blockGroupModels.add(blockGroupModel);
     }

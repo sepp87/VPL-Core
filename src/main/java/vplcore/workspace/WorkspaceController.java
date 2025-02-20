@@ -1,14 +1,16 @@
 package vplcore.workspace;
 
-import vplcore.graph.block.BlockGroupModel;
-import vplcore.graph.block.PreConnectionModel;
+import java.util.ArrayList;
+import vplcore.graph.group.BlockGroupModel;
+import vplcore.graph.connection.PreConnectionModel;
 import vplcore.graph.block.BlockController;
-import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockView;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.PortModel;
+import vplcore.graph.port.PortModel;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
@@ -17,6 +19,8 @@ import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
 import vplcore.graph.block.BlockModelInfoPanel;
+import vplcore.graph.group.BlockGroupController;
+import vplcore.graph.group.BlockGroupView;
 
 /**
  *
@@ -30,7 +34,8 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceZoomHelper zoomHelper;
     private final WorkspaceSelectionHelper selectionHelper;
 
-    Map<BlockModel, BlockController> blocks = new HashMap<>();
+    private final Map<BlockModel, BlockController> blocks = new HashMap<>();
+    private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
 
     // TODO Remove public access to info panel 
     public BlockModelInfoPanel activeBlockModelInfoPanel;
@@ -66,24 +71,60 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlock(BlockModel blockModel) {
-        // TODO Refactor and remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
-        blockModel.workspaceController = WorkspaceController.this;
-
+        System.out.println("WorkspaceController.addBlock()");
+        blockModel.workspaceController = WorkspaceController.this; // TODO Refactor and remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
         BlockView blockView = new BlockView();
         view.getChildren().add(blockView);
-
         BlockController blockController = new BlockController(this, blockModel, blockView);
-
         blocks.put(blockModel, blockController);
     }
 
     private void removeBlock(BlockModel blockModel) {
-        System.out.println("delete block");
+        System.out.println("WorkspaceController.removeBlock()");
         BlockController blockController = blocks.get(blockModel);
         blocks.remove(blockModel);
         view.getChildren().remove(blockController.getView());
         blockController.remove();
         // controller remove itself
+    }
+
+    /**
+     * GROUPS
+     */
+    SetChangeListener<BlockGroupModel> blockGroupModelsListener = this::onBlockGroupModelsChanged;
+
+    private void onBlockGroupModelsChanged(Change<? extends BlockGroupModel> change) {
+        if (change.wasAdded()) {
+            addBlockGroup(change.getElementAdded());
+        } else {
+            removeBlockGroup(change.getElementRemoved());
+        }
+    }
+
+    private void addBlockGroup(BlockGroupModel blockGroupModel) {
+        System.out.println("WorkspaceController.addBlockGroup()");
+        BlockGroupView blockGroupView = new BlockGroupView();
+        view.getChildren().add(0, blockGroupView);
+        BlockGroupController blockGroupController = new BlockGroupController(this, blockGroupModel, blockGroupView);
+        List<BlockController> blockControllers = new ArrayList<>();
+        for (BlockModel blockModel  : blockGroupModel.getBlocks()) {
+            blockControllers.add(blocks.get(blockModel));
+        }
+        blockGroupController.setBlocks(blockControllers);
+        
+        blockGroups.put(blockGroupModel, blockGroupController);
+
+//        view.getChildren().add(0, blockGroupModel);
+    }
+
+    private void removeBlockGroup(BlockGroupModel blockGroupModel) {
+        System.out.println("WorkspaceController.removeBlockGroup()");
+        BlockGroupController blockGroupController = blockGroups.get(blockGroupModel);
+        blockGroups.remove(blockGroupModel);
+        view.getChildren().remove(blockGroupController.getView());
+        blockGroupController.remove();
+//        view.getChildren().remove(blockGroupModel);
+//        blockGroupModel.delete();
     }
 
     /**
@@ -104,30 +145,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
+        System.out.println("removeConnection");
         view.getChildren().remove(connectionModel);
         connectionModel.remove();
-    }
-
-    /**
-     * GROUPS
-     */
-    SetChangeListener<BlockGroupModel> blockGroupModelsListener = this::onBlockGroupModelsChanged;
-
-    private void onBlockGroupModelsChanged(Change<? extends BlockGroupModel> change) {
-        if (change.wasAdded()) {
-            addBlockGroup(change.getElementAdded());
-        } else {
-            removeBlockGroup(change.getElementRemoved());
-        }
-    }
-
-    private void addBlockGroup(BlockGroupModel blockGroupModel) {
-        view.getChildren().add(0, blockGroupModel);
-    }
-
-    private void removeBlockGroup(BlockGroupModel blockGroupModel) {
-        view.getChildren().remove(blockGroupModel);
-        blockGroupModel.delete();
     }
 
     private PreConnectionModel preConnectionModel = null;
@@ -229,23 +249,4 @@ public class WorkspaceController extends BaseController {
     public Collection<BlockController> getSelectedBlockControllers() {
         return selectionHelper.getSelectedBlockControllers();
     }
-
-//    public void removeChild(ConnectionModel connectionModel) {
-//        System.out.println("WorkspaceController ConnectionModel removed");
-//        model.removeConnectionModel(connectionModel);
-//        view.getChildren().remove(connectionModel);
-//    }
- 
-
-//    public void addConnectionModel(PortModel startPort, PortModel endPort) {
-//        ConnectionModel connection = new ConnectionModel(this, startPort, endPort);
-//        addConnectionModel(connection);
-//    }
-//
-//    public void addConnectionModel(ConnectionModel connection) {
-//        model.addConnectionModel(connection);
-//        view.getChildren().add(0, connection);
-//    }
-
-
 }

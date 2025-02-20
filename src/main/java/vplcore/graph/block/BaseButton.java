@@ -7,9 +7,9 @@ import vplcore.IconType;
  *
  * @author JoostMeulenkamp
  */
-public class VplButton extends Button {
+public class BaseButton extends Button {
 
-    public VplButton(IconType type) {
+    public BaseButton(IconType type) {
         getStyleClass().add("vpl-button");
         setText(type.getUnicode() + "");
         setFocusTraversable(false);

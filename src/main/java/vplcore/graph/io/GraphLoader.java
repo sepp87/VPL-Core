@@ -18,9 +18,9 @@ import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.util.BlockModelFactory;
-import vplcore.graph.block.BlockGroupModel;
+import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.PortModel;
+import vplcore.graph.port.PortModel;
 import vplcore.workspace.WorkspaceController;
 
 /**
@@ -123,7 +123,8 @@ public class GraphLoader {
         }
 
         for (GroupTag groupTag : groupTagList) {
-            BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
+//            BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
+            BlockGroupModel group = new BlockGroupModel(workspaceModel);
             group.deserialize(groupTag);
             workspaceModel.addBlockGroupModel(group);
         }

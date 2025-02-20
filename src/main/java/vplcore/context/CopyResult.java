@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.ConnectionModel;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 
 /**

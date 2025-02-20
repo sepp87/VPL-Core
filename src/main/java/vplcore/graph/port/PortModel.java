@@ -1,4 +1,4 @@
-package vplcore.graph.block;
+package vplcore.graph.port;
 
 //import javafx.beans.property.DoubleProperty;
 import java.util.ArrayList;
@@ -21,6 +21,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.util.TypeExtensions;
 
 //import javafx.beans.property.ObjectProperty;

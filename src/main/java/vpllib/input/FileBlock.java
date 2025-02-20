@@ -13,7 +13,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import vplcore.graph.block.VplButton;
+import vplcore.graph.block.BaseButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockMetadata;
@@ -34,7 +34,7 @@ public class FileBlock extends BlockModel {
 
     private final StringProperty path = new SimpleStringProperty();
 
-    private VplButton button;
+    private BaseButton button;
     private TextField textField;
 
 //    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
@@ -52,7 +52,7 @@ public class FileBlock extends BlockModel {
         textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
 
-        button = new VplButton(IconType.FA_FOLDER_OPEN);
+        button = new BaseButton(IconType.FA_FOLDER_OPEN);
         button.setOnAction(this::handleOpenFile);
 
         HBox box = new HBox(5);

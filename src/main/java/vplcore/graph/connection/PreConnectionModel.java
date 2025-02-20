@@ -1,5 +1,6 @@
-package vplcore.graph.block;
+package vplcore.graph.connection;
 
+import vplcore.graph.port.PortModel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;

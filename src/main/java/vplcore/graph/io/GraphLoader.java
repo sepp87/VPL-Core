@@ -125,6 +125,7 @@ public class GraphLoader {
         for (GroupTag groupTag : groupTagList) {
             BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
             group.deserialize(groupTag);
+            workspaceModel.addBlockGroupModel(group);
         }
     }
 

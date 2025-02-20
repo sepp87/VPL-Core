@@ -4,30 +4,30 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 remove WorkspaceController from blockmodel
-// 0 remove bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message
-// 0 block size save to model
-// 0 saving / loading
-// 0 remove block > should workspace listen to block wishing to be removed or should workspace remove block actively... same with selected
-// 0 remove connection command in conjunction with removal of block
-// 0 remove connection command in conjunction with connection created for occupied port
+
+// 0 BlockGroup to MVC
+//      When loading a vplxml, the size of the group is not right. MVC pattern might automatically solve this issue
+// 0 Connection to MVC
+// 0 Port to MVC
+// 0 BlockModelInfoPanel to MVC 
+//      0 remove WorkspaceController from blockmodel
+
 // 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
-// 3 REFACTOR merge integer and double slider and refactor event handlers
-// ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
+
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // BACKLOG
-// 0 text block copy width and height of block
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 1 IMPROVEMENT Add undo/redo functionality
+//      0 remove connection command in conjunction with removal of block
+//      0 remove connection command in conjunction with connection created for occupied port
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT add save and save as commands
 // 4 IMPROVEMENT reload plugins on demand from menu bar
@@ -35,29 +35,13 @@ import vpllib.method.JsonMethods;
 // 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
+// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
+// 3 REFACTOR merge integer and double slider and refactor event handlers
+// ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
+// 0 remove block > should workspace listen to block requesting to be removed or should workspace remove block actively... same with selected... if block requests, then workspace should create listeners for removal and selection
+// 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 //
 // DONE
-// 1 BUG Info panel does not move down when aligning blocks
-// 1 IMPROVEMENT Block to MVC Pattern - WorkspaceController handle onConnectionsChanged, onBlockGroupsChanged 
-// 1 IMPROVEMENT Block to MVC Pattern - BlockMethodModel
-// 1 IMPROVEMENT Block to MVC Pattern - Input Blocks
-// 1 IMPROVEMENT Block to MVC Pattern - Block Model, View, Controller
-// 0 DoubleSlider add value without UI
-// 0 IntegerSlide add value without UI
-// 4 IMPROVEMENT setup clean up method event handlers after deleting vpllib blocks
-// 1 IMPROVEMENT ignore zoom when block search openened and add zoom start and stop for mac
-// 1 BUG selection discarded when clicking on menu bar
-// 1 BUG selection discarded when exiting radial menu
-// 4 BUG hit space on input.string causes zoomtofit and " " without triggering recalculation
-// 4 REFACTOR merge KeyEventHandlers of KeyboardInputHandler and ZoomManager
-// 4 BUG mouse position is not registered correctly after dragging
-// 4 BUG mouse position is not registered correctly when dragging
-// 4 BUG remove button of connection on copied blocks is shown on connection it was last seen on
-// 1 IMPROVEMENT introduce global action manager, state manager and event router
-// 4 BUG group moving does not work
-// 4 BUG move single blocks does not work for group
-// 1 IMPROVEMENT add clipboard for copying
-// 4 BUG connections are not pasted when pasting deleted blocks that were copied > implement clipboard
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

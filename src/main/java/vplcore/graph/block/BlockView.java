@@ -18,11 +18,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
-import vplcore.graph.block.BlockLabel;
-import vplcore.graph.block.BlockModelExceptionPanel;
-import vplcore.graph.block.BlockModelInfoPanel;
-import vplcore.graph.block.ResizeButton;
-import vplcore.graph.block.VplButton;
 
 /**
  *
@@ -201,6 +196,7 @@ public class BlockView extends GridPane {
     }
 
     public static Bounds getBoundingBoxOfBlocks(Collection<? extends BlockView> blocks) {
+        System.out.println("getBoundingBoxOfBlocks");
         if (blocks == null || blocks.isEmpty()) {
             return null;
         }

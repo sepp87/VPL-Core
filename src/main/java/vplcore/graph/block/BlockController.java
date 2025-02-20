@@ -15,10 +15,7 @@ import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.ResizeBlockCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
-import vplcore.graph.block.BlockModelExceptionPanel;
 import vplcore.graph.block.BlockModelExceptionPanel.BlockException;
-import vplcore.graph.block.BlockModelInfoPanel;
-import vplcore.graph.block.ResizeButton;
 import vplcore.util.EventUtils;
 import vplcore.workspace.WorkspaceController;
 
@@ -73,6 +70,8 @@ public class BlockController extends BaseController {
         view.addOutputPorts(model.getOutputPorts());
 
         if (model.resizableProperty().get()) {
+            view.getContentGrid().prefWidthProperty().bind(model.widthProperty());
+            view.getContentGrid().prefHeightProperty().bind(model.heightProperty());
             ResizeButton resizeButton = view.getResizeButton();
             resizeButton.setOnMousePressed(this::handleResizeStarted);
             resizeButton.setOnMouseDragged(this::handleResizeUpdated);
@@ -209,29 +208,26 @@ public class BlockController extends BaseController {
         GridPane contentGrid = view.getContentGrid();
         previousWidth = contentGrid.getWidth();
         previousHeight = contentGrid.getHeight();
-        contentGrid.setPrefWidth(contentGrid.getWidth());
-        contentGrid.setPrefHeight(contentGrid.getHeight());
+        model.widthProperty().set(previousWidth);
+        model.heightProperty().set(previousHeight);
     }
 
     private void handleResizeUpdated(MouseEvent event) {
-        GridPane contentGrid = view.getContentGrid();
         double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
-        double newWidth = contentGrid.getPrefWidth() + deltaX;
-        double newHeight = contentGrid.getPrefHeight() + deltaY;
-        contentGrid.setPrefWidth(newWidth);
-        contentGrid.setPrefHeight(newHeight);
+        double newWidth = model.widthProperty().get() + deltaX;
+        double newHeight = model.heightProperty().get() + deltaY;
+        model.widthProperty().set(newWidth);
+        model.heightProperty().set(newHeight);
         updatedPoint = new Point2D(event.getSceneX(), event.getSceneY());
-        contentGrid.layout();
     }
 
     private void handleResizeFinished(MouseEvent event) {
         if (!event.isDragDetect()) {
-            GridPane contentGrid = view.getContentGrid();
-            double width = contentGrid.getPrefWidth();
-            double height = contentGrid.getPrefHeight();
-            ResizeBlockCommand command = new ResizeBlockCommand(this, width, height);
+            double newWidth = model.widthProperty().get();
+            double newHeight = model.heightProperty().get();
+            ResizeBlockCommand command = new ResizeBlockCommand(this, newWidth, newHeight);
             actionManager.executeCommand(command);
         }
     }

@@ -102,7 +102,8 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
+                GraphLoader.deserialize(new File("build/vplxml/test.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.test();
     }
 

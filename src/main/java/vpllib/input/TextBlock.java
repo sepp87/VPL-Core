@@ -164,6 +164,8 @@ public class TextBlock extends BlockModel {
     @Override
     public BlockModel copy() {
         TextBlock block = new TextBlock(workspace);
+        block.widthProperty().set(this.widthProperty().get());
+        block.heightProperty().set(this.heightProperty().get());
         if (editable.get()) {
             block.string.set(this.string.get());
         }

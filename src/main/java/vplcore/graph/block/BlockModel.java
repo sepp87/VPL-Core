@@ -19,7 +19,7 @@ import vplcore.workspace.WorkspaceModel;
 public abstract class BlockModel extends BaseModel {
 
     // TODO remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
-    public WorkspaceController workspaceController;
+//    public WorkspaceController workspaceController;
 
     protected WorkspaceModel workspace;
 

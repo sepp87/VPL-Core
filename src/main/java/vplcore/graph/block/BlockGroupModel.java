@@ -59,7 +59,6 @@ public class BlockGroupModel extends VplElement {
     private final EventHandler<MouseEvent> groupReleasedHandler = this::handleGroupReleased;
     private final SetChangeListener<BlockModel> groupSetChangedListener = this::handleGroupSetChanged;
     private final ChangeListener<Object> blockRemovedListener = this::onBlockRemoved;
-    private final ChangeListener<Object> blockTransformedListener = this::onBlockTransformed; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
 
     private final EventHandler<ActionEvent> binButtonClickedHandler = this::handleBinButtonClicked;
 
@@ -182,22 +181,14 @@ public class BlockGroupModel extends VplElement {
         childBlocks.remove(block);
     }
 
-//    private void handleGroupBlockDeleted(PropertyChangeEvent event) {
-//        Block block = (Block) event.getSource();
-//        if (block == null) {
-//            return;
-//        }
-//        childBlocks.remove(block);
-//    }
+    private final ChangeListener<Object> blockTransformedListener = this::onBlockTransformed; // is this listening to transforms e.g. move and resize? otherwise groupBlockTransformedListener
+
     private void onBlockTransformed(ObservableValue b, Object o, Object n) {
 
         // TODO optimize here so only the changed block model is used the re-calculate the size
         calculateSize();
     }
 
-//    private void handleGroupBlockChanged(PropertyChangeEvent event) {
-//        calculateSize();
-//    }
     private void calculateSize() {
         if (childBlocks.isEmpty()) {
             return;
@@ -210,7 +201,7 @@ public class BlockGroupModel extends VplElement {
 
         for (BlockModel block : childBlocks) {
             BlockView blockView = workspaceController.getBlockController(block).getView();
-            
+
             if (block.layoutXProperty().get() < minX) {
                 minX = block.layoutXProperty().get();
             }
@@ -223,12 +214,12 @@ public class BlockGroupModel extends VplElement {
             if ((block.layoutYProperty().get() + blockView.heightProperty().get()) > maxY) {
                 maxY = block.layoutYProperty().get() + blockView.heightProperty().get();
             }
+
+            System.out.println("x:" + block.layoutXProperty().get() + " y:" + block.layoutYProperty().get() + " w" + blockView.widthProperty().get() + " h" + blockView.heightProperty().get());
         }
 
-        relocate(minX, minY);
         setPrefSize(maxX - minX, maxY - minY);
-
-//        OnPropertyChanged("BorderSize");
+        relocate(minX, minY);
     }
 
     private void bindStyle() {

@@ -1,19 +1,14 @@
 package vplcore.graph.group;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import javafx.collections.SetChangeListener;
-import javafx.collections.SetChangeListener.Change;
 import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BaseModel;
-import vplcore.workspace.WorkspaceModel;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.BlockGroupIndex;
 

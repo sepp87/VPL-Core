@@ -36,8 +36,7 @@ public class GroupBlocksCommand implements Undoable {
         for (BlockController blockController : selectedBlockControllers) {
             selectedBlockModels.add(blockController.getModel());
         }
-//        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
-        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceModel);
+        BlockGroupModel blockGroupModel = new BlockGroupModel(workspaceModel.getBlockGroupIndex());
         blockGroupModel.setBlocks(selectedBlockModels);
         workspaceModel.addBlockGroupModel(blockGroupModel);
 

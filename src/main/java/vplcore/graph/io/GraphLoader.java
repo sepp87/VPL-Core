@@ -142,7 +142,7 @@ public class GraphLoader {
 //                }
 //            }
 //            setBlocks(list);
-            BlockGroupModel group = new BlockGroupModel(workspaceModel);
+            BlockGroupModel group = new BlockGroupModel(workspaceModel.getBlockGroupIndex());
             group.nameProperty().set(groupTag.getName());
             List<BlockReferenceTag> blockReferenceTagList = groupTag.getBlockReference();
             List<BlockModel> list = new ArrayList<>();

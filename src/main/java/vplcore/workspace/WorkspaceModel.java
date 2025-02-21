@@ -1,6 +1,5 @@
 package vplcore.workspace;
 
-import java.util.List;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockModel;
@@ -8,7 +7,6 @@ import vplcore.graph.port.PortModel;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 
@@ -21,10 +19,12 @@ public class WorkspaceModel {
     // TODO remove workspace controller here since the workspace model should not know about it
     public WorkspaceController workspaceController;
 
-    public static final double DFEAULT_ZOOM = 1.0;
+    public static final double DEFAULT_ZOOM = 1.0;
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
+    
+    private final BlockGroupIndex blockGroupIndex;
 
     private final DoubleProperty zoomFactor;
     private final DoubleProperty translateX;
@@ -33,10 +33,11 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
-    private final ObservableMap<BlockModel, BlockGroupModel> blockGroupIndex = FXCollections.observableHashMap();
 
     public WorkspaceModel() {
-        zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
+        blockGroupIndex = new BlockGroupIndex();
+        
+        zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
     }
@@ -54,7 +55,7 @@ public class WorkspaceModel {
     }
 
     public void resetZoomFactor() {
-        zoomFactor.set(DFEAULT_ZOOM);
+        zoomFactor.set(DEFAULT_ZOOM);
     }
 
     // Increment zoom factor by the defined step size
@@ -159,27 +160,21 @@ public class WorkspaceModel {
     public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
         System.out.println("WorkspaceModel.addBlockGroupModel()");
         blockGroupModels.add(blockGroupModel);
-        for (BlockModel blockModel : blockGroupModel.getBlocks()) {
-            blockGroupIndex.put(blockModel, blockGroupModel);
-        }
     }
 
     public void removeBlockFromGroup(BlockModel blockModel) {
         System.out.println("WorkspaceModel.removeBlockFromGroup()");
-        if (!blockGroupIndex.containsKey(blockModel)) {
-            return; // block was not grouped
-        }
-        BlockGroupModel blockGroupModel = blockGroupIndex.get(blockModel);
-        blockGroupModel.removeBlock(blockModel);
-        blockGroupIndex.remove(blockModel);
-        if (blockGroupModel.getBlocks().size() == 1) {
-            removeBlockGroupModel(blockGroupModel);
+        BlockGroupModel blockGroupModel = blockGroupIndex.getBlockGroup(blockModel);
+        if (blockGroupModel != null) {
+            blockGroupModel.removeBlock(blockModel);
+            if (blockGroupModel.getBlocks().size() <= 1) {
+                removeBlockGroupModel(blockGroupModel);
+            }
         }
     }
 
-    public void addBlockToGroup(BlockModel blockModel, BlockGroupModel blockGroupModel) {
-        blockGroupIndex.put(blockModel, blockGroupModel);
-        blockGroupModel.addBlock(blockModel);
+    public BlockGroupIndex getBlockGroupIndex() {
+        return blockGroupIndex;
     }
 
 }

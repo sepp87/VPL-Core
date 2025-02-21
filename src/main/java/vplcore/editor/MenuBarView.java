@@ -12,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
  */
 public class MenuBarView extends MenuBar {
 
+    private final MenuItem group;
+
     public MenuBarView() {
         this.setUseSystemMenuBar(false);
 
@@ -25,7 +27,7 @@ public class MenuBarView extends MenuBar {
         MenuItem copy = new MenuItem("Copy", "COPY_BLOCKS");
         MenuItem paste = new MenuItem("Paste", "PASTE_BLOCKS");
         MenuItem delete = new MenuItem("Delete", "DELETE_SELECTED_BLOCKS");
-        MenuItem group = new MenuItem("Group", "GROUP_BLOCKS");
+        this.group = new MenuItem("Group", "GROUP_BLOCKS");
         Menu alignMenu = new Menu("Align");
         editMenu.getItems().addAll(copy, paste, delete, group, alignMenu);
 
@@ -49,6 +51,10 @@ public class MenuBarView extends MenuBar {
         extrasMenu.getItems().addAll(reloadPlugins, logErrors);
 
         this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);
+    }
+
+    public MenuItem getGroupMenuItem() {
+        return group;
     }
 
     public class MenuItem extends javafx.scene.control.MenuItem {

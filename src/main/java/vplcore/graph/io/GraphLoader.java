@@ -5,9 +5,11 @@ import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.ConnectionTag;
 import jo.vpl.xml.ConnectionsTag;
 import jo.vpl.xml.DocumentTag;
@@ -124,8 +126,35 @@ public class GraphLoader {
 
         for (GroupTag groupTag : groupTagList) {
 //            BlockGroupModel group = new BlockGroupModel(workspaceController.getContextId(), workspaceController, workspaceModel);
+//            BlockGroupModel group = new BlockGroupModel(workspaceModel);
+//            group.deserialize(groupTag);
+//            workspaceModel.addBlockGroupModel(group);
+
+//            nameProperty().set(xmlTag.getName());
+//            List<BlockReferenceTag> blockReferenceTagList = xmlTag.getBlockReference();
+//            List<BlockModel> list = new ArrayList<>();
+//            for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {
+//                for (BlockModel block : workspaceModel.getBlockModels()) {
+//                    if (block.idProperty().get().equals(blockReferenceTag.getUUID())) {
+//                        list.add(block);
+//                        break;
+//                    }
+//                }
+//            }
+//            setBlocks(list);
             BlockGroupModel group = new BlockGroupModel(workspaceModel);
-            group.deserialize(groupTag);
+            group.nameProperty().set(groupTag.getName());
+            List<BlockReferenceTag> blockReferenceTagList = groupTag.getBlockReference();
+            List<BlockModel> list = new ArrayList<>();
+            for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {
+                for (BlockModel block : workspaceModel.getBlockModels()) {
+                    if (block.idProperty().get().equals(blockReferenceTag.getUUID())) {
+                        list.add(block);
+                        break;
+                    }
+                }
+            }
+            group.setBlocks(list); // blocks should be set beforehand, because otherwise WorkspaceBlockGroupHelper.addBlockGroupModel() does NOT index grouped blocks
             workspaceModel.addBlockGroupModel(group);
         }
     }

@@ -55,6 +55,21 @@ public class WorkspaceController extends BaseController {
         model.addBlockGroupModelsListener(blockGroupModelsListener);
     }
 
+    public boolean areSelectedBlocksGroupable() {
+        List<BlockController> groupedBlocks = new ArrayList<>();
+        Collection<BlockController> selectedBlocks = getSelectedBlockControllers();
+        if (selectedBlocks.size() < 2) {
+            return false;
+        }
+        for (BlockController block : selectedBlocks) {
+            if (block.getModel().groupedProperty().get()) {
+                groupedBlocks.add(block);
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * BLOCKS
      */
@@ -82,6 +97,7 @@ public class WorkspaceController extends BaseController {
     private void removeBlock(BlockModel blockModel) {
         System.out.println("WorkspaceController.removeBlock()");
         BlockController blockController = blocks.get(blockModel);
+        selectionHelper.deselectBlock(blockController); // deselect in case the block was selected
         blocks.remove(blockModel);
         view.getChildren().remove(blockController.getView());
         blockController.remove();
@@ -107,14 +123,11 @@ public class WorkspaceController extends BaseController {
         view.getChildren().add(0, blockGroupView);
         BlockGroupController blockGroupController = new BlockGroupController(this, blockGroupModel, blockGroupView);
         List<BlockController> blockControllers = new ArrayList<>();
-        for (BlockModel blockModel  : blockGroupModel.getBlocks()) {
+        for (BlockModel blockModel : blockGroupModel.getBlocks()) {
             blockControllers.add(blocks.get(blockModel));
         }
         blockGroupController.setBlocks(blockControllers);
-        
         blockGroups.put(blockGroupModel, blockGroupController);
-
-//        view.getChildren().add(0, blockGroupModel);
     }
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
@@ -123,8 +136,6 @@ public class WorkspaceController extends BaseController {
         blockGroups.remove(blockGroupModel);
         view.getChildren().remove(blockGroupController.getView());
         blockGroupController.remove();
-//        view.getChildren().remove(blockGroupModel);
-//        blockGroupModel.delete();
     }
 
     /**
@@ -175,14 +186,6 @@ public class WorkspaceController extends BaseController {
         view.getChildren().clear();
     }
 
-    public void setIdle() {
-        state.setIdle();
-    }
-
-    public void setSelectingBlockGroup() {
-        state.setSelectingBlockGroup();
-    }
-
     public double getZoomFactor() {
         return model.zoomFactorProperty().get();
     }
@@ -208,6 +211,11 @@ public class WorkspaceController extends BaseController {
         selectionHelper.updateSelection(block, isModifierDown);
     }
 
+    public void selectBlock(BlockModel blockModel) {
+        BlockController blockController = blocks.get(blockModel);
+        selectionHelper.selectBlock(blockController);
+    }
+
     public void selectBlock(BlockController block) {
         selectionHelper.selectBlock(block);
     }
@@ -226,16 +234,6 @@ public class WorkspaceController extends BaseController {
 
     public WorkspaceView getView() {
         return view;
-    }
-
-    public void selectBlock(BlockModel blockModel) {
-        BlockController blockController = blocks.get(blockModel);
-        selectionHelper.selectBlock(blockController);
-    }
-
-    public void deselectBlock(BlockModel blockModel) {
-        BlockController blockController = blocks.get(blockModel);
-        selectionHelper.deselectBlock(blockController);
     }
 
     public Collection<BlockController> getBlockControllers() {

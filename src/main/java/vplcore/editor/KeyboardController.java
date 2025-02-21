@@ -25,6 +25,7 @@ import vplcore.context.command.SelectAllBlocksCommand;
 import vplcore.context.command.ZoomInCommand;
 import vplcore.context.command.ZoomOutCommand;
 import vplcore.context.command.ZoomToFitCommand;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -66,7 +67,11 @@ public class KeyboardController extends BaseController {
                 break;
             case G:
                 if (isModifierDown) {
-                    command = new GroupBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
+                    WorkspaceController workspaceController = actionManager.getWorkspaceController();
+                    boolean isGroupable = workspaceController.areSelectedBlocksGroupable();
+                    if (isGroupable) {
+                        command = new GroupBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
+                    }
                 }
                 break;
             case N:

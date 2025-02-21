@@ -25,21 +25,21 @@ public class BlockGroupView extends GridPane {
     public BlockGroupView() {
         getStyleClass().add("vpl-element");
         getStyleClass().add("block-group");
-        
+
         blocks = FXCollections.observableSet();
-        
+
         binButton = new BaseButton(IconType.FA_MINUS_CIRCLE);
         binButton.setVisible(false);
 
+        menuBox = new HBox(5);
         label = new BaseLabel(menuBox);
         label.getStyleClass().add("vpl-tag");
         label.setVisible(false);
 
-        menuBox = new HBox(5);
         menuBox.setAlignment(Pos.BOTTOM_LEFT);
         menuBox.getStyleClass().add("block-header");
         menuBox.getChildren().addAll(label, binButton);
-        
+
         add(menuBox, 1, 0);
     }
 

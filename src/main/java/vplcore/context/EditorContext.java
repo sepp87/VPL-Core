@@ -24,7 +24,7 @@ public class EditorContext {
     private Point2D mousePosition = new Point2D(0, 0);
 
     private final ChangeListener<Object> setupMouseTracking = this::setupMouseTracking;
-    private final EventHandler<MouseEvent> trackMouseAndKeyboard = this::trackMouseAndKeyboard;
+    private final EventHandler<MouseEvent> trackMouse = this::trackMouse;
 //    private final EventHandler<KeyEvent> trackKeyboard = this::trackKeyboard;
 
     public EditorContext(EditorView editorView, WorkspaceView workspaceView) {
@@ -36,23 +36,16 @@ public class EditorContext {
     }
 
     private void setupMouseTracking(Object b, Object o, Object n) {
-        editorView.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, trackMouseAndKeyboard);
-        editorView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, trackMouseAndKeyboard);
-        editorView.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, trackMouseAndKeyboard);
-        editorView.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, trackMouseAndKeyboard);
+        editorView.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, trackMouse);
+        editorView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, trackMouse);
+        editorView.getScene().addEventFilter(MouseEvent.MOUSE_DRAGGED, trackMouse);
+        editorView.getScene().addEventFilter(MouseEvent.MOUSE_RELEASED, trackMouse);
 //        editorView.getScene().addEventFilter(MouseEvent.ANY, trackMouseAndKeyboard);
 //        editorView.getScene().addEventFilter(KeyEvent.ANY, trackKeyboard);
     }
 
-    private void trackMouseAndKeyboard(MouseEvent event) {
-//        System.out.println(editorView.getScene().focusOwnerProperty().toString());
-
+    private void trackMouse(MouseEvent event) {
         mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-//        System.out.println(event.isControlDown());
-    }
-
-    private void trackKeyboard(KeyEvent event) {
-//        System.out.println(event.isControlDown());
     }
 
     public String getId() {

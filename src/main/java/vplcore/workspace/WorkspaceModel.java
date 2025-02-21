@@ -8,6 +8,7 @@ import vplcore.graph.port.PortModel;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 
@@ -25,8 +26,6 @@ public class WorkspaceModel {
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
 
-    private final WorkspaceBlockGroupHelper blockGroupHelper;
-
     private final DoubleProperty zoomFactor;
     private final DoubleProperty translateX;
     private final DoubleProperty translateY;
@@ -34,10 +33,9 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
+    private final ObservableMap<BlockModel, BlockGroupModel> blockGroupIndex = FXCollections.observableHashMap();
 
     public WorkspaceModel() {
-        blockGroupHelper = new WorkspaceBlockGroupHelper(this);
-        
         zoomFactor = new SimpleDoubleProperty(DFEAULT_ZOOM);
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
@@ -140,16 +138,10 @@ public class WorkspaceModel {
      *
      * GROUPS
      */
-    public void createBlockGroup(List<BlockModel> blockModels) {
-        blockGroupHelper.createBlockGroup(blockModels);
-    }
-
-    public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
-        blockGroupModels.add(blockGroupModel);
-    }
-
     public void removeBlockGroupModel(BlockGroupModel blockGroupModel) {
+        System.out.println("WorkspaceModel.removeBlockGroupModel()");
         blockGroupModels.remove(blockGroupModel);
+        blockGroupModel.remove();
     }
 
     public ObservableSet<BlockGroupModel> getBlockGroupModels() {
@@ -162,6 +154,32 @@ public class WorkspaceModel {
 
     public void removeBlockGroupModelsListener(SetChangeListener<BlockGroupModel> listener) {
         blockGroupModels.removeListener(listener);
+    }
+
+    public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
+        System.out.println("WorkspaceModel.addBlockGroupModel()");
+        blockGroupModels.add(blockGroupModel);
+        for (BlockModel blockModel : blockGroupModel.getBlocks()) {
+            blockGroupIndex.put(blockModel, blockGroupModel);
+        }
+    }
+
+    public void removeBlockFromGroup(BlockModel blockModel) {
+        System.out.println("WorkspaceModel.removeBlockFromGroup()");
+        if (!blockGroupIndex.containsKey(blockModel)) {
+            return; // block was not grouped
+        }
+        BlockGroupModel blockGroupModel = blockGroupIndex.get(blockModel);
+        blockGroupModel.removeBlock(blockModel);
+        blockGroupIndex.remove(blockModel);
+        if (blockGroupModel.getBlocks().size() == 1) {
+            removeBlockGroupModel(blockGroupModel);
+        }
+    }
+
+    public void addBlockToGroup(BlockModel blockModel, BlockGroupModel blockGroupModel) {
+        blockGroupIndex.put(blockModel, blockGroupModel);
+        blockGroupModel.addBlock(blockModel);
     }
 
 }

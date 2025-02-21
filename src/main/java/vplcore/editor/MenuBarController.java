@@ -1,5 +1,6 @@
 package vplcore.editor;
 
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
@@ -26,9 +27,20 @@ public class MenuBarController extends BaseController {
         for (MenuItem item : view.getAllMenuItems()) {
             item.setOnAction(menuBarItemClickedHandler);
         }
+
+        view.getGroupMenuItem().getParentMenu().showingProperty().addListener(groupMenuItemVisibilityListener);
     }
 
-    public void handleMenuBarItemClicked(ActionEvent event) {
+    private final ChangeListener<Boolean> groupMenuItemVisibilityListener = this::onGroupMenuItemVisibilityChanged;
+
+    private void onGroupMenuItemVisibilityChanged(Object b, Boolean o, Boolean n) {
+        boolean isGroupable = this.getEditorContext().getActionManager().getWorkspaceController().areSelectedBlocksGroupable();
+        view.getGroupMenuItem().disableProperty().set(!isGroupable);
+        System.out.println("onGroupMenuItemVisibilityChanged to " + n + " isGroupable " + isGroupable);
+
+    }
+
+    private void handleMenuBarItemClicked(ActionEvent event) {
         if (event.getSource() instanceof MenuItem menuItem) {
             actionManager.executeCommand(menuItem.getId());
         }

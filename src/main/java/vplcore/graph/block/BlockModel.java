@@ -1,5 +1,7 @@
 package vplcore.graph.block;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import vplcore.graph.port.PortModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,9 +27,15 @@ public abstract class BlockModel extends BaseModel {
 
     protected ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
+    
+    private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;
+    }
+    
+    public BooleanProperty groupedProperty() {
+        return grouped;
     }
 
     // should be private or protected and should be a listener to inputPorts

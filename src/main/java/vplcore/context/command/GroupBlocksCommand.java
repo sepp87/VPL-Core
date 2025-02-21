@@ -26,7 +26,7 @@ public class GroupBlocksCommand implements Undoable {
 
     @Override
     public void execute() {
-        System.out.println("Group Blocks");
+        System.out.println("GroupBlocksCommand.execute()");
         Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
         // do not execute if selected blocks is less than two
         if (selectedBlockControllers.size() < 2) {

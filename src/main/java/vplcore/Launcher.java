@@ -4,8 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 BlockGroup remove single block
-// 0 BlockGroup blocks only in single group
+// 0 return BlockGroup blocks as immutable list
 // 0 Connection to MVC
 // 0 Port to MVC
 // 0 BlockModelInfoPanel to MVC 
@@ -21,6 +20,8 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // BACKLOG
+// 0 BlockGroup remove single block
+// 0 BlockGroup blocks only in single group
 // 0 REFACTOR Block MVC
 // 0 REFACTOR BlockGroup MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 

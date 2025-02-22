@@ -32,10 +32,30 @@ public class RemoveButtonView extends Group {
         removeIcon.setContent(svg);
         removeIcon.getStyleClass().add("connection-remove-icon");
 
-        backgroundCircle = new Circle(0, 0, BUTTON_SIZE / 2, Color.WHITE);
+        /**
+         * In JavaFX, SVGPath (a shape that renders an SVG path) does not have
+         * an explicit width or height property like ImageView or Rectangle.
+         * Instead, its size is determined by the bounds of the SVG path.
+         * prefWidth(-1) and prefHeight(-1) return the preferred width and
+         * height of the SVGPath, calculated based on its current content (the
+         * SVG path itself).
+         */
+        double width = removeIcon.prefWidth(-1);
+        double height = removeIcon.prefHeight(-1);
+        double scale = BUTTON_SIZE / width;
+
+        removeIcon.setLayoutX(-width / 2);
+        removeIcon.setLayoutY(-height / 2);
+        removeIcon.setScaleX(scale);
+        removeIcon.setScaleY(scale);
+
+        double radius = (BUTTON_SIZE - 1) / 2;
+        backgroundCircle = new Circle(0, 0, radius, Color.WHITE);
 
         this.getChildren().addAll(backgroundCircle, removeIcon);
         this.setVisible(false);
         this.setMouseTransparent(true);
     }
+
+
 }

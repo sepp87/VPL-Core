@@ -84,9 +84,6 @@ public class App extends Application {
         ActionManager actionManager = new ActionManager(workspaceModel, workspaceController);
         context.initializeActionManager(actionManager);
 
-        // TODO remove workspace controller here since the workspace model should not know about it
-        workspaceModel.workspaceController = workspaceController;
-
         // Initialize controllers
         new ZoomController(contextId, workspaceModel, zoomView);
         new BlockSearchController(contextId, blockSearchView);

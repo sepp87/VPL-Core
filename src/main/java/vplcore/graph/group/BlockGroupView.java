@@ -7,9 +7,9 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import vplcore.IconType;
-import vplcore.graph.block.BaseLabel;
+import vplcore.graph.base.BaseLabel;
 import vplcore.graph.block.BlockView;
-import vplcore.graph.block.BaseButton;
+import vplcore.graph.base.BaseButton;
 
 /**
  *

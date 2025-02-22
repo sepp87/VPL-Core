@@ -9,7 +9,7 @@ import jo.vpl.xml.BlockReferenceTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.BaseModel;
+import vplcore.graph.base.BaseModel;
 import static vplcore.graph.io.GraphSaver.getObjectFactory;
 import vplcore.workspace.BlockGroupIndex;
 

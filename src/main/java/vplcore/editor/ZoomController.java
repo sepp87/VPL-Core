@@ -71,6 +71,7 @@ public class ZoomController extends BaseController {
     }
 
     public void handleScrollStarted(ScrollEvent event) {
+        // Scroll started is not triggered on Mac with a normal mouse
         if (state.isIdle()) {
             state.setZooming();
         }
@@ -87,7 +88,8 @@ public class ZoomController extends BaseController {
         boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
         boolean onListView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ListView.class);
 
-        if (!onScrollPane && !onListView && (isZoomModeAndOnMac || isIdleAndNotOnMac)) {
+//        if (!onScrollPane && !onListView && (isZoomModeAndOnMac || isIdleAndNotOnMac)) {
+        if (!onScrollPane && !onListView && (state.isIdle() || isIdleAndNotOnMac)) {
 
             // Throttle zoom on macOS
             if (onMac) {

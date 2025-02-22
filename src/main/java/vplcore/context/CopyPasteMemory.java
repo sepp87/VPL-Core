@@ -99,14 +99,14 @@ public class CopyPasteMemory {
 
                             if (cc2 != null) {
                                 alreadyCopiedConnections.add(connection);
-                                ConnectionModel copiedConnection = new ConnectionModel(workspaceController, cc2.newBlock.getOutputPorts().get(0), cc.newBlock.getInputPorts().get(counter));
+                                ConnectionModel copiedConnection = new ConnectionModel(cc2.newBlock.getOutputPorts().get(0), cc.newBlock.getInputPorts().get(counter));
                                 result.connectionModels.add(copiedConnection);
 
                             }
                         } else {
                             // only end block is contained in selection
                             alreadyCopiedConnections.add(connection);
-                            ConnectionModel copiedConnection = new ConnectionModel(workspaceController, connection.getStartPort(), cc.newBlock.getInputPorts().get(counter));
+                            ConnectionModel copiedConnection = new ConnectionModel(connection.getStartPort(), cc.newBlock.getInputPorts().get(counter));
                             result.connectionModels.add(copiedConnection);
                         }
                     }

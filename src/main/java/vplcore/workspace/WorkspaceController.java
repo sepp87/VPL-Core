@@ -19,6 +19,8 @@ import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
 import vplcore.graph.block.BlockModelInfoPanel;
+import vplcore.graph.connection.ConnectionController;
+import vplcore.graph.connection.ConnectionView;
 import vplcore.graph.group.BlockGroupController;
 import vplcore.graph.group.BlockGroupView;
 
@@ -35,6 +37,7 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceSelectionHelper selectionHelper;
 
     private final Map<BlockModel, BlockController> blocks = new HashMap<>();
+    private final Map<ConnectionModel, ConnectionController> connections = new HashMap<>();
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
 
     // TODO Remove public access to info panel 
@@ -76,7 +79,7 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
-        System.out.println("onBlockModelsChanged");
+        System.out.println("WorkspaceController.onBlockModelsChanged");
         if (change.wasAdded()) {
             addBlock(change.getElementAdded());
         } else {
@@ -96,9 +99,8 @@ public class WorkspaceController extends BaseController {
 
     private void removeBlock(BlockModel blockModel) {
         System.out.println("WorkspaceController.removeBlock()");
-        BlockController blockController = blocks.get(blockModel);
+        BlockController blockController = blocks.remove(blockModel);
         selectionHelper.deselectBlock(blockController); // deselect in case the block was selected
-        blocks.remove(blockModel);
         view.getChildren().remove(blockController.getView());
         blockController.remove();
         // controller remove itself
@@ -132,8 +134,7 @@ public class WorkspaceController extends BaseController {
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
         System.out.println("WorkspaceController.removeBlockGroup()");
-        BlockGroupController blockGroupController = blockGroups.get(blockGroupModel);
-        blockGroups.remove(blockGroupModel);
+        BlockGroupController blockGroupController = blockGroups.remove(blockGroupModel);
         view.getChildren().remove(blockGroupController.getView());
         blockGroupController.remove();
     }
@@ -144,6 +145,7 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<ConnectionModel> connectionModelsListener = this::onConnectionModelsChanged;
 
     private void onConnectionModelsChanged(Change<? extends ConnectionModel> change) {
+        System.out.println("WorkspaceController.onConnectionModelsChanged()");
         if (change.wasAdded()) {
             addConnection(change.getElementAdded());
         } else {
@@ -152,19 +154,31 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addConnection(ConnectionModel connectionModel) {
-        view.getChildren().add(0, connectionModel);
+        System.out.println("WorkspaceController.addConnection()");
+        ConnectionView connectionView = new ConnectionView();
+        int position = blockGroups.size() + 1; // connections should be placed above groups, otherwise the remove button is not shown
+        System.out.println("position " + position);
+        view.getChildren().add(position, connectionView);
+        ConnectionController connectionController = new ConnectionController(this, connectionModel, connectionView);
+        connections.put(connectionModel, connectionController);
+//        view.getChildren().add(0, connectionModel);
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
-        System.out.println("removeConnection");
-        view.getChildren().remove(connectionModel);
-        connectionModel.remove();
+        System.out.println("WorkspaceController.removeConnection()");
+        ConnectionController connectionController = connections.remove(connectionModel);
+        view.getChildren().remove(connectionController.getView());
+        connectionController.remove();
+
+//        view.getChildren().remove(connectionModel);
+//        connectionModel.remove();
     }
 
     private PreConnectionModel preConnectionModel = null;
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
     public void initiateConnection(PortModel portModel) {
+        System.out.println("WorkspaceController.initiateConnection()");
         if (preConnectionModel == null) {
             preConnectionModel = new PreConnectionModel(WorkspaceController.this, portModel);
             view.getChildren().add(0, preConnectionModel);
@@ -173,6 +187,7 @@ public class WorkspaceController extends BaseController {
 
     // method is unneeded if createConnection catches the second click
     public void removeChild(PreConnectionModel preConnectionModel) {
+        System.out.println("WorkspaceController.removeChild()");
         view.getChildren().remove(preConnectionModel);
         this.preConnectionModel = null;
     }

@@ -1,5 +1,7 @@
 package vplcore.graph.block;
 
+import vplcore.graph.base.BaseLabel;
+import vplcore.graph.base.BaseButton;
 import vplcore.graph.port.PortModel;
 import java.util.ArrayList;
 import java.util.Collection;

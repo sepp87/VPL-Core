@@ -4,10 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-
 // 0 return BlockGroup blocks as immutable list
-// 0 Connection to MVC
-// 0 Connection should be removed by the workspace when a block is removed and not by itself
 // 0 Port to MVC
 // 0 BlockModelInfoPanel to MVC 
 //      0 remove WorkspaceController from blockmodel
@@ -22,10 +19,9 @@ import vpllib.method.JsonMethods;
 // 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // BACKLOG
-// 0 BlockGroup remove single block
-// 0 BlockGroup blocks only in single group
-// 0 REFACTOR Block MVC
-// 0 REFACTOR BlockGroup MVC
+// 0 REFACTOR Block MVC - double check if all listeners and bindings are removed
+// 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed
+// 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 1 IMPROVEMENT Add undo/redo functionality
 //      0 remove connection command in conjunction with removal of block
@@ -42,8 +38,17 @@ import vpllib.method.JsonMethods;
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 remove block > should workspace listen to block requesting to be removed or should workspace remove block actively... same with selected... if block requests, then workspace should create listeners for removal and selection
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
+// 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// BUG when delete a block, the connection is not removed and there is an error message
+// 0 Connection to MVC
+//      0 Connection should be removed by the workspace when a block is removed and not by itself
+//      0 connection constructor remove from copypastememory
+//      0 connection constructor remove fron workspacemodel
+// BUG when group is placed above connection, the removebutton is not shown anymore
+// 0 BlockGroup remove single block
+// 0 BlockGroup blocks only in single group
 // 0 BlockGroup to MVC
 //      When loading a vplxml, the size of the group is not right. MVC pattern might automatically solve this issue
 //

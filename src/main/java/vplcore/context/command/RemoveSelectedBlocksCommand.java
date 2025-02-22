@@ -32,6 +32,7 @@ public class RemoveSelectedBlocksCommand implements Undoable {
             BlockModel blockModel = blockController.getModel();
             workspaceModel.removeBlockModel(blockModel);
             workspaceModel.removeBlockFromGroup(blockModel);
+            workspaceModel.removeConnectionModels(blockModel);
         }
     }
 

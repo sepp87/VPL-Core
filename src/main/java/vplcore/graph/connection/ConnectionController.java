@@ -38,17 +38,24 @@ public class ConnectionController extends BaseController {
         PortModel endPort = model.getEndPort();
 
         curve.controlX1Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(startPort), startPort.centerXProperty, endPort.centerXProperty));
+        curve.controlY1Property().bind(startPort.centerYProperty);
         curve.startXProperty().bind(startPort.centerXProperty);
         curve.startYProperty().bind(startPort.centerYProperty);
 
-        curve.controlX2Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(startPort), startPort.centerXProperty, endPort.centerXProperty));
+        curve.controlX2Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(endPort), startPort.centerXProperty, endPort.centerXProperty));
+        curve.controlY2Property().bind(endPort.centerYProperty);
         curve.endXProperty().bind(endPort.centerXProperty);
         curve.endYProperty().bind(endPort.centerYProperty);
+
     }
 
     private double calculateControlX(PortModel port) {
-        double dX = model.getStartPort().centerXProperty.get() - model.getEndPort().centerXProperty.get();
-        double distance = Math.abs(dX) / 2;
+        PortModel startPort = model.getStartPort();
+        PortModel endPort = model.getEndPort();
+        Double dX = endPort.centerXProperty.get() - startPort.centerXProperty.get();
+        Double dY = endPort.centerYProperty.get() - startPort.centerYProperty.get();
+        Point2D vector = new Point2D(dX, dY);
+        double distance = vector.magnitude() / 2;
         distance = port.portType == port.portType.OUT ? distance : -distance;
         return port.centerXProperty.get() + distance;
     }
@@ -112,12 +119,6 @@ public class ConnectionController extends BaseController {
         ActionManager actionManager = this.getEditorContext().getActionManager();
         RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), model);
         actionManager.executeCommand(command);
-
-        // TODO move to dedicated remove method for ConnectionController
-        unbindCurve(view.getConnectionCurve());
-        unbindCurve(view.getSnappingCurve());
-
-        removeSnappingCurveListeners();
     }
 
     private void unbindCurve(CubicCurve curve) {
@@ -135,5 +136,15 @@ public class ConnectionController extends BaseController {
         view.getSnappingCurve().setOnMouseExited(null);
         view.getSnappingCurve().setOnMouseMoved(null);
         view.getSnappingCurve().setOnMouseClicked(null);
+    }
+
+    public void remove() {
+        unbindCurve(view.getConnectionCurve());
+        unbindCurve(view.getSnappingCurve());
+        removeSnappingCurveListeners();
+    }
+
+    public ConnectionView getView() {
+        return view;
     }
 }

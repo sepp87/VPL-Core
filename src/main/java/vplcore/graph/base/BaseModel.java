@@ -1,4 +1,4 @@
-package vplcore.graph.block;
+package vplcore.graph.base;
 
 import java.util.UUID;
 import javafx.beans.property.BooleanProperty;

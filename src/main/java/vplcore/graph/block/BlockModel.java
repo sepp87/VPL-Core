@@ -1,5 +1,8 @@
 package vplcore.graph.block;
 
+import vplcore.graph.base.BaseModel;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import vplcore.graph.port.PortModel;
@@ -11,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 
@@ -27,13 +31,24 @@ public abstract class BlockModel extends BaseModel {
 
     protected ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
-    
+
     private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;
     }
-    
+
+    public List<ConnectionModel> getConnections() {
+        List<ConnectionModel> result = new ArrayList<>();
+        for (PortModel port : inputPorts) {
+            result.addAll(port.getConnectedConnections());
+        }
+        for (PortModel port : outputPorts) {
+            result.addAll(port.getConnectedConnections());
+        }
+        return result;
+    }
+
     public BooleanProperty groupedProperty() {
         return grouped;
     }
@@ -112,7 +127,10 @@ public abstract class BlockModel extends BaseModel {
             heightProperty().set(xmlTag.getHeight());
         }
     }
-
-
+    
+    public void remove() {
+        super.remove();
+        // remove listeners and bindings
+    }
 
 }

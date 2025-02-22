@@ -13,7 +13,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import vplcore.graph.block.BaseButton;
+import vplcore.graph.base.BaseButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockMetadata;

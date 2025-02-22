@@ -1,5 +1,6 @@
 package vplcore.workspace;
 
+import java.util.List;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockModel;
@@ -16,14 +17,11 @@ import javafx.collections.SetChangeListener;
  */
 public class WorkspaceModel {
 
-    // TODO remove workspace controller here since the workspace model should not know about it
-    public WorkspaceController workspaceController;
-
     public static final double DEFAULT_ZOOM = 1.0;
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
-    
+
     private final BlockGroupIndex blockGroupIndex;
 
     private final DoubleProperty zoomFactor;
@@ -36,7 +34,7 @@ public class WorkspaceModel {
 
     public WorkspaceModel() {
         blockGroupIndex = new BlockGroupIndex();
-        
+
         zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);
         translateX = new SimpleDoubleProperty(0.);
         translateY = new SimpleDoubleProperty(0.);
@@ -111,7 +109,7 @@ public class WorkspaceModel {
      * CONNECTIONS
      */
     public void addConnectionModel(PortModel startPort, PortModel endPort) {
-        ConnectionModel connectionModel = new ConnectionModel(workspaceController, startPort, endPort);
+        ConnectionModel connectionModel = new ConnectionModel(startPort, endPort);
         addConnectionModel(connectionModel);
     }
 
@@ -121,6 +119,7 @@ public class WorkspaceModel {
 
     public void removeConnectionModel(ConnectionModel connectionModel) {
         connectionModels.remove(connectionModel);
+        connectionModel.remove();
     }
 
     public ObservableSet<ConnectionModel> getConnectionModels() {
@@ -133,6 +132,13 @@ public class WorkspaceModel {
 
     public void removeConnectionModelsListener(SetChangeListener<ConnectionModel> listener) {
         connectionModels.removeListener(listener);
+    }
+
+    public void removeConnectionModels(BlockModel blockModel) {
+        List<ConnectionModel> connectionModels = blockModel.getConnections();
+        for (ConnectionModel connectionModel : connectionModels) {
+            removeConnectionModel(connectionModel);
+        }
     }
 
     /**

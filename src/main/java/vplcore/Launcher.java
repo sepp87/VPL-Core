@@ -4,8 +4,10 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+
 // 0 return BlockGroup blocks as immutable list
 // 0 Connection to MVC
+// 0 Connection should be removed by the workspace when a block is removed and not by itself
 // 0 Port to MVC
 // 0 BlockModelInfoPanel to MVC 
 //      0 remove WorkspaceController from blockmodel

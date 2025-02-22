@@ -68,18 +68,94 @@ import static vplcore.util.EventUtils.isLeftClick;
  */
 public class ConnectionModel extends Group {
 
-    private final WorkspaceController workspaceController;
-    private final WorkspaceView workspaceView;
-
-    private final ChangeListener<Object> blockDeletedListener = this::handleBlockDeleted;
-    private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
-
-    private final static double SNAPPING_WIDTH = 22;
     private final PortModel startPort;
     private final PortModel endPort;
 
-    private final CubicCurve connectionCurve;
-    private final CubicCurve snappingCurve;
+    public ConnectionModel(PortModel startPort, PortModel endPort) {
+        this.startPort = startPort;
+        this.endPort = endPort;
+
+        this.startPort.setActive(true);
+        this.endPort.setActive(true);
+
+        startPort.connectedConnections.add(this);
+        endPort.connectedConnections.add(this);
+
+        endPort.calculateData(startPort.getData());
+
+        startPort.dataProperty().addListener(endPort.getStartPortDataChangedListener());
+        startPort.parentBlock.removedProperty().addListener(blockDeletedListener);
+        endPort.parentBlock.removedProperty().addListener(blockDeletedListener);
+
+    }
+
+    private final ChangeListener<Object> blockDeletedListener = this::handleBlockDeleted;
+
+    private void handleBlockDeleted(ObservableValue arg0, Object arg1, Object arg2) {
+        ActionManager actionManager = workspaceController.getEditorContext().getActionManager();
+        RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), this);
+        actionManager.executeCommand(command);
+    }
+
+    public PortModel getStartPort() {
+        return startPort;
+    }
+
+    public PortModel getEndPort() {
+        return endPort;
+    }
+
+    public void remove() {
+        if (workspaceController != null) {
+            removeChangeListeners();
+        }
+
+        startPort.connectedConnections.remove(this);
+        endPort.connectedConnections.remove(this);
+
+        if (startPort.connectedConnections.isEmpty()) {
+            startPort.setActive(false);
+        }
+
+        if (endPort.connectedConnections.isEmpty()) {
+            endPort.setActive(false);
+        }
+
+        startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
+        startPort.parentBlock.removedProperty().removeListener(blockDeletedListener);
+        endPort.parentBlock.removedProperty().removeListener(blockDeletedListener);
+
+        endPort.calculateData();
+        if (workspaceController != null) {
+            removeFromCanvas();
+        }
+    }
+
+    public void serialize(ConnectionTag xmlTag) {
+        xmlTag.setStartBlock(startPort.parentBlock.idProperty().get());
+        xmlTag.setStartIndex(startPort.index);
+        xmlTag.setEndBlock(endPort.parentBlock.idProperty().get());
+        xmlTag.setEndIndex(endPort.index);
+    }
+
+    /**
+     * SECTION BREAK
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+    private WorkspaceController workspaceController;
+    private WorkspaceView workspaceView;
+
+    private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
+
+    private final static double SNAPPING_WIDTH = 22;
+
+    private CubicCurve connectionCurve;
+    private CubicCurve snappingCurve;
 
     public final DoubleProperty startBezierXProperty = new SimpleDoubleProperty();
     public final DoubleProperty endBezierXProperty = new SimpleDoubleProperty();
@@ -176,48 +252,6 @@ public class ConnectionModel extends Group {
 
         startBezierXProperty.set(startPort.centerXProperty.get() + distance);
         endBezierXProperty.set(endPort.centerXProperty.get() - distance);
-
-    }
-
-    public PortModel getStartPort() {
-        return startPort;
-    }
-
-    public PortModel getEndPort() {
-        return endPort;
-    }
-
-    public void serialize(ConnectionTag xmlTag) {
-        xmlTag.setStartBlock(startPort.parentBlock.idProperty().get());
-        xmlTag.setStartIndex(startPort.index);
-        xmlTag.setEndBlock(endPort.parentBlock.idProperty().get());
-        xmlTag.setEndIndex(endPort.index);
-    }
-
-    private void handleBlockDeleted(ObservableValue arg0, Object arg1, Object arg2) {
-        ActionManager actionManager = workspaceController.getEditorContext().getActionManager();
-        RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), this);
-        actionManager.executeCommand(command);
-//        remove();
-    }
-
-    public void remove() {
-        removeChangeListeners();
-
-        startPort.connectedConnections.remove(ConnectionModel.this);
-        endPort.connectedConnections.remove(ConnectionModel.this);
-
-        //Deactivate ports if they have no more connections
-        if (startPort.connectedConnections.isEmpty()) {
-            startPort.setActive(false);
-        }
-
-        if (endPort.connectedConnections.isEmpty()) {
-            endPort.setActive(false);
-        }
-
-        endPort.calculateData();
-        removeFromCanvas();
 
     }
 
@@ -364,3 +398,41 @@ public class ConnectionModel extends Group {
     }
 
 }
+
+//
+//// ConnectionModel.java (Model)
+//public class ConnectionModel {
+//    private final PortModel startPort;
+//    private final PortModel endPort;
+//
+//    public ConnectionModel(PortModel startPort, PortModel endPort) {
+//        this.startPort = startPort;
+//        this.endPort = endPort;
+//
+//        this.startPort.setActive(true);
+//        this.endPort.setActive(true);
+//        
+//        startPort.connectedConnections.add(this);
+//        endPort.connectedConnections.add(this);
+//
+//        endPort.calculateData(startPort.getData());
+//    }
+//
+//    public PortModel getStartPort() { return startPort; }
+//    public PortModel getEndPort() { return endPort; }
+//
+//    public void remove() {
+//        startPort.connectedConnections.remove(this);
+//        endPort.connectedConnections.remove(this);
+//
+//        if (startPort.connectedConnections.isEmpty()) {
+//            startPort.setActive(false);
+//        }
+//
+//        if (endPort.connectedConnections.isEmpty()) {
+//            endPort.setActive(false);
+//        }
+//
+//        endPort.calculateData();
+//    }
+//}

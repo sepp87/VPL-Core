@@ -2,6 +2,7 @@ package vplcore.graph.group;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jo.vpl.xml.BlockReferenceTag;
@@ -55,7 +56,7 @@ public class BlockGroupModel extends BaseModel {
 
     @Override
     public void remove() {
-        for (BlockModel blockModel : Collections.unmodifiableSet(blocks)) {
+        for (BlockModel blockModel : new HashSet<>(blocks)) {
             removeBlock(blockModel);
         }
         super.remove();

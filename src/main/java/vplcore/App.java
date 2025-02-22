@@ -27,6 +27,7 @@ import vplcore.graph.io.GraphLoader;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.context.ActionManager;
+import vplcore.graph.connection.RemoveButtonView;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -46,7 +47,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
+        
         if (vplcore.App.BLOCK_MVC) {
 
         } else {

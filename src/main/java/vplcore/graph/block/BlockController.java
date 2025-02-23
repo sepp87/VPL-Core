@@ -16,6 +16,7 @@ import vplcore.context.command.ResizeBlockCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
 import vplcore.graph.block.BlockModelExceptionPanel.BlockException;
+import vplcore.graph.port.PortModel;
 import vplcore.util.EventUtils;
 import vplcore.workspace.WorkspaceController;
 
@@ -56,6 +57,8 @@ public class BlockController extends BaseController {
 
         view.getInfoButton().setOnAction(this::handleInfoButtonClicked);
         view.getExceptionButton().setOnAction(this::handleExceptionButtonClicked);
+
+        view.heightProperty().addListener(layoutYListener);
         view.widthProperty().addListener(layoutXListener);
         view.layoutXProperty().addListener(layoutXListener);
         view.layoutYProperty().addListener(layoutYListener);
@@ -77,6 +80,16 @@ public class BlockController extends BaseController {
             resizeButton.setOnMouseDragged(this::handleResizeUpdated);
             resizeButton.setOnMouseReleased(this::handleResizeFinished);
         }
+    }
+
+    private final ChangeListener<Double> transformListener = this::onTransformCalculatePortCenter;
+
+    private void onTransformCalculatePortCenter(Object b, double o, double n) {
+        
+    }
+
+    public void initiateConnection(PortModel portModel) {
+        workspaceController.initiateConnection(portModel);
     }
 
     public BooleanProperty selectedProperty() {

@@ -2,6 +2,7 @@ package vplcore.graph.port;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.input.MouseEvent;
+import vplcore.graph.block.BlockController;
 import vplcore.workspace.WorkspaceController;
 
 /**
@@ -10,13 +11,13 @@ import vplcore.workspace.WorkspaceController;
  */
 public class PortController {
 
-    private final WorkspaceController workspaceController;
+    private final BlockController blockController;
 
     private final PortModel model;
     private final PortView view;
 
-    public PortController(WorkspaceController workspaceController, PortModel model, PortView view) {
-        this.workspaceController = workspaceController;
+    public PortController(BlockController blockController, PortModel model, PortView view) {
+        this.blockController = blockController;
         this.model = model;
         this.view = view;
 
@@ -30,7 +31,7 @@ public class PortController {
 
     private void handlePortClicked(MouseEvent event) {
         if (event.isStillSincePress()) {
-            workspaceController.initiateConnection(model);
+            blockController.initiateConnection(model);
         }
         event.consume();
     }

@@ -359,3 +359,87 @@ public class PortModel extends VBox {
 //        connectedConnections.clear();
     }
 }
+
+
+//public class PortModel {
+//    public enum Type {
+//        IN, OUT
+//    }
+//
+//    private final ObjectProperty<Object> data = new SimpleObjectProperty<>(null);
+//    private final BooleanProperty active = new SimpleBooleanProperty(false);
+//    private final StringProperty name = new SimpleStringProperty();
+//    private final DoubleProperty centerX = new SimpleDoubleProperty();
+//    private final DoubleProperty centerY = new SimpleDoubleProperty();
+//    
+//    private final ObservableList<ConnectionModel> connectedConnections = FXCollections.observableArrayList();
+//    private final Type portType;
+//    private final BlockModel parentBlock;
+//    private final Class<?> dataType;
+//    private final boolean multiDockAllowed;
+//    private final int index;
+//    
+//    public PortModel(String name, BlockModel parent, Type portType, Class<?> type, boolean multiDockAllowed) {
+//        this.name.set(name);
+//        this.parentBlock = parent;
+//        this.portType = portType;
+//        this.dataType = type;
+//        this.multiDockAllowed = multiDockAllowed;
+//        this.index = (portType == Type.IN) ? parent.getInputPorts().size() : parent.getOutputPorts().size();
+//        
+//        this.connectedConnections.addListener((ListChangeListener<ConnectionModel>) change -> updateActiveState());
+//    }
+//    
+//    public ObservableList<ConnectionModel> getConnectedConnections() {
+//        return connectedConnections;
+//    }
+//    
+//    public ObjectProperty<Object> dataProperty() {
+//        return data;
+//    }
+//    
+//    public BooleanProperty activeProperty() {
+//        return active;
+//    }
+//    
+//    public StringProperty nameProperty() {
+//        return name;
+//    }
+//    
+//    public DoubleProperty centerXProperty() {
+//        return centerX;
+//    }
+//    
+//    public DoubleProperty centerYProperty() {
+//        return centerY;
+//    }
+//    
+//    public void setData(Object value) {
+//        calculateData(value);
+//    }
+//    
+//    public Object getData() {
+//        return data.get();
+//    }
+//    
+//    private void updateActiveState() {
+//        active.set(!connectedConnections.isEmpty());
+//    }
+//    
+//    private void calculateData(Object value) {
+//        if (portType == Type.IN) {
+//            if (multiDockAllowed && connectedConnections.size() > 1) {
+//                List<Object> listOfData = connectedConnections.stream()
+//                        .map(conn -> conn.getStartPort().getData())
+//                        .collect(Collectors.toList());
+//                data.set(listOfData);
+//            } else if (!connectedConnections.isEmpty()) {
+//                data.set(connectedConnections.get(0).getStartPort().getData());
+//            } else {
+//                data.set(null);
+//            }
+//        } else {
+//            data.set(value);
+//        }
+//    }
+//}

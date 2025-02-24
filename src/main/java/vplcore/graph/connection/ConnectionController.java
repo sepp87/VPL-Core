@@ -81,7 +81,7 @@ public class ConnectionController extends BaseController {
         Double dY = endPort.centerYProperty().get() - startPort.centerYProperty().get();
         Point2D vector = new Point2D(dX, dY);
         double distance = vector.magnitude() / 2;
-        distance = (portController.getModel().portType == PortType.OUT) ? distance : -distance;
+        distance = (portController.getModel().portType == PortType.OUTPUT) ? distance : -distance;
         return portController.getView().centerXProperty().get() + distance;
     }
 

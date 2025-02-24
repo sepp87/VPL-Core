@@ -82,9 +82,9 @@ public class PreConnection extends Line {
          * class of the receiving port.
          */
         if (((TypeExtensions.isCastableTo(startPortModel.dataType, endPortModel.dataType)
-                && workspaceController.typeSensitive && endPortModel.portType == PortType.IN)
+                && workspaceController.typeSensitive && endPortModel.portType == PortType.INPUT)
                 || (TypeExtensions.isCastableTo(endPortModel.dataType, startPortModel.dataType)
-                && workspaceController.typeSensitive && endPortModel.portType == PortType.OUT)
+                && workspaceController.typeSensitive && endPortModel.portType == PortType.OUTPUT)
                 // IN case dataProperty type does not matter
                 || (!workspaceController.typeSensitive))
                 // Cannot be the same port type; IN > OUT or OUT > IN
@@ -96,7 +96,7 @@ public class PreConnection extends Line {
              * Make a new connection and remove all the existing connections
              * Where is multi connect?
              */
-            if (endPortModel.portType == PortType.OUT) {
+            if (endPortModel.portType == PortType.OUTPUT) {
                 if (!startPortModel.connections.isEmpty()) {
 
                     if (!startPortModel.multiDockAllowed) {

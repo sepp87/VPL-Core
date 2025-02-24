@@ -81,8 +81,8 @@ public class BlockController extends BaseController {
 //        view.addInputPorts(model.getInputPorts());
 //        view.addOutputPorts(model.getOutputPorts());
 
-        addPorts(model.getInputPorts(), PortType.IN);
-        addPorts(model.getOutputPorts(), PortType.OUT);
+        addPorts(model.getInputPorts(), PortType.INPUT);
+        addPorts(model.getOutputPorts(), PortType.OUTPUT);
 
         if (model.resizableProperty().get()) {
             view.getContentGrid().prefWidthProperty().bind(model.widthProperty());
@@ -104,7 +104,7 @@ public class BlockController extends BaseController {
             ports.put(portModel, portController);
             workspaceController.registerPort(portController);
         }
-        if (portType == PortType.IN) {
+        if (portType == PortType.INPUT) {
             view.addInputPorts(portViews);
         } else {
             view.addOutputPorts(portViews);

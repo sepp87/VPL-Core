@@ -120,7 +120,7 @@ public class PortModel extends BaseModel {
         this.name.set(name);
         this.portType = portType;
         this.dataType = type;
-        this.index = (portType == PortType.IN) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
+        this.index = (portType == PortType.INPUT) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
         this.parentBlock = parentBlock;
         this.multiDockAllowed = multiDockAllowed;
 
@@ -166,7 +166,7 @@ public class PortModel extends BaseModel {
 
     public void calculateData(Object value) {
 
-        if (portType == PortType.IN) {
+        if (portType == PortType.INPUT) {
 
             if (multiDockAllowed && connections.size() > 1) {
 

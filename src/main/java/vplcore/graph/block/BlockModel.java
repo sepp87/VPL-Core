@@ -84,7 +84,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addInputPort(String name, Class<?> type) {
-        PortModel port = new PortModel(name, PortType.IN, type, this, false);
+        PortModel port = new PortModel(name, PortType.INPUT, type, this, false);
         port.multiDockAllowed = false;
         port.dataProperty().addListener(inputDataListener);
         inputPorts.add(port);
@@ -102,7 +102,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addOutputPort(String name, Class<?> type) {
-        PortModel port = new PortModel(name, PortType.OUT, type, this, true);
+        PortModel port = new PortModel(name, PortType.OUTPUT, type, this, true);
         port.multiDockAllowed = true;
         outputPorts.add(port);
         return port;

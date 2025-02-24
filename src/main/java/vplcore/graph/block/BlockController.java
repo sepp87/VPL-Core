@@ -6,6 +6,8 @@ import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -16,7 +18,10 @@ import vplcore.context.command.ResizeBlockCommand;
 import vplcore.context.command.UpdateSelectionCommand;
 import vplcore.editor.BaseController;
 import vplcore.graph.block.BlockModelExceptionPanel.BlockException;
+import vplcore.graph.port.PortController;
 import vplcore.graph.port.PortModel;
+import vplcore.graph.port.PortType;
+import vplcore.graph.port.PortView;
 import vplcore.util.EventUtils;
 import vplcore.workspace.WorkspaceController;
 
@@ -30,6 +35,8 @@ public class BlockController extends BaseController {
     private final WorkspaceController workspaceController;
     private final BlockModel model;
     private final BlockView view;
+
+    private final ObservableMap<PortModel, PortController> ports = FXCollections.observableHashMap();
 
     private final BooleanProperty selected = new SimpleBooleanProperty(false);
 
@@ -58,7 +65,9 @@ public class BlockController extends BaseController {
         view.getInfoButton().setOnAction(this::handleInfoButtonClicked);
         view.getExceptionButton().setOnAction(this::handleExceptionButtonClicked);
 
-        view.heightProperty().addListener(layoutYListener);
+        view.layoutXProperty().addListener(transformListener);
+        view.layoutYProperty().addListener(transformListener);
+
         view.widthProperty().addListener(layoutXListener);
         view.layoutXProperty().addListener(layoutXListener);
         view.layoutYProperty().addListener(layoutYListener);
@@ -69,8 +78,11 @@ public class BlockController extends BaseController {
         view.getCaptionLabel().textProperty().bindBidirectional(model.nameProperty());
 
         view.addControlToBlock(model.getCustomization());
-        view.addInputPorts(model.getInputPorts());
-        view.addOutputPorts(model.getOutputPorts());
+//        view.addInputPorts(model.getInputPorts());
+//        view.addOutputPorts(model.getOutputPorts());
+
+        addPorts(model.getInputPorts(), PortType.IN);
+        addPorts(model.getOutputPorts(), PortType.OUT);
 
         if (model.resizableProperty().get()) {
             view.getContentGrid().prefWidthProperty().bind(model.widthProperty());
@@ -82,14 +94,37 @@ public class BlockController extends BaseController {
         }
     }
 
-    private final ChangeListener<Double> transformListener = this::onTransformCalculatePortCenter;
-
-    private void onTransformCalculatePortCenter(Object b, double o, double n) {
-        
+    private void addPorts(List<PortModel> portModels, PortType portType) {
+        List<PortView> portViews = new ArrayList<>();
+        for (PortModel portModel : portModels) {
+            PortView portView = new PortView(portType);
+            portView.boundsInParentProperty().addListener(transformListener);
+            portViews.add(portView);
+            PortController portController = new PortController(this, portModel, portView);
+            ports.put(portModel, portController);
+            workspaceController.registerPort(portController);
+        }
+        if (portType == PortType.IN) {
+            view.addInputPorts(portViews);
+        } else {
+            view.addOutputPorts(portViews);
+        }
     }
 
-    public void initiateConnection(PortModel portModel) {
-        workspaceController.initiateConnection(portModel);
+    private final ChangeListener<Object> transformListener = this::onTransformCalculatePortCenter;
+
+    private void onTransformCalculatePortCenter(Object b, Object o, Object n) {
+        for (PortController portController : ports.values()) {
+            PortView portView = portController.getView();
+            Point2D centerInScene = portView.localToScene(portView.getWidth() / 2, portView.getHeight() / 2);
+            Point2D centerInLocal = workspaceController.getView().sceneToLocal(centerInScene);
+            portView.centerXProperty().set(centerInLocal.getX());
+            portView.centerYProperty().set(centerInLocal.getY());
+        }
+    }
+
+    public void initiateConnection(PortController portController) {
+        workspaceController.initiateConnection(portController);
     }
 
     public BooleanProperty selectedProperty() {
@@ -156,7 +191,7 @@ public class BlockController extends BaseController {
 
     private void handleInfoButtonClicked(ActionEvent event) {
         if (workspaceController.activeBlockModelInfoPanel != null) {
-            workspaceController.activeBlockModelInfoPanel.delete();
+            workspaceController.activeBlockModelInfoPanel.remove();
         }
         BlockModelInfoPanel infoPanel = new BlockModelInfoPanel(model);
         workspaceController.activeBlockModelInfoPanel = infoPanel;
@@ -166,7 +201,7 @@ public class BlockController extends BaseController {
 
     private void handleExceptionButtonClicked(ActionEvent event) {
         if (workspaceController.activeBlockModelInfoPanel != null) {
-            workspaceController.activeBlockModelInfoPanel.delete();
+            workspaceController.activeBlockModelInfoPanel.remove();
         }
         BlockModelExceptionPanel exceptionPanel = new BlockModelExceptionPanel(model);
         Exception e1 = new Exception("Short message! 🧐");
@@ -279,6 +314,12 @@ public class BlockController extends BaseController {
 
         view.getInfoButton().setOnAction(null);
         view.getExceptionButton().setOnAction(null);
+
+        view.heightProperty().removeListener(transformListener);
+        view.widthProperty().removeListener(transformListener);
+        view.layoutXProperty().removeListener(transformListener);
+        view.layoutYProperty().removeListener(transformListener);
+
         view.widthProperty().removeListener(layoutXListener);
         view.layoutXProperty().removeListener(layoutXListener);
         view.layoutYProperty().removeListener(layoutYListener);
@@ -287,9 +328,11 @@ public class BlockController extends BaseController {
         view.layoutXProperty().unbindBidirectional(model.layoutXProperty());
         view.layoutYProperty().unbindBidirectional(model.layoutYProperty());
         view.getCaptionLabel().textProperty().unbindBidirectional(model.nameProperty());
-        view.getCaptionLabel().delete();
+        view.getCaptionLabel().remove();
 
         if (model.resizableProperty().get()) {
+            view.getContentGrid().prefWidthProperty().unbind();
+            view.getContentGrid().prefHeightProperty().unbind();
             ResizeButton resizeButton = view.getResizeButton();
             resizeButton.setOnMousePressed(null);
             resizeButton.setOnMouseDragged(null);
@@ -298,7 +341,12 @@ public class BlockController extends BaseController {
 
         BlockModelInfoPanel infoPanel = view.getInfoPanel();
         if (infoPanel != null) {
-            infoPanel.delete();
+            infoPanel.remove();
+        }
+
+        for (PortController portController : ports.values()) {
+            portController.getView().boundsInParentProperty().removeListener(transformListener);
+            workspaceController.unregisterPort(portController);
         }
 
     }

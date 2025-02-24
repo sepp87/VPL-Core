@@ -73,7 +73,7 @@ public class BlockModelInfoPanel extends Pane {
         // create title box
         this.closeButton = new Button(FontAwesomeIcon.TIMES.unicode());
         closeButton.getStyleClass().add("block-info-close-button");
-        closeButton.setOnAction(e -> delete());
+        closeButton.setOnAction(e -> remove());
         HBox titleBox = new HBox(closeButton);
         titleBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -163,7 +163,7 @@ public class BlockModelInfoPanel extends Pane {
         }
         String result = "";
         for (PortModel port : ports) {
-            result += port.getName() + " : " + port.dataType.getSimpleName() + "\n";
+            result += port.nameProperty().get() + " : " + port.dataType.getSimpleName() + "\n";
 
         }
         result = result.substring(0, result.length() - 1);
@@ -212,7 +212,7 @@ public class BlockModelInfoPanel extends Pane {
         return tail;
     }
 
-    public void delete() {
+    public void remove() {
         workspaceView.getChildren().remove(BlockModelInfoPanel.this);
         closeButton.setOnAction(null);
         blockView.removeInfoPanel();

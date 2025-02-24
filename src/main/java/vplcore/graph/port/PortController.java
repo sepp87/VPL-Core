@@ -1,9 +1,11 @@
 package vplcore.graph.port;
 
 import javafx.beans.value.ChangeListener;
+import javafx.collections.SetChangeListener.Change;
+import javafx.collections.SetChangeListener;
 import javafx.scene.input.MouseEvent;
 import vplcore.graph.block.BlockController;
-import vplcore.workspace.WorkspaceController;
+import vplcore.graph.connection.ConnectionModel;
 
 /**
  *
@@ -22,25 +24,24 @@ public class PortController {
         this.view = view;
 
         model.activeProperty().addListener(activeListener);
-
+        
+        view.idProperty().bind(model.idProperty());
         view.getTooltip().textProperty().bind(model.nameProperty());
         view.setOnMouseClicked(this::handlePortClicked);
-        view.setOnMousePressed(this::handlePortPressed);
-        view.setOnMouseDragged(this::handlePortDragged);
+        view.setOnMousePressed(this::ignoreDrag);
+        view.setOnMouseDragged(this::ignoreDrag);
     }
+
+
 
     private void handlePortClicked(MouseEvent event) {
         if (event.isStillSincePress()) {
-            blockController.initiateConnection(model);
+            blockController.initiateConnection(this);
         }
         event.consume();
     }
 
-    private void handlePortPressed(MouseEvent event) {
-        event.consume();
-    }
-
-    private void handlePortDragged(MouseEvent event) {
+    private void ignoreDrag(MouseEvent event) {
         event.consume();
     }
 
@@ -48,6 +49,14 @@ public class PortController {
 
     private void onActiveChanged(Object b, boolean o, boolean n) {
         view.setActive(n);
+    }
+
+    public PortModel getModel() {
+        return model;
+    }
+    
+    public PortView getView() {
+        return view;
     }
 
     public void remove() {

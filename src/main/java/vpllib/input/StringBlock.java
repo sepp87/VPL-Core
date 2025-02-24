@@ -79,7 +79,7 @@ public class StringBlock extends BlockModel {
         //Forward empty string as null
         if (str.equals("")) {
             outputPorts.get(0).dataType = String.class;
-            outputPorts.get(0).setName("String : Value");
+            outputPorts.get(0).nameProperty().set("String : Value");
             outputPorts.get(0).setData(null);
             return;
         }
@@ -89,7 +89,7 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataType = Boolean.class;
-            outputPorts.get(0).setName("Boolean : Value");
+            outputPorts.get(0).nameProperty().set("Boolean : Value");
             outputPorts.get(0).setData(bool);
             return;
         }
@@ -99,7 +99,7 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataType = Integer.class;
-            outputPorts.get(0).setName("Integer : Value");
+            outputPorts.get(0).nameProperty().set("Integer : Value");
             outputPorts.get(0).setData(integer);
             return;
         }
@@ -109,7 +109,7 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataType = Long.class;
-            outputPorts.get(0).setName("Long : Value");
+            outputPorts.get(0).nameProperty().set("Long : Value");
             outputPorts.get(0).setData(lng);
             return;
         }
@@ -119,13 +119,13 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataType = Double.class;
-            outputPorts.get(0).setName("Double : Value");
+            outputPorts.get(0).nameProperty().set("Double : Value");
             outputPorts.get(0).setData(dbl);
             return;
         }
 
         outputPorts.get(0).dataType = String.class;
-        outputPorts.get(0).setName("String : Value");
+        outputPorts.get(0).nameProperty().set("String : Value");
         outputPorts.get(0).setData(str);
     }
 
@@ -147,27 +147,27 @@ public class StringBlock extends BlockModel {
         switch (value) {
             case "Double":
                 outputPorts.get(0).dataType = Double.class;
-                outputPorts.get(0).setName("Double : Value");
+                outputPorts.get(0).nameProperty().set("Double : Value");
                 break;
 
             case "Integer":
                 outputPorts.get(0).dataType = Integer.class;
-                outputPorts.get(0).setName("Integer : Value");
+                outputPorts.get(0).nameProperty().set("Integer : Value");
                 break;
 
             case "Long":
                 outputPorts.get(0).dataType = Long.class;
-                outputPorts.get(0).setName("Long : Value");
+                outputPorts.get(0).nameProperty().set("Long : Value");
                 break;
 
             case "Boolean":
                 outputPorts.get(0).dataType = Boolean.class;
-                outputPorts.get(0).setName("Boolean : Value");
+                outputPorts.get(0).nameProperty().set("Boolean : Value");
                 break;
 
             case "String":
                 outputPorts.get(0).dataType = String.class;
-                outputPorts.get(0).setName("String : Value");
+                outputPorts.get(0).nameProperty().set("String : Value");
                 break;
 
         }

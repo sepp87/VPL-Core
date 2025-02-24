@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.connection.ConnectionModel;
+import vplcore.graph.port.PortType;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 
@@ -41,10 +42,10 @@ public abstract class BlockModel extends BaseModel {
     public List<ConnectionModel> getConnections() {
         List<ConnectionModel> result = new ArrayList<>();
         for (PortModel port : inputPorts) {
-            result.addAll(port.getConnectedConnections());
+            result.addAll(port.getConnections());
         }
         for (PortModel port : outputPorts) {
-            result.addAll(port.getConnectedConnections());
+            result.addAll(port.getConnections());
         }
         return result;
     }
@@ -83,7 +84,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addInputPort(String name, Class<?> type) {
-        PortModel port = new PortModel(name, this, PortModel.Type.IN, type);
+        PortModel port = new PortModel(name, PortType.IN, type, this, false);
         port.multiDockAllowed = false;
         port.dataProperty().addListener(inputDataListener);
         inputPorts.add(port);
@@ -101,7 +102,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addOutputPort(String name, Class<?> type) {
-        PortModel port = new PortModel(name, this, PortModel.Type.OUT, type);
+        PortModel port = new PortModel(name, PortType.OUT, type, this, true);
         port.multiDockAllowed = true;
         outputPorts.add(port);
         return port;
@@ -127,7 +128,7 @@ public abstract class BlockModel extends BaseModel {
             heightProperty().set(xmlTag.getHeight());
         }
     }
-    
+
     public void remove() {
         super.remove();
         // remove listeners and bindings

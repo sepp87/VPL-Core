@@ -86,7 +86,7 @@ public class CopyPasteMemory {
             int counter = 0;
 
             for (PortModel port : cc.oldBlock.getInputPorts()) {
-                for (ConnectionModel connection : port.connectedConnections) {
+                for (ConnectionModel connection : port.connections) {
                     if (!alreadyCopiedConnections.contains(connection)) {
 
                         // start and end block are contained in selection

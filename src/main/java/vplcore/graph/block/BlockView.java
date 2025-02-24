@@ -21,6 +21,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import vplcore.IconType;
+import vplcore.graph.port.PortView;
 
 /**
  *
@@ -176,11 +177,11 @@ public class BlockView extends GridPane {
         return resizeButton;
     }
 
-    public void addInputPorts(ObservableList<PortModel> ports) {
+    public void addInputPorts(List<PortView> ports) {
         inPortBox.getChildren().addAll(ports);
     }
 
-    public void addOutputPorts(ObservableList<PortModel> ports) {
+    public void addOutputPorts(List<PortView> ports) {
         outPortBox.getChildren().addAll(ports);
     }
 

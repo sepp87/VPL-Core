@@ -78,7 +78,7 @@ public class BaseLabel extends Button {
         }
     }
 
-    public void delete() {
+    public void remove() {
         textField.maxWidthProperty().unbind();
         textField.textProperty().unbindBidirectional(textProperty());
         textField.setOnKeyPressed(null);

@@ -142,8 +142,8 @@ public class BlockModelExceptionPanel extends BlockModelInfoPanel {
     }
 
     @Override
-    public void delete() {
-        super.delete();
+    public void remove() {
+        super.remove();
         previousButton.setOnAction(null);
         nextButton.setOnAction(null);
         blockView.removeExceptionPanel();

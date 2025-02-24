@@ -4,23 +4,18 @@ package vplcore.graph.port;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
+import javafx.collections.SetChangeListener.Change;
+import vplcore.graph.base.BaseModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.util.TypeExtensions;
@@ -110,116 +105,38 @@ import vplcore.graph.util.TypeExtensions;
  *
  * @author JoostMeulenkamp
  */
-public class PortModel extends VBox {
+public class PortModel extends BaseModel {
 
-    public enum Type {
-        IN,
-        OUT
-    }
-
-//    private final Point2D center = new Point2D(0, 0);
+    private final StringProperty name = new SimpleStringProperty(this, "name", null);
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
-    private final StringProperty name = new SimpleStringProperty(this, "name", null);
-
-    public final DoubleProperty centerXProperty = new SimpleDoubleProperty();
-    public final DoubleProperty centerYProperty = new SimpleDoubleProperty();
-
-    public ObservableList<ConnectionModel> connectedConnections;
+    public ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     public Class<?> dataType;
-    public Type portType;
-    public BlockModel parentBlock;
-    public boolean multiDockAllowed;
+    public PortType portType;
     public int index;
+    public boolean multiDockAllowed;
 
-    private final Tooltip tip;
-
-    private final EventHandler<MouseEvent> portClickedForNewConnectionHandler = this::handlePortClickedForNewConnection;
-    private final EventHandler<MouseEvent> portPressedHandler = this::handlePortPressed; // prevent block dragging
-    private final EventHandler<MouseEvent> portDraggedHandler = this::handlePortDragged;
-    private final ListChangeListener<ConnectionModel> portConnectionsChangedListener = this::handlePortConnectionsChanged;
-    private final ChangeListener<Object> portActivationChangedListener = this::handlePortActivationChanged;
-    private final ChangeListener<Object> portCoordinatesChangedListener = this::handlePortCoordinatesChanged;
-    private final ChangeListener<Object> startPortDataChangedListener = this::handleStartPortDataChanged;
-
-    public PortModel(String name, BlockModel parent, Type portType, Class<?> type) {
-        tip = new Tooltip();
-        Tooltip.install(this, tip);
-        tip.textProperty().bind(this.nameProperty());
-
-        this.parentBlock = parent;
-        this.dataType = type;
+    public PortModel(String name, PortType portType, Class<?> type, BlockModel parentBlock, boolean multiDockAllowed) {
+        this.name.set(name);
         this.portType = portType;
-        this.setName(name);
+        this.dataType = type;
+        this.index = (portType == PortType.IN) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
+        this.parentBlock = parentBlock;
+        this.multiDockAllowed = multiDockAllowed;
 
-        if (portType == Type.IN) {
-            index = parent.getInputPorts().size();
-        } else {
-            index = parent.getOutputPorts().size();
-        }
-
-        getStyleClass().add("port");
-        getStyleClass().add("port-" + portType.toString().toLowerCase());
-
-        connectedConnections = FXCollections.observableArrayList();
-
-        connectedConnections.addListener(portConnectionsChangedListener);
-        addEventHandler(MouseEvent.MOUSE_CLICKED, portClickedForNewConnectionHandler);
-        addEventHandler(MouseEvent.MOUSE_PRESSED, portPressedHandler);
-        addEventHandler(MouseEvent.MOUSE_DRAGGED, portDraggedHandler);
-        active.addListener(portActivationChangedListener);
-        parentBlock.layoutXProperty().addListener(portCoordinatesChangedListener);
-        parentBlock.layoutYProperty().addListener(portCoordinatesChangedListener);
-        boundsInParentProperty().addListener(portCoordinatesChangedListener);
+        this.connections.addListener(connectionsListener);
     }
 
-    public List<ConnectionModel> getConnectedConnections() {
-        return new ArrayList<>(connectedConnections);
+    public BlockModel parentBlock;
+
+    public List<ConnectionModel> getConnections() {
+        return new ArrayList<>(connections);
     }
+    private final SetChangeListener<ConnectionModel> connectionsListener = this::onConnectionsChanged;
 
-    public void handlePortClickedForNewConnection(MouseEvent event) {
-        if (event.isStillSincePress()) {
-            parentBlock.workspaceController.initiateConnection(PortModel.this);
-
-        }
-        event.consume();
-    }
-
-    public void handlePortPressed(MouseEvent event) {
-        event.consume();
-    }
-
-    private void handlePortConnectionsChanged(ListChangeListener.Change<? extends ConnectionModel> change) {
-        if (connectedConnections.size() == 0) {
-            setActive(false);
-        } else {
-            setActive(true);
-        }
-    }
-
-    private void calcOrigin() {
-        try {
-            Point2D centerInScene = localToScene(getWidth() / 2, getHeight() / 2);
-            Point2D centerInLocal = parentBlock.workspaceController.getView().sceneToLocal(centerInScene);
-
-            centerXProperty.set(centerInLocal.getX());
-            centerYProperty.set(centerInLocal.getY());
-        } catch (Exception e) {
-        }
-    }
-
-    private void handlePortCoordinatesChanged(ObservableValue<? extends Object> b, Object o, Object n) {
-        calcOrigin();
-    }
-
-    /**
-     * @TODO CHANGE FROM ORIGINAL CODE Consume event to prevent block from
-     * moving around.
-     *
-     * @param e
-     */
-    private void handlePortDragged(MouseEvent e) {
-        e.consume();
+    private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
+        boolean isActive = !connections.isEmpty();
+        active.set(isActive);
     }
 
     public final ObjectProperty<Object> dataProperty() {
@@ -237,6 +154,7 @@ public class PortModel extends VBox {
     public ChangeListener<Object> getStartPortDataChangedListener() {
         return startPortDataChangedListener;
     }
+    private final ChangeListener<Object> startPortDataChangedListener = this::handleStartPortDataChanged;
 
     private void handleStartPortDataChanged(ObservableValue obj, Object oldVal, Object newVal) {
         calculateData(newVal);
@@ -248,14 +166,14 @@ public class PortModel extends VBox {
 
     public void calculateData(Object value) {
 
-        if (portType == Type.IN) {
+        if (portType == PortType.IN) {
 
-            if (multiDockAllowed && connectedConnections.size() > 1) {
+            if (multiDockAllowed && connections.size() > 1) {
 
                 dataType.cast(new Object());
                 List listOfLists = new ArrayList<>();
 
-                for (ConnectionModel connection : connectedConnections) {
+                for (ConnectionModel connection : connections) {
 
                     //Cast all primitive dataType to String if this port dataType is String
                     PortModel startPort = connection.getStartPort();
@@ -277,11 +195,11 @@ public class PortModel extends VBox {
                 }
                 data.set(listOfLists);
 
-            } else if (connectedConnections.size() > 0) { // incoming data of one single incoming connection
+            } else if (connections.size() > 0) { // incoming data of one single incoming connection
                 System.out.println("Data Received: " + value);
 
                 //Cast all primitive dataType to String if this port dataType is String
-                PortModel startPort = connectedConnections.get(0).getStartPort();
+                PortModel startPort = connections.iterator().next().getStartPort();
                 if (dataType == String.class && TypeExtensions.contains(startPort.dataType)) {
                     if (startPort.getData() instanceof List) {
                         List list = (List) startPort.getData();
@@ -306,60 +224,16 @@ public class PortModel extends VBox {
         //OnDataChanged();
     }
 
-    public final void setActive(boolean value) {
-        active.set(value);
-    }
-
-    public final boolean isActive() {
-        return active.get();
-    }
-
-    public BooleanProperty activeProperty() {
-        return active;
-    }
-
-    public final void setName(String value) {
-        name.set(value);
-    }
-
-    public final String getName() {
-        return name.get();
-    }
-
-    public StringProperty nameProperty() {
-        return name;
-    }
-
-    private void handlePortActivationChanged(Object obj, Object oldVal, Object newVal) {
-        if (isActive()) {
-            getStyleClass().remove("port");
-            getStyleClass().add("port-active");
-        } else {
-            getStyleClass().remove("port-active");
-            getStyleClass().add("port");
-        }
-    }
-
-    public void delete() {
-        connectedConnections.removeListener(portConnectionsChangedListener);
-        removeEventHandler(MouseEvent.MOUSE_CLICKED, portClickedForNewConnectionHandler);
-        removeEventHandler(MouseEvent.MOUSE_PRESSED, portPressedHandler);
-        removeEventHandler(MouseEvent.MOUSE_DRAGGED, portDraggedHandler);
-        active.removeListener(portActivationChangedListener);
-        parentBlock.layoutXProperty().removeListener(portCoordinatesChangedListener);
-        parentBlock.layoutYProperty().removeListener(portCoordinatesChangedListener);
-        boundsInParentProperty().removeListener(portCoordinatesChangedListener);
-
-        tip.textProperty().unbind();
-
-        for (ConnectionModel connection : getConnectedConnections()) {
-            connection.remove();
-        }
-
+    @Override
+    public void remove() {
+        connections.removeListener(connectionsListener);
+        super.remove();
+//        for (ConnectionModel connection : getConnections()) {
+//            connection.remove();
+//        }
 //        connectedConnections.clear();
     }
 }
-
 
 //public class PortModel {
 //    public enum Type {

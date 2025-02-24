@@ -7,7 +7,9 @@ import javafx.scene.shape.CubicCurve;
 import vplcore.context.ActionManager;
 import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.editor.BaseController;
-import vplcore.graph.port.PortModel;
+import vplcore.graph.port.PortController;
+import vplcore.graph.port.PortType;
+import vplcore.graph.port.PortView;
 import static vplcore.util.EventUtils.isLeftClick;
 import vplcore.workspace.WorkspaceController;
 
@@ -17,13 +19,23 @@ import vplcore.workspace.WorkspaceController;
  */
 public class ConnectionController extends BaseController {
 
+    private final WorkspaceController workspaceController;
+
     private final ConnectionModel model;
     private final ConnectionView view;
 
+    private final PortController startPortController;
+    private final PortController endPortController;
+
     public ConnectionController(WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
         super(workspaceController);
+        this.workspaceController = workspaceController;
         this.model = model;
         this.view = view;
+
+        this.startPortController = workspaceController.getPortController(model.getStartPort().idProperty().get());
+        this.endPortController = workspaceController.getPortController(model.getEndPort().idProperty().get());
+
         bindCurves();
         addSnappingCurveListeners();
     }
@@ -34,32 +46,55 @@ public class ConnectionController extends BaseController {
     }
 
     private void bindCurve(CubicCurve curve) {
-        PortModel startPort = model.getStartPort();
-        PortModel endPort = model.getEndPort();
+//        PortModel startPort = model.getStartPort();
+//        PortModel endPort = model.getEndPort();
+//
+//        curve.controlX1Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(startPort), startPort.centerXProperty, endPort.centerXProperty));
+//        curve.controlY1Property().bind(startPort.centerYProperty);
+//        curve.startXProperty().bind(startPort.centerXProperty);
+//        curve.startYProperty().bind(startPort.centerYProperty);
+//
+//        curve.controlX2Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(endPort), startPort.centerXProperty, endPort.centerXProperty));
+//        curve.controlY2Property().bind(endPort.centerYProperty);
+//        curve.endXProperty().bind(endPort.centerXProperty);
+//        curve.endYProperty().bind(endPort.centerYProperty);
 
-        curve.controlX1Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(startPort), startPort.centerXProperty, endPort.centerXProperty));
-        curve.controlY1Property().bind(startPort.centerYProperty);
-        curve.startXProperty().bind(startPort.centerXProperty);
-        curve.startYProperty().bind(startPort.centerYProperty);
+        PortView startPortView = startPortController.getView();
+        PortView endPortView = endPortController.getView();
 
-        curve.controlX2Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(endPort), startPort.centerXProperty, endPort.centerXProperty));
-        curve.controlY2Property().bind(endPort.centerYProperty);
-        curve.endXProperty().bind(endPort.centerXProperty);
-        curve.endYProperty().bind(endPort.centerYProperty);
+        curve.controlX1Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(startPortController), startPortView.centerXProperty(), endPortView.centerXProperty()));
+        curve.controlY1Property().bind(startPortView.centerYProperty());
+        curve.startXProperty().bind(startPortView.centerXProperty());
+        curve.startYProperty().bind(startPortView.centerYProperty());
+
+        curve.controlX2Property().bind(Bindings.createDoubleBinding(() -> calculateControlX(endPortController), startPortView.centerXProperty(), endPortView.centerXProperty()));
+        curve.controlY2Property().bind(endPortView.centerYProperty());
+        curve.endXProperty().bind(endPortView.centerXProperty());
+        curve.endYProperty().bind(endPortView.centerYProperty());
 
     }
 
-    private double calculateControlX(PortModel port) {
-        PortModel startPort = model.getStartPort();
-        PortModel endPort = model.getEndPort();
-        Double dX = endPort.centerXProperty.get() - startPort.centerXProperty.get();
-        Double dY = endPort.centerYProperty.get() - startPort.centerYProperty.get();
+    private double calculateControlX(PortController portController) {
+        PortView startPort = startPortController.getView();
+        PortView endPort = endPortController.getView();
+        Double dX = endPort.centerXProperty().get() - startPort.centerXProperty().get();
+        Double dY = endPort.centerYProperty().get() - startPort.centerYProperty().get();
         Point2D vector = new Point2D(dX, dY);
         double distance = vector.magnitude() / 2;
-        distance = port.portType == port.portType.OUT ? distance : -distance;
-        return port.centerXProperty.get() + distance;
+        distance = (portController.getModel().portType == PortType.OUT) ? distance : -distance;
+        return portController.getView().centerXProperty().get() + distance;
     }
 
+//    private double calculateControlX(PortModel port) {
+//        PortModel startPort = model.getStartPort();
+//        PortModel endPort = model.getEndPort();
+//        Double dX = endPort.centerXProperty.get() - startPort.centerXProperty.get();
+//        Double dY = endPort.centerYProperty.get() - startPort.centerYProperty.get();
+//        Point2D vector = new Point2D(dX, dY);
+//        double distance = vector.magnitude() / 2;
+//        distance = port.portType == PortType.OUT ? distance : -distance;
+//        return port.centerXProperty.get() + distance;
+//    }
     private void addSnappingCurveListeners() {
         view.getSnappingCurve().setOnMouseEntered(this::handleShowRemoveButton);
         view.getSnappingCurve().setOnMouseExited(this::handleHideRemoveButton);

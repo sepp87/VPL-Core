@@ -60,11 +60,11 @@ public class ConnectionModel extends BaseModel {
         this.startPort = startPort;
         this.endPort = endPort;
 
-        this.startPort.setActive(true);
-        this.endPort.setActive(true);
+        this.startPort.activeProperty().set(true);
+        this.endPort.activeProperty().set(true);
 
-        startPort.connectedConnections.add(this);
-        endPort.connectedConnections.add(this);
+        startPort.connections.add(this);
+        endPort.connections.add(this);
 
         endPort.calculateData(startPort.getData());
 
@@ -79,16 +79,17 @@ public class ConnectionModel extends BaseModel {
         return endPort;
     }
 
+    @Override
     public void remove() {
-        startPort.connectedConnections.remove(this);
-        endPort.connectedConnections.remove(this);
+        startPort.connections.remove(this);
+        endPort.connections.remove(this);
 
-        if (startPort.connectedConnections.isEmpty()) {
-            startPort.setActive(false);
+        if (startPort.connections.isEmpty()) {
+            startPort.activeProperty().set(false);
         }
 
-        if (endPort.connectedConnections.isEmpty()) {
-            endPort.setActive(false);
+        if (endPort.connections.isEmpty()) {
+            endPort.activeProperty().set(false);
         }
 
         startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());

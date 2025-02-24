@@ -55,7 +55,7 @@ public class VplElement extends GridPane {
         removeEventHandler(MouseEvent.MOUSE_EXITED, vplElementExitedHandler);
 
         captionLabel.textProperty().unbindBidirectional(name);
-        captionLabel.delete();
+        captionLabel.remove();
 //        workspaceController.removeChild( this);
 //        workspaceView.getChildren().remove(this);
         setDeleted(true);

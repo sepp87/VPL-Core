@@ -111,7 +111,7 @@ public class MethodBlockModel extends BlockModel {
             PortModel port = this.outputPorts.get(0);
             Class<?> type = classes.iterator().next();
             port.dataType = type;
-            port.setName(type.getSimpleName());
+            port.nameProperty().set(type.getSimpleName());
         }
     }
 

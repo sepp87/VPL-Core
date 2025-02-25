@@ -16,9 +16,9 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
+import vplcore.graph.block.ExceptionPanel.BlockException;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortType;
-import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 
 /**
@@ -27,18 +27,20 @@ import vplcore.workspace.WorkspaceModel;
  */
 public abstract class BlockModel extends BaseModel {
 
-    // TODO remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
-    public WorkspaceController workspaceController;
+    protected final WorkspaceModel workspace;
 
-    protected WorkspaceModel workspace;
-
-    protected ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
-    protected ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
+    protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
+    protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
+    private final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
 
     private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;
+    }
+
+    public ObservableList<BlockException> getExceptions() {
+        return exceptions;
     }
 
     public List<ConnectionModel> getConnections() {
@@ -74,21 +76,15 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public final void processSafely() {
-        // TODO remove exception if there was any
-        
+        // Remove exceptions if there were any
+        exceptions.clear();
+
         try {
             process();
         } catch (Exception exception) {
+            BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
+            exceptions.add(blockException);
             Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
-            System.out.println("Error: " + exception.getMessage());
-            System.out.println("Exception Type: " + exception.getClass().getSimpleName());
-            
-            if (exception.getCause() != null) {
-                System.out.println("Caused by: " + exception.getCause());
-            }
-            for (Throwable suppressed : exception.getSuppressed()) {
-                System.out.println("Suppressed: " + suppressed);
-            }
         }
     }
 
@@ -106,7 +102,6 @@ public abstract class BlockModel extends BaseModel {
 
     public PortModel addInputPort(String name, Class<?> type) {
         PortModel port = new PortModel(name, PortType.INPUT, type, this, false);
-        port.multiDockAllowed = false;
         port.dataProperty().addListener(inputDataListener);
         inputPorts.add(port);
         return port;
@@ -124,7 +119,6 @@ public abstract class BlockModel extends BaseModel {
 
     public PortModel addOutputPort(String name, Class<?> type) {
         PortModel port = new PortModel(name, PortType.OUTPUT, type, this, true);
-        port.multiDockAllowed = true;
         outputPorts.add(port);
         return port;
     }

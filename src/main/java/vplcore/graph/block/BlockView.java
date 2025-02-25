@@ -2,11 +2,9 @@ package vplcore.graph.block;
 
 import vplcore.graph.base.BaseLabel;
 import vplcore.graph.base.BaseButton;
-import vplcore.graph.port.PortModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javafx.collections.ObservableList;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
@@ -43,10 +41,10 @@ public class BlockView extends GridPane {
     private final GridPane mainContentGrid;
 
     private final BaseButton infoButton = new BaseButton(IconType.FA_INFO_CIRCLE);
-    private BlockModelInfoPanel infoPanel;
+    private InfoPanel infoPanel;
 
     private final BaseButton exceptionButton = new BaseButton(IconType.FA_WARNING);
-    private BlockModelExceptionPanel exceptionPanel;
+    private ExceptionPanel exceptionPanel;
 
     private ResizeButton resizeButton;
 
@@ -121,7 +119,7 @@ public class BlockView extends GridPane {
 
         //Open block info panel on clicking question button
         infoButton.setVisible(false);
-        exceptionButton.setVisible(true);
+        exceptionButton.setVisible(false);
         menuBox.getChildren().addAll(exceptionButton, infoButton);
 
     }
@@ -138,11 +136,11 @@ public class BlockView extends GridPane {
         return infoButton;
     }
 
-    public void setInfoPanel(BlockModelInfoPanel infoPanel) {
+    public void setInfoPanel(InfoPanel infoPanel) {
         this.infoPanel = infoPanel;
     }
 
-    public BlockModelInfoPanel getInfoPanel() {
+    public InfoPanel getInfoPanel() {
         return infoPanel;
     }
 
@@ -150,11 +148,11 @@ public class BlockView extends GridPane {
         infoPanel = null;
     }
 
-    public void setExceptionPanel(BlockModelExceptionPanel exceptionPanel) {
+    public void setExceptionPanel(ExceptionPanel exceptionPanel) {
         this.exceptionPanel = exceptionPanel;
     }
 
-    public BlockModelExceptionPanel getExceptionPanel() {
+    public ExceptionPanel getExceptionPanel() {
         return exceptionPanel;
     }
 

@@ -4,11 +4,12 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 BUG remove block does not remove exception panel
 // 0 return BlockGroup blocks as immutable list
-// 0 Port to MVC
 // 0 BlockModelInfoPanel to MVC 
-//      0 remove WorkspaceController from blockmodel
-// 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
+// 0 WorkspaceView split into GroupLayer, BlockLayer, ConnectionLayer, InfoLayer
+// 0 BlockModelInfoPanel place below buttons but above all else
+// 0 BlockView move to top when clicked
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
@@ -16,9 +17,9 @@ import vpllib.method.JsonMethods;
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
-// 1 IMPROVEMENT Block to MVC Pattern - BlockInfoPanel, BlockExceptionPanel
 //
 // BACKLOG
+// 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 0 REFACTOR Block MVC - double check if all listeners and bindings are removed
 // 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed
 // 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
@@ -41,6 +42,10 @@ import vpllib.method.JsonMethods;
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// 1 IMPROVEMENT Block to MVC Pattern
+// 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
+// 0 remove WorkspaceController from blockmodel
+// 0 Port to MVC
 // BUG when delete a block, the connection is not removed and there is an error message
 // 0 Connection to MVC
 //      0 Connection should be removed by the workspace when a block is removed and not by itself

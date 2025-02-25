@@ -107,24 +107,27 @@ import vplcore.graph.util.TypeExtensions;
  */
 public class PortModel extends BaseModel {
 
-    private final StringProperty name = new SimpleStringProperty(this, "name", null);
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
-    private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     public ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
     public PortType portType;
     public int index;
-    public boolean multiDockAllowed;
+    private final boolean multiDockAllowed;
     public BlockModel parentBlock;
 
     public PortModel(String name, PortType portType, Class<?> type, BlockModel parentBlock, boolean multiDockAllowed) {
-        this.name.set(name);
+        this.nameProperty().set(name);
         this.portType = portType;
         this.index = (portType == PortType.INPUT) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
         this.parentBlock = parentBlock;
         this.multiDockAllowed = multiDockAllowed;
+        this.dataType.set(type);
 
         this.connections.addListener(connectionsListener);
+    }
+    
+    public boolean isMultiDockAllowed() {
+        return multiDockAllowed;
     }
 
     public ObjectProperty<Class<?>> dataTypeProperty() {
@@ -154,7 +157,7 @@ public class PortModel extends BaseModel {
 
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
         boolean isActive = !connections.isEmpty();
-        active.set(isActive);
+        activeProperty().set(isActive);
     }
 
     public ChangeListener<Object> getStartPortDataChangedListener() {

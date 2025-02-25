@@ -18,7 +18,7 @@ import javafx.geometry.Point2D;
 import vplcore.App;
 import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
-import vplcore.graph.block.BlockModelInfoPanel;
+import vplcore.graph.block.InfoPanel;
 import vplcore.graph.connection.ConnectionController;
 import vplcore.graph.connection.ConnectionView;
 import vplcore.graph.group.BlockGroupController;
@@ -44,7 +44,7 @@ public class WorkspaceController extends BaseController {
     private final Map<String, PortController> ports = new HashMap<>();
     
     // TODO Remove public access to info panel 
-    public BlockModelInfoPanel activeBlockModelInfoPanel;
+    public InfoPanel activeBlockModelInfoPanel;
     public boolean typeSensitive = true;
 
     //Radial menu
@@ -94,7 +94,7 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
-        System.out.println("WorkspaceController.onBlockModelsChanged");
+        System.out.println("WorkspaceController.onBlockModelsChanged()");
         if (change.wasAdded()) {
             addBlock(change.getElementAdded());
         } else {
@@ -104,7 +104,6 @@ public class WorkspaceController extends BaseController {
 
     private void addBlock(BlockModel blockModel) {
         System.out.println("WorkspaceController.addBlock()");
-        blockModel.workspaceController = WorkspaceController.this; // TODO Refactor and remove since the block model should not be aware of the workspace controller, but is momentarily needed by the port model
         BlockView blockView = new BlockView();
         view.getChildren().add(blockView);
         BlockController blockController = new BlockController(this, blockModel, blockView);
@@ -267,6 +266,10 @@ public class WorkspaceController extends BaseController {
 
     public Collection<BlockController> getBlockControllers() {
         return blocks.values();
+    }
+    
+    public Collection<BlockGroupController> getBlockGroups() {
+        return blockGroups.values();
     }
 
     public BlockController getBlockController(BlockModel blockModel) {

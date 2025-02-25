@@ -1,7 +1,10 @@
 package vplcore.graph.block;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import vplcore.graph.port.PortModel;
 import java.util.List;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,9 +24,9 @@ import vplcore.workspace.WorkspaceView;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
-public class BlockModelInfoPanel extends Pane {
+public class InfoPanel extends Pane {
 
     // specify types info, warning and error
     // style panel by severity 
@@ -36,12 +39,15 @@ public class BlockModelInfoPanel extends Pane {
     protected Path tail;
     protected ScrollPane messagePane;
 
+    private List<Label> inputs = Collections.emptyList();
+    private List<Label> outputs = Collections.emptyList();
+
     public static final double MAX_HEIGHT = 420;
 
-    public BlockModelInfoPanel(BlockModel blockModel) {
-        this.workspaceView = blockModel.workspaceController.getView();
-        this.blockModel = blockModel;
-        this.blockView = blockModel.workspaceController.getBlockController(blockModel).getView();
+    public InfoPanel(WorkspaceView workspaceView, BlockController blockController) {
+        this.workspaceView = workspaceView;
+        this.blockModel = blockController.getModel();
+        this.blockView = blockController.getView();
 
         VBox container = new VBox(-2);
         container.setPrefHeight(MAX_HEIGHT);
@@ -58,7 +64,7 @@ public class BlockModelInfoPanel extends Pane {
 
         setPosition();
 
-        workspaceView.getChildren().addFirst(this);
+//        workspaceView.getChildren().addFirst(this);
     }
 
     protected void setPosition() {
@@ -112,11 +118,14 @@ public class BlockModelInfoPanel extends Pane {
 
         // create content
         Label description = buildDescription();
-        Label input = buildInput();
-        Label output = buildOutput();
+        this.inputs = buildPortsDescriptionNew(blockModel.getInputPorts());
+        this.outputs = buildPortsDescriptionNew(blockModel.getOutputPorts());
 
-//        content.getChildren().addAll(descriptionHeader, description, inputHeader, input, outputHeader, output);
-        content.getChildren().addAll(description, inputHeader, input, outputHeader, output);
+        // add to content container
+        content.getChildren().addAll(description, inputHeader);
+        content.getChildren().addAll(inputs);
+        content.getChildren().addAll(outputHeader);
+        content.getChildren().addAll(outputs);
         return content;
     }
 
@@ -145,30 +154,25 @@ public class BlockModelInfoPanel extends Pane {
         return label;
     }
 
-    private Label buildInput() {
-        Label label = buildPortsDescription(blockModel.getInputPorts());
-        return label;
-    }
+    private List<Label> buildPortsDescriptionNew(List<PortModel> ports) {
+        List<Label> result = new ArrayList<>();
 
-    private Label buildOutput() {
-        Label label = buildPortsDescription(blockModel.getOutputPorts());
-        return label;
-    }
-
-    private Label buildPortsDescription(List<PortModel> ports) {
-        Label label = new Label();
         if (ports.isEmpty()) {
+            Label label = new Label();
             label.setText("n/a");
-            return label;
+            result.add(label);
         }
-        String result = "";
         for (PortModel port : ports) {
-            result += port.nameProperty().get() + " : " + port.getDataType().getSimpleName() + "\n";
-
+            Label label = new Label();
+            label.textProperty().bind(Bindings.createStringBinding(()
+                    -> buildPortDescription(port), port.nameProperty(), port.dataTypeProperty()));
+            result.add(label);
         }
-        result = result.substring(0, result.length() - 1);
-        label.setText(result);
-        return label;
+        return result;
+    }
+
+    private String buildPortDescription(PortModel portModel) {
+        return portModel.nameProperty().get() + " : " + portModel.getDataType().getSimpleName();
     }
 
     private Path buildTail() {
@@ -213,10 +217,17 @@ public class BlockModelInfoPanel extends Pane {
     }
 
     public void remove() {
-        workspaceView.getChildren().remove(BlockModelInfoPanel.this);
+        workspaceView.getChildren().remove(InfoPanel.this);
         closeButton.setOnAction(null);
         blockView.removeInfoPanel();
         messagePane.setOnMousePressed(null);
+        
+        for (Label label : inputs) {
+            label.textProperty().unbind();
+        }
+        for (Label label : outputs) {
+            label.textProperty().unbind();
+        }
         // remove block info panel
         // remove block port labels
     }

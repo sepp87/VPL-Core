@@ -102,7 +102,7 @@ public class FileBlock extends BlockModel {
     @Override
     public void process() throws NoSuchFileException {
 
-        if (path.get() == null) {
+        if (path.get() == null || path.get().isEmpty()) {
             outputPorts.get(0).setData(null);
             return;
         }

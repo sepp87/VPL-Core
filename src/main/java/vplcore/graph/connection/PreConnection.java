@@ -99,7 +99,7 @@ public class PreConnection extends Line {
             if (endPortModel.portType == PortType.OUTPUT) {
                 if (!startPortModel.connections.isEmpty()) {
 
-                    if (!startPortModel.multiDockAllowed) {
+                    if (!startPortModel.isMultiDockAllowed()) {
                         for (ConnectionModel c : startPortModel.getConnections()) {
                             RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
                             workspaceController.getEditorContext().getActionManager().executeCommand(command);
@@ -114,7 +114,7 @@ public class PreConnection extends Line {
             } else { // endPort is INPUT
                 if (!endPortModel.connections.isEmpty()) {
 
-                    if (!endPortModel.multiDockAllowed) {
+                    if (!endPortModel.isMultiDockAllowed()) {
                         for (ConnectionModel c : endPortModel.getConnections()) {
                             RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
                             workspaceController.getEditorContext().getActionManager().executeCommand(command);

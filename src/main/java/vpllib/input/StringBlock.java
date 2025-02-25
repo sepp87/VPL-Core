@@ -61,7 +61,7 @@ public class StringBlock extends BlockModel {
     private final ChangeListener<String> stringListener = this::onStringChanged;
 
     private void onStringChanged(Object b, Object o, Object n) {
-        process();
+        processSafely();
     }
 
     private void ignoreShortcuts(KeyEvent event) {
@@ -78,7 +78,7 @@ public class StringBlock extends BlockModel {
 
         //Forward empty string as null
         if (str.equals("")) {
-            outputPorts.get(0).dataType = String.class;
+            outputPorts.get(0).dataTypeProperty().set(String.class);
             outputPorts.get(0).nameProperty().set("String : Value");
             outputPorts.get(0).setData(null);
             return;
@@ -88,7 +88,7 @@ public class StringBlock extends BlockModel {
         if (bool != null) {
 
             //Set outgoing data
-            outputPorts.get(0).dataType = Boolean.class;
+            outputPorts.get(0).dataTypeProperty().set(Boolean.class);
             outputPorts.get(0).nameProperty().set("Boolean : Value");
             outputPorts.get(0).setData(bool);
             return;
@@ -98,7 +98,7 @@ public class StringBlock extends BlockModel {
         if (integer != null) {
 
             //Set outgoing data
-            outputPorts.get(0).dataType = Integer.class;
+            outputPorts.get(0).dataTypeProperty().set(Integer.class);
             outputPorts.get(0).nameProperty().set("Integer : Value");
             outputPorts.get(0).setData(integer);
             return;
@@ -108,7 +108,7 @@ public class StringBlock extends BlockModel {
         if (lng != null) {
 
             //Set outgoing data
-            outputPorts.get(0).dataType = Long.class;
+            outputPorts.get(0).dataTypeProperty().set( Long.class);
             outputPorts.get(0).nameProperty().set("Long : Value");
             outputPorts.get(0).setData(lng);
             return;
@@ -118,13 +118,13 @@ public class StringBlock extends BlockModel {
         if (dbl != null) {
 
             //Set outgoing data
-            outputPorts.get(0).dataType = Double.class;
+            outputPorts.get(0).dataTypeProperty().set(Double.class);
             outputPorts.get(0).nameProperty().set("Double : Value");
             outputPorts.get(0).setData(dbl);
             return;
         }
 
-        outputPorts.get(0).dataType = String.class;
+        outputPorts.get(0).dataTypeProperty().set(String.class);
         outputPorts.get(0).nameProperty().set("String : Value");
         outputPorts.get(0).setData(str);
     }
@@ -133,7 +133,7 @@ public class StringBlock extends BlockModel {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.getOtherAttributes().put(QName.valueOf("string"), string.get());
-        xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outputPorts.get(0).dataType.getSimpleName());
+        xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outputPorts.get(0).getDataType().getSimpleName());
     }
 
     @Override
@@ -146,32 +146,32 @@ public class StringBlock extends BlockModel {
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("outDataType"));
         switch (value) {
             case "Double":
-                outputPorts.get(0).dataType = Double.class;
+                outputPorts.get(0).dataTypeProperty().set(Double.class);
                 outputPorts.get(0).nameProperty().set("Double : Value");
                 break;
 
             case "Integer":
-                outputPorts.get(0).dataType = Integer.class;
+                outputPorts.get(0).dataTypeProperty().set(Integer.class);
                 outputPorts.get(0).nameProperty().set("Integer : Value");
                 break;
 
             case "Long":
-                outputPorts.get(0).dataType = Long.class;
+                outputPorts.get(0).dataTypeProperty().set( Long.class);
                 outputPorts.get(0).nameProperty().set("Long : Value");
                 break;
 
             case "Boolean":
-                outputPorts.get(0).dataType = Boolean.class;
+                outputPorts.get(0).dataTypeProperty().set( Boolean.class);
                 outputPorts.get(0).nameProperty().set("Boolean : Value");
                 break;
 
             case "String":
-                outputPorts.get(0).dataType = String.class;
+                outputPorts.get(0).dataTypeProperty().set( String.class);
                 outputPorts.get(0).nameProperty().set("String : Value");
                 break;
 
         }
-        process();
+        processSafely();
     }
 
     @Override

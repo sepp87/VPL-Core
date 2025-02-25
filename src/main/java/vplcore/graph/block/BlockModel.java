@@ -3,6 +3,8 @@ package vplcore.graph.block;
 import vplcore.graph.base.BaseModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import vplcore.graph.port.PortModel;
@@ -56,12 +58,12 @@ public abstract class BlockModel extends BaseModel {
 
     // should be private or protected and should be a listener to inputPorts
     public void onIncomingConnectionAdded() {
-        process();
+        processSafely();
     }
 
     // should be private or protected and should be a listener to outputPorts
     public void onIncomingConnectionRemoved() {
-        process();
+        processSafely();
         // previously called handleIncomingConnectionRemoved and overridden by TexBlock 
     }
 
@@ -71,7 +73,26 @@ public abstract class BlockModel extends BaseModel {
         return null;
     }
 
-    public abstract void process();
+    public final void processSafely() {
+        // TODO remove exception if there was any
+        
+        try {
+            process();
+        } catch (Exception exception) {
+            Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
+            System.out.println("Error: " + exception.getMessage());
+            System.out.println("Exception Type: " + exception.getClass().getSimpleName());
+            
+            if (exception.getCause() != null) {
+                System.out.println("Caused by: " + exception.getCause());
+            }
+            for (Throwable suppressed : exception.getSuppressed()) {
+                System.out.println("Suppressed: " + suppressed);
+            }
+        }
+    }
+
+    public abstract void process() throws Exception;
 
     public abstract BlockModel copy();
 
@@ -94,7 +115,7 @@ public abstract class BlockModel extends BaseModel {
     private final ChangeListener<Object> inputDataListener = this::onInputDataChanged;
 
     private void onInputDataChanged(ObservableValue b, Object o, Object n) {
-        process();
+        processSafely();
         // TODO try to process 
         // TODO if successful, remove any shown block expections
         // TODO when exception thrown by process
@@ -120,7 +141,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void deserialize(BlockTag xmlTag) {
-        id.set(xmlTag.getUUID());
+        this.id.set(xmlTag.getUUID());
         layoutXProperty().set(xmlTag.getX());
         layoutYProperty().set(xmlTag.getY());
         if (resizableProperty().get()) {

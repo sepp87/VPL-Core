@@ -1,6 +1,7 @@
 package vpllib.input;
 
 import java.io.File;
+import java.nio.file.NoSuchFileException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -37,13 +38,11 @@ public class FileBlock extends BlockModel {
     private BaseButton button;
     private TextField textField;
 
-//    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
     public FileBlock(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("File");
         addOutputPort("file", File.class);
         path.addListener(pathListener);
-//        outputPorts.get(0).dataProperty().bind(path);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class FileBlock extends BlockModel {
         HBox box = new HBox(5);
         box.getChildren().addAll(textField, button);
 
-//        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
         textField.setOnMouseEntered(this::focusOnTextField);
         textField.textProperty().bindBidirectional(path);
         return box;
@@ -67,13 +65,12 @@ public class FileBlock extends BlockModel {
     ChangeListener<String> pathListener = this::onPathChanged;
 
     private void onPathChanged(Object b, String o, String n) {
-        File file = new File(n);
-        outputPorts.get(0).setData(file);
+        processSafely();
+        // TODO move to process
+//        File file = new File(n);
+//        outputPorts.get(0).setData(file);
     }
 
-//    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
-//        process();
-//    }
     private void focusOnTextField(MouseEvent event) {
         textField.requestFocus();
     }
@@ -89,10 +86,12 @@ public class FileBlock extends BlockModel {
         //Set Data
         if (file != null) {
             String filePath = file.getPath();
-            this.path.set(filePath);
+            path.set(filePath);
+            // when path changes, process is triggered
         } else {
-            this.path.set(null);
-            outputPorts.get(0).setData(null);
+            path.set(null);
+//            outputPorts.get(0).setData(null);
+            // when path changes, process is triggered
         }
     }
 
@@ -100,25 +99,21 @@ public class FileBlock extends BlockModel {
         return path;
     }
 
-//    public void setPath(String path) {
-//        textField.setText(path);
-//    }
-//
-//    public String getPath() {
-//        return textField.getText();
-//    }
     @Override
-    public void process() {
-//        //Do Action
-//        String path = getPath();
-//        File newFile = new File(path);
-//
-//        //Set Data
-//        if (newFile.exists() && newFile.isFile()) {
-//            outputPorts.get(0).setData(newFile);
-//        } else {
-//            outputPorts.get(0).setData(null);
-//        }
+    public void process() throws NoSuchFileException {
+
+        if (path.get() == null) {
+            outputPorts.get(0).setData(null);
+            return;
+        }
+
+        File file = new File(path.get());
+        if (file.exists() && file.isFile()) {
+            outputPorts.get(0).setData(file);
+        } else {
+            outputPorts.get(0).setData(null);
+            throw new NoSuchFileException(path.get(), null, "File does not exist or is not a file.");
+        }
     }
 
     @Override

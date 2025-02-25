@@ -81,9 +81,9 @@ public class PreConnection extends Line {
          * Check if the data type from the sending port is the same or a sub
          * class of the receiving port.
          */
-        if (((TypeExtensions.isCastableTo(startPortModel.dataType, endPortModel.dataType)
+        if (((TypeExtensions.isCastableTo(startPortModel.getDataType(), endPortModel.getDataType())
                 && workspaceController.typeSensitive && endPortModel.portType == PortType.INPUT)
-                || (TypeExtensions.isCastableTo(endPortModel.dataType, startPortModel.dataType)
+                || (TypeExtensions.isCastableTo(endPortModel.getDataType(), startPortModel.getDataType())
                 && workspaceController.typeSensitive && endPortModel.portType == PortType.OUTPUT)
                 // IN case dataProperty type does not matter
                 || (!workspaceController.typeSensitive))

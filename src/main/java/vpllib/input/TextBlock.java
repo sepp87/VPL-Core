@@ -75,7 +75,7 @@ public class TextBlock extends BlockModel {
     private final ChangeListener<String> stringListener = this::onStringChanged;
 
     private void onStringChanged(Object b, Object o, Object n) {
-        process();
+        processSafely();
     }
 
     private void ignoreShortcuts(KeyEvent event) {
@@ -116,7 +116,7 @@ public class TextBlock extends BlockModel {
         //Do Action
         if (inputPorts.get(0).getData() != null) {
             //Set data type corresponding to source
-            outputPorts.get(0).dataType = inputPorts.get(0).connections.iterator().next().getStartPort().dataType;
+            outputPorts.get(0).dataTypeProperty().set(inputPorts.get(0).connections.iterator().next().getStartPort().getDataType());
             outputPorts.get(0).nameProperty().set(inputPorts.get(0).connections.iterator().next().getStartPort().nameProperty().get());
             if (data instanceof List) {
                 List list = (List) data;
@@ -133,7 +133,7 @@ public class TextBlock extends BlockModel {
             }
         } else {
             //Set data type back to string
-            outputPorts.get(0).dataType = String.class;
+            outputPorts.get(0).dataTypeProperty().set(String.class);
             outputPorts.get(0).nameProperty().set("String");
             if (inputPorts.get(0).activeProperty().get()) {
                 textArea.setText("null");

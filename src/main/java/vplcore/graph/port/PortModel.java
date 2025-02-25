@@ -111,15 +111,15 @@ public class PortModel extends BaseModel {
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     public ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
-    public Class<?> dataType;
+    private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
     public PortType portType;
     public int index;
     public boolean multiDockAllowed;
+    public BlockModel parentBlock;
 
     public PortModel(String name, PortType portType, Class<?> type, BlockModel parentBlock, boolean multiDockAllowed) {
         this.name.set(name);
         this.portType = portType;
-        this.dataType = type;
         this.index = (portType == PortType.INPUT) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
         this.parentBlock = parentBlock;
         this.multiDockAllowed = multiDockAllowed;
@@ -127,7 +127,25 @@ public class PortModel extends BaseModel {
         this.connections.addListener(connectionsListener);
     }
 
-    public BlockModel parentBlock;
+    public ObjectProperty<Class<?>> dataTypeProperty() {
+        return dataType;
+    } 
+    
+    public Class<?> getDataType() {
+        return dataType.get();
+    }
+    
+    public ObjectProperty<Object> dataProperty() {
+        return data;
+    }
+
+    public void setData(Object value) {
+        calculateData(value);
+    }
+
+    public Object getData() {
+        return data.get();
+    }
 
     public List<ConnectionModel> getConnections() {
         return new ArrayList<>(connections);
@@ -137,18 +155,6 @@ public class PortModel extends BaseModel {
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
         boolean isActive = !connections.isEmpty();
         active.set(isActive);
-    }
-
-    public final ObjectProperty<Object> dataProperty() {
-        return data;
-    }
-
-    public final void setData(Object value) {
-        calculateData(value);
-    }
-
-    public final Object getData() {
-        return data.get();
     }
 
     public ChangeListener<Object> getStartPortDataChangedListener() {
@@ -170,14 +176,14 @@ public class PortModel extends BaseModel {
 
             if (multiDockAllowed && connections.size() > 1) {
 
-                dataType.cast(new Object());
+                this.getDataType().cast(new Object());
                 List listOfLists = new ArrayList<>();
 
                 for (ConnectionModel connection : connections) {
 
                     //Cast all primitive dataType to String if this port dataType is String
                     PortModel startPort = connection.getStartPort();
-                    if (dataType == String.class && TypeExtensions.contains(startPort.dataType)) {
+                    if (this.getDataType() == String.class && TypeExtensions.contains(startPort.getDataType())) {
                         if (startPort.getData() instanceof List) {
                             List list = (List) startPort.getData();
                             List newList = new ArrayList<>();
@@ -200,7 +206,7 @@ public class PortModel extends BaseModel {
 
                 //Cast all primitive dataType to String if this port dataType is String
                 PortModel startPort = connections.iterator().next().getStartPort();
-                if (dataType == String.class && TypeExtensions.contains(startPort.dataType)) {
+                if (this.getDataType() == String.class && TypeExtensions.contains(startPort.getDataType())) {
                     if (startPort.getData() instanceof List) {
                         List list = (List) startPort.getData();
                         List newList = new ArrayList<>();
@@ -227,79 +233,16 @@ public class PortModel extends BaseModel {
     @Override
     public void remove() {
         connections.removeListener(connectionsListener);
+        connections.clear();
         super.remove();
+//        removal of connections is done by the workspace
 //        for (ConnectionModel connection : getConnections()) {
 //            connection.remove();
 //        }
-//        connectedConnections.clear();
+
     }
 }
 
-//public class PortModel {
-//    public enum Type {
-//        IN, OUT
-//    }
-//
-//    private final ObjectProperty<Object> data = new SimpleObjectProperty<>(null);
-//    private final BooleanProperty active = new SimpleBooleanProperty(false);
-//    private final StringProperty name = new SimpleStringProperty();
-//    private final DoubleProperty centerX = new SimpleDoubleProperty();
-//    private final DoubleProperty centerY = new SimpleDoubleProperty();
-//    
-//    private final ObservableList<ConnectionModel> connectedConnections = FXCollections.observableArrayList();
-//    private final Type portType;
-//    private final BlockModel parentBlock;
-//    private final Class<?> dataType;
-//    private final boolean multiDockAllowed;
-//    private final int index;
-//    
-//    public PortModel(String name, BlockModel parent, Type portType, Class<?> type, boolean multiDockAllowed) {
-//        this.name.set(name);
-//        this.parentBlock = parent;
-//        this.portType = portType;
-//        this.dataType = type;
-//        this.multiDockAllowed = multiDockAllowed;
-//        this.index = (portType == Type.IN) ? parent.getInputPorts().size() : parent.getOutputPorts().size();
-//        
-//        this.connectedConnections.addListener((ListChangeListener<ConnectionModel>) change -> updateActiveState());
-//    }
-//    
-//    public ObservableList<ConnectionModel> getConnectedConnections() {
-//        return connectedConnections;
-//    }
-//    
-//    public ObjectProperty<Object> dataProperty() {
-//        return data;
-//    }
-//    
-//    public BooleanProperty activeProperty() {
-//        return active;
-//    }
-//    
-//    public StringProperty nameProperty() {
-//        return name;
-//    }
-//    
-//    public DoubleProperty centerXProperty() {
-//        return centerX;
-//    }
-//    
-//    public DoubleProperty centerYProperty() {
-//        return centerY;
-//    }
-//    
-//    public void setData(Object value) {
-//        calculateData(value);
-//    }
-//    
-//    public Object getData() {
-//        return data.get();
-//    }
-//    
-//    private void updateActiveState() {
-//        active.set(!connectedConnections.isEmpty());
-//    }
-//    
 //    private void calculateData(Object value) {
 //        if (portType == Type.IN) {
 //            if (multiDockAllowed && connectedConnections.size() > 1) {

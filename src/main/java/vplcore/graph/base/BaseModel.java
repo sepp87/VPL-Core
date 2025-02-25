@@ -16,15 +16,15 @@ import javafx.beans.property.StringProperty;
 public class BaseModel implements Comparable<BaseModel> {
 
     private final BaseModel parent;
-    protected final StringProperty id = new SimpleStringProperty();
-    private final StringProperty name = new SimpleStringProperty();
-    private final DoubleProperty layoutX = new SimpleDoubleProperty(-1);
-    private final DoubleProperty layoutY = new SimpleDoubleProperty(-1);
-    private final DoubleProperty width = new SimpleDoubleProperty(-1);
-    private final DoubleProperty height = new SimpleDoubleProperty(-1);
-    private final BooleanProperty resizable = new SimpleBooleanProperty(false);
-    private final BooleanProperty active = new SimpleBooleanProperty(false);
-    private final BooleanProperty removed = new SimpleBooleanProperty(false);
+    protected final StringProperty id = new SimpleStringProperty(this, "id");
+    private final StringProperty name = new SimpleStringProperty(this, "name");
+    private final DoubleProperty layoutX = new SimpleDoubleProperty(this, "layoutX", -1);
+    private final DoubleProperty layoutY = new SimpleDoubleProperty(this, "layoutY", -1);
+    private final DoubleProperty width = new SimpleDoubleProperty(this, "width", -1);
+    private final DoubleProperty height = new SimpleDoubleProperty(this, "height", -1);
+    private final BooleanProperty resizable = new SimpleBooleanProperty(this, "resizable", false);
+    private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
+    private final BooleanProperty removed = new SimpleBooleanProperty(this, "removed", false);
 
     public BaseModel() {
         this.parent = null;
@@ -51,15 +51,15 @@ public class BaseModel implements Comparable<BaseModel> {
     public DoubleProperty layoutYProperty() {
         return layoutY;
     }
-    
+
     public DoubleProperty widthProperty() {
         return width;
     }
-    
+
     public DoubleProperty heightProperty() {
         return height;
     }
-    
+
     public BooleanProperty resizableProperty() {
         return resizable;
     }
@@ -74,13 +74,6 @@ public class BaseModel implements Comparable<BaseModel> {
 
     public void remove() {
         removed.set(true);
-//        for (PortModel port : model.inputPorts) {
-//            port.dataProperty().removeListener(portDataChangedListener);
-//            port.delete();
-//        }
-//        inPorts.clear();
-//        outPorts.clear();
-//        controls.clear();
     }
 
     public void serialize() {

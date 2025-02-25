@@ -163,7 +163,7 @@ public class BlockModelInfoPanel extends Pane {
         }
         String result = "";
         for (PortModel port : ports) {
-            result += port.nameProperty().get() + " : " + port.dataType.getSimpleName() + "\n";
+            result += port.nameProperty().get() + " : " + port.getDataType().getSimpleName() + "\n";
 
         }
         result = result.substring(0, result.length() - 1);

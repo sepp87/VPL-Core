@@ -19,16 +19,16 @@ public class BlockModelExceptionPanel extends BlockModelInfoPanel {
     private int currentIndex = 0;
 
     private Label messageLabel;
-    private Label severityHeader;
-    private Label severity;
     private Label exceptionHeader;
     private Label exception;
+    private Label severityHeader;
+    private Label severity;
+    private Severity highestSeverity = Severity.WARNING;
 
     private HBox pagingControls;
     private Label pagingLabel;
     private Button nextButton;
     private Button previousButton;
-    private Severity highestSeverity = Severity.WARNING;
 
     public BlockModelExceptionPanel(BlockModel block) {
         super(block);
@@ -120,7 +120,7 @@ public class BlockModelExceptionPanel extends BlockModelInfoPanel {
     // Update UI to reflect the current exception and pagination
     private void updateLabels() {
         BlockException blockException = exceptions.get(currentIndex);
-        messageLabel.setText(exceptions.get(currentIndex).exception.getMessage());
+        messageLabel.setText(blockException.exception.getMessage());
 
         severityHeader.setText(buildSeverityHeader(blockException));
         exceptionHeader.setText(blockException.exception.getClass().getSimpleName().toUpperCase());
@@ -133,11 +133,11 @@ public class BlockModelExceptionPanel extends BlockModelInfoPanel {
 
     private String buildSeverityHeader(BlockException blockException) {
         String result = blockException.severity().toString();
-        if(exceptions.size() == 1) {
+        if (exceptions.size() == 1) {
             return result;
         }
         result += " for List" + blockException.index();
-        
+
         return result;
     }
 

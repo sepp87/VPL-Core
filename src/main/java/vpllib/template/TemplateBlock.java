@@ -110,7 +110,7 @@ public class TemplateBlock extends BlockModel {
         //Retrieval of custom attribute
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("key"));
         //Specify further initialization statements here
-        this.process();
+        this.processSafely();
     }
 
     @Override

@@ -110,7 +110,7 @@ public class MethodBlockModel extends BlockModel {
         if (classes.size() == 1) {
             PortModel port = this.outputPorts.get(0);
             Class<?> type = classes.iterator().next();
-            port.dataType = type;
+            port.dataTypeProperty().set(type);
             port.nameProperty().set(type.getSimpleName());
         }
     }

@@ -5,6 +5,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
+// 0 BlockGroup double click should still trigger BlockSearch
 // 0 BlockInfoPanel should be set by workspace e.g. like connection, block and group
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -17,7 +18,6 @@ import vpllib.method.JsonMethods;
 //
 // BACKLOG
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
-// 0 REFACTOR Block MVC - double check if all listeners and bindings are removed
 // 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed
 // 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
@@ -39,6 +39,7 @@ import vpllib.method.JsonMethods;
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// 0 REFACTOR Block MVC - double check if all listeners and bindings are removed
 // 0 BlockModelInfoPanel place below buttons but above all else > panel blocked basebuttons > solved with setpickonbounds(false) for infopanel
 // 0 BlockView move to top when clicked
 // 0 WorkspaceView split into GroupLayer, BlockLayer, ConnectionLayer, InfoLayer

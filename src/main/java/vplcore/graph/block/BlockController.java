@@ -178,6 +178,7 @@ public class BlockController extends BaseController {
     }
 
     private void handleMoveStartedAndUpdateSelection(MouseEvent event) {
+        view.toFront();
         startPoint = new Point2D(event.getSceneX(), event.getSceneY());
         updatedPoint = startPoint;
         UpdateSelectionCommand command = new UpdateSelectionCommand(actionManager.getWorkspaceController(), this, EventUtils.isModifierDown(event));
@@ -214,7 +215,8 @@ public class BlockController extends BaseController {
         }
         InfoPanel infoPanel = new InfoPanel(workspaceController.getView(), this);
         int position = workspaceController.getBlockGroups().size() + 1;
-        workspaceController.getView().getChildren().add(position, infoPanel);
+//        workspaceController.getView().getChildren().add(position, infoPanel);
+        workspaceController.getView().getInfoLayer().getChildren().add(infoPanel);
         workspaceController.activeBlockModelInfoPanel = infoPanel;
         view.setInfoPanel(infoPanel);
         view.getInfoButton().setVisible(false);
@@ -226,7 +228,9 @@ public class BlockController extends BaseController {
         }
         ExceptionPanel exceptionPanel = new ExceptionPanel(workspaceController.getView(), this);
         int position = workspaceController.getBlockGroups().size() + 1;
-        workspaceController.getView().getChildren().add(position, exceptionPanel);
+//        workspaceController.getView().getChildren().add(position, exceptionPanel);
+        workspaceController.getView().getInfoLayer().getChildren().add( exceptionPanel);
+
 //        Exception e1 = new Exception("Short message! 🧐");
 //        Exception e2 = new Exception("""
 //                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget odio vel purus sodales ullamcorper. Sed id suscipit ante, vitae molestie quam. Donec turpis nulla, rhoncus ac fermentum sit amet, tempus non justo. Proin mattis fringilla dui. Curabitur elementum, odio ut porta rhoncus, quam sapien fermentum augue, vitae mattis risus velit quis mauris. Nam eleifend tortor ac dignissim aliquam. In bibendum magna sed erat ultricies, id imperdiet odio ultrices. Etiam in euismod nunc. Nullam varius lacus eu est aliquet tempus. Fusce suscipit, enim vel maximus tristique, erat mauris hendrerit quam, ac convallis augue dui id nulla. Praesent convallis diam non nunc cursus feugiat. Nullam gravida, tortor a bibendum iaculis, erat mauris dapibus lacus, eu lobortis turpis enim luctus quam. Morbi sed lectus suscipit nibh lacinia viverra. Fusce laoreet tortor at risus molestie ultrices.

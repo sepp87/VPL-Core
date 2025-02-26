@@ -4,12 +4,9 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 BUG remove block does not remove exception panel
+
+// 0 BlockInfoPanel should be set by workspace e.g. like connection, block and group
 // 0 return BlockGroup blocks as immutable list
-// 0 BlockModelInfoPanel to MVC 
-// 0 WorkspaceView split into GroupLayer, BlockLayer, ConnectionLayer, InfoLayer
-// 0 BlockModelInfoPanel place below buttons but above all else
-// 0 BlockView move to top when clicked
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
@@ -42,6 +39,10 @@ import vpllib.method.JsonMethods;
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// 0 BlockModelInfoPanel place below buttons but above all else > panel blocked basebuttons > solved with setpickonbounds(false) for infopanel
+// 0 BlockView move to top when clicked
+// 0 WorkspaceView split into GroupLayer, BlockLayer, ConnectionLayer, InfoLayer
+// 0 BUG remove block does not remove exception panel
 // 1 IMPROVEMENT Block to MVC Pattern
 // 1 IMPROVEMENT Set block exception panel when block throws exception > file block throw file not exists exception
 // 0 remove WorkspaceController from blockmodel

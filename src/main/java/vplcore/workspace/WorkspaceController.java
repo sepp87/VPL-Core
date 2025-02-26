@@ -36,13 +36,12 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceView view;
     private final WorkspaceZoomHelper zoomHelper;
     private final WorkspaceSelectionHelper selectionHelper;
-    
 
     private final Map<BlockModel, BlockController> blocks = new HashMap<>();
     private final Map<ConnectionModel, ConnectionController> connections = new HashMap<>();
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
-    
+
     // TODO Remove public access to info panel 
     public InfoPanel activeBlockModelInfoPanel;
     public boolean typeSensitive = true;
@@ -60,11 +59,11 @@ public class WorkspaceController extends BaseController {
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
     }
-    
+
     public void registerPort(PortController portController) {
         ports.put(portController.getModel().idProperty().get(), portController);
     }
-    
+
     public void unregisterPort(PortController portController) {
         ports.remove(portController.getModel().idProperty().get());
     }
@@ -72,7 +71,7 @@ public class WorkspaceController extends BaseController {
     public PortController getPortController(String id) {
         return ports.get(id);
     }
-    
+
     public boolean areSelectedBlocksGroupable() {
         List<BlockController> groupedBlocks = new ArrayList<>();
         Collection<BlockController> selectedBlocks = getSelectedBlockControllers();
@@ -105,7 +104,7 @@ public class WorkspaceController extends BaseController {
     private void addBlock(BlockModel blockModel) {
         System.out.println("WorkspaceController.addBlock()");
         BlockView blockView = new BlockView();
-        view.getChildren().add(blockView);
+        view.getBlockLayer().getChildren().add(blockView);
         BlockController blockController = new BlockController(this, blockModel, blockView);
         blocks.put(blockModel, blockController);
     }
@@ -114,7 +113,7 @@ public class WorkspaceController extends BaseController {
         System.out.println("WorkspaceController.removeBlock()");
         BlockController blockController = blocks.remove(blockModel);
         selectionHelper.deselectBlock(blockController); // deselect in case the block was selected
-        view.getChildren().remove(blockController.getView());
+        view.getBlockLayer().getChildren().remove(blockController.getView());
         blockController.remove();
         // controller remove itself
     }
@@ -135,7 +134,7 @@ public class WorkspaceController extends BaseController {
     private void addBlockGroup(BlockGroupModel blockGroupModel) {
         System.out.println("WorkspaceController.addBlockGroup()");
         BlockGroupView blockGroupView = new BlockGroupView();
-        view.getChildren().add(0, blockGroupView);
+        view.getGroupLayer().getChildren().add(0, blockGroupView);
         BlockGroupController blockGroupController = new BlockGroupController(this, blockGroupModel, blockGroupView);
         List<BlockController> blockControllers = new ArrayList<>();
         for (BlockModel blockModel : blockGroupModel.getBlocks()) {
@@ -148,7 +147,7 @@ public class WorkspaceController extends BaseController {
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
         System.out.println("WorkspaceController.removeBlockGroup()");
         BlockGroupController blockGroupController = blockGroups.remove(blockGroupModel);
-        view.getChildren().remove(blockGroupController.getView());
+        view.getGroupLayer().getChildren().remove(blockGroupController.getView());
         blockGroupController.remove();
     }
 
@@ -170,7 +169,8 @@ public class WorkspaceController extends BaseController {
         System.out.println("WorkspaceController.addConnection()");
         ConnectionView connectionView = new ConnectionView();
         int position = blockGroups.size() + 1; // connections should be placed above groups, otherwise the remove button is not shown
-        view.getChildren().add(position, connectionView);
+//        view.getChildren().add(position, connectionView);
+        view.getConnectionLayer().getChildren().add(connectionView);
 
         ConnectionController connectionController = new ConnectionController(this, connectionModel, connectionView);
         connections.put(connectionModel, connectionController);
@@ -180,7 +180,7 @@ public class WorkspaceController extends BaseController {
     private void removeConnection(ConnectionModel connectionModel) {
         System.out.println("WorkspaceController.removeConnection()");
         ConnectionController connectionController = connections.remove(connectionModel);
-        view.getChildren().remove(connectionController.getView());
+        view.getConnectionLayer().getChildren().remove(connectionController.getView());
         connectionController.remove();
 
 //        view.getChildren().remove(connectionModel);
@@ -194,14 +194,14 @@ public class WorkspaceController extends BaseController {
         System.out.println("WorkspaceController.initiateConnection()");
         if (preConnection == null) {
             preConnection = new PreConnection(WorkspaceController.this, portController);
-            view.getChildren().add(0, preConnection);
+            view.getConnectionLayer().getChildren().add(0, preConnection);
         }
     }
 
     // method is unneeded if createConnection catches the second click
     public void removePreConnection(PreConnection preConnection) {
         System.out.println("WorkspaceController.removePreConnection()");
-        view.getChildren().remove(preConnection);
+        view.getConnectionLayer().getChildren().remove(preConnection);
         this.preConnection = null;
     }
 
@@ -267,7 +267,7 @@ public class WorkspaceController extends BaseController {
     public Collection<BlockController> getBlockControllers() {
         return blocks.values();
     }
-    
+
     public Collection<BlockGroupController> getBlockGroups() {
         return blockGroups.values();
     }

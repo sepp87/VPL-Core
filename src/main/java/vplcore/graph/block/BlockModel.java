@@ -145,8 +145,12 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void remove() {
+        // remove listeners
+        for (PortModel port : inputPorts) {
+            port.dataProperty().removeListener(inputDataListener);
+        }
+
         super.remove();
-        // remove listeners and bindings
     }
 
 }

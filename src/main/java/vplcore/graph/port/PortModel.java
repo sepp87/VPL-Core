@@ -108,36 +108,48 @@ import vplcore.graph.util.TypeExtensions;
 public class PortModel extends BaseModel {
 
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
-    public ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
+    private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
-    public PortType portType;
-    public int index;
+    private final PortType portType;
+    private final int index;
     private final boolean multiDockAllowed;
-    public BlockModel parentBlock;
+    private final BlockModel block;
 
-    public PortModel(String name, PortType portType, Class<?> type, BlockModel parentBlock, boolean multiDockAllowed) {
+    public PortModel(String name, PortType portType, Class<?> type, BlockModel block, boolean multiDockAllowed) {
         this.nameProperty().set(name);
         this.portType = portType;
-        this.index = (portType == PortType.INPUT) ? parentBlock.getInputPorts().size() : parentBlock.getOutputPorts().size();
-        this.parentBlock = parentBlock;
+        this.index = (portType == PortType.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
+        this.block = block;
         this.multiDockAllowed = multiDockAllowed;
         this.dataType.set(type);
 
         this.connections.addListener(connectionsListener);
     }
-    
+
+    public PortType getPortType() {
+        return portType;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
     public boolean isMultiDockAllowed() {
         return multiDockAllowed;
     }
 
+    public BlockModel getBlock() {
+        return block;
+    }
+    
     public ObjectProperty<Class<?>> dataTypeProperty() {
         return dataType;
-    } 
-    
+    }
+
     public Class<?> getDataType() {
         return dataType.get();
     }
-    
+
     public ObjectProperty<Object> dataProperty() {
         return data;
     }
@@ -150,8 +162,17 @@ public class PortModel extends BaseModel {
         return data.get();
     }
 
-    public List<ConnectionModel> getConnections() {
-        return new ArrayList<>(connections);
+    public void addConnection(ConnectionModel connection) {
+        connections.add(connection);
+    }
+
+    public void removeConnection(ConnectionModel connection) {
+        connections.remove(connection);
+    }
+
+    public ObservableSet<ConnectionModel> getConnections() {
+//        return new ArrayList<>(connections);
+        return connections;
     }
     private final SetChangeListener<ConnectionModel> connectionsListener = this::onConnectionsChanged;
 
@@ -204,7 +225,7 @@ public class PortModel extends BaseModel {
                 }
                 data.set(listOfLists);
 
-            } else if (connections.size() > 0) { // incoming data of one single incoming connection
+            } else if (!connections.isEmpty()) { // incoming data of one single incoming connection
                 System.out.println("Data Received: " + value);
 
                 //Cast all primitive dataType to String if this port dataType is String

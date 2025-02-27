@@ -39,6 +39,10 @@ public class BaseModel implements Comparable<BaseModel> {
     public ReadOnlyStringProperty idProperty() {
         return id;
     }
+    
+    public String getId() {
+        return id.get();
+    }
 
     public StringProperty nameProperty() {
         return name;

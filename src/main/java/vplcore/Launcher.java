@@ -4,22 +4,21 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-
-// 0 BlockGroup double click should still trigger BlockSearch
-// 0 BlockInfoPanel should be set by workspace e.g. like connection, block and group
+// string to text connection does not calculate immediately
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 0 BaseModel activeProperty should be readonly
+// 0 PreConnection create connection should trigger create connection command and keep track if connections were removed (and not trigger seperate commands)
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 //
 // BACKLOG
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
-// 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed
-// 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
+// 0 REFACTOR Connection / Port who removes what? does Port remove itself or also connections? and vice versa
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 1 IMPROVEMENT Add undo/redo functionality
 //      0 remove connection command in conjunction with removal of block
@@ -34,11 +33,14 @@ import vpllib.method.JsonMethods;
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 3 REFACTOR merge integer and double slider and refactor event handlers
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
-// 0 remove block > should workspace listen to block requesting to be removed or should workspace remove block actively... same with selected... if block requests, then workspace should create listeners for removal and selection
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// 0 BlockGroup double click should still trigger BlockSearch
+// 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
+// 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed
+// 0 BlockInfoPanel should be set by workspace e.g. like connection, block and group
 // 0 REFACTOR Block MVC - double check if all listeners and bindings are removed
 // 0 BlockModelInfoPanel place below buttons but above all else > panel blocked basebuttons > solved with setpickonbounds(false) for infopanel
 // 0 BlockView move to top when clicked
@@ -58,6 +60,8 @@ import vpllib.method.JsonMethods;
 // 0 BlockGroup blocks only in single group
 // 0 BlockGroup to MVC
 //      When loading a vplxml, the size of the group is not right. MVC pattern might automatically solve this issue
+// 0 remove block > should workspace listen to block requesting to be removed or should workspace remove block actively... same with selected... if block requests, then workspace should create listeners for removal and selection
+//      0 to avoid an overhead of listeners, direct control is preferred
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

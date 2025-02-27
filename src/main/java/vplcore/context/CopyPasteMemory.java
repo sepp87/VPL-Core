@@ -86,14 +86,14 @@ public class CopyPasteMemory {
             int counter = 0;
 
             for (PortModel port : cc.oldBlock.getInputPorts()) {
-                for (ConnectionModel connection : port.connections) {
+                for (ConnectionModel connection : port.getConnections()) {
                     if (!alreadyCopiedConnections.contains(connection)) {
 
                         // start and end block are contained in selection
-                        if (blocks.contains(connection.getStartPort().parentBlock)) {
+                        if (blocks.contains(connection.getStartPort().getBlock())) {
                             CopiedConnectionModel cc2 = copiedConnections
                                     .stream()
-                                    .filter(i -> i.oldBlock == connection.getStartPort().parentBlock)
+                                    .filter(i -> i.oldBlock == connection.getStartPort().getBlock())
                                     .findFirst()
                                     .orElse(null);
 

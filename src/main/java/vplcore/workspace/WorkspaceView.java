@@ -1,7 +1,5 @@
 package vplcore.workspace;
 
-import java.util.HashMap;
-import java.util.Map;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 
@@ -29,6 +27,13 @@ public class WorkspaceView extends AnchorPane {
         this.getChildren().addAll(groupLayer, connectionLayer, blockLayer, infoLayer);
 
         this.setStyle("-fx-background-color: green;");
+    }
+
+    public void reset() {
+        groupLayer.getChildren().clear();
+        connectionLayer.getChildren().clear();
+        blockLayer.getChildren().clear();
+        infoLayer.getChildren().clear();
     }
 
     public Group getGroupLayer() {

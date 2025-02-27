@@ -116,8 +116,8 @@ public class TextBlock extends BlockModel {
         //Do Action
         if (inputPorts.get(0).getData() != null) {
             //Set data type corresponding to source
-            outputPorts.get(0).dataTypeProperty().set(inputPorts.get(0).connections.iterator().next().getStartPort().getDataType());
-            outputPorts.get(0).nameProperty().set(inputPorts.get(0).connections.iterator().next().getStartPort().nameProperty().get());
+            outputPorts.get(0).dataTypeProperty().set(inputPorts.get(0).getConnections().iterator().next().getStartPort().getDataType());
+            outputPorts.get(0).nameProperty().set(inputPorts.get(0).getConnections().iterator().next().getStartPort().nameProperty().get());
             if (data instanceof List) {
                 List list = (List) data;
 

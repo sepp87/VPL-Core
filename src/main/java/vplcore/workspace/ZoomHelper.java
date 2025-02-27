@@ -13,12 +13,12 @@ import javafx.scene.Scene;
  *
  * @author Joost
  */
-public class WorkspaceZoomHelper {
+public class ZoomHelper {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
 
-    public WorkspaceZoomHelper(WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+    public ZoomHelper(WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
         this.model = workspaceModel;
         this.view = workspaceView;
 

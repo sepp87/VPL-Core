@@ -5,12 +5,14 @@ import java.util.Collections;
 import vplcore.graph.port.PortModel;
 import java.util.List;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -34,6 +36,8 @@ public class InfoPanel extends Pane {
     protected final WorkspaceView workspaceView;
     protected final BlockModel blockModel;
     protected final BlockView blockView;
+    
+    private final BooleanProperty removed = new SimpleBooleanProperty(this, "removed", false);
 
     protected Button closeButton;
     protected VBox infoBubble;
@@ -67,6 +71,10 @@ public class InfoPanel extends Pane {
         this.setPickOnBounds(false);
 
         setPosition();
+    }
+    
+    public ReadOnlyBooleanProperty removedProperty(){
+        return removed;
     }
 
     protected void setPosition() {
@@ -219,9 +227,10 @@ public class InfoPanel extends Pane {
     }
 
     public void remove() {
-        workspaceView.getInfoLayer().getChildren().remove(InfoPanel.this);
+        removed.set(true);
+//        workspaceView.getInfoLayer().getChildren().remove(InfoPanel.this);
         closeButton.setOnAction(null);
-        blockView.removeInfoPanel();
+//        blockView.removeInfoPanel();
         messagePane.setOnMousePressed(null);
 
         for (Label label : inputs) {

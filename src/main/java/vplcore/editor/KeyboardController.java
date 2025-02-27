@@ -46,7 +46,7 @@ public class KeyboardController extends BaseController {
 
     public void handleShortcutTriggered(KeyEvent event) {
         if (App.FUTURE_TESTS) {
-            System.out.println("TEST handleShortcutTriggered");
+            System.out.println("KeyboardController.handleShortcutTriggered()");
         }
         Command command = null;
         boolean isModifierDown = EventUtils.isModifierDown(event);

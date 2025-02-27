@@ -43,14 +43,10 @@ public class EditorController extends BaseController {
         view.addEventHandler(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
         view.addEventHandler(KeyEvent.KEY_PRESSED, keyPressedHandler);
         view.sceneProperty().addListener(requestFocusHandler); // request focus immediately after scene is shown, else KeyEvent SPACE is not handled
-        System.out.println("EditorController");
-
     }
 
     private void requestFocus(Object b, Object o, Object n) {
         view.requestFocus();
-        System.out.println("requestFocus");
-
     }
 
     private void handleMouseClicked(MouseEvent event) {
@@ -82,7 +78,6 @@ public class EditorController extends BaseController {
     }
 
     private void handleKeyPressed(KeyEvent event) {
-        System.out.println("handleKeyPressed");
         eventRouter.fireEvent(event);
     }
 }

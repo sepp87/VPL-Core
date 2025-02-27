@@ -1,8 +1,10 @@
 package vplcore.context.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import vplcore.context.Undoable;
+import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortModel;
-import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 
 /**
@@ -13,13 +15,12 @@ import vplcore.workspace.WorkspaceModel;
  */
 public class CreateConnectionCommand implements Undoable {
 
-    private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
-    private PortModel startPortModel;
-    private PortModel endPortModel;
+    private final PortModel startPortModel;
+    private final PortModel endPortModel;
+    private List<ConnectionModel> removedConnections;
 
-    public CreateConnectionCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel, PortModel startPort, PortModel endPort) {
-        this.workspaceController = workspaceController;
+    public CreateConnectionCommand(WorkspaceModel workspaceModel, PortModel startPort, PortModel endPort) {
         this.workspaceModel = workspaceModel;
         this.startPortModel = startPort;
         this.endPortModel = endPort;
@@ -27,6 +28,14 @@ public class CreateConnectionCommand implements Undoable {
 
     @Override
     public void execute() {
+        System.out.println("CreateConnectionCommand.execute()");
+
+//        if (!endPortModel.isMultiDockAllowed()) {
+//            removedConnections = new ArrayList<>(endPortModel.getConnections());
+//            for (ConnectionModel connection : removedConnections) {
+//                workspaceModel.removeConnectionModel(connection);
+//            }
+//        }
         workspaceModel.addConnectionModel(startPortModel, endPortModel);
     }
 

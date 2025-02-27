@@ -66,7 +66,20 @@ public class BlockGroupController extends BaseController {
     }
 
     public void remove() {
+        // Handlers
+        view.setOnMouseEntered(null);
+        view.setOnMouseExited(null);
+        view.setOnMousePressed(null);
+        view.setOnMouseReleased(null);
         view.getBinButton().setOnAction(null);
+
+        // Listeners
+        model.getBlocks().removeListener(blocksListener);
+
+        // Bindings
+        view.getLabel().textProperty().unbindBidirectional(model.nameProperty());
+
+
         for (BlockController blockController : children.values()) {
             removeListeners(blockController);
         }

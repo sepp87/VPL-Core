@@ -14,7 +14,7 @@ import vplcore.editor.BaseController;
  *
  * @author Joost
  */
-public class WorkspaceSelectionHelper extends BaseController {
+public class SelectionHelper extends BaseController {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -22,7 +22,7 @@ public class WorkspaceSelectionHelper extends BaseController {
 
     private final ObservableSet<BlockController> selectedBlocks = FXCollections.observableSet();
 
-    public WorkspaceSelectionHelper(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
+    public SelectionHelper(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
         super(contextId);
         this.model = workspaceModel;
         this.view = workspaceView;

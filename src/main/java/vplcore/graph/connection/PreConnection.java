@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
+import vplcore.context.command.CreateConnectionCommand;
 import vplcore.context.command.RemoveConnectionCommand;
 import vplcore.graph.port.PortController;
 import vplcore.graph.port.PortType;
@@ -82,22 +83,22 @@ public class PreConnection extends Line {
          * class of the receiving port.
          */
         if (((TypeExtensions.isCastableTo(startPortModel.getDataType(), endPortModel.getDataType())
-                && workspaceController.typeSensitive && endPortModel.portType == PortType.INPUT)
+                && workspaceController.typeSensitive && endPortModel.getPortType() == PortType.INPUT)
                 || (TypeExtensions.isCastableTo(endPortModel.getDataType(), startPortModel.getDataType())
-                && workspaceController.typeSensitive && endPortModel.portType == PortType.OUTPUT)
+                && workspaceController.typeSensitive && endPortModel.getPortType() == PortType.OUTPUT)
                 // IN case dataProperty type does not matter
                 || (!workspaceController.typeSensitive))
                 // Cannot be the same port type; IN > OUT or OUT > IN
-                && endPortModel.portType != startPortModel.portType
+                && endPortModel.getPortType() != startPortModel.getPortType()
                 // Cannot be the same block
-                && !endPortModel.parentBlock.equals(startPortModel.parentBlock)) {
+                && !endPortModel.getBlock().equals(startPortModel.getBlock())) {
 
             /**
              * Make a new connection and remove all the existing connections
              * Where is multi connect?
              */
-            if (endPortModel.portType == PortType.OUTPUT) {
-                if (!startPortModel.connections.isEmpty()) {
+            if (endPortModel.getPortType() == PortType.OUTPUT) {
+                if (!startPortModel.getConnections().isEmpty()) {
 
                     if (!startPortModel.isMultiDockAllowed()) {
                         for (ConnectionModel c : startPortModel.getConnections()) {
@@ -109,10 +110,12 @@ public class PreConnection extends Line {
                     }
                 }
                 System.out.println("PreConnection.createConnection() INPUT to OUTPUT");
-                workspaceModel.addConnectionModel(endPortModel, startPortModel);
+//                workspaceModel.addConnectionModel(endPortModel, startPortModel);
+                CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, endPortModel, startPortModel);
+                workspaceController.getEditorContext().getActionManager().executeCommand(command);
 
             } else { // endPort is INPUT
-                if (!endPortModel.connections.isEmpty()) {
+                if (!endPortModel.getConnections().isEmpty()) {
 
                     if (!endPortModel.isMultiDockAllowed()) {
                         for (ConnectionModel c : endPortModel.getConnections()) {
@@ -122,12 +125,14 @@ public class PreConnection extends Line {
 //                            c.removeFromCanvas();
 //                            c.getStartPort().connectedConnections.remove(c);
                         }
-                        System.out.println("PreConnectionModel endPort.connectedConnections.size()" + endPortModel.connections.size()); // through c.remove() all connection should already be removed so this should print 0
-                        endPortModel.connections.clear();
+                        System.out.println("PreConnectionModel endPort.connectedConnections.size()" + endPortModel.getConnections().size()); // through c.remove() all connection should already be removed so this should print 0
+                        endPortModel.getConnections().clear();
                     }
                 }
                 System.out.println("PreConnection.createConnection() OUTPUT to INPUT");
-                workspaceModel.addConnectionModel(startPortModel, endPortModel);
+//                workspaceModel.addConnectionModel(startPortModel, endPortModel);
+                CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, startPortModel, endPortModel);
+                workspaceController.getEditorContext().getActionManager().executeCommand(command);
             }
 
         }

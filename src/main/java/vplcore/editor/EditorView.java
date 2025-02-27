@@ -30,8 +30,8 @@ public class EditorView extends AnchorPane {
 
     }
 
-    public void test() {
-        System.out.println("MenuBar Height " + menuBarView.getHeight());
+    public void printMenuBarHeight() {
+        System.out.println("EditorView.printMenuBarHeight() " + menuBarView.getHeight());
     }
 
 }

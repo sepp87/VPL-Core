@@ -136,31 +136,6 @@ public class BlockView extends GridPane {
         return infoButton;
     }
 
-    public void setInfoPanel(InfoPanel infoPanel) {
-        this.infoPanel = infoPanel;
-    }
-
-    public InfoPanel getInfoPanel() {
-        return infoPanel;
-    }
-
-    public void removeInfoPanel() {
-        infoPanel = null;
-    }
-
-    public void setExceptionPanel(ExceptionPanel exceptionPanel) {
-        this.exceptionPanel = exceptionPanel;
-    }
-
-    public ExceptionPanel getExceptionPanel() {
-        return exceptionPanel;
-    }
-
-    public void removeExceptionPanel() {
-        exceptionPanel = null;
-        exceptionButton.setVisible(true);
-    }
-
     public BaseButton getExceptionButton() {
         return exceptionButton;
     }

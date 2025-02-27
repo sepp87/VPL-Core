@@ -2,6 +2,7 @@ package vplcore;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.prefs.Preferences;
 import vplcore.util.FileUtils;
 import vplcore.util.SystemUtils.OperatingSystem;
 import vplcore.util.SystemUtils;
@@ -13,6 +14,9 @@ import vplcore.util.SystemUtils;
 public class Config {
 
     private static Config config;
+
+    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(Config.class);
+    private static final String LAST_DIRECTORY_KEY = "lastOpenedDirectory";
 
     private static final String LIBRARY_DIRECTORY = "lib" + File.separatorChar;
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
@@ -57,11 +61,11 @@ public class Config {
     public String libraryDirectory() {
         return appRootDirectory + LIBRARY_DIRECTORY;
     }
-    
+
     public String resourcesDirectory() {
         return RESOURCES_DIRECTORY;
     }
-    
+
     public String iconsDirectory() {
         return ICONS_DIRECTORY;
     }
@@ -75,6 +79,28 @@ public class Config {
 //        String defaultStyle = "css/flat_singer.css";
         String defaultStyle = "css/flat_white.css";
         return settings.getProperty("stylesheets", defaultStyle);
+    }
+
+    public static File getLastOpenedDirectory() {
+        String path = PREFERENCES.get(LAST_DIRECTORY_KEY, null);
+        if (path != null) {
+            File file = new File(path);
+            if (file.exists() && file.isDirectory()) {
+                return file;
+            }
+        }
+        return null;
+    }
+
+    public static void setLastOpenedDirectory(File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            PREFERENCES.put(LAST_DIRECTORY_KEY, file.getPath());
+        } else {
+            PREFERENCES.put(LAST_DIRECTORY_KEY, file.getParent());
+        }
     }
 
 }

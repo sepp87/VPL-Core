@@ -7,7 +7,6 @@ import vplcore.graph.block.BlockController;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockView;
 import vplcore.graph.block.BlockModel;
-import vplcore.graph.port.PortModel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +14,7 @@ import java.util.Map;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
-import vplcore.App;
-import vplcore.context.StateManager;
 import vplcore.editor.BaseController;
-import vplcore.graph.block.InfoPanel;
 import vplcore.graph.connection.ConnectionController;
 import vplcore.graph.connection.ConnectionView;
 import vplcore.graph.group.BlockGroupController;
@@ -31,11 +27,12 @@ import vplcore.graph.port.PortController;
  */
 public class WorkspaceController extends BaseController {
 
-    private final StateManager state;
     private final WorkspaceModel model;
     private final WorkspaceView view;
-    private final WorkspaceZoomHelper zoomHelper;
-    private final WorkspaceSelectionHelper selectionHelper;
+
+    private final ZoomHelper zoomHelper;
+    private final SelectionHelper selectionHelper;
+    private final InfoPanelHelper infoPanelHelper;
 
     private final Map<BlockModel, BlockController> blocks = new HashMap<>();
     private final Map<ConnectionModel, ConnectionController> connections = new HashMap<>();
@@ -43,17 +40,16 @@ public class WorkspaceController extends BaseController {
     private final Map<String, PortController> ports = new HashMap<>();
 
     // TODO Remove public access to info panel 
-    public InfoPanel activeBlockModelInfoPanel;
     public boolean typeSensitive = true;
 
     //Radial menu
     public WorkspaceController(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
         super(contextId);
-        this.state = App.getContext(contextId).getStateManager();
         this.model = workspaceModel;
         this.view = workspaceView;
-        this.zoomHelper = new WorkspaceZoomHelper(model, view);
-        this.selectionHelper = new WorkspaceSelectionHelper(contextId, model, view, this);
+        this.zoomHelper = new ZoomHelper(model, view);
+        this.selectionHelper = new SelectionHelper(contextId, model, view, this);
+        this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
@@ -116,6 +112,17 @@ public class WorkspaceController extends BaseController {
         view.getBlockLayer().getChildren().remove(blockController.getView());
         blockController.remove();
         // controller remove itself
+    }
+
+    /**
+     * BLOCK INFO
+     */
+    public void showInfoPanel(BlockController blockController) {
+        infoPanelHelper.showInfoPanel(blockController);
+    }
+
+    public void showExceptionPanel(BlockController blockController) {
+        infoPanelHelper.showExceptionPanel(blockController);
     }
 
     /**
@@ -205,15 +212,9 @@ public class WorkspaceController extends BaseController {
         this.preConnection = null;
     }
 
-    public WorkspaceModel getModel() {
-        return model;
-    }
-
-    public void reset() {
-        model.reset();
-        view.getChildren().clear();
-    }
-
+    /**
+     * ZOOMING
+     */
     public double getZoomFactor() {
         return model.zoomFactorProperty().get();
     }
@@ -235,6 +236,28 @@ public class WorkspaceController extends BaseController {
         zoomHelper.zoomToFitBlockControllers(blockControllers);
     }
 
+    /**
+     * GETTERS
+     */
+    public WorkspaceModel getModel() {
+        return model;
+    }
+
+    public WorkspaceView getView() {
+        return view;
+    }
+
+    public Collection<BlockController> getBlockControllers() {
+        return blocks.values();
+    }
+
+    public BlockController getBlockController(BlockModel blockModel) {
+        return blocks.get(blockModel);
+    }
+
+    /**
+     * SELECTION
+     */
     public void updateSelection(BlockController block, boolean isModifierDown) {
         selectionHelper.updateSelection(block, isModifierDown);
     }
@@ -260,23 +283,15 @@ public class WorkspaceController extends BaseController {
         selectionHelper.rectangleSelect(selectionMin, selectionMax);
     }
 
-    public WorkspaceView getView() {
-        return view;
-    }
-
-    public Collection<BlockController> getBlockControllers() {
-        return blocks.values();
-    }
-
-    public Collection<BlockGroupController> getBlockGroups() {
-        return blockGroups.values();
-    }
-
-    public BlockController getBlockController(BlockModel blockModel) {
-        return blocks.get(blockModel);
-    }
-
     public Collection<BlockController> getSelectedBlockControllers() {
         return selectionHelper.getSelectedBlockControllers();
+    }
+
+    /**
+     * MISC
+     */
+    public void reset() {
+        model.reset();
+        view.reset();
     }
 }

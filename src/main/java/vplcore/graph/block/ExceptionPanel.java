@@ -36,12 +36,30 @@ public class ExceptionPanel extends InfoPanel {
     public ExceptionPanel(WorkspaceView workspaceView, BlockController blockController) {
         super(workspaceView, blockController);
 
-        this.exceptions = FXCollections.observableArrayList();
+//        Exception e1 = new Exception("Short message! 🧐");
+//        Exception e2 = new Exception("""
+//                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eget odio vel purus sodales ullamcorper. Sed id suscipit ante, vitae molestie quam. Donec turpis nulla, rhoncus ac fermentum sit amet, tempus non justo. Proin mattis fringilla dui. Curabitur elementum, odio ut porta rhoncus, quam sapien fermentum augue, vitae mattis risus velit quis mauris. Nam eleifend tortor ac dignissim aliquam. In bibendum magna sed erat ultricies, id imperdiet odio ultrices. Etiam in euismod nunc. Nullam varius lacus eu est aliquet tempus. Fusce suscipit, enim vel maximus tristique, erat mauris hendrerit quam, ac convallis augue dui id nulla. Praesent convallis diam non nunc cursus feugiat. Nullam gravida, tortor a bibendum iaculis, erat mauris dapibus lacus, eu lobortis turpis enim luctus quam. Morbi sed lectus suscipit nibh lacinia viverra. Fusce laoreet tortor at risus molestie ultrices.
+//                                                                           
+//                                     Vivamus pellentesque eros mi, nec commodo leo sagittis mollis. Suspendisse ultricies ac nisi id facilisis. Sed ac nisl quis neque blandit vestibulum. Nunc ullamcorper odio at ante tincidunt ultrices. Aliquam nec varius sem. Donec sed convallis nibh. Donec nec ultricies tellus, at pulvinar tortor. Nullam enim dolor, malesuada sit amet libero euismod, imperdiet faucibus elit. Ut ligula dui, luctus vel venenatis at, vehicula in metus. Nunc ultricies id nunc sit amet dignissim. Maecenas et nunc lacus. Donec sit amet sapien hendrerit turpis interdum vulputate a vitae metus.
+//                                                                      
+//                                     Praesent non tincidunt orci. Morbi egestas ex velit, eget laoreet ipsum posuere et. Morbi tempor lacinia tincidunt. Mauris vitae arcu sed neque aliquam malesuada. Suspendisse a efficitur mi, ac vestibulum elit. Donec luctus gravida dui vel mollis. Ut gravida urna lorem, sed tincidunt elit pellentesque sed. Mauris viverra pharetra purus, nec ultricies enim rhoncus dictum. Ut odio purus, scelerisque quis arcu sed, ullamcorper tincidunt risus. Praesent ac velit ut nibh rutrum malesuada id non nulla.
+//                                     """);
+//        Exception e3 = new Exception("This is a mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.");
+//        Exception e4 = new Exception("This is the second mad exception that was thrown off the block! Not sure how long this message should be, but let us find out if it just grows and grows and grows.");
+//        List<ExceptionPanel.BlockException> list = new ArrayList<>();
+//        list.add(new BlockException("[0]", ExceptionPanel.Severity.ERROR, e1));
+//        list.add(new BlockException("[1]", ExceptionPanel.Severity.ERROR, e2));
+//        list.add(new BlockException("[2]", ExceptionPanel.Severity.ERROR, e3));
+//        list.add(new BlockException("[3]", ExceptionPanel.Severity.ERROR, e4));
+
+
+        this.exceptions = blockController.getModel().getExceptions();
         this.pagingControls = buildPagingControls();
         this.infoBubble.getChildren().add(pagingControls);
         this.infoBubble.getStyleClass().add("block-exception-bubble");
         this.tail.getStyleClass().add("block-exception-tail");
 
+        updateLabels();
     }
 
     @Override
@@ -151,7 +169,6 @@ public class ExceptionPanel extends InfoPanel {
     public void remove() {
         previousButton.setOnAction(null);
         nextButton.setOnAction(null);
-        blockView.removeExceptionPanel();
         super.remove();
 
         // remove block info panel

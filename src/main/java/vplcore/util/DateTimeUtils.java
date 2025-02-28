@@ -1,5 +1,7 @@
 package vplcore.util;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,5 +61,15 @@ public class DateTimeUtils {
         }
         return null; // Unknown format.
     } //http://balusc.omnifaces.org/2007/09/dateutil.html
+
+    public static LocalDate getLocalDateFrom(String iso8601) {
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(iso8601);
+        } catch (DateTimeParseException e) {
+            // Not an ISO 8601 formatted date string
+        }
+        return date;
+    }
 
 }

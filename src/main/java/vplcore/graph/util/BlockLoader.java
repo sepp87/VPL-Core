@@ -9,9 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,16 +44,29 @@ public class BlockLoader {
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
     /**
-     * Retrieve all blocks from vpllib.input package
+     * Retrieve all blocks from vpllib.input and vpllib.file packages
      */
     public static void loadInternalBlocks() {
-        Reflections reflections = new Reflections("vpllib.input");
-        Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
+        List<String> packages = Arrays.asList(
+                "vpllib.input",
+                "vpllib.file"
+        );
+        Set<Class<? extends BlockModel>> blockTypes = getBlockTypes(packages);
         for (Class<?> type : blockTypes) {
             addBlockType(type);
         }
 
         Collections.sort(BLOCK_TYPE_LIST);
+    }
+
+    private static Set<Class<? extends BlockModel>> getBlockTypes(List<String> packages) {
+        Set<Class<? extends BlockModel>> result = new HashSet<>();
+        for (String p : packages) {
+            Reflections reflections = new Reflections(p);
+            Set<Class<? extends BlockModel>> blockTypes = reflections.getSubTypesOf(BlockModel.class);
+            result.addAll(blockTypes);
+        }
+        return result;
     }
 
     /**
@@ -149,6 +164,8 @@ public class BlockLoader {
 //        BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
 //        BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
         List<Class<?>> classes = List.of(
+                vpllib.method.DateMethods.class,
+                vpllib.method.FileMethods.class,
                 vpllib.method.JsonMethods.class,
                 vpllib.method.ListMethods.class,
                 vpllib.method.MathMethods.class,

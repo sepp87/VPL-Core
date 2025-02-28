@@ -4,6 +4,8 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 IMRPOVEMENT Method block exceptions
+// 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 4 IMPROVEMENT add scrollbars for TextBlock 
@@ -32,7 +34,18 @@ import vpllib.method.JsonMethods;
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
+// BACKLOG BLOCKS
+// TemporalUnitBlock
+// 3DViewerBlock
+// Geometry Blocks
+// ChatGPT Block
+// WebClientBlock
+// 
 // DONE
+// File Methods
+// ObserveFileBlock - observe if file is updated
+// Date.fromString block
+// StringBlock add date support
 // 0 BaseModel activeProperty should be readonly
 // BUG addition throws error in text panel, cause? append text replaced by setText
 // 0 REFACTOR Connection / Port who removes what? does Port remove itself and connection also only removes itself
@@ -64,6 +77,8 @@ public class Launcher {
         BlockLoader.loadExternalBlocks();
         BlockLoader.loadInternalMethodBlocks();
         BlockLoader.loadExternalMethodBlocks();
+
+        System.out.println("Launcher.main() Number of loaded blocks is " + BlockLoader.BLOCK_TYPE_LIST.size());
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();

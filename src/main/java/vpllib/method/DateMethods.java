@@ -4,14 +4,32 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.chrono.IsoEra;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalUnit;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.DateTimeUtils;
 
 /**
  *
  * @author JoostMeulenkamp
  */
 public class DateMethods {
+
+    @BlockMetadata(
+            name = "Date",
+            description = "Obtains an instance of LocalDate from a text string such as 2007-12-03.",
+            identifier = "Date.fromString",
+            category = "Core")
+    public static LocalDate fromString(String value) {
+        String pattern = DateTimeUtils.getDateFormat(value);
+        if (pattern == null) {
+            throw new DateTimeParseException("Process stopped, because the date format was unknown.", value, 0);
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDate date = LocalDate.parse(value, formatter);
+        return date;
+    }
 
     @BlockMetadata(
             name = "now",

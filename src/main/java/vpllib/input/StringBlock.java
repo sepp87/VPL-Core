@@ -1,5 +1,6 @@
 package vpllib.input;
 
+import java.time.LocalDate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -17,6 +18,7 @@ import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.DateTimeUtils;
 
 /**
  *
@@ -35,7 +37,7 @@ public class StringBlock extends BlockModel {
     public StringBlock(WorkspaceModel workspace) {
         super(workspace);
         this.nameProperty().set("String");
-        addOutputPort("String : Value", String.class);
+        addOutputPort("Value", String.class);
         string.addListener(stringListener);
     }
 
@@ -79,7 +81,6 @@ public class StringBlock extends BlockModel {
         //Forward empty string as null
         if (str.equals("")) {
             outputPorts.get(0).dataTypeProperty().set(String.class);
-            outputPorts.get(0).nameProperty().set("String : Value");
             outputPorts.get(0).setData(null);
             return;
         }
@@ -89,7 +90,6 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataTypeProperty().set(Boolean.class);
-            outputPorts.get(0).nameProperty().set("Boolean : Value");
             outputPorts.get(0).setData(bool);
             return;
         }
@@ -99,7 +99,6 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataTypeProperty().set(Integer.class);
-            outputPorts.get(0).nameProperty().set("Integer : Value");
             outputPorts.get(0).setData(integer);
             return;
         }
@@ -108,8 +107,7 @@ public class StringBlock extends BlockModel {
         if (lng != null) {
 
             //Set outgoing data
-            outputPorts.get(0).dataTypeProperty().set( Long.class);
-            outputPorts.get(0).nameProperty().set("Long : Value");
+            outputPorts.get(0).dataTypeProperty().set(Long.class);
             outputPorts.get(0).setData(lng);
             return;
         }
@@ -119,13 +117,20 @@ public class StringBlock extends BlockModel {
 
             //Set outgoing data
             outputPorts.get(0).dataTypeProperty().set(Double.class);
-            outputPorts.get(0).nameProperty().set("Double : Value");
             outputPorts.get(0).setData(dbl);
             return;
         }
 
+        LocalDate date = DateTimeUtils.getLocalDateFrom(str);
+        if (date != null) {
+
+            //Set outgoing data
+            outputPorts.get(0).dataTypeProperty().set(LocalDate.class);
+            outputPorts.get(0).setData(date);
+            return;
+        }
+
         outputPorts.get(0).dataTypeProperty().set(String.class);
-        outputPorts.get(0).nameProperty().set("String : Value");
         outputPorts.get(0).setData(str);
     }
 
@@ -147,27 +152,26 @@ public class StringBlock extends BlockModel {
         switch (value) {
             case "Double":
                 outputPorts.get(0).dataTypeProperty().set(Double.class);
-                outputPorts.get(0).nameProperty().set("Double : Value");
                 break;
 
             case "Integer":
                 outputPorts.get(0).dataTypeProperty().set(Integer.class);
-                outputPorts.get(0).nameProperty().set("Integer : Value");
                 break;
 
             case "Long":
-                outputPorts.get(0).dataTypeProperty().set( Long.class);
-                outputPorts.get(0).nameProperty().set("Long : Value");
+                outputPorts.get(0).dataTypeProperty().set(Long.class);
                 break;
 
             case "Boolean":
-                outputPorts.get(0).dataTypeProperty().set( Boolean.class);
-                outputPorts.get(0).nameProperty().set("Boolean : Value");
+                outputPorts.get(0).dataTypeProperty().set(Boolean.class);
                 break;
 
             case "String":
-                outputPorts.get(0).dataTypeProperty().set( String.class);
-                outputPorts.get(0).nameProperty().set("String : Value");
+                outputPorts.get(0).dataTypeProperty().set(String.class);
+                break;
+
+            case "LocalDate":
+                outputPorts.get(0).dataTypeProperty().set(LocalDate.class);
                 break;
 
         }

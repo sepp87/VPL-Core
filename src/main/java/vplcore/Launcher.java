@@ -4,6 +4,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+// 0 TESTS 
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
@@ -63,7 +64,9 @@ import vpllib.method.JsonMethods;
 // When a dedicated listener is needed, it should be declared directly above the method it calls, so it easier to find it
 //
 // TESTS 
-// Link backward
+// Create connection - Link backward and link forward
+// MethodBlock - lacing of lists
+// Remove block - remove block and connections
 /**
  *
  * @author JoostMeulenkamp

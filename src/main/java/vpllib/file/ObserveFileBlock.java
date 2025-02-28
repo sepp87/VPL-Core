@@ -46,6 +46,9 @@ public class ObserveFileBlock extends BlockModel {
         nameProperty().set("Observe");
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
+
+        // Register shutdown hook to stop watching when the application exits
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stopObservationOnShutdown));
     }
 
     @Override
@@ -128,6 +131,13 @@ public class ObserveFileBlock extends BlockModel {
             watchTask.cancel(true); // Interrupt the thread
             System.out.println("File watcher stopped due to null data.");
         }
+    }
+
+    // Stop file observation when the app is shut down
+    private void stopObservationOnShutdown() {
+        stopObservation();
+        executorService.shutdownNow();  // Stop the executor service
+        System.out.println("Application shutdown: File watching stopped.");
     }
 
     @Override

@@ -13,12 +13,17 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 ### SHORTCUTS
+* CMD/CTRL-A: select all blocks
 * CMD/CTRL-C: copy selected blocks
 * CMD/CTRL-V: paste copied blocks
 * CMD/CTRL-G: group selected blocks
 * CMD/CTRL-O: load graph
 * CMD/CTRL-S: save graph
 * CMD/CTRL-N: new graph
+* CMD/CTRL-PLUS: zoom in
+* CMD/CTRL-MINUS: zoom out
+* CMD/CTRL-Z: undo (not implemented)
+* CMD/CTRL-Y: redo (not implemented)
 * Space: zoom to fit
 * Del/Backspace: delete selected blocks
 <br>
@@ -53,7 +58,8 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 
 * Block behaviour
     * Hints
-    * Exceptions
+    * ✅ Behaviour info
+    * ✅ Exceptions
     * ✅ Remove connections
     * ✅ Save block size
 <br>
@@ -77,6 +83,6 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
     * Comments
     * Scripting block
     * Looping groups/areas
-    * Improve grouping
+    * ✅ Improve grouping
     * BUG text and blocks are copied/pasted simultaneously
     * ✅ Remove Obj library

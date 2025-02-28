@@ -2,6 +2,7 @@ package vplcore.context.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import vplcore.context.Undoable;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortModel;
@@ -18,24 +19,25 @@ public class CreateConnectionCommand implements Undoable {
     private final WorkspaceModel workspaceModel;
     private final PortModel startPortModel;
     private final PortModel endPortModel;
-    private List<ConnectionModel> removedConnections;
+    private final List<ConnectionModel> removedConnections;
 
     public CreateConnectionCommand(WorkspaceModel workspaceModel, PortModel startPort, PortModel endPort) {
         this.workspaceModel = workspaceModel;
         this.startPortModel = startPort;
         this.endPortModel = endPort;
+        this.removedConnections = new ArrayList<>();
     }
 
     @Override
     public void execute() {
         System.out.println("CreateConnectionCommand.execute()");
-
-//        if (!endPortModel.isMultiDockAllowed()) {
-//            removedConnections = new ArrayList<>(endPortModel.getConnections());
-//            for (ConnectionModel connection : removedConnections) {
-//                workspaceModel.removeConnectionModel(connection);
-//            }
-//        }
+        if (!endPortModel.isMultiDockAllowed()) { // remove all connections for the receiving (INPUT) port if multi dock is NOT allowed
+            Set<ConnectionModel> connections = endPortModel.getConnections();
+            for (ConnectionModel connection : connections) {
+                workspaceModel.removeConnectionModel(connection);
+            }
+            removedConnections.addAll(connections);
+        }
         workspaceModel.addConnectionModel(startPortModel, endPortModel);
     }
 

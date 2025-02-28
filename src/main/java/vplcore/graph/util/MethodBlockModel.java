@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
@@ -51,11 +50,11 @@ public class MethodBlockModel extends BlockModel {
         Label label;
         if (!info.icon().equals(IconType.NULL)) {
             label = BlockView.getAwesomeIcon(info.icon());
-            
+
         } else if (!info.name().equals("")) {
             label = new Label(info.name());
             label.getStyleClass().add("block-text");
-            
+
         } else {
             String shortName = info.identifier().split("\\.")[1];
             label = new Label(shortName);
@@ -79,14 +78,20 @@ public class MethodBlockModel extends BlockModel {
 
             if (count == 1) {
                 Object a = inputPorts.get(0).getData();
-                result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs1(a);
+//                result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs1(a);
+                result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs3(a);
 
             } else if (count == 2) {
                 Object a = inputPorts.get(0).getData();
                 Object b = inputPorts.get(1).getData();
-                result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs2(a, b);
+//                result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs2(a, b);
+                result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs3(a, b);
 
             } else if (count == 3) {
+                Object a = inputPorts.get(0).getData();
+                Object b = inputPorts.get(1).getData();
+                Object c = inputPorts.get(2).getData();
+                result = invokeMethodArgs3(a, b, c);
                 // ToDo
 
             }
@@ -94,7 +99,7 @@ public class MethodBlockModel extends BlockModel {
             System.out.println(e.getMessage());
         }
 
-        if (isListReturnType) {
+        if (isListReturnType && result != null) {
             List<?> list = (List) result;
             determineOutPortDataTypeFromList(list);
         }
@@ -200,7 +205,7 @@ public class MethodBlockModel extends BlockModel {
 
         // only object a is a list
         if (!isList(b)) {
-            return laceArgs2(b, (List<?>) a);
+            return laceArgs2((List<?>) a, b);
         }
 
         // both objects are lists
@@ -226,6 +231,98 @@ public class MethodBlockModel extends BlockModel {
             list.add(result);
         }
         return list;
+    }
+
+    private Object laceArgs2(List<?> aList, Object b) {
+        List<Object> list = new ArrayList<>();
+        for (Object a : aList) {
+            Object result = invokeMethodArgs2(a, b);
+            list.add(result);
+        }
+        return list;
+    }
+
+    private Object invokeMethodArgs3(Object... parameters) {
+
+//        if (parameters.length != 3) {
+//            return null;
+//        }
+        int listCount = getListCount(parameters);
+
+        if (listCount == 0) { // none are list - invoke method
+            try {
+                Object result = method.invoke(null, parameters);
+                return result;
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                return null;
+            }
+
+        } else if (listCount == parameters.length) { // all are lists - loop and recurse
+            long shortestListSize = getShortestListSize(parameters);
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < shortestListSize; i++) {
+                Object[] array = new Object[parameters.length];
+                for (int j = 0; j < parameters.length; j++) {
+                    List<?> p = (List<?>) parameters[j];
+                    Object item = p.get(i);
+                    array[j] = item;
+                }
+                Object result = invokeMethodArgs3(array);
+                list.add(result);
+            }
+            return list;
+
+        } else { // some or list, some are not - make all lists and recurse
+            long shortestListSize = getShortestListSize(parameters);
+            for (int i = 0; i < shortestListSize; i++) {
+                Object p = parameters[i];
+                if (isList(p)) {
+                    continue;
+                }
+                List<Object> list = new ArrayList<>();
+                for (int j = 0; j < shortestListSize; j++) {
+                    list.add(p);
+                }
+                parameters[i] = list;
+            }
+            Object result = invokeMethodArgs3(parameters);
+            return result;
+        }
+    }
+
+    private int getListCount(Object... parameters) {
+        int result = 0;
+        for (Object p : parameters) {
+            if (isList(p)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private int getShortestListSize(Object... parameters) {
+        List<?> first = getFirstList(parameters);
+        int result = -1;
+        if (first == null) {
+            return result;
+        }
+        result = first.size();
+        for (Object p : parameters) {
+            if (isList(p)) {
+                List<?> list = (List<?>) p;
+                result = list.size() < result ? list.size() : result;
+            }
+        }
+        return result;
+    }
+
+    private List<?> getFirstList(Object... parameters) {
+        for (Object p : parameters) {
+            if (isList(p)) {
+                return (List<?>) p;
+            }
+        }
+        return null;
     }
 
     @Override

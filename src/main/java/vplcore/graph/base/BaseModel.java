@@ -3,6 +3,7 @@ package vplcore.graph.base;
 import java.util.UUID;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -23,7 +24,7 @@ public class BaseModel implements Comparable<BaseModel> {
     private final DoubleProperty width = new SimpleDoubleProperty(this, "width", -1);
     private final DoubleProperty height = new SimpleDoubleProperty(this, "height", -1);
     private final BooleanProperty resizable = new SimpleBooleanProperty(this, "resizable", false);
-    private final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
+    protected final BooleanProperty active = new SimpleBooleanProperty(this, "active", false);
     private final BooleanProperty removed = new SimpleBooleanProperty(this, "removed", false);
 
     public BaseModel() {
@@ -68,7 +69,7 @@ public class BaseModel implements Comparable<BaseModel> {
         return resizable;
     }
 
-    public BooleanProperty activeProperty() {
+    public ReadOnlyBooleanProperty activeProperty() {
         return active;
     }
 

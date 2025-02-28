@@ -23,12 +23,14 @@ public class MenuBarView extends MenuBar {
         fileMenu.getItems().addAll(newFile, openFile, save);
 
         Menu editMenu = new Menu("Edit");
+        MenuItem undo = new MenuItem("Undo", "UNDO");
+        MenuItem redo = new MenuItem("Redo", "REDO");
         MenuItem copy = new MenuItem("Copy", "COPY_BLOCKS");
         MenuItem paste = new MenuItem("Paste", "PASTE_BLOCKS");
         MenuItem delete = new MenuItem("Delete", "DELETE_SELECTED_BLOCKS");
         this.group = new MenuItem("Group", "GROUP_BLOCKS");
         Menu alignMenu = new Menu("Align");
-        editMenu.getItems().addAll(copy, paste, delete, group, alignMenu);
+        editMenu.getItems().addAll(undo, redo, copy, paste, delete, group, alignMenu);
 
         MenuItem alignLeft = new MenuItem("Align left", "ALIGN_LEFT");
         MenuItem alignVertically = new MenuItem("Align vertically", "ALIGN_VERTICALLY");
@@ -48,6 +50,11 @@ public class MenuBarView extends MenuBar {
         MenuItem reloadPlugins = new MenuItem("Reload plugins", "RELOAD_PLUGINS");
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
         extrasMenu.getItems().addAll(reloadPlugins, logErrors);
+
+        undo.setDisable(true);
+        redo.setDisable(true);
+        reloadPlugins.setDisable(true);
+        logErrors.setDisable(true);
 
         this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);
     }

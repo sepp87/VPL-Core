@@ -39,7 +39,7 @@ public class TextBlock extends BlockModel {
         super(workspace);
         nameProperty().set("Panel");
         resizableProperty().set(true);
-        PortModel input = addInputPort("Object", Object.class);
+        PortModel input = addInputPort("any", Object.class);
         addOutputPort("String", String.class);
         string.addListener(stringListener);
         editable.bind(input.activeProperty().not());
@@ -114,20 +114,23 @@ public class TextBlock extends BlockModel {
         textArea.setText("");
 
         //Do Action
-        if (inputPorts.get(0).getData() != null) {
+        if (data != null) {
+
             //Set data type corresponding to source
             outputPorts.get(0).dataTypeProperty().set(inputPorts.get(0).getConnections().iterator().next().getStartPort().getDataType());
             outputPorts.get(0).nameProperty().set(inputPorts.get(0).getConnections().iterator().next().getStartPort().nameProperty().get());
             if (data instanceof List) {
                 List list = (List) data;
-
+                String value = "";
+                
                 for (Object object : list) {
                     if (object == null) {
-                        textArea.appendText("null\n");
+                        value += "null\n";
                     } else {
-                        textArea.appendText(object.toString() + "\n");
+                        value += object.toString() + "\n";
                     }
                 }
+                textArea.setText(value);
             } else {
                 textArea.setText(data.toString());
             }

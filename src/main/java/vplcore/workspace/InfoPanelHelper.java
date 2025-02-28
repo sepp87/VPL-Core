@@ -13,7 +13,7 @@ import vplcore.graph.block.InfoPanel;
 public class InfoPanelHelper {
 
     private final WorkspaceView view;
-    
+
     private BlockController activeBlockController;
     private InfoPanel activeBlockInfoPanel;
 
@@ -41,7 +41,8 @@ public class InfoPanelHelper {
         activeBlockController.getView().layoutXProperty().addListener(layoutXListener);
         activeBlockController.getView().widthProperty().addListener(layoutXListener);
         activeBlockController.getView().layoutYProperty().addListener(layoutYListener);
-        activeBlockInfoPanel.removedProperty().addListener(infoPanelRemovedListener);
+        activeBlockController.getModel().removedProperty().addListener(removedListener);
+        activeBlockInfoPanel.removedProperty().addListener(removedListener);
 
         view.getInfoLayer().getChildren().add(infoPanel);
     }
@@ -60,9 +61,9 @@ public class InfoPanelHelper {
         activeBlockInfoPanel.move(0, delta);
     }
 
-    private final ChangeListener<Boolean> infoPanelRemovedListener = this::onInfoPanelRemoved; // in the case the info panel is removed by itself
+    private final ChangeListener<Boolean> removedListener = this::onRemoved; // in the case the info panel is removed by itself
 
-    private void onInfoPanelRemoved(Observable b, Boolean o, boolean n) {
+    private void onRemoved(Observable b, Boolean o, boolean n) {
         hideInfoPanel();
     }
 
@@ -70,7 +71,8 @@ public class InfoPanelHelper {
         activeBlockController.getView().layoutXProperty().removeListener(layoutXListener);
         activeBlockController.getView().widthProperty().removeListener(layoutXListener);
         activeBlockController.getView().layoutYProperty().removeListener(layoutYListener);
-        activeBlockInfoPanel.removedProperty().removeListener(infoPanelRemovedListener);
+        activeBlockController.getModel().removedProperty().removeListener(removedListener);
+        activeBlockInfoPanel.removedProperty().removeListener(removedListener);
 
         view.getInfoLayer().getChildren().remove(activeBlockInfoPanel);
         System.out.println(activeBlockInfoPanel.getClass());

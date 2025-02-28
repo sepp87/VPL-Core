@@ -98,39 +98,12 @@ public class PreConnection extends Line {
              * Where is multi connect?
              */
             if (endPortModel.getPortType() == PortType.OUTPUT) {
-                if (!startPortModel.getConnections().isEmpty()) {
-
-                    if (!startPortModel.isMultiDockAllowed()) {
-                        for (ConnectionModel c : startPortModel.getConnections()) {
-                            RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
-                            workspaceController.getEditorContext().getActionManager().executeCommand(command);
-//                            c.remove();
-//                            c.removeFromCanvas();
-                        }
-                    }
-                }
                 System.out.println("PreConnection.createConnection() INPUT to OUTPUT");
-//                workspaceModel.addConnectionModel(endPortModel, startPortModel);
                 CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, endPortModel, startPortModel);
                 workspaceController.getEditorContext().getActionManager().executeCommand(command);
 
             } else { // endPort is INPUT
-                if (!endPortModel.getConnections().isEmpty()) {
-
-                    if (!endPortModel.isMultiDockAllowed()) {
-                        for (ConnectionModel c : endPortModel.getConnections()) {
-                            RemoveConnectionCommand command = new RemoveConnectionCommand(workspaceModel, c);
-                            workspaceController.getEditorContext().getActionManager().executeCommand(command);
-//                            c.remove();
-//                            c.removeFromCanvas();
-//                            c.getStartPort().connectedConnections.remove(c);
-                        }
-                        System.out.println("PreConnectionModel endPort.connectedConnections.size()" + endPortModel.getConnections().size()); // through c.remove() all connection should already be removed so this should print 0
-                        endPortModel.getConnections().clear();
-                    }
-                }
                 System.out.println("PreConnection.createConnection() OUTPUT to INPUT");
-//                workspaceModel.addConnectionModel(startPortModel, endPortModel);
                 CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, startPortModel, endPortModel);
                 workspaceController.getEditorContext().getActionManager().executeCommand(command);
             }

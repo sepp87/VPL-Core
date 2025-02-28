@@ -4,21 +4,17 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// string to text connection does not calculate immediately
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
-// 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-// 0 BaseModel activeProperty should be readonly
-// 0 PreConnection create connection should trigger create connection command and keep track if connections were removed (and not trigger seperate commands)
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 //
 // BACKLOG
+// 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
-// 0 REFACTOR Connection / Port who removes what? does Port remove itself or also connections? and vice versa
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 1 IMPROVEMENT Add undo/redo functionality
 //      0 remove connection command in conjunction with removal of block
@@ -37,6 +33,12 @@ import vpllib.method.JsonMethods;
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 //
 // DONE
+// 0 BaseModel activeProperty should be readonly
+// BUG addition throws error in text panel, cause? append text replaced by setText
+// 0 REFACTOR Connection / Port who removes what? does Port remove itself and connection also only removes itself
+// BUG string to text connection does not calculate immediately
+// 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
+// 0 PreConnection create connection should trigger create connection command and keep track if connections were removed (and not trigger seperate commands)
 // 0 BlockGroup double click should still trigger BlockSearch
 // 0 REFACTOR Connection MVC - double check if all listeners and bindings are removed
 // 0 REFACTOR BlockGroup MVC - double check if all listeners and bindings are removed

@@ -16,7 +16,7 @@ public class ConnectionModel extends BaseModel {
     public ConnectionModel(PortModel startPort, PortModel endPort) {
         this.startPort = startPort;
         this.endPort = endPort;
-
+        
         startPort.addConnection(this);
         endPort.addConnection(this);
 

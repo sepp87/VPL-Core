@@ -1,23 +1,33 @@
 package vplcore;
 
+import vplcore.context.event.FocusNotRequiredEvent;
+import vplcore.context.EditorContext;
+import vplcore.context.EventRouter;
 import java.io.File;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import vplcore.editor.EditorController;
+import vplcore.editor.EditorView;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Path;
 import javafx.stage.Stage;
+import vplcore.editor.KeyboardController;
+import vplcore.editor.MenuBarController;
+import vplcore.editor.MenuBarView;
+import vplcore.editor.PanController;
+import vplcore.editor.SelectionRectangleController;
+import vplcore.editor.SelectionRectangleView;
+import vplcore.editor.radialmenu.RadialMenuController;
+import vplcore.editor.radialmenu.RadialMenuView;
+import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
+import vplcore.editor.ZoomController;
+import vplcore.editor.ZoomView;
 import vplcore.graph.io.GraphLoader;
-import vplcore.graph.model.BlockInfoPanel;
-import vplcore.graph.model.ResizeButton;
-import vplcore.graph.util.SelectBlock;
-import vplcore.workspace.Workspace;
-import vplcore.workspace.MenuBarConfigurator;
-import vplcore.workspace.input.SelectBlockHandler;
-import vplcore.workspace.input.ZoomManager;
+import vplcore.editor.BlockSearchController;
+import vplcore.editor.BlockSearchView;
+import vplcore.context.ActionManager;
+import vplcore.workspace.WorkspaceView;
 
 /**
  *
@@ -25,43 +35,89 @@ import vplcore.workspace.input.ZoomManager;
  */
 public class App extends Application {
 
+    public static final boolean FUTURE_TESTS = true;
+    public static final boolean BLOCK_MVC = true;
+
+    private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
+
+    private static final double APP_WIDTH = 800;
+    private static final double APP_HEIGHT = 800;
+    private static Stage stage;
+
     @Override
     public void start(Stage stage) throws Exception {
+        
+        if (vplcore.App.BLOCK_MVC) {
 
-        AnchorPane pane = new AnchorPane();
-        pane.getStylesheets().add(Config.get().stylesheets());
-        pane.getStyleClass().add("vpl");
-//        pane.setStyle("-fx-background-color: blue;");
+        } else {
 
-        Workspace workspace = new Workspace();
-        // get selection hub
-        // get radial menu
-        Group workspaceAndRadialMenu = workspace.Go();
+        }
 
-        // create menu bar
-        MenuBar menuBar = new MenuBarConfigurator(workspace).configure();
-        menuBar.prefWidthProperty().bind(pane.widthProperty());
-
-        // create zoom controls
-        ZoomManager zoomControls = new ZoomManager(workspace);
-        AnchorPane.setTopAnchor(zoomControls, 37.5);
-        AnchorPane.setRightAnchor(zoomControls, 10.);
-
-        // create selection block
-        SelectBlock selectBlock = new SelectBlockHandler(workspace).getSelectBlock();
-
-        pane.getChildren().addAll(workspaceAndRadialMenu, menuBar, zoomControls, selectBlock);
-
-        Scene scene = new Scene(pane, 800, 800);
-        stage.setScene(scene);
+        this.stage = stage;
         stage.setTitle("Workspace");
+
+        // Initialize models
+        WorkspaceModel workspaceModel = new WorkspaceModel();
+
+        // Initialize views
+        WorkspaceView workspaceView = new WorkspaceView();
+        BlockSearchView blockSearchView = new BlockSearchView();
+        SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
+        ZoomView zoomView = new ZoomView();
+        RadialMenuView radialMenuView = new RadialMenuView();
+        MenuBarView menuBarView = new MenuBarView();
+        EditorView editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+
+        // initialize context
+        EditorContext context = new EditorContext(editorView, workspaceView);
+        String contextId = context.getId();
+        CONTEXTS.put(contextId, context);
+
+        // initialize EventRouter for Context
+        EventRouter eventRouter = new EventRouter();
+        eventRouter.fireEvent(new FocusNotRequiredEvent());
+        context.initializeEventRouter(eventRouter);
+
+        // initialize ActionManager for Context
+        WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
+        ActionManager actionManager = new ActionManager(workspaceModel, workspaceController);
+        context.initializeActionManager(actionManager);
+
+        // Initialize controllers
+        new ZoomController(contextId, workspaceModel, zoomView);
+        new BlockSearchController(contextId, blockSearchView);
+        new SelectionRectangleController(contextId, selectionRectangleView);
+        new PanController(contextId, workspaceModel);
+        new RadialMenuController(contextId, radialMenuView);
+        new MenuBarController(contextId, menuBarView);
+        new EditorController(contextId, editorView);
+        new KeyboardController(contextId);
+
+        // Setup scene
+        Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
+        stage.setScene(scene);
         stage.show();
         stage.setFullScreen(false);
 
-        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspace);
-        System.out.println("MenuBar Height " + menuBar.getHeight());
+//                GraphLoader.deserialize(new File("build/vplxml/file.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
+        editorView.printMenuBarHeight();
+    }
 
+    public static Stage getStage() {
+        return stage;
+    }
 
+    public static EditorContext getContext(String contextId) {
+        return CONTEXTS.get(contextId);
     }
 
 }
+
+/**
+ *
+ * Context - id - Action Manager - State Manager - Event Router
+ *
+ * ClipBoard - copied Connections - copied Blocks
+ *
+ */

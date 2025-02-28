@@ -333,6 +333,57 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////*/
 
+.block-search {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4;
+    -fx-border-color: white;
+    -fx-border-insets: 0 0 0 0;
+    -fx-border-width: 0;
+    -fx-border-style: solid;
+    -fx-border-radius: 0;
+    -fx-padding: 20 10 20 20;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+}
+
+
+.block-search .text-field{
+    -fx-background-color: transparent;
+    -fx-font-family: 'Source Code Pro';
+    -fx-pref-column-count: 22;
+    -fx-prompt-text-fill: #5F5F5F;
+}
+
+.block-search .list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-font-family: 'Source Code Pro';
+}
+
+.block-search .list-view .list-cell {
+    -fx-text-fill: #5F5F5F;
+}
+
+.block-search .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}
+
+.block-search .list-view .list-cell:even {
+    -fx-background-color: rgba(127,127,127,0.1);
+}
+
+.block-search .list-view .list-cell:odd {
+    -fx-background-color: transparent;
+}
+
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+
 .block-group {
     -fx-background-color: transparent;
     -fx-border-color: lightblue;
@@ -506,7 +557,6 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////*/
-
 
 /* Hide the default scrollbars initially (they should appear only when hovering over the scroll pane) */
 .scroll-pane .viewport {

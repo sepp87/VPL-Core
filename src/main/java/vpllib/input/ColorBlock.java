@@ -1,69 +1,79 @@
 package vpllib.input;
 
-import vplcore.graph.model.Block;
-import vplcore.workspace.Workspace;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import vpllib.util.CustomColorBox;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.color",
         category = "Input",
         description = "Pick a nice color from the palette",
         tags = {"input", "color"})
-public class ColorBlock extends Block {
+public class ColorBlock extends BlockModel {
 
-    public ColorBlock(Workspace hostCanvas) {
-        super(hostCanvas);
+    private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.WHITE);
+    private CustomColorBox picker;
 
-        setName("Color Picker");
-
-        addOutPortToBlock("color", Color.class);
-
-        CustomColorBox picker = new CustomColorBox();
-
-        outPorts.get(0).dataProperty().bind(picker.customColorProperty());
-
-        addControlToBlock(picker);
-    }
-
-    public Color getColor() {
-        CustomColorBox picker = (CustomColorBox) controls.get(0);
-        return picker.customColorProperty().get();
-    }
-
-    public void setColor(Color color) {
-        CustomColorBox picker = (CustomColorBox) controls.get(0);
-        picker.customColorProperty().set(color);
+    public ColorBlock(WorkspaceModel workspaceModel) {
+        super(workspaceModel);
+        this.nameProperty().set("Color Picker");
+        addOutputPort("color", Color.class);
+        outputPorts.get(0).dataProperty().bind(color);
     }
 
     @Override
-    public void calculate() {
+    public Region getCustomization() {
+        picker = new CustomColorBox();
+        picker.customColorProperty().bindBidirectional(color);
+        return picker;
+    }
+
+    public ObjectProperty<Color> colorProperty() {
+        return color;
+    }
+
+    @Override
+    public void process() {
     }
 
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("color"), getColor().toString());
+        xmlTag.getOtherAttributes().put(QName.valueOf("color"), color.get().toString());
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
-        String color = xmlTag.getOtherAttributes().get(QName.valueOf("color"));
-        this.setColor(Color.valueOf(color));
+        String value = xmlTag.getOtherAttributes().get(QName.valueOf("color"));
+        color.set(Color.valueOf(value));
     }
 
     @Override
-    public Block clone() {
+    public BlockModel copy() {
         ColorBlock block = new ColorBlock(workspace);
-        block.setColor(this.getColor());
+        block.color.set(this.color.get());
         return block;
     }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (picker != null) {
+            picker.customColorProperty().unbindBidirectional(color);
+        }
+    }
+
 }

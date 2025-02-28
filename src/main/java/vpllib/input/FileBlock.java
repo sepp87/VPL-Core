@@ -1,65 +1,76 @@
 package vpllib.input;
 
-import vplcore.graph.model.Block;
-import vplcore.workspace.Workspace;
 import java.io.File;
+import java.nio.file.NoSuchFileException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import vplcore.graph.model.VplButton;
+import vplcore.graph.base.BaseButton;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.file",
         category = "Input",
         description = "Open a file",
         tags = {"file", "open", "load"}
 )
-public class FileBlock extends Block {
+public class FileBlock extends BlockModel {
 
-    private final TextField textField;
+    private final StringProperty path = new SimpleStringProperty();
 
-    private final EventHandler<ActionEvent> openFileHandler = this::handleOpenFile;
-    private final EventHandler<KeyEvent> textFieldKeyReleasedHandler = this::handleTextFieldKeyReleased;
-    private final EventHandler<MouseEvent> textFieldEnteredHandler = this::handleTextFieldMouseEntered;
+    private BaseButton button;
+    private TextField textField;
 
-    public FileBlock(Workspace hostCanvas) {
-        super(hostCanvas);
-        setName("File");
+    public FileBlock(WorkspaceModel workspaceModel) {
+        super(workspaceModel);
+        this.nameProperty().set("File");
+        addOutputPort("file", File.class);
+        path.addListener(pathListener);
+    }
 
-        addOutPortToBlock("file", File.class);
-
+    @Override
+    public Region getCustomization() {
         textField = new TextField();
         textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
 
-        VplButton button = new VplButton(IconType.FA_FOLDER_OPEN);
-        button.setOnAction(openFileHandler);
+        button = new BaseButton(IconType.FA_FOLDER_OPEN);
+        button.setOnAction(this::handleOpenFile);
 
         HBox box = new HBox(5);
         box.getChildren().addAll(textField, button);
-        addControlToBlock(box);
 
-        textField.setOnKeyReleased(textFieldKeyReleasedHandler);
-        textField.setOnMouseEntered(textFieldEnteredHandler);
+        textField.setOnMouseEntered(this::focusOnTextField);
+        textField.textProperty().bindBidirectional(path);
+        return box;
     }
 
-    private void handleTextFieldKeyReleased(KeyEvent keyEvent) {
-        calculate();
+    ChangeListener<String> pathListener = this::onPathChanged;
+
+    private void onPathChanged(Object b, String o, String n) {
+        processSafely();
+        // TODO move to process
+//        File file = new File(n);
+//        outputPorts.get(0).setData(file);
     }
 
-    private void handleTextFieldMouseEntered(MouseEvent event) {
+    private void focusOnTextField(MouseEvent event) {
         textField.requestFocus();
     }
 
@@ -68,59 +79,75 @@ public class FileBlock extends Block {
         //Do Action
         FileChooser picker = new FileChooser();
         picker.setTitle("Choose a file...");
-        File file = picker.showOpenDialog(getScene().getWindow());
+        Window window = button.getScene().getWindow();
+        File file = picker.showOpenDialog(window);
 
         //Set Data
         if (file != null) {
-            String path = file.getPath();
-            setPath(path);
-            outPorts.get(0).setData(file);
+            String filePath = file.getPath();
+            path.set(filePath);
+            // when path changes, process is triggered
         } else {
-            outPorts.get(0).setData(null);
+            path.set(null);
+//            outputPorts.get(0).setData(null);
+            // when path changes, process is triggered
         }
     }
 
-    public void setPath(String path) {
-        textField.setText(path);
-    }
-
-    public String getPath() {
-        return textField.getText();
+    public StringProperty pathProperty() {
+        return path;
     }
 
     @Override
-    public void calculate() {
-        //Do Action
-        String path = getPath();
-        File newFile = new File(path);
+    public void process() throws NoSuchFileException {
 
-        //Set Data
-        if (newFile.exists() && newFile.isFile()) {
-            outPorts.get(0).setData(newFile);
+        if (path.get() == null || path.get().isEmpty()) {
+            outputPorts.get(0).setData(null);
+            return;
+        }
+
+        File file = new File(path.get());
+        if (file.exists() && file.isFile()) {
+            outputPorts.get(0).setData(file);
         } else {
-            outPorts.get(0).setData(null);
+            outputPorts.get(0).setData(null);
+            throw new NoSuchFileException(path.get(), null, "File does not exist or is not a file.");
         }
     }
 
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("path"), getPath());
+        xmlTag.getOtherAttributes().put(QName.valueOf("path"), path.get());
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
-        String path = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
-        this.setPath(path);
-        this.calculate();
+        String filePath = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
+        this.path.set(filePath);
     }
 
     @Override
-    public Block clone() {
+    public BlockModel copy() {
         FileBlock block = new FileBlock(workspace);
-        block.setPath(this.getPath());
-        block.calculate();
+        block.path.set(this.path.get());
         return block;
     }
+
+    @Override
+    public void remove() {
+        super.remove();
+        path.removeListener(pathListener);
+
+        if (textField != null) {
+            textField.setOnMouseEntered(null);
+            textField.textProperty().unbindBidirectional(path);
+        }
+
+        if (button != null) {
+            button.setOnAction(null);
+        }
+    }
+
 }

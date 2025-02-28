@@ -1,6 +1,6 @@
 package vpllib.method;
 
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *
@@ -8,7 +8,7 @@ import vplcore.graph.model.BlockInfo;
  */
 public class MathMethods {
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "pi",
             description = "The double value that is closer than any other to pi (π), the ratio of the circumference of a circle to its diameter.",
             identifier = "Math.pi",
@@ -17,7 +17,7 @@ public class MathMethods {
         return Math.PI;
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "2*pi*r",
             description = "The circumference of a circle with radius r.",
             identifier = "Math.getCircleCircumference",
@@ -26,7 +26,7 @@ public class MathMethods {
         return 2 * Math.PI * r.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "pi*r^2",
             description = "The area of a circle with radius r.",
             identifier = "Math.getCircleArea",
@@ -35,7 +35,7 @@ public class MathMethods {
         return Math.PI * Math.pow(r.doubleValue(), 2);
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "a+b",
             description = "The result of adding value b to a.",
             identifier = "Math.add",
@@ -51,7 +51,7 @@ public class MathMethods {
         return a.doubleValue() + b.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "a-b",
             description = "The result of substracting value b from a.",
             identifier = "Math.substract",
@@ -67,7 +67,7 @@ public class MathMethods {
         return a.doubleValue() - b.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "a*b",
             description = "The result of multiplying value a with b.",
             identifier = "Math.multiply",
@@ -83,7 +83,7 @@ public class MathMethods {
         return a.doubleValue() * b.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "a/b",
             description = "The result of dividing value a by b.",
             identifier = "Math.divide",
@@ -92,7 +92,7 @@ public class MathMethods {
         return a.doubleValue() / b.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "a%b",
             description = "The remainder of dividing value a by b.",
             identifier = "Math.remainder",
@@ -108,7 +108,7 @@ public class MathMethods {
         return a.doubleValue() % b.doubleValue();
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             description = "Returns the greater of two double values.",
             identifier = "Math.max",
             category = "Core")
@@ -123,7 +123,7 @@ public class MathMethods {
         return Math.max((double) a, (double) b);
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             description = "Returns the smaller of two double values.",
             identifier = "Math.min",
             category = "Core")
@@ -138,7 +138,7 @@ public class MathMethods {
         return Math.min((double) a, (double) b);
     }
 
-    @BlockInfo(
+    @BlockMetadata(
             name = "|a|",
             description = "Returns the absolute value of a double value. If the argument is not negative, the argument is returned. If the argument is negative, the negation of the argument is returned.",
             identifier = "Math.abs",

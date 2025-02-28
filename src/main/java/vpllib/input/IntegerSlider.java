@@ -3,10 +3,7 @@ package vpllib.input;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import vplcore.workspace.Workspace;
-import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -16,60 +13,66 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.integerSlider",
         category = "Input",
         description = "Number Slider",
         tags = {"input", "slider"})
-public class IntegerSlider extends Block {
+public class IntegerSlider extends BlockModel {
 
-    private final Slider slider;
-    private final IntegerProperty integerValue = new SimpleIntegerProperty();
-    private final IntegerProperty integerMin = new SimpleIntegerProperty();
-    private final IntegerProperty integerMax = new SimpleIntegerProperty();
-    private final IntegerProperty integerStep = new SimpleIntegerProperty();
+    private Slider slider;
+    private Expander expander;
 
-    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
+    private final IntegerProperty integerValue = new SimpleIntegerProperty(0);
+    private final IntegerProperty integerMin = new SimpleIntegerProperty(0);
+    private final IntegerProperty integerMax = new SimpleIntegerProperty(10);
+    private final IntegerProperty integerStep = new SimpleIntegerProperty(1);
 
-    public IntegerSlider(Workspace hostCanvas) {
-        super(hostCanvas);
-        setName("Integer");
+    public IntegerSlider(WorkspaceModel workspaceModel) {
+        super(workspaceModel);
+        this.nameProperty().set("Integer");
 
-        addOutPortToBlock("int", Integer.class);
+        addOutputPort("int", Integer.class);
+    }
 
+    @Override
+    public Region getCustomization() {
         slider = new Slider(0, 10, 0);
         slider.setBlockIncrement(1);
         slider.setSnapToTicks(true);
         slider.majorTickUnitProperty().bind(slider.blockIncrementProperty());
         slider.setMinorTickCount(0);
-        outPorts.get(0).dataProperty().bind(integerValue);
+        outputPorts.get(0).dataProperty().bind(integerValue);
 
-        integerValue.bindBidirectional(slider.valueProperty());
-        integerMin.bindBidirectional(slider.minProperty());
-        integerMax.bindBidirectional(slider.maxProperty());
-        integerStep.bindBidirectional(slider.blockIncrementProperty());
+        slider.valueProperty().bindBidirectional(integerValue);
+        slider.minProperty().bindBidirectional(integerMin);
+        slider.maxProperty().bindBidirectional(integerMax);
+        slider.blockIncrementProperty().bindBidirectional(integerStep);
 
-        Expander expand = new Expander();
-
-        Pane p = new Pane();
-        expand.setLayoutX(0);
-        expand.setLayoutY(0);
+        Pane container = new Pane();
+        Expander expander = new Expander();
+        expander.setLayoutX(0);
+        expander.setLayoutY(0);
         slider.setLayoutX(30);
         slider.setLayoutY(4);
-        p.getChildren().addAll(expand, slider);
-
-        addControlToBlock(p);
-
-        setOnMouseEntered(blockEnteredHandler);
+        container.getChildren().addAll(expander, slider);
+        return container;
     }
 
-    private void handleMouseEnter(MouseEvent event) {
+    @Override
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return this::focusOnSlider;
+    }
+
+    public void focusOnSlider(MouseEvent event) {
         slider.requestFocus();
     }
 
@@ -211,7 +214,7 @@ public class IntegerSlider extends Block {
 //            String regExp = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
 //            boolean isDouble = rawValue.matches(regExp);
             //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
-            String regExp = "^\\d+$";
+            String regExp = "^-?\\d+$";
             boolean isInteger = rawValue.matches(regExp);
 
             if (isInteger) {
@@ -219,10 +222,27 @@ public class IntegerSlider extends Block {
             }
             return newValue;
         }
+
+        private void remove() {
+            valueField.setOnKeyPressed(null);
+            minField.setOnKeyPressed(null);
+            maxField.setOnKeyPressed(null);
+            stepField.setOnKeyPressed(null);
+
+            valueField.focusedProperty().removeListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().removeListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().removeListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().removeListener(stepFieldFocusChangedHandler);
+
+            valueField.textProperty().unbind();
+            minField.textProperty().unbind();
+            maxField.textProperty().unbind();
+            stepField.textProperty().unbind();
+        }
     }
 
     @Override
-    public void calculate() {
+    public void process() {
 
     }
 
@@ -242,19 +262,19 @@ public class IntegerSlider extends Block {
         Integer min = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("min")));
         Integer max = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("max")));
         Integer step = Integer.parseInt(xmlTag.getOtherAttributes().get(QName.valueOf("step")));
-        this.slider.setValue(value);
-        this.slider.setMin(min);
-        this.slider.setMax(max);
-        this.slider.setBlockIncrement(step);
+        this.integerValue.set(value);
+        this.integerMin.set(min);
+        this.integerMax.set(max);
+        this.integerStep.set(step);
     }
 
     @Override
-    public Block clone() {
+    public BlockModel copy() {
         IntegerSlider block = new IntegerSlider(workspace);
-        block.slider.setValue(this.slider.getValue());
-        block.slider.setMin(this.slider.getMin());
-        block.slider.setMax(this.slider.getMax());
-        block.slider.setBlockIncrement(this.slider.getBlockIncrement());
+        block.integerValue.set(this.integerValue.get());
+        block.integerMin.set(this.integerMin.get());
+        block.integerMax.set(this.integerMax.get());
+        block.integerStep.set(this.integerStep.get());
         return block;
     }
 
@@ -272,5 +292,21 @@ public class IntegerSlider extends Block {
 
     IntegerProperty integerStepProperty() {
         return integerStep;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (slider != null) {
+            slider.valueProperty().unbindBidirectional(integerValue);
+            slider.minProperty().unbindBidirectional(integerMin);
+            slider.maxProperty().unbindBidirectional(integerMax);
+            slider.blockIncrementProperty().unbindBidirectional(integerStep);
+        }
+
+        if (expander != null) {
+            expander.remove();
+        }
     }
 }

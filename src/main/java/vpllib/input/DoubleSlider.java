@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import vplcore.workspace.Workspace;
-import vplcore.graph.model.Block;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -18,29 +16,38 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.block.BlockModel;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(identifier = "Input.doubleSlider",
+@BlockMetadata(identifier = "Input.doubleSlider",
         category = "Input",
         description = "Number Slider",
         tags = {"input", "slider"})
-public class DoubleSlider extends Block {
+public class DoubleSlider extends BlockModel {
 
-    private final Slider slider;
-    private final DoubleBinding doubleValue;
+    private Slider slider;
+    private Expander expander;
+    private DoubleBinding doubleValueFormatted;
 
-    private final EventHandler<MouseEvent> blockEnteredHandler = this::handleMouseEnter;
+    private final DoubleProperty doubleValue = new SimpleDoubleProperty(0);
+    private final DoubleProperty doubleMin = new SimpleDoubleProperty(0);
+    private final DoubleProperty doubleMax = new SimpleDoubleProperty(10);
+    private final DoubleProperty doubleStep = new SimpleDoubleProperty(0.1);
 
-    public DoubleSlider(Workspace hostCanvas) {
-        super(hostCanvas);
-        setName("Double");
+    public DoubleSlider(WorkspaceModel workspaceModel) {
+        super(workspaceModel);
+        this.nameProperty().set("Double");
+        addOutputPort("double", Double.class);
+        outputPorts.get(0).dataProperty().bind(doubleValue);
+    }
 
-        addOutPortToBlock("double", Double.class);
-
+    @Override
+    public Region getCustomization() {
         slider = new Slider(0, 10, 0);
         slider.setBlockIncrement(0.1);
         slider.setSnapToTicks(true);
@@ -48,7 +55,7 @@ public class DoubleSlider extends Block {
         slider.setMinorTickCount(0);
 
         DoubleProperty sliderStep = slider.blockIncrementProperty();
-        doubleValue = new DoubleBinding() {
+        doubleValueFormatted = new DoubleBinding() {
 
             {
                 super.bind(sliderStep, slider.valueProperty());
@@ -61,20 +68,22 @@ public class DoubleSlider extends Block {
                 return bd;
             }
         };
-        outPorts.get(0).dataProperty().bind(doubleValue);
+//        outputPorts.get(0).dataProperty().bind(doubleValueFormatted);
+//        doubleValue.bindBidirectional(doubleValueFormatted);
 
-        Expander expand = new Expander();
+        slider.valueProperty().bindBidirectional(doubleValue);
+        slider.minProperty().bindBidirectional(doubleMin);
+        slider.maxProperty().bindBidirectional(doubleMax);
+        slider.blockIncrementProperty().bindBidirectional(doubleStep);
 
-        Pane p = new Pane();
-        expand.setLayoutX(0);
-        expand.setLayoutY(0);
+        Pane container = new Pane();
+        expander = new Expander();
+        expander.setLayoutX(0);
+        expander.setLayoutY(0);
         slider.setLayoutX(30);
         slider.setLayoutY(4);
-        p.getChildren().addAll(expand, slider);
-
-        addControlToBlock(p);
-
-        setOnMouseEntered(blockEnteredHandler);
+        container.getChildren().addAll(expander, slider);
+        return container;
     }
 
     private int getNumberOfDecimalPlaces(Double value) {
@@ -82,7 +91,12 @@ public class DoubleSlider extends Block {
         return str.length() - str.indexOf('.') - 1;
     }
 
-    private void handleMouseEnter(Event e) {
+    @Override
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return this::focusOnSlider;
+    }
+
+    public void focusOnSlider(MouseEvent event) {
         slider.requestFocus();
     }
 
@@ -131,10 +145,14 @@ public class DoubleSlider extends Block {
             stepField.focusedProperty().addListener(stepFieldFocusChangedHandler);
 
             valueField.textProperty().bind(doubleValue.asString());
-            minField.textProperty().bind(slider.minProperty().asString());
-            maxField.textProperty().bind(slider.maxProperty().asString());
-            stepField.textProperty().bind(slider.blockIncrementProperty().asString());
+            minField.textProperty().bind(doubleMin.asString());
+            maxField.textProperty().bind(doubleMax.asString());
+            stepField.textProperty().bind(doubleStep.asString());
 
+//            valueField.textProperty().bind(doubleValueFormatted.asString());
+//            minField.textProperty().bind(slider.minProperty().asString());
+//            maxField.textProperty().bind(slider.maxProperty().asString());
+//            stepField.textProperty().bind(slider.blockIncrementProperty().asString());
             grid.add(valueField, 1, 0);
             grid.add(minField, 1, 1);
             grid.add(maxField, 1, 2);
@@ -158,7 +176,7 @@ public class DoubleSlider extends Block {
                         slider.setValue(newValue);
                     }
                 }
-                valueField.textProperty().bind(doubleValue.asString());
+                valueField.textProperty().bind(doubleValueFormatted.asString());
             }
         }
 
@@ -232,10 +250,27 @@ public class DoubleSlider extends Block {
             }
             return newValue;
         }
+
+        private void remove() {
+            valueField.setOnKeyPressed(null);
+            minField.setOnKeyPressed(null);
+            maxField.setOnKeyPressed(null);
+            stepField.setOnKeyPressed(null);
+
+            valueField.focusedProperty().removeListener(valueFieldFocusChangedHandler);
+            minField.focusedProperty().removeListener(minFieldFocusedChangedHandler);
+            maxField.focusedProperty().removeListener(maxFieldFocusedChangedHandler);
+            stepField.focusedProperty().removeListener(stepFieldFocusChangedHandler);
+
+            valueField.textProperty().unbind();
+            minField.textProperty().unbind();
+            maxField.textProperty().unbind();
+            stepField.textProperty().unbind();
+        }
     }
 
     @Override
-    public void calculate() {
+    public void process() {
 
     }
 
@@ -255,19 +290,36 @@ public class DoubleSlider extends Block {
         Double min = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("min")));
         Double max = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("max")));
         Double step = Double.parseDouble(xmlTag.getOtherAttributes().get(QName.valueOf("step")));
-        this.slider.setValue(value);
-        this.slider.setMin(min);
-        this.slider.setMax(max);
-        this.slider.setBlockIncrement(step);
+        this.doubleValue.set(value);
+        this.doubleMin.set(min);
+        this.doubleMax.set(max);
+        this.doubleStep.set(step);
     }
 
     @Override
-    public Block clone() {
+    public BlockModel copy() {
         DoubleSlider block = new DoubleSlider(workspace);
-        block.slider.setValue(this.slider.getValue());
-        block.slider.setMin(this.slider.getMin());
-        block.slider.setMax(this.slider.getMax());
-        block.slider.setBlockIncrement(this.slider.getBlockIncrement());
+        block.doubleValue.set(this.doubleValue.get());
+        block.doubleMin.set(this.doubleMin.get());
+        block.doubleMax.set(this.doubleMax.get());
+        block.doubleStep.set(this.doubleStep.get());
         return block;
     }
+
+    @Override
+    public void remove() {
+        super.remove();
+        outputPorts.get(0).dataProperty().unbind();
+        if (slider != null) {
+            slider.valueProperty().unbindBidirectional(doubleValue);
+            slider.minProperty().unbindBidirectional(doubleMin);
+            slider.maxProperty().unbindBidirectional(doubleMax);
+            slider.blockIncrementProperty().unbindBidirectional(doubleStep);
+        }
+
+        if (expander != null) {
+            expander.remove();
+        }
+    }
+
 }

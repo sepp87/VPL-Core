@@ -1,94 +1,86 @@
 package vpllib.input;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
-import vplcore.workspace.Workspace;
-import vplcore.graph.model.Block;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
-import static vplcore.Util.getBooleanValue;
-import static vplcore.Util.getDoubleValue;
-import static vplcore.Util.getIntegerValue;
-import static vplcore.Util.getLongValue;
+import static vplcore.util.DataParsingUtils.getBooleanValue;
+import static vplcore.util.DataParsingUtils.getDoubleValue;
+import static vplcore.util.DataParsingUtils.getIntegerValue;
+import static vplcore.util.DataParsingUtils.getLongValue;
 import jo.vpl.xml.BlockTag;
-import vplcore.graph.model.BlockInfo;
+import vplcore.graph.block.BlockModel;
+import vplcore.workspace.WorkspaceModel;
+import vplcore.graph.block.BlockMetadata;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockInfo(
+@BlockMetadata(
         identifier = "Input.string",
         category = "Input",
         description = "Input a line of text",
         tags = {"input", "line", "string"})
-public class StringBlock extends Block {
+public class StringBlock extends BlockModel {
 
-    private final TextField text;
+    private final StringProperty string = new SimpleStringProperty();
+    private TextField textField;
 
-    private final EventHandler<KeyEvent> keyReleasedHandler = createKeyReleasedHandler();
-    private final EventHandler<MouseEvent> fieldEnteredHandler = createFieldEnteredHandler();
-    private final EventHandler<MouseEvent> fieldExitedHandler = createFieldExitedHandler();
-
-    public StringBlock(Workspace hostCanvas) {
-        super(hostCanvas);
-        setName("String");
-
-        addOutPortToBlock("String : Value", String.class);
-
-        text = new TextField();
-        text.setPromptText("Write here...");
-        text.setFocusTraversable(false);
-        text.setMinWidth(100);
-        text.setStyle("-fx-pref-column-count: 26;\n"
-                + "fx-font-size: 10;\n");
-
-        addControlToBlock(text);
-
-        text.setOnKeyReleased(keyReleasedHandler);
-        this.setOnMouseEntered(fieldEnteredHandler);
-        this.setOnMouseExited(fieldExitedHandler);
-
-//        outPorts.get(0).setData(null);
-    }
-
-    private EventHandler<KeyEvent> createKeyReleasedHandler() {
-        return (KeyEvent keyEvent) -> {
-            calculate();
-        };
-    }
-
-    private EventHandler<MouseEvent> createFieldEnteredHandler() {
-        return (MouseEvent event) -> {
-            text.requestFocus();
-        };
-    }
-
-    private EventHandler<MouseEvent> createFieldExitedHandler() {
-        return (MouseEvent event) -> {
-            workspace.requestFocus();
-        };
-    }
-
-    public void setString(String str) {
-        text.setText(str);
-        calculate();
-    }
-
-    public String getString() {
-        return text.getText();
+    public StringBlock(WorkspaceModel workspace) {
+        super(workspace);
+        this.nameProperty().set("String");
+        addOutputPort("String : Value", String.class);
+        string.addListener(stringListener);
     }
 
     @Override
-    public void calculate() {
-        String str = getString();
+    public Region getCustomization() {
+        textField = new TextField();
+        textField.setPromptText("Write here...");
+        textField.setFocusTraversable(false);
+        textField.setMinWidth(100);
+        textField.setStyle(
+                "-fx-pref-column-count: 26;\n"
+                + "fx-font-size: 10;\n");
+        textField.textProperty().bindBidirectional(string);
+        textField.setOnKeyPressed(this::ignoreShortcuts);
+        return textField;
+    }
+
+    @Override
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return this::focusOnTextField;
+    }
+
+    private final ChangeListener<String> stringListener = this::onStringChanged;
+
+    private void onStringChanged(Object b, Object o, Object n) {
+        processSafely();
+    }
+
+    private void ignoreShortcuts(KeyEvent event) {
+        event.consume();
+    }
+
+    private void focusOnTextField(MouseEvent event) {
+        textField.requestFocus();
+    }
+
+    @Override
+    public void process() {
+        String str = string.get();
 
         //Forward empty string as null
         if (str.equals("")) {
-            outPorts.get(0).dataType = String.class;
-            outPorts.get(0).setName("String : Value");
-            outPorts.get(0).setData(null);
+            outputPorts.get(0).dataTypeProperty().set(String.class);
+            outputPorts.get(0).nameProperty().set("String : Value");
+            outputPorts.get(0).setData(null);
             return;
         }
 
@@ -96,9 +88,9 @@ public class StringBlock extends Block {
         if (bool != null) {
 
             //Set outgoing data
-            outPorts.get(0).dataType = Boolean.class;
-            outPorts.get(0).setName("Boolean : Value");
-            outPorts.get(0).setData(bool);
+            outputPorts.get(0).dataTypeProperty().set(Boolean.class);
+            outputPorts.get(0).nameProperty().set("Boolean : Value");
+            outputPorts.get(0).setData(bool);
             return;
         }
 
@@ -106,9 +98,9 @@ public class StringBlock extends Block {
         if (integer != null) {
 
             //Set outgoing data
-            outPorts.get(0).dataType = Integer.class;
-            outPorts.get(0).setName("Integer : Value");
-            outPorts.get(0).setData(integer);
+            outputPorts.get(0).dataTypeProperty().set(Integer.class);
+            outputPorts.get(0).nameProperty().set("Integer : Value");
+            outputPorts.get(0).setData(integer);
             return;
         }
 
@@ -116,9 +108,9 @@ public class StringBlock extends Block {
         if (lng != null) {
 
             //Set outgoing data
-            outPorts.get(0).dataType = Long.class;
-            outPorts.get(0).setName("Long : Value");
-            outPorts.get(0).setData(lng);
+            outputPorts.get(0).dataTypeProperty().set( Long.class);
+            outputPorts.get(0).nameProperty().set("Long : Value");
+            outputPorts.get(0).setData(lng);
             return;
         }
 
@@ -126,67 +118,77 @@ public class StringBlock extends Block {
         if (dbl != null) {
 
             //Set outgoing data
-            outPorts.get(0).dataType = Double.class;
-            outPorts.get(0).setName("Double : Value");
-            outPorts.get(0).setData(dbl);
+            outputPorts.get(0).dataTypeProperty().set(Double.class);
+            outputPorts.get(0).nameProperty().set("Double : Value");
+            outputPorts.get(0).setData(dbl);
             return;
         }
 
-        outPorts.get(0).dataType = String.class;
-        outPorts.get(0).setName("String : Value");
-        outPorts.get(0).setData(str);
+        outputPorts.get(0).dataTypeProperty().set(String.class);
+        outputPorts.get(0).nameProperty().set("String : Value");
+        outputPorts.get(0).setData(str);
     }
 
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("string"), getString());
-        xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outPorts.get(0).dataType.getSimpleName());
+        xmlTag.getOtherAttributes().put(QName.valueOf("string"), string.get());
+        xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outputPorts.get(0).getDataType().getSimpleName());
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         String str = xmlTag.getOtherAttributes().get(QName.valueOf("string"));
-        this.setString(str);
+        string.set(str);
 
         //Retrieval of custom attribute
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("outDataType"));
         switch (value) {
             case "Double":
-                outPorts.get(0).dataType = Double.class;
-                outPorts.get(0).setName("Double : Value");
+                outputPorts.get(0).dataTypeProperty().set(Double.class);
+                outputPorts.get(0).nameProperty().set("Double : Value");
                 break;
 
             case "Integer":
-                outPorts.get(0).dataType = Integer.class;
-                outPorts.get(0).setName("Integer : Value");
+                outputPorts.get(0).dataTypeProperty().set(Integer.class);
+                outputPorts.get(0).nameProperty().set("Integer : Value");
                 break;
 
             case "Long":
-                outPorts.get(0).dataType = Long.class;
-                outPorts.get(0).setName("Long : Value");
+                outputPorts.get(0).dataTypeProperty().set( Long.class);
+                outputPorts.get(0).nameProperty().set("Long : Value");
                 break;
 
             case "Boolean":
-                outPorts.get(0).dataType = Boolean.class;
-                outPorts.get(0).setName("Boolean : Value");
+                outputPorts.get(0).dataTypeProperty().set( Boolean.class);
+                outputPorts.get(0).nameProperty().set("Boolean : Value");
                 break;
 
             case "String":
-                outPorts.get(0).dataType = String.class;
-                outPorts.get(0).setName("String : Value");
+                outputPorts.get(0).dataTypeProperty().set( String.class);
+                outputPorts.get(0).nameProperty().set("String : Value");
                 break;
 
         }
-        calculate();
+        processSafely();
     }
 
     @Override
-    public Block clone() {
+    public BlockModel copy() {
         StringBlock block = new StringBlock(workspace);
-        block.setString(this.getString());
+        block.string.set(this.string.get());
         return block;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        string.removeListener(stringListener);
+        if (textField != null) {
+            textField.textProperty().unbindBidirectional(string);
+            textField.setOnKeyPressed(null);
+        }
     }
 
 }

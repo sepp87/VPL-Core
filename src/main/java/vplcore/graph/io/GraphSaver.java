@@ -1,6 +1,5 @@
 package vplcore.graph.io;
 
-import vplcore.graph.model.Block;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -17,9 +16,11 @@ import jo.vpl.xml.BlocksTag;
 import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
-import vplcore.graph.model.BlockGroup;
-import vplcore.graph.model.Connection;
-import vplcore.workspace.Workspace;
+import vplcore.workspace.WorkspaceModel;
+import vplcore.graph.group.BlockGroupModel;
+import vplcore.graph.block.BlockModel;
+import vplcore.graph.connection.ConnectionModel;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -36,31 +37,31 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, Workspace workspace) {
+    public static void serialize(File file, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();
 
             // serialize workspace and settings
             DocumentTag documentTag = factory.createDocumentTag();
-            documentTag.setScale(workspace.getScale());
-            documentTag.setTranslateX(workspace.getTranslateX());
-            documentTag.setTranslateY(workspace.getTranslateY());
+            documentTag.setScale(workspaceModel.zoomFactorProperty().get());
+            documentTag.setTranslateX(workspaceModel.translateXProperty().get());
+            documentTag.setTranslateY(workspaceModel.translateYProperty().get());
 
             // serialize blocks of graph
-            Collection<Block> blocks = workspace.blockSet;
-            BlocksTag blocksTag = serializeBlocks(blocks);
+            Collection<BlockModel> blocks = workspaceModel.getBlockModels();
+            BlocksTag blocksTag = serializeBlockModels(blocks);
             documentTag.setBlocks(blocksTag);
 
             // serialize connections of graph
-            Collection<Connection> connections = workspace.connectionSet;
-            ConnectionsTag connectionsTag = serializeConnnections(connections);
+            Collection<ConnectionModel> connections = workspaceModel.getConnectionModels();
+            ConnectionsTag connectionsTag = serializeConnnectionModels(connections);
             documentTag.setConnections(connectionsTag);
 
             // serialize groups of graph
-            Collection<BlockGroup> groups = workspace.blockGroupSet;
+            Collection<BlockGroupModel> groups = workspaceModel.getBlockGroupModels();
             if (!groups.isEmpty()) {
-                GroupsTag groupsTag = serializeGroups(groups);
+                GroupsTag groupsTag = serializeGroupModels(groups);
                 documentTag.setGroups(groupsTag);
             }
 
@@ -76,10 +77,10 @@ public class GraphSaver {
         }
     }
 
-    private static BlocksTag serializeBlocks(Collection<Block> blocks) {
+    private static BlocksTag serializeBlockModels(Collection<BlockModel> blocks) {
         ObjectFactory factory = getObjectFactory();
         BlocksTag blocksTag = factory.createBlocksTag();
-        for (Block block : blocks) {
+        for (BlockModel block : blocks) {
             BlockTag blockTag = factory.createBlockTag();
             block.serialize(blockTag);
             blocksTag.getBlock().add(blockTag);
@@ -87,10 +88,10 @@ public class GraphSaver {
         return blocksTag;
     }
 
-    private static ConnectionsTag serializeConnnections(Collection<Connection> connections) {
+    private static ConnectionsTag serializeConnnectionModels(Collection<ConnectionModel> connections) {
         ObjectFactory factory = getObjectFactory();
         ConnectionsTag connectionsTag = factory.createConnectionsTag();
-        for (Connection connection : connections) {
+        for (ConnectionModel connection : connections) {
             ConnectionTag connectionTag = factory.createConnectionTag();
             connection.serialize(connectionTag);
             connectionsTag.getConnection().add(connectionTag);
@@ -98,10 +99,10 @@ public class GraphSaver {
         return connectionsTag;
     }
 
-    private static GroupsTag serializeGroups(Collection<BlockGroup> groups) {
+    private static GroupsTag serializeGroupModels(Collection<BlockGroupModel> groups) {
         ObjectFactory factory = getObjectFactory();
         GroupsTag groupsTag = factory.createGroupsTag();
-        for (BlockGroup group : groups) {
+        for (BlockGroupModel group : groups) {
             GroupTag groupTag = factory.createGroupTag();
             group.serialize(groupTag);
             groupsTag.getGroup().add(groupTag);

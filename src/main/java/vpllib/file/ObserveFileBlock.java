@@ -32,7 +32,7 @@ import vplcore.workspace.WorkspaceModel;
         identifier = "File.observe",
         category = "File",
         description = "Observe a file",
-        tags = {"file", "observe"}
+        tags = {"file", "observe", "watch"}
 )
 public class ObserveFileBlock extends BlockModel {
 
@@ -47,8 +47,12 @@ public class ObserveFileBlock extends BlockModel {
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
 
-        // Register shutdown hook to stop watching when the application exits
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stopObservationOnShutdown));
+        // Register shutdown hook to stop the watcher when the app closes
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            stopObservation();
+            executorService.shutdownNow();
+            System.out.println("File watcher and executor service shut down on app shutdown.");
+        }));
     }
 
     @Override
@@ -69,13 +73,14 @@ public class ObserveFileBlock extends BlockModel {
 
         File newFile = (File) data;
 
-        // Stop existing watcher if already running
-        if (watchTask != null && !watchTask.isDone()) {
-            watchTask.cancel(true);
-        }
-
+        // Stop previous watcher if already running
+        stopObservation();
         observedFile = newFile;
-        watchTask = executorService.submit(() -> observeFile(observedFile));
+
+        // Start a new daemon thread for watching the file
+        Thread watcherThread = new Thread(() -> observeFile(observedFile));
+        watcherThread.setDaemon(true); // Mark the thread as a daemon
+        watchTask = executorService.submit(watcherThread);
     }
 
     private void observeFile(File file) {
@@ -87,7 +92,7 @@ public class ObserveFileBlock extends BlockModel {
             return;
         }
 
-        try ( WatchService watchService = FileSystems.getDefault().newWatchService()) {
+        try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
             directoryPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 
             System.out.println("Observing: " + file);

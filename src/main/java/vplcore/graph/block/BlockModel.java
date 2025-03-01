@@ -102,9 +102,9 @@ public abstract class BlockModel extends BaseModel {
         if (!this.isActive()) {
             return;
         }
-        
+
         try {
-            
+
             process();
         } catch (Exception exception) {
             BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
@@ -169,16 +169,29 @@ public abstract class BlockModel extends BaseModel {
         }
     }
 
+    @Override
     public void remove() {
         // stop processing
         setActive(false);
-        
+
         // remove listeners
+        this.active.removeListener(activeListener);
         for (PortModel port : inputPorts) {
             port.dataProperty().removeListener(inputDataListener);
         }
 
         super.remove();
+    }
+
+    @Override
+    public void revive() {
+        // add listeners
+        this.active.addListener(activeListener);
+        for (PortModel port : inputPorts) {
+            port.dataProperty().addListener(inputDataListener);
+        }
+
+        super.revive();
     }
 
 }

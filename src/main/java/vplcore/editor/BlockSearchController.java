@@ -19,6 +19,7 @@ import vplcore.context.StateManager;
 import vplcore.context.command.CreateBlockCommand;
 import static vplcore.util.EditorUtils.onFreeSpace;
 import static vplcore.util.EventUtils.isDoubleClick;
+import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -66,7 +67,7 @@ public class BlockSearchController extends BaseController {
     private void toggleBlockSearch(MouseEvent event) {
         if (isDoubleClick(event) && onFreeSpace(event) && state.isIdle()) {
             showView(event.getSceneX(), event.getSceneY());
-            
+
         } else if (view.isVisible() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, BlockSearchView.class)) {
             // hide block search if it is shown and the click was somewhere else 
             hideView();
@@ -143,7 +144,9 @@ public class BlockSearchController extends BaseController {
         }
 
         System.out.println("Create block " + blockIdentifier);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel(), blockIdentifier, creationPoint);
+        WorkspaceController workspaceController = actionManager.getWorkspaceController();
+        Point2D location = workspaceController.getView().sceneToLocal(creationPoint);
+        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceModel(), blockIdentifier, location);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();

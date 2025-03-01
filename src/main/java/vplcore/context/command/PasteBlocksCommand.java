@@ -1,5 +1,7 @@
 package vplcore.context.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import vplcore.App;
@@ -13,12 +15,14 @@ import vplcore.workspace.WorkspaceModel;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
 public class PasteBlocksCommand implements Undoable {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
+    private final List<BlockModel> pastedBlocks = new ArrayList<>();
+    private final List<ConnectionModel> pastedConnections = new ArrayList<>();
 
     public PasteBlocksCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
         this.workspaceController = workspaceController;
@@ -28,9 +32,23 @@ public class PasteBlocksCommand implements Undoable {
     @Override
     public void execute() {
 
-        if (!CopyPasteMemory.containsItems()) {
+        if (!pastedBlocks.isEmpty()) { // add the pasted blocks and connections again, since they were remove through undo
+            for (BlockModel block : pastedBlocks) {
+                block.revive();
+                workspaceModel.addBlockModel(block);
+            }
+            for (ConnectionModel connection : pastedConnections) {
+                connection.revive();
+                workspaceModel.addConnectionModel(connection);
+            }
             return;
         }
+
+        if (!CopyPasteMemory.containsItems()) { // TODO this command should NOT be recorded since there was nothing copied to begin with
+            return;
+        }
+        
+        // paste all copied blocks and connections, since this command is triggered for the first time
         CopyResult copy = CopyPasteMemory.getCopyResult();
         Bounds boundingBox = copy.boundingBox;
 
@@ -66,6 +84,13 @@ public class PasteBlocksCommand implements Undoable {
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        for (BlockModel block : pastedBlocks) {
+            workspaceModel.removeBlockModel(block);
+        }
+
+        for (ConnectionModel connection : pastedConnections) {
+            workspaceModel.removeConnectionModel(connection);
+        }
     }
 }

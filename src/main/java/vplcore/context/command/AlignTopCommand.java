@@ -1,7 +1,10 @@
 package vplcore.context.command;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javafx.geometry.Bounds;
 import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
@@ -11,25 +14,27 @@ import vplcore.workspace.WorkspaceController;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
 public class AlignTopCommand implements Undoable {
 
-    private final WorkspaceController workspace;
+    private final Collection<BlockController> blocks;
+    private final Map<String, Double> previousLocations = new TreeMap<>();
 
     public AlignTopCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+        this.blocks = workspace.getSelectedBlockControllers();
     }
 
     @Override
     public void execute() {
         List<BlockView> blockViews = new ArrayList<>();
-        for (BlockController blockController : workspace.getSelectedBlockControllers()) {
+        for (BlockController blockController : blocks) {
             blockViews.add(blockController.getView());
         }
         Bounds bBox = BlockView.getBoundingBoxOfBlocks(blockViews);
-        for (BlockController blockController : workspace.getSelectedBlockControllers()) {
+        for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
+            previousLocations.put(blockModel.getId(), blockModel.layoutYProperty().get());
             blockModel.layoutYProperty().set(bBox.getMinY());
         }
 
@@ -37,6 +42,9 @@ public class AlignTopCommand implements Undoable {
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        for (BlockController blockController : blocks) {
+            BlockModel blockModel = blockController.getModel();
+            blockModel.layoutYProperty().set(previousLocations.get(blockModel.getId()));
+        }
     }
 }

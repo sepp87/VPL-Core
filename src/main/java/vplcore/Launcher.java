@@ -4,6 +4,8 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
+
+// 0 baseModel removed to readonly
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
@@ -13,14 +15,17 @@ import vpllib.method.JsonMethods;
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
+// 1 IMPROVEMENT Add undo/redo functionality
+//      0 TODO revive ports, revive block subclasses, 
+//      0 TODO Move and Resize commands do not need to be executed, only recorded
+//      0 GroupBlocks command should not be recorded in case there are less than two selected blocks 
+//      0 PasteBlocks command should not be recorded in case there are no copied blocks available
+//
 //
 // BACKLOG
 // 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
-// 1 IMPROVEMENT Add undo/redo functionality
-//      0 remove connection command in conjunction with removal of block
-//      0 remove connection command in conjunction with connection created for occupied port
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT add save and save as commands
 // 4 IMPROVEMENT reload plugins on demand from menu bar
@@ -42,6 +47,11 @@ import vpllib.method.JsonMethods;
 // WebClientBlock
 // 
 // DONE
+// undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks
+//      0 remove connection command in conjunction with removal of block
+//      0 remove connection command in conjunction with connection created for occupied port
+//      0 revive block / groups / connections routinemake new objects or revive old objects? 
+//          0 thought on using new objects - guaranteed that listeners, handlers and bindings are correct, but when replacing old block with new blocks, redo/undo could yield unexecutable situations because there is no reference to the replacement block -> so revival method needed
 // 0 IMPROVEMENT first set blocks active when added to workspace, instead of deactivating in copypastememory and activating on paste
 // File Methods
 // ObserveFileBlock - observe if file is updated

@@ -11,20 +11,21 @@ import vplcore.workspace.WorkspaceModel;
 public class RemoveConnectionCommand implements Undoable {
 
     private final WorkspaceModel workspaceModel;
-    private final ConnectionModel connectionModel;
+    private final ConnectionModel connection;
 
-    public RemoveConnectionCommand(WorkspaceModel workspaceModel, ConnectionModel connectionModel) {
+    public RemoveConnectionCommand(WorkspaceModel workspaceModel, ConnectionModel connection) {
         this.workspaceModel = workspaceModel;
-        this.connectionModel = connectionModel;
+        this.connection = connection;
     }
 
     @Override
     public void execute() {
-        workspaceModel.removeConnectionModel(connectionModel);
+        workspaceModel.removeConnectionModel(connection);
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        connection.revive();
+        workspaceModel.addConnectionModel(connection);
     }
 }

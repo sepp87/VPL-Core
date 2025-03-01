@@ -3,17 +3,17 @@ package vplcore.context.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import vplcore.context.Command;
 import vplcore.context.CopyPasteMemory;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceController;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
-public class CopyBlocksCommand implements Undoable {
+public class CopyBlocksCommand implements Command {
 
     private final WorkspaceController workspaceController;
 
@@ -29,12 +29,6 @@ public class CopyBlocksCommand implements Undoable {
             selectedBlockModels.add(blockController.getModel());
         }
         CopyPasteMemory.saveBlockModels(workspaceController, selectedBlockModels);
-
-    }
-
-    @Override
-    public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

@@ -20,6 +20,7 @@ public class CreateConnectionCommand implements Undoable {
     private final PortModel startPortModel;
     private final PortModel endPortModel;
     private final List<ConnectionModel> removedConnections;
+    private ConnectionModel newConnection;
 
     public CreateConnectionCommand(WorkspaceModel workspaceModel, PortModel startPort, PortModel endPort) {
         this.workspaceModel = workspaceModel;
@@ -38,11 +39,21 @@ public class CreateConnectionCommand implements Undoable {
             }
             removedConnections.addAll(connections);
         }
-        workspaceModel.addConnectionModel(startPortModel, endPortModel);
+
+        if (newConnection == null) { // create the new connection
+            newConnection = workspaceModel.addConnectionModel(startPortModel, endPortModel);
+        } else { // revive the connection, because it was undone
+            newConnection.revive();
+            workspaceModel.addConnectionModel(newConnection);
+        }
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        workspaceModel.removeConnectionModel(newConnection);
+        for(ConnectionModel connection : removedConnections) {
+            connection.revive();
+            workspaceModel.addConnectionModel(connection);
+        }
     }
 }

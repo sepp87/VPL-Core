@@ -274,11 +274,12 @@ public class PortModel extends BaseModel {
         connections.removeListener(connectionsListener);
         connections.clear();
         super.remove();
-//        removal of connections is done by the workspace
-//        for (ConnectionModel connection : getConnections()) {
-//            connection.remove();
-//        }
+    }
 
+    @Override
+    public void revive() {
+        connections.addListener(connectionsListener);
+        super.revive();
     }
 }
 

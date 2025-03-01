@@ -32,4 +32,14 @@ public class FileMethods {
         return Files.getLastModifiedTime(path).toString();
     }
 
+    
+    public static void list(){
+        
+    }
+    public static void isReadable(){
+        
+    }
+    public static void isWritable(){
+        
+    }
 }

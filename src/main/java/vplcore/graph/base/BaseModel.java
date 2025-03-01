@@ -72,6 +72,14 @@ public class BaseModel implements Comparable<BaseModel> {
     public ReadOnlyBooleanProperty activeProperty() {
         return active;
     }
+    
+    public void setActive(boolean isActive) {
+        active.set(isActive);
+    }
+    
+    public boolean isActive() {
+        return active.get();
+    }
 
     public BooleanProperty removedProperty() {
         return removed;

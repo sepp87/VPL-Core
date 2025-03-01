@@ -37,6 +37,26 @@ public abstract class BlockModel extends BaseModel {
 
     public BlockModel(WorkspaceModel workspace) {
         this.workspace = workspace;
+        this.active.addListener(activeListener);
+    }
+
+    private final ChangeListener<Boolean> activeListener = (b, o, n) -> onActiveChanged();
+
+    /**
+     * This method is called when the active state changes. When this block is
+     * activated processSafely() is called. If this block is deactivated all
+     * outputs are set to null. Override this change listener to modify its
+     * behaviour accordingly. Call super.onActiveChanged() last if you want to
+     * continue with the default behaviour.
+     */
+    protected void onActiveChanged() {
+        if (this.isActive()) {
+            processSafely();
+        } else {
+            for (PortModel output : outputPorts) {
+                output.setData(null);
+            }
+        }
     }
 
     public ObservableList<BlockException> getExceptions() {
@@ -79,7 +99,12 @@ public abstract class BlockModel extends BaseModel {
         // Remove exceptions if there were any
         exceptions.clear();
 
+        if (!this.isActive()) {
+            return;
+        }
+        
         try {
+            
             process();
         } catch (Exception exception) {
             BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
@@ -88,7 +113,7 @@ public abstract class BlockModel extends BaseModel {
         }
     }
 
-    public abstract void process() throws Exception;
+    protected abstract void process() throws Exception;
 
     public abstract BlockModel copy();
 
@@ -145,6 +170,9 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void remove() {
+        // stop processing
+        setActive(false);
+        
         // remove listeners
         for (PortModel port : inputPorts) {
             port.dataProperty().removeListener(inputDataListener);

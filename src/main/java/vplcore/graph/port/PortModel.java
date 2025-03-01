@@ -126,6 +126,11 @@ public class PortModel extends BaseModel {
         this.connections.addListener(connectionsListener);
     }
 
+    @Override
+    public void setActive(boolean isActive) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("PortModel controls its own active state.");
+    }
+
     public PortType getPortType() {
         return portType;
     }

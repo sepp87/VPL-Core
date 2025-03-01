@@ -54,6 +54,15 @@ public class ObserveFileBlock extends BlockModel {
             System.out.println("File watcher and executor service shut down on app shutdown.");
         }));
     }
+  
+
+    @Override
+    protected void onActiveChanged() {
+        if(!this.isActive()) {
+            stopObservation();
+        }
+        super.onActiveChanged(); 
+    }
 
     @Override
     public Region getCustomization() {

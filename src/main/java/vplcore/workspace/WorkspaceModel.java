@@ -85,6 +85,8 @@ public class WorkspaceModel {
      */
     public void addBlockModel(BlockModel blockModel) {
         blockModels.add(blockModel);
+        blockModel.setActive(true); // blocks are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
+
     }
 
     public void removeBlockModel(BlockModel blockModel) {

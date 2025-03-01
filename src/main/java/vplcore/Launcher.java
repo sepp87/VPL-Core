@@ -4,7 +4,6 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
-// 0 TESTS 
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
@@ -43,6 +42,7 @@ import vpllib.method.JsonMethods;
 // WebClientBlock
 // 
 // DONE
+// 0 IMPROVEMENT first set blocks active when added to workspace, instead of deactivating in copypastememory and activating on paste
 // File Methods
 // ObserveFileBlock - observe if file is updated
 // Date.fromString block

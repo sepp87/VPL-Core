@@ -2,7 +2,9 @@ package vplcore.graph.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +17,8 @@ import vplcore.graph.port.PortModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockView;
+import vplcore.graph.block.ExceptionPanel;
+import vplcore.graph.block.ExceptionPanel.BlockException;
 
 /**
  *
@@ -101,6 +105,7 @@ public class MethodBlockModel extends BlockModel {
 
             }
         } catch (Exception e) {
+
             System.out.println(e.getMessage());
         }
 
@@ -247,6 +252,8 @@ public class MethodBlockModel extends BlockModel {
         return list;
     }
 
+    private Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
+
     private Object invokeMethodArgs3(Object... parameters) {
 
 //        if (parameters.length != 3) {
@@ -259,6 +266,7 @@ public class MethodBlockModel extends BlockModel {
                 Object result = method.invoke(null, parameters);
                 return result;
             } catch (IllegalAccessException | InvocationTargetException ex) {
+                BlockException exception = new ExceptionPanel.BlockException(null, ExceptionPanel.Severity.ERROR, ex);
                 return null;
             }
 
@@ -266,6 +274,7 @@ public class MethodBlockModel extends BlockModel {
             long shortestListSize = getShortestListSize(parameters);
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < shortestListSize; i++) {
+                traversalLog.add(i);
                 Object[] array = new Object[parameters.length];
                 for (int j = 0; j < parameters.length; j++) {
                     List<?> p = (List<?>) parameters[j];
@@ -274,6 +283,7 @@ public class MethodBlockModel extends BlockModel {
                 }
                 Object result = invokeMethodArgs3(array);
                 list.add(result);
+                traversalLog.pop();
             }
             return list;
 

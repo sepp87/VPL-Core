@@ -81,7 +81,7 @@ public abstract class BaseModel implements Comparable<BaseModel> {
         return active.get();
     }
 
-    public BooleanProperty removedProperty() {
+    public ReadOnlyBooleanProperty removedProperty() {
         return removed;
     }
 

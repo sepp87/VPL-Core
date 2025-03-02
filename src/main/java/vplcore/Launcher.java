@@ -5,8 +5,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
-// 0 Reset undo/redo stack when loading file and creating a new file
-// 0 baseModel removed to readonly
+
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
@@ -44,6 +43,8 @@ import vpllib.method.JsonMethods;
 // WebClientBlock
 // 
 // DONE
+// 0 baseModel removed to readonly
+// 0 Reset undo/redo stack when loading file and creating a new file
 // undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks
 //      0 revive block subclasses, add abstract initialize method to BlockModel and call from revive();
 //      0 revive ports

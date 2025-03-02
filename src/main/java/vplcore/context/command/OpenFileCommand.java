@@ -5,14 +5,14 @@ import javafx.stage.FileChooser;
 import vplcore.App;
 import vplcore.Config;
 import vplcore.graph.io.GraphLoader;
-import vplcore.context.Command;
+import vplcore.context.ResetHistoryCommand;
 import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class OpenFileCommand implements Command {
+public class OpenFileCommand implements ResetHistoryCommand {
 
     private final WorkspaceController workspaceController;
 
@@ -21,7 +21,7 @@ public class OpenFileCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         //Open File
         FileChooser chooser = new FileChooser();
         File lastOpenedDirectory = Config.getLastOpenedDirectory();
@@ -34,9 +34,9 @@ public class OpenFileCommand implements Command {
         File file = chooser.showOpenDialog(App.getStage());
 
         if (file == null) {
-            return;
+            return false;
         }
-        
+
         Config.setLastOpenedDirectory(file);
 
         //Clear Layout
@@ -44,6 +44,8 @@ public class OpenFileCommand implements Command {
 
         //Load file
         GraphLoader.deserialize(file, workspaceController, workspaceController.getModel());
+        return true;
+
     }
 
 }

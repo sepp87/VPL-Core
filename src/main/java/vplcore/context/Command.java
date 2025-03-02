@@ -6,6 +6,6 @@ package vplcore.context;
  */
 public interface Command {
 
-    void execute();
+    boolean execute();
 
 }

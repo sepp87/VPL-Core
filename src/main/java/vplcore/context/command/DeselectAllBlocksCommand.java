@@ -16,9 +16,9 @@ public class DeselectAllBlocksCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.deselectAllBlocks();
+        return true;
     }
-
 
 }

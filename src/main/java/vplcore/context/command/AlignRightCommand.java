@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import javafx.geometry.Bounds;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BlockView;
 import vplcore.workspace.WorkspaceController;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class AlignRightCommand implements Undoable {
+public class AlignRightCommand implements UndoableCommand {
 
     private final Collection<BlockController> blocks;
     private final Map<String, Double> previousLocations = new TreeMap<>();
@@ -26,7 +26,7 @@ public class AlignRightCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         List<BlockView> blockViews = new ArrayList<>();
         for (BlockController blockController : blocks) {
             blockViews.add(blockController.getView());
@@ -38,7 +38,7 @@ public class AlignRightCommand implements Undoable {
             previousLocations.put(blockModel.getId(), blockModel.layoutXProperty().get());
             blockModel.layoutXProperty().set(bBox.getMaxX() - blockView.getWidth());
         }
-
+        return true;
     }
 
     @Override

@@ -16,8 +16,9 @@ public class SelectAllBlocksCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspaceController.selectAllBlocks();
+        return true;
     }
 
 

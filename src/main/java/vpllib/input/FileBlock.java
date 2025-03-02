@@ -41,6 +41,10 @@ public class FileBlock extends BlockModel {
         super(workspaceModel);
         this.nameProperty().set("File");
         addOutputPort("file", File.class);
+    }
+
+    @Override
+    protected void initialize() {
         path.addListener(pathListener);
     }
 

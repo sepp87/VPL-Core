@@ -5,6 +5,7 @@ import vplcore.graph.util.BlockLoader;
 import vpllib.method.JsonMethods;
 
 
+// 0 Reset undo/redo stack when loading file and creating a new file
 // 0 baseModel removed to readonly
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
@@ -16,11 +17,7 @@ import vpllib.method.JsonMethods;
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT Add undo/redo functionality
-//      0 TODO revive ports, revive block subclasses, 
 //      0 TODO Move and Resize commands do not need to be executed, only recorded
-//      0 GroupBlocks command should not be recorded in case there are less than two selected blocks 
-//      0 PasteBlocks command should not be recorded in case there are no copied blocks available
-//
 //
 // BACKLOG
 // 0 REFACTOR Port - evaluate if calculate is not called to often
@@ -48,6 +45,10 @@ import vpllib.method.JsonMethods;
 // 
 // DONE
 // undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks
+//      0 revive block subclasses, add abstract initialize method to BlockModel and call from revive();
+//      0 revive ports
+//      0 GroupBlocks command should not be recorded in case there are less than two selected blocks 
+//      0 PasteBlocks command should not be recorded in case there are no copied blocks available
 //      0 remove connection command in conjunction with removal of block
 //      0 remove connection command in conjunction with connection created for occupied port
 //      0 revive block / groups / connections routinemake new objects or revive old objects? 

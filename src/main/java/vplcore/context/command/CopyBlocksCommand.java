@@ -22,13 +22,14 @@ public class CopyBlocksCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
         List<BlockModel> selectedBlockModels = new ArrayList<>();
         for (BlockController blockController : selectedBlockControllers) {
             selectedBlockModels.add(blockController.getModel());
         }
         CopyPasteMemory.saveBlockModels(workspaceController, selectedBlockModels);
+        return true;
     }
 
 }

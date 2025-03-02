@@ -33,36 +33,18 @@ public class TemplateBlock extends BlockModel {
     }
 
     @Override
+    protected void initialize() {
+        // Event handlers, change listeners and bindings
+    }
+
+    @Override
     public Region getCustomization() {
         Label label = BlockView.getAwesomeIcon(IconType.FA_PAPER_PLANE);
         return label;
     }
 
     /**
-     * Function to handle data when a connection is added and before calculate
-     * is called
-     */
-    public void handleIncomingConnectionAdded(PortModel source, PortModel incoming) {
-        //Sample code for handling just specific ports
-        int index = inputPorts.indexOf(source);
-        if (index == 0) {
-
-        }
-    }
-
-    /**
-     * Function to handle data when a connection is removed
-     */
-    public void handleIncomingConnectionRemoved(PortModel source) {
-        //Sample code for handling just specific ports
-        int index = inputPorts.indexOf(source);
-        if (index == 0) {
-
-        }
-    }
-
-    /**
-     * calculate function is called whenever new data is incoming
+     * process function is called whenever new data is incoming
      */
     @Override
     public void process() {

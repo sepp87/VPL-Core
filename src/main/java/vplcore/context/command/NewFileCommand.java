@@ -1,13 +1,13 @@
 package vplcore.context.command;
 
-import vplcore.context.Command;
+import vplcore.context.ResetHistoryCommand;
 import vplcore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class NewFileCommand implements Command {
+public class NewFileCommand implements ResetHistoryCommand {
 
     private final WorkspaceController workspace;
 
@@ -16,8 +16,10 @@ public class NewFileCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.reset();
+        return true;
+
     }
 
 }

@@ -44,6 +44,11 @@ public class IntegerSlider extends BlockModel {
     }
 
     @Override
+    protected void initialize() {
+
+    }
+
+    @Override
     public Region getCustomization() {
         slider = new Slider(0, 10, 0);
         slider.setBlockIncrement(1);

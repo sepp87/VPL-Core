@@ -187,7 +187,7 @@ public class BlockController extends BaseController {
     public void handleMoveFinished(MouseEvent event) {
         if (!event.isDragDetect()) {
             Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
-            Point2D delta = startPoint.subtract(updatedPoint);
+            Point2D delta = updatedPoint.subtract(startPoint);
             MoveBlocksCommand command = new MoveBlocksCommand(blockControllers, delta);
             actionManager.executeCommand(command);
         }

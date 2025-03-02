@@ -40,6 +40,8 @@ public abstract class BlockModel extends BaseModel {
         this.active.addListener(activeListener);
     }
 
+    protected abstract void initialize();
+    
     private final ChangeListener<Boolean> activeListener = (b, o, n) -> onActiveChanged();
 
     /**
@@ -178,6 +180,10 @@ public abstract class BlockModel extends BaseModel {
         this.active.removeListener(activeListener);
         for (PortModel port : inputPorts) {
             port.dataProperty().removeListener(inputDataListener);
+            port.remove();
+        }
+        for (PortModel port : outputPorts) {
+            port.remove();
         }
 
         super.remove();
@@ -189,8 +195,14 @@ public abstract class BlockModel extends BaseModel {
         this.active.addListener(activeListener);
         for (PortModel port : inputPorts) {
             port.dataProperty().addListener(inputDataListener);
+            port.revive();
+        }
+        for (PortModel port : outputPorts) {
+            port.revive();
         }
 
+        initialize();
+        
         super.revive();
     }
 

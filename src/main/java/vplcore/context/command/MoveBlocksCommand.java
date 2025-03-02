@@ -4,15 +4,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import javafx.geometry.Point2D;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
 import vplcore.graph.block.BlockModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class MoveBlocksCommand implements Undoable {
+public class MoveBlocksCommand implements UndoableCommand {
 
     private final Collection<BlockController> blocks;
     private final Point2D delta;
@@ -38,14 +38,14 @@ public class MoveBlocksCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
             Point2D location = currentLocations.get(blockModel.getId());
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
         }
-
+        return true;
     }
 
     @Override

@@ -46,6 +46,11 @@ public class MethodBlockModel extends BlockModel {
     }
 
     @Override
+    protected void initialize() {
+
+    }
+
+    @Override
     public Region getCustomization() {
         Label label;
         if (!info.icon().equals(IconType.NULL)) {

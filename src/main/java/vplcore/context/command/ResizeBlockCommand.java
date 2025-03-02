@@ -1,13 +1,13 @@
 package vplcore.context.command;
 
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class ResizeBlockCommand implements Undoable {
+public class ResizeBlockCommand implements UndoableCommand {
 
     private final BlockController blockController;
     private final double previousWidth;
@@ -24,8 +24,9 @@ public class ResizeBlockCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         blockController.setSize(currentWidth, currentHeight);
+        return true;
 
     }
 

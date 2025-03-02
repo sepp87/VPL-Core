@@ -7,17 +7,17 @@ import javafx.geometry.Point2D;
 import vplcore.App;
 import vplcore.context.CopyPasteMemory;
 import vplcore.context.CopyResult;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class PasteBlocksCommand implements Undoable {
+public class PasteBlocksCommand implements UndoableCommand {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
@@ -30,7 +30,7 @@ public class PasteBlocksCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
 
         if (!pastedBlocks.isEmpty()) { // add the pasted blocks and connections again, since they were remove through undo
             for (BlockModel block : pastedBlocks) {
@@ -41,19 +41,20 @@ public class PasteBlocksCommand implements Undoable {
                 connection.revive();
                 workspaceModel.addConnectionModel(connection);
             }
-            return;
+            return true;
         }
 
         if (!CopyPasteMemory.containsItems()) { // TODO this command should NOT be recorded since there was nothing copied to begin with
-            return;
+            return false;
         }
-        
+
         // paste all copied blocks and connections, since this command is triggered for the first time
         CopyResult copy = CopyPasteMemory.getCopyResult();
         Bounds boundingBox = copy.boundingBox;
 
         if (boundingBox == null) {
-            return;
+            System.out.println("PastBlocksCommand.execute() boundingBox == null");
+            return false;
         }
 
         Point2D copyPoint = new Point2D(boundingBox.getMinX() + boundingBox.getWidth() / 2, boundingBox.getMinY() + boundingBox.getHeight() / 2);
@@ -69,6 +70,7 @@ public class PasteBlocksCommand implements Undoable {
             copiedBlock.layoutXProperty().set(copiedBlock.layoutXProperty().get() + delta.getX());
             copiedBlock.layoutYProperty().set(copiedBlock.layoutYProperty().get() + delta.getY());
             workspaceModel.addBlockModel(copiedBlock);
+            pastedBlocks.add(copiedBlock);
         }
 
         // Select newly created blocks 
@@ -79,7 +81,10 @@ public class PasteBlocksCommand implements Undoable {
 
         for (ConnectionModel copiedConnection : copy.connectionModels) {
             workspaceModel.addConnectionModel(copiedConnection);
+            pastedConnections.add(copiedConnection);
         }
+        return true;
+
     }
 
     @Override

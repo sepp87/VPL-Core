@@ -5,7 +5,7 @@ import vplcore.workspace.WorkspaceController;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
 public class ZoomInCommand implements Command {
 
@@ -16,8 +16,9 @@ public class ZoomInCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.zoomIn();
+        return true;
     }
 
 

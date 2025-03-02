@@ -6,7 +6,7 @@ import vplcore.context.Command;
  *
  * @author Joost
  */
-public interface Undoable extends Command {
+public interface UndoableCommand extends Command {
     
     public void undo();
 }

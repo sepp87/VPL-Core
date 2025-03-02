@@ -54,14 +54,18 @@ public class ObserveFileBlock extends BlockModel {
             System.out.println("File watcher and executor service shut down on app shutdown.");
         }));
     }
-  
 
     @Override
+    protected void initialize() {
+        
+    }
+    
+    @Override
     protected void onActiveChanged() {
-        if(!this.isActive()) {
+        if (!this.isActive()) {
             stopObservation();
         }
-        super.onActiveChanged(); 
+        super.onActiveChanged();
     }
 
     @Override
@@ -147,13 +151,6 @@ public class ObserveFileBlock extends BlockModel {
         }
     }
 
-    // Stop file observation when the app is shut down
-    private void stopObservationOnShutdown() {
-        stopObservation();
-        executorService.shutdownNow();  // Stop the executor service
-        System.out.println("Application shutdown: File watching stopped.");
-    }
-
     @Override
     public void remove() {
         // Stop the file watching task if it's running
@@ -165,6 +162,14 @@ public class ObserveFileBlock extends BlockModel {
 
         // Notify that this block was removed
         super.remove();
+    }
+
+    @Override
+    public void revive() {
+        if (executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
+        super.revive();
     }
 
     @Override

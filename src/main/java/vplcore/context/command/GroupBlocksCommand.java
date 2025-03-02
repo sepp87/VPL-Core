@@ -3,18 +3,18 @@ package vplcore.context.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class GroupBlocksCommand implements Undoable {
+public class GroupBlocksCommand implements UndoableCommand {
 
     private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
@@ -28,11 +28,11 @@ public class GroupBlocksCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         System.out.println("GroupBlocksCommand.execute()");
         // do not execute if selected blocks is less than two
         if (blocks.size() < 2) {
-            return;
+            return false;
         }
         List<BlockModel> blockModels = new ArrayList<>();
         for (BlockController blockController : blocks) {
@@ -47,7 +47,7 @@ public class GroupBlocksCommand implements Undoable {
         }
         group.setBlocks(blockModels);
         workspaceModel.addBlockGroupModel(group);
-
+        return true;
     }
 
     @Override

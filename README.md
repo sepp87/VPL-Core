@@ -22,8 +22,8 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 * CMD/CTRL-N: new graph
 * CMD/CTRL-PLUS: zoom in
 * CMD/CTRL-MINUS: zoom out
-* CMD/CTRL-Z: undo (not implemented)
-* CMD/CTRL-Y: redo (not implemented)
+* CMD/CTRL-Z: undo
+* CMD/CTRL-Y: redo
 * Space: zoom to fit
 * Del/Backspace: delete selected blocks
 <br>
@@ -49,7 +49,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 ### TODO
 * General UI/UX
     * Start screen
-    * Undo/redo
+    * ✅ Undo/redo
     * Auto save/load
     * ✅ Menu bar
     * ✅ Save canvas size, position and zoom factor

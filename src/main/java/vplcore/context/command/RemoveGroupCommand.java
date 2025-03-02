@@ -2,16 +2,16 @@ package vplcore.context.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class RemoveGroupCommand implements Undoable {
+public class RemoveGroupCommand implements UndoableCommand {
 
     private final WorkspaceModel workspaceModel;
     private final BlockGroupModel group;
@@ -24,8 +24,10 @@ public class RemoveGroupCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspaceModel.removeBlockGroupModel(group);
+        return true;
+
     }
 
     @Override

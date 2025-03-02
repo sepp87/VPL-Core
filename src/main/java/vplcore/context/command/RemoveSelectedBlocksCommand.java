@@ -7,19 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import vplcore.App;
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class RemoveSelectedBlocksCommand implements Undoable {
+public class RemoveSelectedBlocksCommand implements UndoableCommand {
 
     private final WorkspaceController workspaceController;
     private final Collection<BlockController> blocks;
@@ -32,7 +32,7 @@ public class RemoveSelectedBlocksCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         if (App.FUTURE_TESTS) {
             System.out.println("RemoveSelectedBlocksCommand.execute()");
         }
@@ -64,6 +64,8 @@ public class RemoveSelectedBlocksCommand implements Undoable {
             workspaceModel.removeBlockFromGroup(blockModel); // can be null and could also be removed
 
         }
+        return true;
+
     }
 
     @Override

@@ -1,14 +1,14 @@
 package vplcore.context.command;
 
-import vplcore.context.Undoable;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class RemoveConnectionCommand implements Undoable {
+public class RemoveConnectionCommand implements UndoableCommand {
 
     private final WorkspaceModel workspaceModel;
     private final ConnectionModel connection;
@@ -19,8 +19,10 @@ public class RemoveConnectionCommand implements Undoable {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspaceModel.removeConnectionModel(connection);
+        return true;
+
     }
 
     @Override

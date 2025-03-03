@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Document xmlns="http://www.vpl.jo/xml" Scale="1.0" TranslateX="-141.0" TranslateY="13.0">
+<Document xmlns="http://www.vpl.jo/xml" Scale="1.0" TranslateX="-5.0" TranslateY="155.0">
     <Blocks>
-        <Block Type="Input.text" UUID="8c13bd75-c8a5-4acc-a640-2daa8a38ef30" X="1395.0" Y="327.0" text=""/>
-        <Block Type="Input.string" UUID="69cf0ac2-8e56-433c-b17e-48e6ea3cc9ff" X="349.0" Y="388.0" string="[1,2,3,4,5]" outDataType="String"/>
-        <Block Type="Math.add" Method="TRUE" UUID="d0f0f72d-8f47-4e8c-bf0c-d92c748385f3" X="1087.0" Y="430.0"/>
-        <Block Type="Json.asList" Method="TRUE" UUID="080e391b-ee42-4eef-82e6-88a568e5ee80" X="774.0" Y="487.0"/>
+        <Block Type="Json.asList" UUID="c3085da9-286d-4d46-bb81-0e28c4ab82d2" X="113.0" Y="335.0"/>
+        <Block Type="Input.string" UUID="d15608e0-4ffc-4719-a43c-6604ba58620f" X="169.0" Y="57.0" string="[1,2,3,4,5]" outDataType="String"/>
     </Blocks>
     <Connections>
-        <Connection StartBlock="69cf0ac2-8e56-433c-b17e-48e6ea3cc9ff" StartIndex="0" EndBlock="080e391b-ee42-4eef-82e6-88a568e5ee80" EndIndex="0"/>
-        <Connection StartBlock="080e391b-ee42-4eef-82e6-88a568e5ee80" StartIndex="0" EndBlock="d0f0f72d-8f47-4e8c-bf0c-d92c748385f3" EndIndex="1"/>
-        <Connection StartBlock="080e391b-ee42-4eef-82e6-88a568e5ee80" StartIndex="0" EndBlock="d0f0f72d-8f47-4e8c-bf0c-d92c748385f3" EndIndex="0"/>
-        <Connection StartBlock="d0f0f72d-8f47-4e8c-bf0c-d92c748385f3" StartIndex="0" EndBlock="8c13bd75-c8a5-4acc-a640-2daa8a38ef30" EndIndex="0"/>
+        <Connection StartBlock="d15608e0-4ffc-4719-a43c-6604ba58620f" StartIndex="0" EndBlock="c3085da9-286d-4d46-bb81-0e28c4ab82d2" EndIndex="0"/>
     </Connections>
 </Document>

@@ -5,6 +5,10 @@ import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 
+// 0 null from string not forwarded to json aslist
+// 0 for blockmethod, even without input block already throws exception
+// 0 exception panel closes if new exception is added
+// 0 
 // 0 remove handlers, listeners, bindings of customization
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
@@ -79,6 +83,7 @@ import vpllib.method.JsonMethods;
 // Create connection - Link backward and link forward
 // MethodBlock - lacing of lists
 // Remove block - remove block and connections
+
 /**
  *
  * @author JoostMeulenkamp

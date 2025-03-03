@@ -127,12 +127,10 @@ public class MethodBlock extends BlockModel {
             }
         }
         if (classes.size() == 1) {
-
             PortModel port = this.outputPorts.get(0);
             Class<?> type = classes.iterator().next();
             port.dataTypeProperty().set(type);
             port.nameProperty().set(type.getSimpleName());
-            System.out.println(identifier + " DETERMINED " + type.getSimpleName());
         }
     }
 
@@ -167,18 +165,33 @@ public class MethodBlock extends BlockModel {
     private Object invokeMethodArgs3(Object... parameters) {
 
         int listCount = getListCount(parameters);
+//        System.out.println(listCount + " " + inputPorts.size());
 
         if (listCount == 0) { // none are list - invoke method
             try {
                 Object result = method.invoke(null, parameters);
                 return result;
             } catch (Exception e) {
-                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, e);
+                
+                Throwable throwable = e;
+                if (e.getCause() != null) {
+                    throwable = e.getCause();
+                }
+                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
                 exceptions.add(exception);
+
+                System.out.println("EXCEPTION CLASS " + e.getClass().toString());
+                if (e.getCause() != null) {
+                    System.out.println("EXCEPTION CLASS " + e.getCause().toString());
+                    System.out.println();
+
+                }
+
                 return null;
             }
 
-        } else if (listCount == parameters.length) { // all are lists - loop and recurse
+        } else if (listCount == inputPorts.size()) { // all are lists - loop and recurse
+//        } else if (listCount == parameters.length) { // all are lists - loop and recurse
             long shortestListSize = getShortestListSize(parameters);
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < shortestListSize; i++) {
@@ -195,8 +208,12 @@ public class MethodBlock extends BlockModel {
             }
             return list;
 
-        } else { // some or list, some are not - make all lists and recurse
+        } else { // some are list, some are not - make all lists and recurse
             long shortestListSize = getShortestListSize(parameters);
+            if (shortestListSize == 0) {
+                return null;
+            }
+
             for (int i = 0; i < shortestListSize; i++) {
                 Object p = parameters[i];
                 if (isList(p)) {
@@ -214,6 +231,9 @@ public class MethodBlock extends BlockModel {
     }
 
     private String getExceptionIndex() {
+        if(traversalLog.isEmpty()) {
+            return null;
+        }
         String result = "";
         for (Integer index : traversalLog) {
             result += "[" + index + "]";

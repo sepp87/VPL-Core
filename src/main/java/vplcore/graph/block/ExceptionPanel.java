@@ -23,9 +23,9 @@ public class ExceptionPanel extends InfoPanel {
     private final ObservableList<BlockException> exceptions;
     private int currentIndex = 0;
 
-    private Label messageLabel;
-    private Label exceptionHeader;
-    private Label exception;
+//    private Label messageLabel;
+    private Label exceptionType;
+    private Label exceptionMessage;
     private Label severityHeader;
     private Label severity;
     private Severity highestSeverity = Severity.WARNING;
@@ -67,7 +67,12 @@ public class ExceptionPanel extends InfoPanel {
     private final ListChangeListener<Object> exceptionsListener = (c) -> onExceptionsChanged();
 
     private void onExceptionsChanged() {
-        updateLabels();
+        if (exceptions.isEmpty()) {
+            remove();
+        } else {
+            currentIndex = 0;
+            updateLabels();
+        }
     }
 
     @Override
@@ -81,15 +86,13 @@ public class ExceptionPanel extends InfoPanel {
     @Override
     protected VBox buildContent() {
         VBox content = new VBox(5);
-        this.severityHeader = buildHeader("Error");
-        this.exceptionHeader = buildHeader("NullPointerException");
-        this.severity = buildLabel("Block process stopped. Output data set to null for this item.");
-        this.exception = buildLabel("Cannot invoke \"java.lang.Boolean.booleanValue()\" because \"a\" is null");
 
-        this.messageLabel = new Label();
-        messageLabel.setWrapText(true);
-//        content.getChildren().add(messageLabel);
-        content.getChildren().addAll(severityHeader, severity, exceptionHeader, exception);
+        this.severityHeader = buildHeader("ERROR");
+        this.severity = buildLabel("Block process stopped. Output data set to null for this item.");
+        this.exceptionType = buildHeader("NullPointerException");
+        this.exceptionMessage = buildLabel("Cannot invoke \"java.lang.Boolean.booleanValue()\" because \"a\" is null");
+
+        content.getChildren().addAll(severityHeader, severity, exceptionType, exceptionMessage);
         return content;
     }
 
@@ -133,14 +136,13 @@ public class ExceptionPanel extends InfoPanel {
     // Update UI to reflect the current exception and pagination
     private void updateLabels() {
         BlockException blockException = exceptions.get(currentIndex);
-        messageLabel.setText(blockException.exception.getMessage());
 
         severityHeader.setText(buildSeverityHeader(blockException));
-        exceptionHeader.setText(blockException.exception.getClass().getSimpleName());
-        String severityMessage = "Block process stopped. Output data set to null";
-        severityMessage += (exceptions.size() > 1) ? " for this item." : ".";
-        severity.setText(severityMessage);
-        exception.setText(blockException.exception().getMessage());
+        String conflictResolution = "The process has encountered an unexpected interruption.";
+        severity.setText(conflictResolution);
+
+        exceptionType.setText(blockException.exception.getClass().getSimpleName());
+        exceptionMessage.setText(blockException.exception().getMessage());
 
         pagingLabel.setText((currentIndex + 1) + " of " + exceptions.size());
         messagePane.layout(); // Force scroll pane to recompute viewport height
@@ -148,7 +150,7 @@ public class ExceptionPanel extends InfoPanel {
 
     private String buildSeverityHeader(BlockException blockException) {
         String result = blockException.severity().toString() + " occurred";
-        if (exceptions.size() == 1) {
+        if (blockException.index == null) {
             return result;
         }
         result += " for List" + blockException.index();
@@ -166,7 +168,7 @@ public class ExceptionPanel extends InfoPanel {
         // remove block port labels
     }
 
-    public record BlockException(String index, Severity severity, Exception exception) {
+    public record BlockException(String index, Severity severity, Throwable exception) {
 
     }
 

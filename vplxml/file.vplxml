@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Document xmlns="http://www.vpl.jo/xml" Scale="1.0" TranslateX="0.0" TranslateY="0.0">
     <Blocks>
-        <Block Type="File.observe" UUID="45e34584-929f-4aab-a2a7-397ab1309f4c" X="390.0" Y="441.0"/>
-        <Block Type="Input.file" UUID="4ae569f7-25bb-4ddc-9307-d22441101f5d" X="288.0" Y="292.0" path="/Users/joostmeulenkamp/Offline/Dev/VPL-Core/vplxml/observed-file.txt"/>
+        <Block Type="Input.file" UUID="638a89d9-822c-453f-b196-7600440ed8ff" X="51.0" Y="203.0" path="a"/>
     </Blocks>
-    <Connections>
-        <Connection StartBlock="4ae569f7-25bb-4ddc-9307-d22441101f5d" StartIndex="0" EndBlock="45e34584-929f-4aab-a2a7-397ab1309f4c" EndIndex="0"/>
-    </Connections>
+    <Connections/>
 </Document>

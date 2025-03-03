@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.vpl.jo/xml" Scale="1.5" TranslateX="384.6915898404386" TranslateY="330.0640983896269">
+    <Blocks>
+        <Block Type="Input.file" UUID="a8458dd6-05c9-4929-a31f-bed919a008b0" X="124.66392517089844" Y="73.29060363769531" path="D:\VPL-Core\build\vplxml\observable-file.txt"/>
+        <Block Type="File.observe" UUID="53f3c008-7c85-407b-9d25-8ab8edcea8df" X="518.4139404296875" Y="83.29060363769531"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="a8458dd6-05c9-4929-a31f-bed919a008b0" StartIndex="0" EndBlock="53f3c008-7c85-407b-9d25-8ab8edcea8df" EndIndex="0"/>
+    </Connections>
+</Document>

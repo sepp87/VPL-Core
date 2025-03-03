@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import vplcore.App;
-import vplcore.graph.util.BlockLoader;
+import vplcore.graph.util.BlockLibraryLoader;
 import vplcore.util.ListViewUtils;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.context.ActionManager;
@@ -57,7 +57,7 @@ public class BlockSearchController extends BaseController {
         searchField.textProperty().addListener(this::handleSearchAction);
         searchFieldFocusChangedListener = this::handleRetainFocus;
 
-        listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
+        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
         listView.setOnMouseClicked(this::handleCreateBlock);
         listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
@@ -103,13 +103,13 @@ public class BlockSearchController extends BaseController {
     private void handleSearchAction(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
-            listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
+            listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
             listView.getSelectionModel().select(-1);
             return;
         }
 
         ObservableList<String> result = observableArrayList();
-        for (String type : BlockLoader.BLOCK_TYPE_LIST) {
+        for (String type : BlockLibraryLoader.BLOCK_TYPE_LIST) {
             if (type.toLowerCase().contains(searchTerm)) {
                 result.add(type);
             }

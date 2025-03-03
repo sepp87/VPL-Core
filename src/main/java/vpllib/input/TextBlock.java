@@ -41,11 +41,12 @@ public class TextBlock extends BlockModel {
         resizableProperty().set(true);
         addInputPort("any", Object.class);
         addOutputPort("String", String.class);
+        initialize();
 
     }
 
     @Override
-    protected void initialize() {
+    protected final void initialize() {
         string.addListener(stringListener);
         editable.bind(inputPorts.get(0).activeProperty().not());
     }

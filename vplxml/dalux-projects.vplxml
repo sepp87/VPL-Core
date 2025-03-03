@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.vpl.jo/xml" Scale="0.8" TranslateX="433.82948588589875" TranslateY="200.22439010704397">
+    <Blocks>
+        <Block Type="Json.toJson" Method="true" UUID="791eabd7-809d-44bc-9f84-d7cf099f73b9" X="1258.575195312499" Y="358.68416341145826"/>
+        <Block Type="Input.text" UUID="5259d9d7-a3d2-4a98-a8ac-ff6bc1283c0b" X="1632.903455946179" Y="47.50197686089559" text=""/>
+        <Block Type="Dalux.client" Method="true" UUID="61abac04-dc4b-4c01-8b0d-aa41c1a31e82" X="732.0000000000002" Y="305.4285714285714"/>
+        <Block Type="Input.string" UUID="73f0c6ee-6369-4672-9296-f07b7a18705a" X="282.42858450753374" Y="244.85714285714266" string="https://field.dalux.com/service/api" outDataType="String"/>
+        <Block Type="Input.string" UUID="60ad78b3-8ed4-4300-bc87-e215b146b022" X="303.85713413783503" Y="369.1428658621654" string="b9aa74-db2a-40a8-bb04-77e83512aa34" outDataType="String"/>
+        <Block Type="Dalux.getProjects" Method="true" UUID="4fb73406-cc75-4eee-8a46-0268f5179967" X="983.1111111111115" Y="356.9523809523811"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="61abac04-dc4b-4c01-8b0d-aa41c1a31e82" StartIndex="0" EndBlock="4fb73406-cc75-4eee-8a46-0268f5179967" EndIndex="0"/>
+        <Connection StartBlock="60ad78b3-8ed4-4300-bc87-e215b146b022" StartIndex="0" EndBlock="61abac04-dc4b-4c01-8b0d-aa41c1a31e82" EndIndex="1"/>
+        <Connection StartBlock="791eabd7-809d-44bc-9f84-d7cf099f73b9" StartIndex="0" EndBlock="5259d9d7-a3d2-4a98-a8ac-ff6bc1283c0b" EndIndex="0"/>
+        <Connection StartBlock="4fb73406-cc75-4eee-8a46-0268f5179967" StartIndex="0" EndBlock="791eabd7-809d-44bc-9f84-d7cf099f73b9" EndIndex="0"/>
+        <Connection StartBlock="73f0c6ee-6369-4672-9296-f07b7a18705a" StartIndex="0" EndBlock="61abac04-dc4b-4c01-8b0d-aa41c1a31e82" EndIndex="0"/>
+    </Connections>
+</Document>

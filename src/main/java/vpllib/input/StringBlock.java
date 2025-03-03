@@ -38,10 +38,11 @@ public class StringBlock extends BlockModel {
         super(workspace);
         this.nameProperty().set("String");
         addOutputPort("Value", String.class);
+        initialize();
     }
 
     @Override
-    protected void initialize() {
+    protected final void initialize() {
         string.addListener(stringListener);
     }
 

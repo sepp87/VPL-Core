@@ -3,7 +3,7 @@ package vplcore.context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import vplcore.graph.util.CopiedConnectionModel;
+import vplcore.graph.util.CopiedConnection;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BlockView;
 import vplcore.graph.connection.ConnectionModel;
@@ -68,7 +68,7 @@ public class CopyPasteMemory {
         result.workspaceController = workspaceController;
 
         List<ConnectionModel> alreadyCopiedConnections = new ArrayList<>();
-        List<CopiedConnectionModel> copiedConnections = new ArrayList<>();
+        List<CopiedConnection> copiedConnections = new ArrayList<>();
 
         // copy blocks
         for (BlockModel blockModel : blocks) {
@@ -78,11 +78,11 @@ public class CopyPasteMemory {
             copiedBlock.layoutXProperty().set(blockModel.layoutXProperty().get());
             copiedBlock.layoutYProperty().set(blockModel.layoutYProperty().get());
 
-            copiedConnections.add(new CopiedConnectionModel(blockModel, copiedBlock));
+            copiedConnections.add(new CopiedConnection(blockModel, copiedBlock));
         }
 
         // copy connections
-        for (CopiedConnectionModel cc : copiedConnections) {
+        for (CopiedConnection cc : copiedConnections) {
             int counter = 0;
 
             for (PortModel port : cc.oldBlock.getInputPorts()) {
@@ -91,7 +91,7 @@ public class CopyPasteMemory {
 
                         // start and end block are contained in selection
                         if (blocks.contains(connection.getStartPort().getBlock())) {
-                            CopiedConnectionModel cc2 = copiedConnections
+                            CopiedConnection cc2 = copiedConnections
                                     .stream()
                                     .filter(i -> i.oldBlock == connection.getStartPort().getBlock())
                                     .findFirst()

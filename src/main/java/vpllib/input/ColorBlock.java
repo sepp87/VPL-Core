@@ -29,10 +29,11 @@ public class ColorBlock extends BlockModel {
         super(workspaceModel);
         this.nameProperty().set("Color Picker");
         addOutputPort("color", Color.class);
+        initialize();
     }
 
     @Override
-    protected void initialize() {
+    protected final void initialize() {
         outputPorts.get(0).dataProperty().bind(color);
     }
 

@@ -29,7 +29,7 @@ import vplcore.graph.block.ExceptionPanel.BlockException;
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "reflection", "block"})
-public class MethodBlockModel extends BlockModel {
+public class MethodBlock extends BlockModel {
 
     private final BlockMetadata info;
     public String identifier;
@@ -38,7 +38,7 @@ public class MethodBlockModel extends BlockModel {
     public String[] tags;
     public Method method;
 
-    public MethodBlockModel(WorkspaceModel workspace, Method method) {
+    public MethodBlock(WorkspaceModel workspace, Method method) {
         super(workspace);
 
         this.info = method.getAnnotation(BlockMetadata.class);
@@ -74,6 +74,7 @@ public class MethodBlockModel extends BlockModel {
 
     public boolean isListOperator = false;
     public boolean isListReturnType = false;
+    private final Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
 
     /**
      * calculate function is called whenever new data is incoming
@@ -81,6 +82,7 @@ public class MethodBlockModel extends BlockModel {
     @Override
     public void process() {
 
+        traversalLog.clear();
         Object result = null;
         int count = inputPorts.size();
         try {
@@ -120,13 +122,17 @@ public class MethodBlockModel extends BlockModel {
     private void determineOutPortDataTypeFromList(List<?> list) {
         Set<Class<?>> classes = new HashSet<>();
         for (Object i : list) {
-            classes.add(i.getClass());
+            if (i != null) {
+                classes.add(i.getClass());
+            }
         }
         if (classes.size() == 1) {
+
             PortModel port = this.outputPorts.get(0);
             Class<?> type = classes.iterator().next();
             port.dataTypeProperty().set(type);
             port.nameProperty().set(type.getSimpleName());
+            System.out.println(identifier + " DETERMINED " + type.getSimpleName());
         }
     }
 
@@ -158,115 +164,17 @@ public class MethodBlockModel extends BlockModel {
         return list;
     }
 
-    private Object invokeMethodArgs1(Object a) {
-
-        // object a is a single value
-        if (!isList(a)) {
-            try {
-                return method.invoke(null, a);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-
-//                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
-//                System.out.println("TEST ARGS 1");
-                return null;
-            }
-        }
-
-        // object a is a list
-        List<?> aList = (List<?>) a;
-        List<Object> list = new ArrayList<>();
-
-        for (Object ai : aList) {
-            Object result = invokeMethodArgs1(ai);
-            list.add(result);
-        }
-        return list;
-    }
-
-    public boolean isList(Object o) {
-        if (o == null) {
-            return false;
-        } else {
-            return List.class.isAssignableFrom(o.getClass());
-        }
-    }
-
-//    Class returnType = null;
-//    Set<Class<?>> actualReturnType = new HashSet<>();
-    private Object invokeMethodArgs2(Object a, Object b) {
-
-        // both objects are single values
-        if (!isList(a) && !isList(b)) {
-            try {
-                Object result = method.invoke(null, a, b);
-//                actualReturnType.add(result.getClass());
-                return result;
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-//                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
-//                System.out.println("TEST ARGS 2");
-                return null;
-            }
-        }
-
-        // only object b is a list
-        if (!isList(a)) {
-            return laceArgs2(a, (List<?>) b);
-        }
-
-        // only object a is a list
-        if (!isList(b)) {
-            return laceArgs2((List<?>) a, b);
-        }
-
-        // both objects are lists
-        List<?> aList = (List<?>) a;
-        List<?> bList = (List<?>) b;
-
-        int size = aList.size() < bList.size() ? aList.size() : bList.size();
-        List<Object> list = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            Object ai = aList.get(i);
-            Object bi = bList.get(i);
-            Object result = invokeMethodArgs2(ai, bi);
-            list.add(result);
-        }
-        return list;
-    }
-
-    private Object laceArgs2(Object a, List<?> bList) {
-        List<Object> list = new ArrayList<>();
-        for (Object b : bList) {
-            Object result = invokeMethodArgs2(a, b);
-            list.add(result);
-        }
-        return list;
-    }
-
-    private Object laceArgs2(List<?> aList, Object b) {
-        List<Object> list = new ArrayList<>();
-        for (Object a : aList) {
-            Object result = invokeMethodArgs2(a, b);
-            list.add(result);
-        }
-        return list;
-    }
-
-    private Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
-
     private Object invokeMethodArgs3(Object... parameters) {
 
-//        if (parameters.length != 3) {
-//            return null;
-//        }
         int listCount = getListCount(parameters);
 
         if (listCount == 0) { // none are list - invoke method
             try {
                 Object result = method.invoke(null, parameters);
                 return result;
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                BlockException exception = new ExceptionPanel.BlockException(null, ExceptionPanel.Severity.ERROR, ex);
+            } catch (Exception e) {
+                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, e);
+                exceptions.add(exception);
                 return null;
             }
 
@@ -302,6 +210,22 @@ public class MethodBlockModel extends BlockModel {
             }
             Object result = invokeMethodArgs3(parameters);
             return result;
+        }
+    }
+
+    private String getExceptionIndex() {
+        String result = "";
+        for (Integer index : traversalLog) {
+            result += "[" + index + "]";
+        }
+        return result;
+    }
+
+    public boolean isList(Object o) {
+        if (o == null) {
+            return false;
+        } else {
+            return List.class.isAssignableFrom(o.getClass());
         }
     }
 
@@ -353,7 +277,7 @@ public class MethodBlockModel extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        MethodBlockModel block = BlockModelFactory.createBlockFromMethod(method, workspace);
+        MethodBlock block = BlockFactory.createBlockFromMethod(method, workspace);
         return block;
     }
 
@@ -364,3 +288,89 @@ public class MethodBlockModel extends BlockModel {
     }
 
 }
+
+//    private Object invokeMethodArgs1(Object a) {
+//
+//        // object a is a single value
+//        if (!isList(a)) {
+//            try {
+//                return method.invoke(null, a);
+//            } catch (IllegalAccessException | InvocationTargetException ex) {
+//
+////                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
+////                System.out.println("TEST ARGS 1");
+//                return null;
+//            }
+//        }
+//
+//        // object a is a list
+//        List<?> aList = (List<?>) a;
+//        List<Object> list = new ArrayList<>();
+//
+//        for (Object ai : aList) {
+//            Object result = invokeMethodArgs1(ai);
+//            list.add(result);
+//        }
+//        return list;
+//    }
+//
+////    Class returnType = null;
+////    Set<Class<?>> actualReturnType = new HashSet<>();
+//    private Object invokeMethodArgs2(Object a, Object b) {
+//
+//        // both objects are single values
+//        if (!isList(a) && !isList(b)) {
+//            try {
+//                Object result = method.invoke(null, a, b);
+////                actualReturnType.add(result.getClass());
+//                return result;
+//            } catch (IllegalAccessException | InvocationTargetException ex) {
+////                Logger.getLogger(ReflectionBlock.class.getName()).log(Level.SEVERE, null, ex);
+////                System.out.println("TEST ARGS 2");
+//                return null;
+//            }
+//        }
+//
+//        // only object b is a list
+//        if (!isList(a)) {
+//            return laceArgs2(a, (List<?>) b);
+//        }
+//
+//        // only object a is a list
+//        if (!isList(b)) {
+//            return laceArgs2((List<?>) a, b);
+//        }
+//
+//        // both objects are lists
+//        List<?> aList = (List<?>) a;
+//        List<?> bList = (List<?>) b;
+//
+//        int size = aList.size() < bList.size() ? aList.size() : bList.size();
+//        List<Object> list = new ArrayList<>();
+//
+//        for (int i = 0; i < size; i++) {
+//            Object ai = aList.get(i);
+//            Object bi = bList.get(i);
+//            Object result = invokeMethodArgs2(ai, bi);
+//            list.add(result);
+//        }
+//        return list;
+//    }
+//
+//    private Object laceArgs2(Object a, List<?> bList) {
+//        List<Object> list = new ArrayList<>();
+//        for (Object b : bList) {
+//            Object result = invokeMethodArgs2(a, b);
+//            list.add(result);
+//        }
+//        return list;
+//    }
+//
+//    private Object laceArgs2(List<?> aList, Object b) {
+//        List<Object> list = new ArrayList<>();
+//        for (Object a : aList) {
+//            Object result = invokeMethodArgs2(a, b);
+//            list.add(result);
+//        }
+//        return list;
+//    }

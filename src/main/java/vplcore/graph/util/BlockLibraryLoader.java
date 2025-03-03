@@ -35,10 +35,8 @@ import vplcore.graph.block.BlockMetadata;
  *
  * @author joostmeulenkamp
  */
-public class BlockLoader {
+public class BlockLibraryLoader {
 
-//    static final Map<String, Class> BLOCK_PATH_MAP = new HashMap<>();
-//    static final Map<String, Method> BLOCK_METHOD_MAP = new HashMap<>();
     public static final Map<String, Class<?>> BLOCK_TYPE_MAP = new HashMap<>();
     public static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
@@ -121,7 +119,7 @@ public class BlockLoader {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(BlockLoader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BlockLibraryLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -137,12 +135,12 @@ public class BlockLoader {
                 try {
                     result.add(cl.loadClass(className));
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(BlockLoader.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(BlockLibraryLoader.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
         } catch (MalformedURLException ex) {
-            Logger.getLogger(BlockLoader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BlockLibraryLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -161,8 +159,7 @@ public class BlockLoader {
      * Retrieve all blocks from static methods
      */
     public static void loadInternalMethodBlocks() {
-//        BlockInfo info = MethodBlock.class.getAnnotation(BlockInfo.class);
-//        BLOCK_LIBRARY.put(info.identifier(), MethodBlock.class);
+
         List<Class<?>> classes = List.of(
                 vpllib.method.DateMethods.class,
                 vpllib.method.FileMethods.class,
@@ -229,7 +226,6 @@ public class BlockLoader {
 
     private static void addMethodBlockType(Method blockMethod) {
         BlockMetadata info = blockMethod.getAnnotation(BlockMetadata.class);
-//        BLOCK_METHOD_MAP.put(info.identifier(), blockMethod);
         BLOCK_TYPE_LIST.add(info.identifier());
         BLOCK_LIBRARY.put(info.identifier(), blockMethod);
     }
@@ -241,7 +237,7 @@ public class BlockLoader {
 
                 System.out.println(f.get(null));
             } catch (IllegalArgumentException | IllegalAccessException ex) {
-                Logger.getLogger(BlockLoader.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BlockLibraryLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

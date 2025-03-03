@@ -196,7 +196,7 @@ public class BlockController extends BaseController {
     private final ListChangeListener<BlockException> exceptionsListener = this::onExceptionsChanged;
 
     private void onExceptionsChanged(Change<? extends BlockException> change) {
-        System.out.println("WorkspaceController.onExceptionsChanged()");
+        System.out.println("BlockController.onExceptionsChanged()");
         showExceptionButton();
     }
 

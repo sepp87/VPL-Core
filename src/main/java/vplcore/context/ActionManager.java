@@ -108,4 +108,12 @@ public class ActionManager {
         undoStack.clear();
         redoStack.clear();
     }
+
+    public boolean hasUndoableCommands() {
+        return !undoStack.isEmpty();
+    }
+
+    public boolean hasRedoableCommands() {
+        return !redoStack.isEmpty();
+    }
 }

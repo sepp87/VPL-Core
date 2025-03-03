@@ -41,7 +41,10 @@ public class JsonMethods {
         if (isIntegerList) {
             List<Integer> result = new ArrayList<>();
             for (JsonElement element : array) {
-                int value = element.getAsNumber().intValue();
+                Integer value = null;
+                if (!element.isJsonNull()) {
+                    value = element.getAsNumber().intValue();
+                }
                 result.add(value);
             }
             return result;
@@ -49,7 +52,10 @@ public class JsonMethods {
 
         List<Double> result = new ArrayList<>();
         for (JsonElement element : array) {
-            Double value = element.getAsNumber().doubleValue();
+            Double value = null;
+            if (!element.isJsonNull()) {
+                value = element.getAsNumber().doubleValue();
+            }
             result.add(value);
         }
         return result;
@@ -67,6 +73,12 @@ public class JsonMethods {
         while (iterator.hasNext()) {
 
             JsonElement next = iterator.next();
+
+            if (next.isJsonNull()) {
+                System.out.println("I AM A NULL VALUE");
+                continue;
+            }
+
             if (!next.isJsonPrimitive()) {
                 return null;
             }

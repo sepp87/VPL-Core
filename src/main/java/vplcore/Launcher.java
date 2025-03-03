@@ -1,11 +1,11 @@
 package vplcore;
 
 import vplcore.util.DataParsingUtils;
-import vplcore.graph.util.BlockLoader;
+import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 
-
+// 0 remove handlers, listeners, bindings of customization
 // 0 IMRPOVEMENT Method block exceptions
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
@@ -88,12 +88,12 @@ public class Launcher {
     public static void main(String[] args) {
 
         //Load all block types
-        BlockLoader.loadInternalBlocks();
-        BlockLoader.loadExternalBlocks();
-        BlockLoader.loadInternalMethodBlocks();
-        BlockLoader.loadExternalMethodBlocks();
+        BlockLibraryLoader.loadInternalBlocks();
+        BlockLibraryLoader.loadExternalBlocks();
+        BlockLibraryLoader.loadInternalMethodBlocks();
+        BlockLibraryLoader.loadExternalMethodBlocks();
 
-        System.out.println("Launcher.main() Number of loaded blocks is " + BlockLoader.BLOCK_TYPE_LIST.size());
+        System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();

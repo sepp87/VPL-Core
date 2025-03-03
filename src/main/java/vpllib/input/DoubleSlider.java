@@ -43,10 +43,11 @@ public class DoubleSlider extends BlockModel {
         super(workspaceModel);
         this.nameProperty().set("Double");
         addOutputPort("double", Double.class);
+        initialize();
     }
 
     @Override
-    protected void initialize() {
+    protected final void initialize() {
         outputPorts.get(0).dataProperty().bind(doubleValue);
     }
 

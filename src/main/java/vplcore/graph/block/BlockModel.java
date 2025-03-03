@@ -31,7 +31,7 @@ public abstract class BlockModel extends BaseModel {
 
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
-    private final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
+    protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
 
     private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 

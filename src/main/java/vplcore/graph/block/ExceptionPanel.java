@@ -2,7 +2,9 @@ package vplcore.graph.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +20,7 @@ import vplcore.workspace.WorkspaceView;
  */
 public class ExceptionPanel extends InfoPanel {
 
-    private ObservableList<BlockException> exceptions;
+    private final ObservableList<BlockException> exceptions;
     private int currentIndex = 0;
 
     private Label messageLabel;
@@ -51,14 +53,20 @@ public class ExceptionPanel extends InfoPanel {
 //        list.add(new BlockException("[1]", ExceptionPanel.Severity.ERROR, e2));
 //        list.add(new BlockException("[2]", ExceptionPanel.Severity.ERROR, e3));
 //        list.add(new BlockException("[3]", ExceptionPanel.Severity.ERROR, e4));
-
-
         this.exceptions = blockController.getModel().getExceptions();
+        this.exceptions.addListener(exceptionsListener);
+
         this.pagingControls = buildPagingControls();
         this.infoBubble.getChildren().add(pagingControls);
         this.infoBubble.getStyleClass().add("block-exception-bubble");
         this.tail.getStyleClass().add("block-exception-tail");
 
+        updateLabels();
+    }
+
+    private final ListChangeListener<Object> exceptionsListener = (c) -> onExceptionsChanged();
+
+    private void onExceptionsChanged() {
         updateLabels();
     }
 
@@ -83,23 +91,6 @@ public class ExceptionPanel extends InfoPanel {
 //        content.getChildren().add(messageLabel);
         content.getChildren().addAll(severityHeader, severity, exceptionHeader, exception);
         return content;
-    }
-
-    // Set the exceptions to be shown in the panel
-    public void setExceptions(List<BlockException> exceptions) {
-        this.exceptions.clear();
-        this.exceptions.addAll(exceptions);
-        this.currentIndex = 0;
-
-        for (BlockException blockException : exceptions) {
-            if (blockException.severity == Severity.ERROR) {
-                highestSeverity = Severity.ERROR;
-                break;
-            }
-        }
-
-        // Update UI state
-        updateLabels();
     }
 
     private HBox buildPagingControls() {

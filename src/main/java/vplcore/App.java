@@ -1,5 +1,6 @@
 package vplcore;
 
+import java.io.File;
 import vplcore.context.event.FocusNotRequiredEvent;
 import vplcore.context.EditorContext;
 import vplcore.context.EventRouter;
@@ -25,6 +26,7 @@ import vplcore.editor.ZoomView;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.context.ActionManager;
+import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -97,7 +99,7 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-//                GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
+                GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
 //                GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceController, workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.printMenuBarHeight();

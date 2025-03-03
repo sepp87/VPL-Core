@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import javafx.geometry.Point2D;
-import vplcore.graph.util.BlockModelFactory;
+import vplcore.graph.util.BlockFactory;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.context.UndoableCommand;
@@ -26,7 +26,7 @@ public class CreateBlockCommand implements UndoableCommand {
     @Override
     public boolean execute() {
         if (blockModel == null) {
-            blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
+            blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
         } else {

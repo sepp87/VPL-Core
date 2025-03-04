@@ -20,7 +20,7 @@ public class BlockSearchView extends VBox {
         searchField.setPromptText("Search...");
         
         listView = new ListView<>();
-        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
+//        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
 
         this.setVisible(false);
         this.getStyleClass().add("block-search");

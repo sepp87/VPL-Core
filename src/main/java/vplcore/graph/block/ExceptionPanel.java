@@ -21,6 +21,7 @@ import vplcore.workspace.WorkspaceView;
 public class ExceptionPanel extends InfoPanel {
 
     private final ObservableList<BlockException> exceptions;
+    private BlockException currentException;
     private int currentIndex = 0;
 
 //    private Label messageLabel;
@@ -136,6 +137,7 @@ public class ExceptionPanel extends InfoPanel {
     // Update UI to reflect the current exception and pagination
     private void updateLabels() {
         BlockException blockException = exceptions.get(currentIndex);
+        currentException = blockException;
 
         severityHeader.setText(buildSeverityHeader(blockException));
         String conflictResolution = "The process has encountered an unexpected interruption.";

@@ -99,9 +99,9 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceController, workspaceModel);
-//        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
-//                GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceController, workspaceModel);
+        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceController, workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.printMenuBarHeight();
 

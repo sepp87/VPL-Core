@@ -2,7 +2,9 @@ package vplcore.graph.block;
 
 import vplcore.graph.base.BaseModel;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
@@ -19,6 +21,7 @@ import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.ExceptionPanel.BlockException;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortType;
+import vplcore.graph.util.MethodBlock;
 import vplcore.workspace.WorkspaceModel;
 
 /**
@@ -41,22 +44,35 @@ public abstract class BlockModel extends BaseModel {
     }
 
     protected abstract void initialize();
-    
+
     private final ChangeListener<Boolean> activeListener = (b, o, n) -> onActiveChanged();
 
     /**
      * This method is called when the active state changes. When this block is
-     * activated processSafely() is called. If this block is deactivated all
-     * outputs are set to null. Override this change listener to modify its
-     * behaviour accordingly. Call super.onActiveChanged() last if you want to
-     * continue with the default behaviour.
+     * activated processSafely() is called in two cases; if this block has a
+     * default output or if there are incoming connections. In case this block
+     * was deactivated all outputs are set to null. Override this change
+     * listener to modify its behaviour accordingly. Call
+     * super.onActiveChanged() last if you want to continue with the default
+     * behaviour.
      */
     protected void onActiveChanged() {
-        if (this.isActive()) {
-            processSafely();
-        } else {
+        if (!this.isActive()) {
             for (PortModel output : outputPorts) {
                 output.setData(null);
+            }
+            return;
+        }
+
+        if (this.getMetadata().hasDefaultOutput()) {
+            processSafely();
+            return;
+        }
+
+        for (PortModel port : inputPorts) {
+            if (port.isActive()) {
+                processSafely();
+                return;
             }
         }
     }
@@ -85,10 +101,8 @@ public abstract class BlockModel extends BaseModel {
         processSafely();
     }
 
-    // should be private or protected and should be a listener to outputPorts
     public void onIncomingConnectionRemoved() {
         processSafely();
-        // previously called handleIncomingConnectionRemoved and overridden by TexBlock 
     }
 
     public abstract Region getCustomization();
@@ -98,21 +112,25 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public final void processSafely() {
-        // Remove exceptions if there were any
-        exceptions.clear();
+        Set<BlockException> previousExceptions = new HashSet<>(exceptions);
+//        exceptions.clear();
 
+        // Ensure processing only happens when active
         if (!this.isActive()) {
             return;
         }
 
-        try {
-
-            process();
-        } catch (Exception exception) {
-            BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
-            exceptions.add(blockException);
-            Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
+        // Process if the block has a default output, no input ports, or at least one active input port
+        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty() || inputPorts.stream().anyMatch(PortModel::isActive)) {
+            try {
+                process();
+            } catch (Exception exception) {
+                BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
+                exceptions.add(blockException);
+                Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
+            }
         }
+        exceptions.removeAll(previousExceptions);
     }
 
     protected abstract void process() throws Exception;
@@ -202,8 +220,13 @@ public abstract class BlockModel extends BaseModel {
         }
 
         initialize();
-        
+
         super.revive();
+    }
+
+    public BlockMetadata getMetadata() {
+        BlockMetadata metadata = this.getClass().getAnnotation(BlockMetadata.class);
+        return metadata;
     }
 
 }

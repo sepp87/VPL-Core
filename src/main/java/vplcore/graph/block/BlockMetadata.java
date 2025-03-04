@@ -27,6 +27,8 @@ public @interface BlockMetadata {
     String[] alias() default {};
 
     IconType icon() default IconType.NULL;
+    
+    boolean hasDefaultOutput() default false;
 
 //    Method declarations must not have any parameters or a throws clause. 
 //    Return types are restricted to primitives, String, Class, enums, 

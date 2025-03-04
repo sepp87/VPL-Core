@@ -107,8 +107,12 @@ public class MethodBlock extends BlockModel {
 
             }
         } catch (Exception e) {
-
-            System.out.println(e.getMessage());
+            Throwable throwable = e;
+            if (e.getCause() != null) {
+                throwable = e.getCause();
+            }
+            BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
+            exceptions.add(exception);
         }
 
         if (isListReturnType && result != null) {
@@ -172,7 +176,7 @@ public class MethodBlock extends BlockModel {
                 Object result = method.invoke(null, parameters);
                 return result;
             } catch (Exception e) {
-                
+
                 Throwable throwable = e;
                 if (e.getCause() != null) {
                     throwable = e.getCause();
@@ -231,7 +235,7 @@ public class MethodBlock extends BlockModel {
     }
 
     private String getExceptionIndex() {
-        if(traversalLog.isEmpty()) {
+        if (traversalLog.isEmpty()) {
             return null;
         }
         String result = "";
@@ -299,6 +303,12 @@ public class MethodBlock extends BlockModel {
     public BlockModel copy() {
         MethodBlock block = BlockFactory.createBlockFromMethod(method, workspace);
         return block;
+    }
+
+    @Override
+    public BlockMetadata getMetadata() {
+        BlockMetadata metadata = method.getAnnotation(BlockMetadata.class);
+        return metadata;
     }
 
     enum LacingMode {

@@ -169,12 +169,11 @@ public class PortModel extends BaseModel {
 
     public void addConnection(ConnectionModel connection) {
         connections.add(connection);
-        block.onIncomingConnectionAdded();
+
     }
 
     public void removeConnection(ConnectionModel connection) {
         connections.remove(connection);
-        block.onIncomingConnectionRemoved();
     }
 
     public ObservableSet<ConnectionModel> getConnections() {
@@ -186,6 +185,11 @@ public class PortModel extends BaseModel {
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
         boolean isActive = !connections.isEmpty();
         active.set(isActive);
+        if (change.wasAdded()) {
+            block.onIncomingConnectionAdded();
+        } else {
+            block.onIncomingConnectionRemoved();
+        }
     }
 
     public ChangeListener<Object> getStartPortDataChangedListener() {
@@ -238,10 +242,8 @@ public class PortModel extends BaseModel {
                 //Cast all primitive dataType to String if this port dataType is String
                 PortModel startPort = connections.iterator().next().getStartPort();
                 if (this.getDataType() == String.class && TypeExtensions.contains(startPort.getDataType())) {
-                    System.out.println("PortModel.calculateData() 1");
 
                     if (startPort.getData() instanceof List) {
-                        System.out.println("PortModel.calculateData() 2");
                         List list = (List) startPort.getData();
                         List newList = new ArrayList<>();
                         for (Object primitive : list) {
@@ -249,21 +251,16 @@ public class PortModel extends BaseModel {
                         }
                         data.set(newList);
                     } else {
-                        System.out.println("PortModel.calculateData() 3");
-
                         data.set(startPort.getData() + "");
                     }
                 } else { // this INPUT port does NOT have data type String
-                    System.out.println("PortModel.calculateData() 4");
                     data.set(startPort.getData());
                 }
 
             } else { // if there are no incoming connections, set data to null
-                System.out.println("PortModel.calculateData() 5");
                 data.set(null);
             }
         } else { // if output port then simply set the data
-            System.out.println("PortModel.calculateData() 6");
             data.set(value);
         }
         //OnDataChanged();

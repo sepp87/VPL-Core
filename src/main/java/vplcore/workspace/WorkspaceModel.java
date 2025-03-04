@@ -138,11 +138,14 @@ public class WorkspaceModel {
     }
 
     public List<ConnectionModel> removeConnectionModels(BlockModel blockModel) {
-        List<ConnectionModel> connectionModels = blockModel.getConnections();
-        for (ConnectionModel connectionModel : connectionModels) {
-            removeConnectionModel(connectionModel);
+        System.out.println("TEsT1");
+        List<ConnectionModel> connections = blockModel.getConnections();
+        for (ConnectionModel connection : connections) {
+                    System.out.println("TEsT   2 ");
+
+            removeConnectionModel(connection);
         }
-        return connectionModels;
+        return connections;
     }
 
     /**
@@ -187,7 +190,7 @@ public class WorkspaceModel {
     public BlockGroupIndex getBlockGroupIndex() {
         return blockGroupIndex;
     }
-    
+
     public BlockGroupModel getBlockGroup(BlockModel block) {
         return blockGroupIndex.getBlockGroup(block);
     }

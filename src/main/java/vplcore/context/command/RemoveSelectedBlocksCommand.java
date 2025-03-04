@@ -58,11 +58,11 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
 
         for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
-            workspaceModel.removeBlockModel(blockModel);
-            Collection<ConnectionModel> removedConnections = workspaceModel.removeConnectionModels(blockModel); // can be an empty list
+            // remove connections before, otherwise the connections are already removed from the block
+            Collection<ConnectionModel> removedConnections = workspaceModel.removeConnectionModels(blockModel);
             connections.addAll(removedConnections);
+            workspaceModel.removeBlockModel(blockModel);
             workspaceModel.removeBlockFromGroup(blockModel); // can be null and could also be removed
-
         }
         return true;
 

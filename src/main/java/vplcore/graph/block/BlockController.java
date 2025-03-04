@@ -201,6 +201,7 @@ public class BlockController extends BaseController {
     }
 
     private void showExceptionButton() {
+        System.out.println("BlockController.showExceptionButton() exceptionShown " + exceptionShown);
         if (exceptionShown) {
             return;
         }
@@ -284,7 +285,7 @@ public class BlockController extends BaseController {
     }
 
     public void remove() {
-        
+
         this.model.getExceptions().removeListener(exceptionsListener);
         selected.removeListener(selectionListener);
 

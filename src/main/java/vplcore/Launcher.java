@@ -5,12 +5,8 @@ import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 
-// 0 null from string not forwarded to json aslist
-// 0 for blockmethod, even without input block already throws exception
-// 0 exception panel closes if new exception is added
-// 0 
 // 0 remove handlers, listeners, bindings of customization
-// 0 IMRPOVEMENT Method block exceptions
+// 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -47,6 +43,10 @@ import vpllib.method.JsonMethods;
 // WebClientBlock
 // 
 // DONE
+// 0 BUG exception panel closes if new exception is added - solved by removing old exceptions first after processing, keeping the exceptions list populated, so the exception panel does not remove itself
+// 0 BUG Connections are not removed when block is removed
+// 0 BUG null from string not forwarded to json aslist
+// 0 BUG for blockmethod, even without input block already throws exception
 // 0 baseModel removed to readonly
 // 0 Reset undo/redo stack when loading file and creating a new file
 // undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks

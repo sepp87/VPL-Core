@@ -37,7 +37,6 @@ import vplcore.graph.block.BlockMetadata;
  */
 public class BlockLibraryLoader {
 
-    public static final Map<String, Class<?>> BLOCK_TYPE_MAP = new HashMap<>();
     public static final ObservableList<String> BLOCK_TYPE_LIST = observableArrayList();
     public static final ObservableMap<String, Object> BLOCK_LIBRARY = javafx.collections.FXCollections.observableHashMap();
 
@@ -54,6 +53,7 @@ public class BlockLibraryLoader {
             addBlockType(type);
         }
 
+        
         Collections.sort(BLOCK_TYPE_LIST);
     }
 
@@ -86,7 +86,6 @@ public class BlockLibraryLoader {
 
     private static void addBlockType(Class<?> blockType) {
         BlockMetadata info = blockType.getAnnotation(BlockMetadata.class);
-        BLOCK_TYPE_MAP.put(info.identifier(), blockType);
         BLOCK_TYPE_LIST.add(info.identifier());
         BLOCK_LIBRARY.put(info.identifier(), blockType);
     }

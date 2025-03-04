@@ -83,8 +83,8 @@ public class StringBlock extends BlockModel {
     public void process() {
         String str = string.get();
 
-        //Forward empty string as null
-        if (str.equals("")) {
+        //Forward null and empty string as null
+        if (str == null || str.equals("")) {
             outputPorts.get(0).dataTypeProperty().set(String.class);
             outputPorts.get(0).setData(null);
             return;

@@ -41,6 +41,9 @@ import vpllib.method.JsonMethods;
 // Geometry Blocks
 // ChatGPT Block
 // WebClientBlock
+// 2d Map
+// Excel Blocks
+// CSV Blocks
 // 
 // DONE
 // 0 BUG exception panel closes if new exception is added - solved by removing old exceptions first after processing, keeping the exceptions list populated, so the exception panel does not remove itself
@@ -93,10 +96,7 @@ public class Launcher {
     public static void main(String[] args) {
 
         //Load all block types
-        BlockLibraryLoader.loadInternalBlocks();
-        BlockLibraryLoader.loadExternalBlocks();
-        BlockLibraryLoader.loadInternalMethodBlocks();
-        BlockLibraryLoader.loadExternalMethodBlocks();
+        BlockLibraryLoader.loadBlocks();
 
         System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
 

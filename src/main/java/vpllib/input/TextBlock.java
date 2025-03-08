@@ -182,8 +182,7 @@ public class TextBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         string.removeListener(stringListener);
         editable.unbind();
         if (textArea != null) {

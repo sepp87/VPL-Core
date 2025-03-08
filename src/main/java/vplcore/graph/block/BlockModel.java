@@ -63,18 +63,7 @@ public abstract class BlockModel extends BaseModel {
             }
             return;
         }
-
-        if (this.getMetadata().hasDefaultOutput()) {
-            processSafely();
-            return;
-        }
-
-        for (PortModel port : inputPorts) {
-            if (port.isActive()) {
-                processSafely();
-                return;
-            }
-        }
+        processSafely();
     }
 
     public ObservableList<BlockException> getExceptions() {
@@ -204,8 +193,11 @@ public abstract class BlockModel extends BaseModel {
             port.remove();
         }
 
+        onRemoved();
         super.remove();
     }
+
+    protected abstract void onRemoved();
 
     @Override
     public void revive() {

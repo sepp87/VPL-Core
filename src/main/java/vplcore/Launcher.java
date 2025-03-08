@@ -1,9 +1,12 @@
 package vplcore;
 
+import java.io.File;
+import java.io.IOException;
 import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
-
+import vpllib.method.SpreadsheetMethods;
+import vpllib.spreadsheet.DataSheet;
 
 // 0 remove handlers, listeners, bindings of customization
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
@@ -83,14 +86,24 @@ import vpllib.method.JsonMethods;
 // Create connection - Link backward and link forward
 // MethodBlock - lacing of lists
 // Remove block - remove block and connections
-
 /**
  *
  * @author JoostMeulenkamp
  */
 public class Launcher {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+//        File file = new File("C:\\Users\\JosephusMeulenkamp\\OneDrive - Dalux ApS\\Dokumenter\\2023-06-26 Dalux Oktoberfest.xlsx");
+//        File file = new File("C:\\Users\\JosephusMeulenkamp\\Downloads\\Projects (1).xlsx");
+        File file = new File("C:\\Users\\JosephusMeulenkamp\\Downloads\\UserList.xlsx");
+        
+        DataSheet sheet = SpreadsheetMethods.readExcel(file);
+        String json = SpreadsheetMethods.dataSheetToJson(sheet);
+        System.out.println(json);
+        
+        if (false) {
+            return;
+        }
 
         //Load all block types
         BlockLibraryLoader.loadInternalBlocks();
@@ -108,9 +121,6 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
-        if (false) {
-            return;
-        }
         //Launch the UI
         App.launch(App.class);
     }

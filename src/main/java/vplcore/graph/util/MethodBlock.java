@@ -311,6 +311,11 @@ public class MethodBlock extends BlockModel {
         return metadata;
     }
 
+    @Override
+    protected void onRemoved() {
+
+    }
+
     enum LacingMode {
         SHORTEST,
         LONGEST,

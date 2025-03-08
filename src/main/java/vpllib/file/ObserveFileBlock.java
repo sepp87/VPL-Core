@@ -152,17 +152,16 @@ public class ObserveFileBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
+    public void onRemoved() {
         // Stop the file watching task if it's running
         stopObservation();
 
         // Shutdown executor service
         executorService.shutdownNow();
         System.out.println("Executor service shut down.");
-
-        // Notify that this block was removed
-        super.remove();
     }
+    
+   
 
     @Override
     public void revive() {

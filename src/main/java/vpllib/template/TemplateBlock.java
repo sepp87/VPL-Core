@@ -11,7 +11,6 @@ import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BlockView;
-import vplcore.graph.port.PortModel;
 import vplcore.workspace.WorkspaceModel;
 
 /**
@@ -100,5 +99,10 @@ public class TemplateBlock extends BlockModel {
         TemplateBlock block = new TemplateBlock(workspace);
         //Specify further copy statements here
         return block;
+    }
+
+    @Override
+    protected void onRemoved() {
+        // Remove event handlers, change listeners and bindings
     }
 }

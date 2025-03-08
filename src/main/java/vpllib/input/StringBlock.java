@@ -191,8 +191,7 @@ public class StringBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         string.removeListener(stringListener);
         if (textField != null) {
             textField.textProperty().unbindBidirectional(string);

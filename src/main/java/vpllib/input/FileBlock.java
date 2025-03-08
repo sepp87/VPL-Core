@@ -141,8 +141,7 @@ public class FileBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         path.removeListener(pathListener);
 
         if (textField != null) {

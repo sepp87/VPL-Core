@@ -53,7 +53,6 @@ public class BlockLibraryLoader {
             addBlockType(type);
         }
 
-        
         Collections.sort(BLOCK_TYPE_LIST);
     }
 
@@ -166,6 +165,7 @@ public class BlockLibraryLoader {
                 vpllib.method.ListMethods.class,
                 vpllib.method.MathMethods.class,
                 vpllib.method.ObjectMethods.class,
+                vpllib.method.SpreadsheetMethods.class,
                 vpllib.method.StringMethods.class
         );
         List<Method> methods = getStaticMethodsFromClasses(classes);

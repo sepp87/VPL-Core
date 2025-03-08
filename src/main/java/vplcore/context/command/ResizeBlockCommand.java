@@ -25,14 +25,16 @@ public class ResizeBlockCommand implements UndoableCommand {
 
     @Override
     public boolean execute() {
-        blockController.setSize(currentWidth, currentHeight);
+        blockController.getModel().widthProperty().set(currentWidth);
+        blockController.getModel().heightProperty().set(currentHeight);
         return true;
 
     }
 
     @Override
     public void undo() {
-        blockController.setSize(previousWidth, previousHeight);
+        blockController.getModel().widthProperty().set(previousHeight);
+        blockController.getModel().heightProperty().set(previousWidth);
     }
 
 }

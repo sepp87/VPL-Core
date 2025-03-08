@@ -123,13 +123,15 @@ public class FileBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("path"), path.get());
+        String filePath = path.get() != null ? path.get() : "";
+        xmlTag.getOtherAttributes().put(QName.valueOf("path"), filePath);
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         String filePath = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
+        filePath = !filePath.isEmpty() ? filePath : null;
         this.path.set(filePath);
     }
 

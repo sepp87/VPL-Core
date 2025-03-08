@@ -48,7 +48,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.readCsv",
             category = "Core")
     public static DataSheet readCsv(File csv) throws IOException {
-        try ( Reader reader = new FileReader(csv);  CSVParser csvParser = CSVParser.parse(reader,
+        try (Reader reader = new FileReader(csv); CSVParser csvParser = CSVParser.parse(reader,
                 CSVFormat.Builder.create(CSVFormat.DEFAULT).setSkipHeaderRecord(false).build())) {
 
             List<List<Object>> rows = new ArrayList<>();
@@ -75,7 +75,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeCsv",
             category = "Core")
     public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
-        try ( BufferedWriter writer = new BufferedWriter(new FileWriter(csv));  CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(dataSheet.getHeaders().toArray(new String[0])))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(dataSheet.getHeaders().toArray(new String[0])))) {
 
             for (List<Object> row : dataSheet.getRows()) {
                 csvPrinter.printRecord(row);
@@ -89,7 +89,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.readExcel",
             category = "Core")
     public static DataSheet readExcel(File excel) throws IOException {
-        try ( FileInputStream fis = new FileInputStream(excel);  Workbook workbook = new XSSFWorkbook(fis)) {
+        try (FileInputStream fis = new FileInputStream(excel); Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -192,7 +192,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeExcel",
             category = "Core")
     public static void writeExcel(File excel, DataSheet dataSheet) throws IOException {
-        try ( Workbook workbook = new XSSFWorkbook();  FileOutputStream fos = new FileOutputStream(excel)) {
+        try (Workbook workbook = new XSSFWorkbook(); FileOutputStream fos = new FileOutputStream(excel)) {
 
             Sheet sheet = workbook.createSheet("Sheet1");
 
@@ -227,10 +227,9 @@ public class SpreadsheetMethods {
             for (List<Object> row : rows) {
                 if (colIndex < row.size() && row.get(colIndex) != null) {
                     detectedTypes.add(row.get(colIndex).getClass());
-//                    System.out.println(row.get(colIndex) + " " + row.get(colIndex).getClass());
                 }
             }
-
+//            System.out.println("Column " + (colIndex + 1) + " " + determineBestType(detectedTypes).getSimpleName());
             columnTypes.put("Column " + (colIndex + 1), determineBestType(detectedTypes));
         }
         return columnTypes;
@@ -253,23 +252,15 @@ public class SpreadsheetMethods {
             return Boolean.class;
         }
 
-        Set<Class<?>> numericals = new HashSet<>();
-        numericals.add(Double.class);
-        numericals.add(Float.class);
-        numericals.add(Long.class);
-        numericals.add(Integer.class);
-
-        for (Class<?> type : types) {
-           if(!numericals.contains(type)) {
-               return String.class;
-           }
-        }
-
-        if (types.contains(Double.class) || types.contains(Float.class)) {
+        if (types.contains(Double.class)) {
             return Double.class;
         }
 
-        if (types.contains(Integer.class) || types.contains(Long.class)) {
+        if (types.contains(Long.class)) {
+            return Long.class;
+        }
+
+        if (types.contains(Integer.class)) {
             return Integer.class;
         }
 
@@ -282,10 +273,23 @@ public class SpreadsheetMethods {
         }
         switch (cell.getCellType()) {
             case STRING:
-                return cell.getStringCellValue();
+                String string = cell.getStringCellValue();
+                String lower = string.toLowerCase();
+                if (lower.equals("false") || lower.equals("true")) {
+                    return Boolean.valueOf(lower);
+                }
+                return string;
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     return cell.getDateCellValue();
+                }
+                double number = cell.getNumericCellValue();
+                if (number % 1 == 0) { // If no decimal part
+                    if (number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE) {
+                        return (int) number; // Convert to Integer
+                    } else {
+                        return (long) number; // Convert to Long
+                    }
                 }
                 return cell.getNumericCellValue();
             case BOOLEAN:
@@ -302,10 +306,12 @@ public class SpreadsheetMethods {
             cell.setBlank();
         } else if (value instanceof String) {
             cell.setCellValue((String) value);
-        } else if (value instanceof Integer) {
-            cell.setCellValue((Integer) value);
         } else if (value instanceof Double) {
             cell.setCellValue((Double) value);
+        } else if (value instanceof Integer) {
+            cell.setCellValue((Integer) value);
+        } else if (value instanceof Long) {
+            cell.setCellValue((Long) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
         } else if (value instanceof Date) {
@@ -436,12 +442,12 @@ public class SpreadsheetMethods {
                 .max(Comparator.comparing(o -> (Comparable) o))
                 .orElse(null);
     }
-    
+
     public static String dataSheetToJson(DataSheet dataSheet) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(dataSheet.getHeaders());
     }
-    
+
     public static DataSheet jsonToDataSheet(String json) {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(json, DataSheet.class);

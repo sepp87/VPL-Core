@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Document xmlns="http://www.vpl.jo/xml" Scale="0.7" TranslateX="-296.2053050757312" TranslateY="238.21152555582094">
+<Document xmlns="http://www.vpl.jo/xml" Scale="1.0" TranslateX="0.0" TranslateY="0.0">
     <Blocks>
-        <Block Type="Input.file" UUID="2d2bdd95-2dbd-47b5-abba-ee72908550d8" X="423.1028137207031" Y="80.64286804199219" path="C:\Users\JosephusMeulenkamp\OneDrive - Dalux ApS\Dokumenter\2023-06-26 Dalux Oktoberfest.xlsx"/>
-        <Block Type="Input.text" UUID="1fb0b05a-8fe2-4722-893b-872b4c3d6fa3" X="1016.2456577845982" Y="115.20125688825344" Width="531.4285714285716" Height="533.7142857142859" text=""/>
-        <Block Type="Spreadsheet.readCsv" UUID="70b6734c-e952-40e0-bfd1-05297d8f4246" X="781.8646850585938" Y="235.84066772460938"/>
-        <Block Type="Spreadsheet.readExcel" UUID="9950f464-88a4-4254-a2dc-0402e7f7ea01" X="757.2694905598959" Y="72.30953820546468"/>
-        <Block Type="Input.file" UUID="a2f2d395-41c2-4c6f-9fca-e13cfdcbfb35" X="511.86468505859375" Y="371.8406744003296" path="C:\Users\JosephusMeulenkamp\Downloads\Nachunternehmeraktivität im Projekt.csv"/>
+        <Block Type="Input.file" UUID="de274c13-41c0-4ce1-8a9c-beb99acd3c4e" X="85.0" Y="434.0" path=""/>
+        <Block Type="Spreadsheet.tableView" UUID="5dd90593-16e8-476e-a341-53162d28fcf6" X="473.0" Y="387.0"/>
+        <Block Type="Spreadsheet.readExcel" UUID="6458f917-3c2d-403f-bda0-3dd5fa8d2810" X="274.0" Y="258.0"/>
     </Blocks>
     <Connections>
-        <Connection StartBlock="70b6734c-e952-40e0-bfd1-05297d8f4246" StartIndex="0" EndBlock="1fb0b05a-8fe2-4722-893b-872b4c3d6fa3" EndIndex="0"/>
-        <Connection StartBlock="2d2bdd95-2dbd-47b5-abba-ee72908550d8" StartIndex="0" EndBlock="9950f464-88a4-4254-a2dc-0402e7f7ea01" EndIndex="0"/>
-        <Connection StartBlock="a2f2d395-41c2-4c6f-9fca-e13cfdcbfb35" StartIndex="0" EndBlock="70b6734c-e952-40e0-bfd1-05297d8f4246" EndIndex="0"/>
+        <Connection StartBlock="6458f917-3c2d-403f-bda0-3dd5fa8d2810" StartIndex="0" EndBlock="5dd90593-16e8-476e-a341-53162d28fcf6" EndIndex="0"/>
+        <Connection StartBlock="de274c13-41c0-4ce1-8a9c-beb99acd3c4e" StartIndex="0" EndBlock="6458f917-3c2d-403f-bda0-3dd5fa8d2810" EndIndex="0"/>
     </Connections>
 </Document>

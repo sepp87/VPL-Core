@@ -91,19 +91,12 @@ import vpllib.spreadsheet.DataSheet;
 // Remove block - remove block and connections
 /**
  *
- * @author JoostMeulenkamp
+ * @author joostmeulenkamp
  */
 public class Launcher {
 
     public static void main(String[] args) throws IOException {
-//        File file = new File("C:\\Users\\JosephusMeulenkamp\\OneDrive - Dalux ApS\\Dokumenter\\2023-06-26 Dalux Oktoberfest.xlsx");
-//        File file = new File("C:\\Users\\JosephusMeulenkamp\\Downloads\\Projects (1).xlsx");
-        File file = new File("C:\\Users\\JosephusMeulenkamp\\Downloads\\UserList.xlsx");
-        
-        DataSheet sheet = SpreadsheetMethods.readExcel(file);
-        String json = SpreadsheetMethods.dataSheetToJson(sheet);
-        System.out.println(json);
-        
+
         if (false) {
             return;
         }

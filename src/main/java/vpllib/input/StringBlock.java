@@ -142,7 +142,8 @@ public class StringBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("string"), string.get());
+        String str = string.get() != null ? string.get() : "";
+        xmlTag.getOtherAttributes().put(QName.valueOf("string"), str);
         xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outputPorts.get(0).getDataType().getSimpleName());
     }
 
@@ -150,6 +151,7 @@ public class StringBlock extends BlockModel {
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         String str = xmlTag.getOtherAttributes().get(QName.valueOf("string"));
+        str = !str.isEmpty() ? str : null;
         string.set(str);
 
         //Retrieval of custom attribute

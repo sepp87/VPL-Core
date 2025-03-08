@@ -173,8 +173,13 @@ public abstract class BlockModel extends BaseModel {
         layoutXProperty().set(xmlTag.getX());
         layoutYProperty().set(xmlTag.getY());
         if (resizableProperty().get()) {
-            widthProperty().set(xmlTag.getWidth());
-            heightProperty().set(xmlTag.getHeight());
+            Double width = xmlTag.getWidth();
+            Double height = xmlTag.getHeight();
+            if (width == null || height == null) {
+                return;
+            }
+            widthProperty().set(width);
+            heightProperty().set(height);
         }
     }
 

@@ -27,7 +27,7 @@ import vplcore.graph.block.BlockMetadata;
  */
 public class BlockLibraryLoader {
 
-    private static final List<String> INTERNAL_PACKAGES = List.of("vpllib.input", "vpllib.file");
+    private static final List<String> INTERNAL_PACKAGES = List.of("vpllib.input", "vpllib.file", "vpllib.spreadsheet");
     private static final List<Class<?>> INTERNAL_METHOD_BLOCKS = List.of(
             vpllib.method.DateMethods.class,
             vpllib.method.FileMethods.class,
@@ -35,6 +35,7 @@ public class BlockLibraryLoader {
             vpllib.method.ListMethods.class,
             vpllib.method.MathMethods.class,
             vpllib.method.ObjectMethods.class,
+            vpllib.method.SpreadsheetMethods.class,
             vpllib.method.StringMethods.class
     );
 

@@ -8,6 +8,8 @@ import vpllib.method.JsonMethods;
 import vpllib.method.SpreadsheetMethods;
 import vpllib.spreadsheet.DataSheet;
 
+// 0 BUG letterbar does not resize to absolute column minimum width, due to label needing minimum width
+// 0 BUG tableviewblock rename block causes info button not to align on the right
 // 0 remove handlers, listeners, bindings of customization
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 0 Block Loader refactor

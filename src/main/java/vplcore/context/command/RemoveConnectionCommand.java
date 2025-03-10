@@ -1,30 +1,33 @@
 package vplcore.context.command;
 
-import vplcore.context.Undoable;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class RemoveConnectionCommand implements Undoable {
+public class RemoveConnectionCommand implements UndoableCommand {
 
     private final WorkspaceModel workspaceModel;
-    private final ConnectionModel connectionModel;
+    private final ConnectionModel connection;
 
-    public RemoveConnectionCommand(WorkspaceModel workspaceModel, ConnectionModel connectionModel) {
+    public RemoveConnectionCommand(WorkspaceModel workspaceModel, ConnectionModel connection) {
         this.workspaceModel = workspaceModel;
-        this.connectionModel = connectionModel;
+        this.connection = connection;
     }
 
     @Override
-    public void execute() {
-        workspaceModel.removeConnectionModel(connectionModel);
+    public boolean execute() {
+        workspaceModel.removeConnectionModel(connection);
+        return true;
+
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        connection.revive();
+        workspaceModel.addConnectionModel(connection);
     }
 }

@@ -1,11 +1,15 @@
 package vplcore;
 
+import java.io.File;
+import java.io.IOException;
 import vplcore.util.DataParsingUtils;
-import vplcore.graph.util.BlockLoader;
+import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
+import vpllib.method.SpreadsheetMethods;
+import vpllib.spreadsheet.DataSheet;
 
-// 0 TESTS 
-// 0 IMRPOVEMENT Method block exceptions
+// 0 remove handlers, listeners, bindings of customization
+// 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 0 Block Loader refactor
 // 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -14,14 +18,13 @@ import vpllib.method.JsonMethods;
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
+// 1 IMPROVEMENT Add undo/redo functionality
+//      0 TODO Move and Resize commands do not need to be executed, only recorded
 //
 // BACKLOG
 // 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
-// 1 IMPROVEMENT Add undo/redo functionality
-//      0 remove connection command in conjunction with removal of block
-//      0 remove connection command in conjunction with connection created for occupied port
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT add save and save as commands
 // 4 IMPROVEMENT reload plugins on demand from menu bar
@@ -41,8 +44,27 @@ import vpllib.method.JsonMethods;
 // Geometry Blocks
 // ChatGPT Block
 // WebClientBlock
+// 2d Map
+// Excel Blocks
+// CSV Blocks
 // 
 // DONE
+// 0 BUG exception panel closes if new exception is added - solved by removing old exceptions first after processing, keeping the exceptions list populated, so the exception panel does not remove itself
+// 0 BUG Connections are not removed when block is removed
+// 0 BUG null from string not forwarded to json aslist
+// 0 BUG for blockmethod, even without input block already throws exception
+// 0 baseModel removed to readonly
+// 0 Reset undo/redo stack when loading file and creating a new file
+// undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks
+//      0 revive block subclasses, add abstract initialize method to BlockModel and call from revive();
+//      0 revive ports
+//      0 GroupBlocks command should not be recorded in case there are less than two selected blocks 
+//      0 PasteBlocks command should not be recorded in case there are no copied blocks available
+//      0 remove connection command in conjunction with removal of block
+//      0 remove connection command in conjunction with connection created for occupied port
+//      0 revive block / groups / connections routinemake new objects or revive old objects? 
+//          0 thought on using new objects - guaranteed that listeners, handlers and bindings are correct, but when replacing old block with new blocks, redo/undo could yield unexecutable situations because there is no reference to the replacement block -> so revival method needed
+// 0 IMPROVEMENT first set blocks active when added to workspace, instead of deactivating in copypastememory and activating on paste
 // File Methods
 // ObserveFileBlock - observe if file is updated
 // Date.fromString block
@@ -69,19 +91,20 @@ import vpllib.method.JsonMethods;
 // Remove block - remove block and connections
 /**
  *
- * @author JoostMeulenkamp
+ * @author joostmeulenkamp
  */
 public class Launcher {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        if (false) {
+            return;
+        }
 
         //Load all block types
-        BlockLoader.loadInternalBlocks();
-        BlockLoader.loadExternalBlocks();
-        BlockLoader.loadInternalMethodBlocks();
-        BlockLoader.loadExternalMethodBlocks();
+        BlockLibraryLoader.loadBlocks();
 
-        System.out.println("Launcher.main() Number of loaded blocks is " + BlockLoader.BLOCK_TYPE_LIST.size());
+        System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
 
 //        TestGetIntegerValue();
 //        TestGetDoubleValue();
@@ -91,9 +114,6 @@ public class Launcher {
         // b = 125,0 > 
         // c = 0,95 > 10,95
         // 
-        if (false) {
-            return;
-        }
         //Launch the UI
         App.launch(App.class);
     }

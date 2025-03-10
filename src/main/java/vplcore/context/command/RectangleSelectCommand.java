@@ -21,9 +21,10 @@ public class RectangleSelectCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspaceController.rectangleSelect(selectionMin, selectionMax);
-    }
+        return true;
 
+    }
 
 }

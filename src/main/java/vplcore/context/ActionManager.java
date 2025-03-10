@@ -1,8 +1,9 @@
 package vplcore.context;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import vplcore.workspace.WorkspaceController;
 import vplcore.context.command.AlignBottomCommand;
 import vplcore.context.command.AlignHorizontallyCommand;
@@ -31,8 +32,8 @@ public class ActionManager {
     private final WorkspaceModel workspaceModel;
     private final WorkspaceController workspaceController;
 
-    private final Stack<Undoable> undoStack = new Stack<>();
-    private final Stack<Undoable> redoStack = new Stack<>();
+    private final Deque<UndoableCommand> undoStack = new ArrayDeque<>();
+    private final Deque<UndoableCommand> redoStack = new ArrayDeque<>();
     private final Map<String, Command> commandRegistry = new HashMap<>();
 
     public ActionManager(WorkspaceModel workspaceModel, WorkspaceController workspaceController) {
@@ -43,7 +44,7 @@ public class ActionManager {
 
     private void initializeCommands() {
         commandRegistry.put("NEW_FILE", new NewFileCommand(workspaceController));
-        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspaceController)); 
+        commandRegistry.put("OPEN_FILE", new OpenFileCommand(workspaceController));
         commandRegistry.put("SAVE_FILE", new SaveFileCommand(workspaceController));
         commandRegistry.put("COPY_BLOCKS", new CopyBlocksCommand(workspaceController));
         commandRegistry.put("PASTE_BLOCKS", new PasteBlocksCommand(workspaceController, workspaceModel));
@@ -63,7 +64,7 @@ public class ActionManager {
     public WorkspaceController getWorkspaceController() {
         return workspaceController;
     }
-    
+
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
     }
@@ -76,16 +77,20 @@ public class ActionManager {
     }
 
     public void executeCommand(Command command) {
-        command.execute();
-        if (command instanceof Undoable undoable) {
-            undoStack.push(undoable);
+        boolean isSuccessful = command.execute();
+        if (isSuccessful) {
+            if (command instanceof UndoableCommand undoable) {
+                undoStack.push(undoable);
+                redoStack.clear();
+            } else if (command instanceof ResetHistoryCommand) {
+                resetHistory();
+            }
         }
-        redoStack.clear();
     }
 
     public void undo() {
         if (!undoStack.isEmpty()) {
-            Undoable command = undoStack.pop();
+            UndoableCommand command = undoStack.pop();
             command.undo();
             redoStack.push(command);
         }
@@ -93,9 +98,22 @@ public class ActionManager {
 
     public void redo() {
         if (!redoStack.isEmpty()) {
-            Undoable command = redoStack.pop();
+            UndoableCommand command = redoStack.pop();
             command.execute();
             undoStack.push(command);
         }
+    }
+
+    public void resetHistory() {
+        undoStack.clear();
+        redoStack.clear();
+    }
+
+    public boolean hasUndoableCommands() {
+        return !undoStack.isEmpty();
+    }
+
+    public boolean hasRedoableCommands() {
+        return !redoStack.isEmpty();
     }
 }

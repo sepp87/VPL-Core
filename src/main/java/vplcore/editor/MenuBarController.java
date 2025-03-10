@@ -16,29 +16,39 @@ public class MenuBarController extends BaseController {
     private final ActionManager actionManager;
     private final MenuBarView view;
 
-    private final EventHandler<ActionEvent> menuBarItemClickedHandler;
-
     public MenuBarController(String contextId, MenuBarView menuBarView) {
         super(contextId);
         this.actionManager = App.getContext(contextId).getActionManager();
         this.view = menuBarView;
 
-        menuBarItemClickedHandler = this::handleMenuBarItemClicked;
         for (MenuItem item : view.getAllMenuItems()) {
             item.setOnAction(menuBarItemClickedHandler);
         }
 
-        view.getGroupMenuItem().getParentMenu().showingProperty().addListener(groupMenuItemVisibilityListener);
+        view.getEditMenu().showingProperty().addListener(editMenuShownListener);
+        view.getUndoMenuItem().setOnAction((e) -> undo());
+        view.getRedoMenuItem().setOnAction((e) -> redo());
     }
 
-    private final ChangeListener<Boolean> groupMenuItemVisibilityListener = this::onGroupMenuItemVisibilityChanged;
+    private void undo() {
+        actionManager.undo();
+    }
 
-    private void onGroupMenuItemVisibilityChanged(Object b, Boolean o, Boolean n) {
-        boolean isGroupable = this.getEditorContext().getActionManager().getWorkspaceController().areSelectedBlocksGroupable();
+    private void redo() {
+        actionManager.redo();
+    }
+
+    private final ChangeListener<Boolean> editMenuShownListener = this::onEditMenuShown;
+
+    private void onEditMenuShown(Object b, Boolean o, Boolean n) {
+        view.getUndoMenuItem().setDisable(!actionManager.hasUndoableCommands());
+        view.getRedoMenuItem().setDisable(!actionManager.hasRedoableCommands());
+
+        boolean isGroupable = actionManager.getWorkspaceController().areSelectedBlocksGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);
-        System.out.println("onGroupMenuItemVisibilityChanged to " + n + " isGroupable " + isGroupable);
 
     }
+    private final EventHandler<ActionEvent> menuBarItemClickedHandler = this::handleMenuBarItemClicked;
 
     private void handleMenuBarItemClicked(ActionEvent event) {
         if (event.getSource() instanceof MenuItem menuItem) {

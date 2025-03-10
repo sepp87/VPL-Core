@@ -21,7 +21,7 @@ public class SaveFileCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
 
         FileChooser chooser = new FileChooser();
         File lastOpenedDirectory = Config.getLastOpenedDirectory();
@@ -36,6 +36,8 @@ public class SaveFileCommand implements Command {
             Config.setLastOpenedDirectory(file);
             GraphSaver.serialize(file, workspaceController, workspaceController.getModel());
         }
+        return true;
+
     }
 
 }

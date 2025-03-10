@@ -5,7 +5,7 @@ import vplcore.workspace.WorkspaceController;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
 public class ZoomOutCommand implements Command {
 
@@ -16,8 +16,9 @@ public class ZoomOutCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.zoomOut();
+        return true;
     }
 
 

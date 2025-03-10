@@ -16,12 +16,13 @@ public class ConnectionModel extends BaseModel {
     public ConnectionModel(PortModel startPort, PortModel endPort) {
         this.startPort = startPort;
         this.endPort = endPort;
-        
+        initialize();
+    }
+
+    private void initialize() {
         startPort.addConnection(this);
         endPort.addConnection(this);
-
         endPort.calculateData(startPort.getData());
-
         startPort.dataProperty().addListener(endPort.getStartPortDataChangedListener());
     }
 
@@ -37,20 +38,15 @@ public class ConnectionModel extends BaseModel {
     public void remove() {
         startPort.removeConnection(this);
         endPort.removeConnection(this);
-//        startPort.connections.remove(this);
-//        endPort.connections.remove(this);
-//
-//        if (startPort.connections.isEmpty()) {
-//            startPort.activeProperty().set(false);
-//        }
-//
-//        if (endPort.connections.isEmpty()) {
-//            endPort.activeProperty().set(false);
-//        }
-
         startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
-
         endPort.calculateData();
+        super.remove();
+    }
+
+    @Override
+    public void revive() {
+        initialize();
+        super.revive();
     }
 
     public void serialize(ConnectionTag xmlTag) {
@@ -64,7 +60,7 @@ public class ConnectionModel extends BaseModel {
 ///**
 // * Extension idea - see PortModel
 // *
-// * @author Joost
+// * @author JoostMeulenkamp
 // */
 //public class ConnectionModel {
 //

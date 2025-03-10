@@ -3,8 +3,10 @@ package vpllib.method;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +27,13 @@ public class JsonMethods {
             identifier = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
-    public static List<?> asList(String json) {
-        JsonArray array = PARSER.parse(json).getAsJsonArray();
+    public static List<?> asList(String json) throws JsonParseException {
+        JsonElement root = PARSER.parse(json);
+        if (!root.isJsonArray()) {
+            System.out.println("BEFORE EXCEPTION");
+            throw new JsonParseException("Input data is not a JSON array.");
+        }
+        JsonArray array = root.getAsJsonArray();
 
         Boolean isIntegerList = isIntegerList(array);
         if (isIntegerList == null) {
@@ -41,7 +48,10 @@ public class JsonMethods {
         if (isIntegerList) {
             List<Integer> result = new ArrayList<>();
             for (JsonElement element : array) {
-                int value = element.getAsNumber().intValue();
+                Integer value = null;
+                if (!element.isJsonNull()) {
+                    value = element.getAsNumber().intValue();
+                }
                 result.add(value);
             }
             return result;
@@ -49,7 +59,10 @@ public class JsonMethods {
 
         List<Double> result = new ArrayList<>();
         for (JsonElement element : array) {
-            Double value = element.getAsNumber().doubleValue();
+            Double value = null;
+            if (!element.isJsonNull()) {
+                value = element.getAsNumber().doubleValue();
+            }
             result.add(value);
         }
         return result;
@@ -67,6 +80,11 @@ public class JsonMethods {
         while (iterator.hasNext()) {
 
             JsonElement next = iterator.next();
+
+            if (next.isJsonNull()) {
+                continue;
+            }
+
             if (!next.isJsonPrimitive()) {
                 return null;
             }

@@ -85,6 +85,8 @@ public class WorkspaceModel {
      */
     public void addBlockModel(BlockModel blockModel) {
         blockModels.add(blockModel);
+        blockModel.setActive(true); // blocks are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
+
     }
 
     public void removeBlockModel(BlockModel blockModel) {
@@ -108,9 +110,10 @@ public class WorkspaceModel {
      *
      * CONNECTIONS
      */
-    public void addConnectionModel(PortModel startPort, PortModel endPort) {
+    public ConnectionModel addConnectionModel(PortModel startPort, PortModel endPort) {
         ConnectionModel connectionModel = new ConnectionModel(startPort, endPort);
         addConnectionModel(connectionModel);
+        return connectionModel;
     }
 
     public void addConnectionModel(ConnectionModel connectionModel) {
@@ -134,11 +137,15 @@ public class WorkspaceModel {
         connectionModels.removeListener(listener);
     }
 
-    public void removeConnectionModels(BlockModel blockModel) {
-        List<ConnectionModel> connectionModels = blockModel.getConnections();
-        for (ConnectionModel connectionModel : connectionModels) {
-            removeConnectionModel(connectionModel);
+    public List<ConnectionModel> removeConnectionModels(BlockModel blockModel) {
+        System.out.println("TEsT1");
+        List<ConnectionModel> connections = blockModel.getConnections();
+        for (ConnectionModel connection : connections) {
+                    System.out.println("TEsT   2 ");
+
+            removeConnectionModel(connection);
         }
+        return connections;
     }
 
     /**
@@ -168,7 +175,7 @@ public class WorkspaceModel {
         blockGroupModels.add(blockGroupModel);
     }
 
-    public void removeBlockFromGroup(BlockModel blockModel) {
+    public BlockGroupModel removeBlockFromGroup(BlockModel blockModel) {
         System.out.println("WorkspaceModel.removeBlockFromGroup()");
         BlockGroupModel blockGroupModel = blockGroupIndex.getBlockGroup(blockModel);
         if (blockGroupModel != null) {
@@ -177,10 +184,15 @@ public class WorkspaceModel {
                 removeBlockGroupModel(blockGroupModel);
             }
         }
+        return blockGroupModel;
     }
 
     public BlockGroupIndex getBlockGroupIndex() {
         return blockGroupIndex;
+    }
+
+    public BlockGroupModel getBlockGroup(BlockModel block) {
+        return blockGroupIndex.getBlockGroup(block);
     }
 
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.vpl.jo/xml" Scale="1.0" TranslateX="0.0" TranslateY="0.0">
+    <Blocks>
+        <Block Type="Input.file" UUID="638a89d9-822c-453f-b196-7600440ed8ff" X="51.0" Y="203.0" path="a"/>
+    </Blocks>
+    <Connections/>
+</Document>

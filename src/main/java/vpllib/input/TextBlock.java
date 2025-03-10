@@ -39,10 +39,16 @@ public class TextBlock extends BlockModel {
         super(workspace);
         nameProperty().set("Panel");
         resizableProperty().set(true);
-        PortModel input = addInputPort("any", Object.class);
+        addInputPort("any", Object.class);
         addOutputPort("String", String.class);
+        initialize();
+
+    }
+
+    @Override
+    protected final void initialize() {
         string.addListener(stringListener);
-        editable.bind(input.activeProperty().not());
+        editable.bind(inputPorts.get(0).activeProperty().not());
     }
 
     @Override
@@ -57,7 +63,7 @@ public class TextBlock extends BlockModel {
         return textArea;
     }
 
-    ChangeListener layoutBoundsListener = this::onLayoutBoundsChanged;
+    private final ChangeListener<Object> layoutBoundsListener = this::onLayoutBoundsChanged;
 
     private void onLayoutBoundsChanged(Object b, Object o, Object n) {
         ScrollBar scrollBarv = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
@@ -122,7 +128,7 @@ public class TextBlock extends BlockModel {
             if (data instanceof List) {
                 List list = (List) data;
                 String value = "";
-                
+
                 for (Object object : list) {
                     if (object == null) {
                         value += "null\n";
@@ -176,8 +182,7 @@ public class TextBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         string.removeListener(stringListener);
         editable.unbind();
         if (textArea != null) {

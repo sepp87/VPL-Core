@@ -29,6 +29,11 @@ public class ColorBlock extends BlockModel {
         super(workspaceModel);
         this.nameProperty().set("Color Picker");
         addOutputPort("color", Color.class);
+        initialize();
+    }
+
+    @Override
+    protected final void initialize() {
         outputPorts.get(0).dataProperty().bind(color);
     }
 
@@ -68,8 +73,7 @@ public class ColorBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         outputPorts.get(0).dataProperty().unbind();
         if (picker != null) {
             picker.customColorProperty().unbindBidirectional(color);

@@ -5,7 +5,7 @@ import vplcore.workspace.WorkspaceController;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
 public class ZoomToFitCommand implements Command {
 
@@ -16,8 +16,9 @@ public class ZoomToFitCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.zoomToFit();
+        return true;
     }
 
 

@@ -19,7 +19,7 @@ import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.util.BlockModelFactory;
+import vplcore.graph.util.BlockFactory;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.port.PortModel;
@@ -71,7 +71,7 @@ public class GraphLoader {
 
             String blockIdentifier = blockTag.getType();
 
-            BlockModel blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
+            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
             if (blockModel == null) {
                 System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
                 return;

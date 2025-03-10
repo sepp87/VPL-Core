@@ -187,7 +187,7 @@ public class BlockController extends BaseController {
     public void handleMoveFinished(MouseEvent event) {
         if (!event.isDragDetect()) {
             Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
-            Point2D delta = startPoint.subtract(updatedPoint);
+            Point2D delta = updatedPoint.subtract(startPoint);
             MoveBlocksCommand command = new MoveBlocksCommand(blockControllers, delta);
             actionManager.executeCommand(command);
         }
@@ -196,11 +196,12 @@ public class BlockController extends BaseController {
     private final ListChangeListener<BlockException> exceptionsListener = this::onExceptionsChanged;
 
     private void onExceptionsChanged(Change<? extends BlockException> change) {
-        System.out.println("WorkspaceController.onExceptionsChanged()");
+        System.out.println("BlockController.onExceptionsChanged()");
         showExceptionButton();
     }
 
     private void showExceptionButton() {
+        System.out.println("BlockController.showExceptionButton() exceptionShown " + exceptionShown);
         if (exceptionShown) {
             return;
         }
@@ -284,7 +285,7 @@ public class BlockController extends BaseController {
     }
 
     public void remove() {
-        
+
         this.model.getExceptions().removeListener(exceptionsListener);
         selected.removeListener(selectionListener);
 

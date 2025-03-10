@@ -109,12 +109,12 @@ public class KeyboardController extends BaseController {
                 break;
             case Z:
                 if (isModifierDown) {
-                    // TODO undo
+                    actionManager.undo();
                 }
                 break;
             case Y:
                 if (isModifierDown) {
-                    // TODO redo
+                    actionManager.redo();
                 }
                 break;
 

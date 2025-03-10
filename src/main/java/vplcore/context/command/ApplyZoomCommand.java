@@ -21,10 +21,9 @@ public class ApplyZoomCommand implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         workspace.applyZoom(newScale, pivotPoint);
+        return true;
     }
-
-
 
 }

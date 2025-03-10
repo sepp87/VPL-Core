@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import vplcore.App;
@@ -87,9 +88,10 @@ public class ZoomController extends BaseController {
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
         boolean onListView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ListView.class);
-
+        boolean onTableView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, TableView.class);
+        
 //        if (!onScrollPane && !onListView && (isZoomModeAndOnMac || isIdleAndNotOnMac)) {
-        if (!onScrollPane && !onListView && (state.isIdle() || isIdleAndNotOnMac)) {
+        if (!onScrollPane && !onListView && !onTableView && (state.isIdle() || isIdleAndNotOnMac)) {
 
             // Throttle zoom on macOS
             if (onMac) {

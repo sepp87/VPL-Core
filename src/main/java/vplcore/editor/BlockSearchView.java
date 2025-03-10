@@ -3,7 +3,7 @@ package vplcore.editor;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import vplcore.graph.util.BlockLoader;
+import vplcore.graph.util.BlockLibraryLoader;
 
 /**
  *
@@ -20,7 +20,7 @@ public class BlockSearchView extends VBox {
         searchField.setPromptText("Search...");
         
         listView = new ListView<>();
-        listView.setItems(BlockLoader.BLOCK_TYPE_LIST);
+//        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
 
         this.setVisible(false);
         this.getStyleClass().add("block-search");

@@ -1,36 +1,40 @@
 package vplcore.context.command;
 
-import vplcore.context.Undoable;
 import vplcore.graph.block.BlockController;
+import vplcore.context.UndoableCommand;
 
 /**
  *
- * @author Joost
+ * @author JoostMeulenkamp
  */
-public class ResizeBlockCommand implements Undoable {
+public class ResizeBlockCommand implements UndoableCommand {
 
     private final BlockController blockController;
     private final double previousWidth;
     private final double previousHeight;
-    private final double width;
-    private final double height;
+    private final double currentWidth;
+    private final double currentHeight;
 
     public ResizeBlockCommand(BlockController blockController, double width, double height) {
         this.blockController = blockController;
         this.previousWidth = blockController.getPreviousWidth();
         this.previousHeight = blockController.getPreviousHeight();
-        this.width = width;
-        this.height = height;
+        this.currentWidth = width;
+        this.currentHeight = height;
     }
 
     @Override
-    public void execute() {
-        // command is only executed to register the move, so it can be undone
+    public boolean execute() {
+        blockController.getModel().widthProperty().set(currentWidth);
+        blockController.getModel().heightProperty().set(currentHeight);
+        return true;
+
     }
 
     @Override
     public void undo() {
-        blockController.setSize(previousWidth, previousHeight);
+        blockController.getModel().widthProperty().set(previousHeight);
+        blockController.getModel().heightProperty().set(previousWidth);
     }
 
 }

@@ -15,11 +15,11 @@ import vplcore.graph.block.BlockMetadata;
  *
  * @author joostmeulenkamp
  */
-public class BlockModelFactory {
+public class BlockFactory {
 
     public static BlockModel createBlock(String blockIdentifier, WorkspaceModel workspaceModel) {
         BlockModel blockModel = null;
-        Object type = BlockLoader.BLOCK_LIBRARY.get(blockIdentifier);
+        Object type = BlockLibraryLoader.BLOCK_LIBRARY.get(blockIdentifier);
 
         if (type.getClass().equals(Class.class)) {
             Class<?> clazz = (Class) type;
@@ -36,16 +36,16 @@ public class BlockModelFactory {
         try {
             blockModel = (BlockModel) clazz.getConstructor(workspaceModel.getClass()).newInstance(workspaceModel);
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
-            Logger.getLogger(BlockModelFactory.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return blockModel;
     }
 
-    public static MethodBlockModel createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
-        MethodBlockModel blockModel = null;
+    public static MethodBlock createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
+        MethodBlock blockModel = null;
         try {
             BlockMetadata info = method.getAnnotation(BlockMetadata.class);
-            blockModel = new MethodBlockModel(workspaceModel, method);
+            blockModel = new MethodBlock(workspaceModel, method);
 
             Class<?> returnType = method.getReturnType();
             if (returnType.equals(Number.class)) {
@@ -79,7 +79,7 @@ public class BlockModelFactory {
             }
 
         } catch (Exception e) {
-            Logger.getLogger(BlockModelFactory.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return blockModel;
     }

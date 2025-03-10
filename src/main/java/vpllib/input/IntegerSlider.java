@@ -39,8 +39,12 @@ public class IntegerSlider extends BlockModel {
     public IntegerSlider(WorkspaceModel workspaceModel) {
         super(workspaceModel);
         this.nameProperty().set("Integer");
-
         addOutputPort("int", Integer.class);
+    }
+
+    @Override
+    protected void initialize() {
+
     }
 
     @Override
@@ -295,8 +299,7 @@ public class IntegerSlider extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         outputPorts.get(0).dataProperty().unbind();
         if (slider != null) {
             slider.valueProperty().unbindBidirectional(integerValue);

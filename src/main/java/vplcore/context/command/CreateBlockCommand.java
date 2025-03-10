@@ -1,42 +1,44 @@
 package vplcore.context.command;
 
 import javafx.geometry.Point2D;
-import vplcore.context.Undoable;
-import vplcore.graph.util.BlockModelFactory;
+import vplcore.graph.util.BlockFactory;
 import vplcore.graph.block.BlockModel;
-import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class CreateBlockCommand implements Undoable {
+public class CreateBlockCommand implements UndoableCommand {
 
     private final String blockIdentifier;
     private final Point2D location;
-    private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
     private BlockModel blockModel;
 
-    public CreateBlockCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel, String blockIdentifier, Point2D location) {
-        this.workspaceController = workspaceController;
+    public CreateBlockCommand(WorkspaceModel workspaceModel, String blockIdentifier, Point2D location) {
         this.workspaceModel = workspaceModel;
         this.blockIdentifier = blockIdentifier;
-        this.location = workspaceController.getView().sceneToLocal(location);
+        this.location = location;
     }
 
     @Override
-    public void execute() {
-        this.blockModel = BlockModelFactory.createBlock(blockIdentifier, workspaceModel);
-        blockModel.layoutXProperty().set(location.getX());
-        blockModel.layoutYProperty().set(location.getY());
+    public boolean execute() {
+        if (blockModel == null) {
+            blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
+            blockModel.layoutXProperty().set(location.getX());
+            blockModel.layoutYProperty().set(location.getY());
+        } else {
+            blockModel.revive();
+        }
         workspaceModel.addBlockModel(blockModel);
+        return true;
     }
 
     @Override
     public void undo() {
-//        workspaceController.removeChild(block);
+        workspaceModel.removeBlockModel(blockModel);
     }
 
 }

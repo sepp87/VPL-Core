@@ -1,38 +1,39 @@
 package vplcore.context.command;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import vplcore.context.Undoable;
-import vplcore.graph.block.BlockController;
-import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
-import vplcore.workspace.WorkspaceController;
+import vplcore.graph.group.BlockGroupModel;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.UndoableCommand;
 
 /**
  *
  * @author Joost
  */
-public class RemoveGroupCommand implements Undoable {
+public class RemoveGroupCommand implements UndoableCommand {
 
     private final WorkspaceModel workspaceModel;
-    private final BlockGroupModel blockGroupModel;
+    private final BlockGroupModel group;
+    private final List<BlockModel> blocks;
 
-    public RemoveGroupCommand(WorkspaceModel workspaceModel, BlockGroupModel blockGroupModel) {
+    public RemoveGroupCommand(WorkspaceModel workspaceModel, BlockGroupModel group) {
         this.workspaceModel = workspaceModel;
-        this.blockGroupModel = blockGroupModel;
+        this.group = group;
+        this.blocks = new ArrayList<>(group.getBlocks());
     }
 
     @Override
-    public void execute() {
-        if (vplcore.App.BLOCK_MVC) {
-            workspaceModel.removeBlockGroupModel(blockGroupModel);
-        }
+    public boolean execute() {
+        workspaceModel.removeBlockGroupModel(group);
+        return true;
+
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        group.revive();
+        group.setBlocks(blocks);
+        workspaceModel.addBlockGroupModel(group);
     }
 }

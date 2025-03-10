@@ -22,7 +22,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import vplcore.FontAwesomeIcon;
-import vplcore.graph.util.MethodBlockModel;
+import vplcore.graph.util.MethodBlock;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -147,7 +147,7 @@ public class InfoPanel extends Pane {
 
     private Label buildDescription() {
         BlockMetadata info;
-        if (blockModel instanceof MethodBlockModel methodBlock) {
+        if (blockModel instanceof MethodBlock methodBlock) {
             info = methodBlock.method.getAnnotation(BlockMetadata.class);
         } else {
             info = blockModel.getClass().getAnnotation(BlockMetadata.class);

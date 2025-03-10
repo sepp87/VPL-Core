@@ -14,7 +14,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author Joost
  */
-public class BaseModel implements Comparable<BaseModel> {
+public abstract class BaseModel implements Comparable<BaseModel> {
 
     private final BaseModel parent;
     protected final StringProperty id = new SimpleStringProperty(this, "id");
@@ -40,7 +40,7 @@ public class BaseModel implements Comparable<BaseModel> {
     public ReadOnlyStringProperty idProperty() {
         return id;
     }
-    
+
     public String getId() {
         return id.get();
     }
@@ -73,12 +73,28 @@ public class BaseModel implements Comparable<BaseModel> {
         return active;
     }
 
-    public BooleanProperty removedProperty() {
+    public void setActive(boolean isActive) {
+        active.set(isActive);
+    }
+
+    public boolean isActive() {
+        return active.get();
+    }
+
+    public ReadOnlyBooleanProperty removedProperty() {
         return removed;
     }
 
     public void remove() {
         removed.set(true);
+    }
+    
+    public boolean isRemoved() {
+        return removed.get();
+    }
+
+    public void revive() {
+        removed.set(false);
     }
 
     public void serialize() {

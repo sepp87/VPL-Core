@@ -1,9 +1,9 @@
 package vplcore;
 
+import java.io.File;
 import vplcore.context.event.FocusNotRequiredEvent;
 import vplcore.context.EditorContext;
 import vplcore.context.EventRouter;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import vplcore.editor.EditorController;
@@ -23,10 +23,10 @@ import vplcore.workspace.WorkspaceController;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.editor.ZoomController;
 import vplcore.editor.ZoomView;
-import vplcore.graph.io.GraphLoader;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.context.ActionManager;
+import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -46,7 +46,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        
+
         if (vplcore.App.BLOCK_MVC) {
 
         } else {
@@ -99,10 +99,17 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-                GraphLoader.deserialize(new File("build/vplxml/addition.vplxml"), workspaceController, workspaceModel);
-//                GraphLoader.deserialize(new File("build/vplxml/file.vplxml"), workspaceController, workspaceModel);
-//        GraphLoader.deserialize(new File("build/vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
+        GraphLoader.deserialize(new File("vplxml/read-excel.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceController, workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.printMenuBarHeight();
+
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Closing application...");
+            System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
+        });
     }
 
     public static Stage getStage() {

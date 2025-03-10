@@ -1,7 +1,6 @@
 package vplcore.graph.group;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -19,14 +18,11 @@ import vplcore.workspace.BlockGroupIndex;
  */
 public class BlockGroupModel extends BaseModel {
 
-    private int id;
-    private static int counter;
     private final ObservableSet<BlockModel> blocks;
     private final BlockGroupIndex blockGroupIndex;
 
     public BlockGroupModel(BlockGroupIndex blockGroupIndex) {
         this.blockGroupIndex = blockGroupIndex;
-        id = counter++;
         blocks = FXCollections.observableSet();
         nameProperty().set("Name group here...");
     }

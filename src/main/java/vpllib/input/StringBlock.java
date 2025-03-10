@@ -38,6 +38,11 @@ public class StringBlock extends BlockModel {
         super(workspace);
         this.nameProperty().set("String");
         addOutputPort("Value", String.class);
+        initialize();
+    }
+
+    @Override
+    protected final void initialize() {
         string.addListener(stringListener);
     }
 
@@ -78,8 +83,8 @@ public class StringBlock extends BlockModel {
     public void process() {
         String str = string.get();
 
-        //Forward empty string as null
-        if (str.equals("")) {
+        //Forward null and empty string as null
+        if (str == null || str.equals("")) {
             outputPorts.get(0).dataTypeProperty().set(String.class);
             outputPorts.get(0).setData(null);
             return;
@@ -137,7 +142,8 @@ public class StringBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.getOtherAttributes().put(QName.valueOf("string"), string.get());
+        String str = string.get() != null ? string.get() : "";
+        xmlTag.getOtherAttributes().put(QName.valueOf("string"), str);
         xmlTag.getOtherAttributes().put(QName.valueOf("outDataType"), outputPorts.get(0).getDataType().getSimpleName());
     }
 
@@ -145,6 +151,7 @@ public class StringBlock extends BlockModel {
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         String str = xmlTag.getOtherAttributes().get(QName.valueOf("string"));
+        str = !str.isEmpty() ? str : null;
         string.set(str);
 
         //Retrieval of custom attribute
@@ -186,8 +193,7 @@ public class StringBlock extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         string.removeListener(stringListener);
         if (textField != null) {
             textField.textProperty().unbindBidirectional(string);

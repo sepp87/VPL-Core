@@ -43,6 +43,11 @@ public class DoubleSlider extends BlockModel {
         super(workspaceModel);
         this.nameProperty().set("Double");
         addOutputPort("double", Double.class);
+        initialize();
+    }
+
+    @Override
+    protected final void initialize() {
         outputPorts.get(0).dataProperty().bind(doubleValue);
     }
 
@@ -307,8 +312,7 @@ public class DoubleSlider extends BlockModel {
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void onRemoved() {
         outputPorts.get(0).dataProperty().unbind();
         if (slider != null) {
             slider.valueProperty().unbindBidirectional(doubleValue);

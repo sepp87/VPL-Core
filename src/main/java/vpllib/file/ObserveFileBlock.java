@@ -32,7 +32,7 @@ import vplcore.workspace.WorkspaceModel;
         identifier = "File.observe",
         category = "File",
         description = "Observe a file",
-        tags = {"file", "observe"}
+        tags = {"file", "observe", "watch"}
 )
 public class ObserveFileBlock extends BlockModel {
 
@@ -47,8 +47,25 @@ public class ObserveFileBlock extends BlockModel {
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
 
-        // Register shutdown hook to stop watching when the application exits
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stopObservationOnShutdown));
+        // Register shutdown hook to stop the watcher when the app closes
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            stopObservation();
+            executorService.shutdownNow();
+            System.out.println("File watcher and executor service shut down on app shutdown.");
+        }));
+    }
+
+    @Override
+    protected void initialize() {
+        
+    }
+    
+    @Override
+    protected void onActiveChanged() {
+        if (!this.isActive()) {
+            stopObservation();
+        }
+        super.onActiveChanged();
     }
 
     @Override
@@ -69,13 +86,14 @@ public class ObserveFileBlock extends BlockModel {
 
         File newFile = (File) data;
 
-        // Stop existing watcher if already running
-        if (watchTask != null && !watchTask.isDone()) {
-            watchTask.cancel(true);
-        }
-
+        // Stop previous watcher if already running
+        stopObservation();
         observedFile = newFile;
-        watchTask = executorService.submit(() -> observeFile(observedFile));
+
+        // Start a new daemon thread for watching the file
+        Thread watcherThread = new Thread(() -> observeFile(observedFile));
+        watcherThread.setDaemon(true); // Mark the thread as a daemon
+        watchTask = executorService.submit(watcherThread);
     }
 
     private void observeFile(File file) {
@@ -87,7 +105,7 @@ public class ObserveFileBlock extends BlockModel {
             return;
         }
 
-        try ( WatchService watchService = FileSystems.getDefault().newWatchService()) {
+        try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
             directoryPath.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 
             System.out.println("Observing: " + file);
@@ -133,24 +151,24 @@ public class ObserveFileBlock extends BlockModel {
         }
     }
 
-    // Stop file observation when the app is shut down
-    private void stopObservationOnShutdown() {
-        stopObservation();
-        executorService.shutdownNow();  // Stop the executor service
-        System.out.println("Application shutdown: File watching stopped.");
-    }
-
     @Override
-    public void remove() {
+    public void onRemoved() {
         // Stop the file watching task if it's running
         stopObservation();
 
         // Shutdown executor service
         executorService.shutdownNow();
         System.out.println("Executor service shut down.");
+    }
+    
+   
 
-        // Notify that this block was removed
-        super.remove();
+    @Override
+    public void revive() {
+        if (executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
+        super.revive();
     }
 
     @Override

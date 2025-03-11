@@ -75,9 +75,9 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeCsv",
             category = "Core")
     public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(dataSheet.getHeaders().toArray(new String[0])))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(dataSheet.getHeaderRow().toArray(new String[0])))) {
 
-            for (List<Object> row : dataSheet.getRows()) {
+            for (List<Object> row : dataSheet.getDataRows()) {
                 csvPrinter.printRecord(row);
             }
         }
@@ -197,12 +197,12 @@ public class SpreadsheetMethods {
             Sheet sheet = workbook.createSheet("Sheet1");
 
             Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < dataSheet.getHeaders().size(); i++) {
-                headerRow.createCell(i).setCellValue(dataSheet.getHeaders().get(i));
+            for (int i = 0; i < dataSheet.getHeaderRow().size(); i++) {
+                headerRow.createCell(i).setCellValue(dataSheet.getHeaderRow().get(i));
             }
 
             int rowIndex = 1;
-            for (List<Object> row : dataSheet.getRows()) {
+            for (List<Object> row : dataSheet.getDataRows()) {
                 Row excelRow = sheet.createRow(rowIndex++);
                 for (int i = 0; i < row.size(); i++) {
                     setCellValue(excelRow.createCell(i), row.get(i));
@@ -358,15 +358,15 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.filterData",
             category = "Core")
     public static DataSheet filterData(DataSheet dataSheet, String column, Predicate<Object> condition) {
-        int colIndex = dataSheet.getHeaders().indexOf(column);
+        int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {
             return dataSheet; // Column not found
         }
-        List<List<Object>> filteredRows = dataSheet.getRows().stream()
+        List<List<Object>> filteredRows = dataSheet.getDataRows().stream()
                 .filter(row -> condition.test(row.get(colIndex)))
                 .collect(Collectors.toList());
 
-        return new DataSheet(dataSheet.getHeaders(), dataSheet.getColumnTypes(), filteredRows, dataSheet.getFirstRows());
+        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), filteredRows, dataSheet.getLeadingRows());
     }
 
     @BlockMetadata(
@@ -375,19 +375,19 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.sortData",
             category = "Core")
     public static DataSheet sortData(DataSheet dataSheet, String column, boolean ascending) {
-        int colIndex = dataSheet.getHeaders().indexOf(column);
+        int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {
             return dataSheet;
         }
 
-        List<List<Object>> sortedRows = new ArrayList<>(dataSheet.getRows());
+        List<List<Object>> sortedRows = new ArrayList<>(dataSheet.getDataRows());
         sortedRows.sort(Comparator.comparing(row -> (Comparable) row.get(colIndex)));
 
         if (!ascending) {
             Collections.reverse(sortedRows);
         }
 
-        return new DataSheet(dataSheet.getHeaders(), dataSheet.getColumnTypes(), sortedRows, dataSheet.getFirstRows());
+        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), sortedRows, dataSheet.getLeadingRows());
     }
 
     @BlockMetadata(
@@ -396,17 +396,17 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.mergeDataSheets",
             category = "Core")
     public static DataSheet mergeDataSheets(DataSheet sheet1, DataSheet sheet2) {
-        if (!sheet1.getHeaders().equals(sheet2.getHeaders())) {
+        if (!sheet1.getHeaderRow().equals(sheet2.getHeaderRow())) {
             throw new IllegalArgumentException("Headers must match to merge DataSheets");
         }
 
-        List<List<Object>> mergedRows = new ArrayList<>(sheet1.getRows());
-        mergedRows.addAll(sheet2.getRows());
+        List<List<Object>> mergedRows = new ArrayList<>(sheet1.getDataRows());
+        mergedRows.addAll(sheet2.getDataRows());
 
-        List<List<Object>> mergedFirstRows = new ArrayList<>(sheet1.getFirstRows());
-        mergedFirstRows.addAll(sheet2.getFirstRows());
+        List<List<Object>> mergedFirstRows = new ArrayList<>(sheet1.getLeadingRows());
+        mergedFirstRows.addAll(sheet2.getLeadingRows());
 
-        return new DataSheet(sheet1.getHeaders(), sheet1.getColumnTypes(), mergedRows, mergedFirstRows);
+        return new DataSheet(sheet1.getHeaderRow(), sheet1.getColumnTypes(), mergedRows, mergedFirstRows);
     }
 
     @BlockMetadata(
@@ -415,12 +415,12 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.getUniqueValues",
             category = "Core")
     public static Set<Object> getUniqueValues(DataSheet dataSheet, String column) {
-        int colIndex = dataSheet.getHeaders().indexOf(column);
+        int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {
             return Collections.emptySet();
         }
 
-        return dataSheet.getRows().stream()
+        return dataSheet.getDataRows().stream()
                 .map(row -> row.get(colIndex))
                 .collect(Collectors.toSet());
     }
@@ -431,12 +431,12 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.findMaxValue",
             category = "Core")
     public static Object findMaxValue(DataSheet dataSheet, String column) {
-        int colIndex = dataSheet.getHeaders().indexOf(column);
+        int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {
             return null;
         }
 
-        return dataSheet.getRows().stream()
+        return dataSheet.getDataRows().stream()
                 .map(row -> row.get(colIndex))
                 .filter(Objects::nonNull)
                 .max(Comparator.comparing(o -> (Comparable) o))
@@ -445,7 +445,7 @@ public class SpreadsheetMethods {
 
     public static String dataSheetToJson(DataSheet dataSheet) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(dataSheet.getHeaders());
+        return gson.toJson(dataSheet.getHeaderRow());
     }
 
     public static DataSheet jsonToDataSheet(String json) {

@@ -1,11 +1,15 @@
 package vpllib.spreadsheet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
@@ -22,6 +26,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.util.Subscription;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
@@ -61,17 +66,26 @@ public class TableViewBlock extends BlockModel {
         columnLetterGrid = new GridPane();
         columnLetterBar = new HBox();
 
+        // Detect Column Sorting - Ascending and Unsorted
+        tableView.getSortOrder().addListener((ListChangeListener<TableColumn<List<Object>, ?>>) change -> {
+            while (change.next()) {
+                System.out.println(change.wasAdded() + " " + change.wasPermutated() + " " + change.wasRemoved() + " " + change.wasReplaced() + " " + change.wasUpdated());
+                if (change.wasAdded() || change.wasRemoved()) {
+                    TableColumn<List<Object>, ?> sortedColumn = tableView.getSortOrder().isEmpty() ? null : tableView.getSortOrder().get(0);
+                    if (sortedColumn != null) {
+                        System.out.println("Sorted column: " + sortedColumn.getText() + " (" + sortedColumn.getSortType() + ")");
+                    }
+                }
+            }
+        });
+
         // Spacer for aligning the column headers with row headers
         Region spacer = new Region();
         spacer.minWidthProperty().bind(rowHeaders.widthProperty()); // Match row header width
-        spacer.setOnMouseClicked((e) -> {
-            syncScrollBars();
-        });
 
         // Wrap column letters in a ScrollPane for horizontal scrolling
         columnLetterScrollPane = new ScrollPane(columnLetterGrid);
         columnLetterScrollPane.setFitToHeight(true);
-//        columnLetterScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         columnLetterScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         columnLetterScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         columnLetterScrollPane.setStyle("-fx-background: transparent; -fx-border-color: gray;");
@@ -114,21 +128,26 @@ public class TableViewBlock extends BlockModel {
         columnLetterGrid.getChildren().clear();
     }
 
+    private final List<Subscription> columnListeners = new ArrayList<>();
+
     private void updateTableView(DataSheet dataSheet) {
-        List<String> headers = dataSheet.getHeaders();
-        List<List<Object>> rows = dataSheet.getRows();
+        List<String> headers = dataSheet.getHeaderRow();
+        List<List<Object>> rows = dataSheet.getDataRows();
 
         columnLetterGrid.getChildren().clear();
 
         for (int i = 0; i < headers.size(); i++) {
             TableColumn<List<Object>, String> column = new TableColumn<>(headers.get(i));
+            column.setMinWidth(20);
             final int colIndex = i;
             column.setCellValueFactory(cellData -> Bindings.createStringBinding(()
                     -> (cellData.getValue().size() > colIndex) ? String.valueOf(cellData.getValue().get(colIndex)) : ""));
 
             column.setPrefWidth(100);
-            column.widthProperty().addListener((obs, oldVal, newVal)
-                    -> adjustColumnHeaderWidth(colIndex, newVal.doubleValue()));
+            Subscription columnListener = column.widthProperty().subscribe((o, n) -> {
+                adjustColumnHeaderWidth(colIndex, n.doubleValue());
+            });
+            columnListeners.add(columnListener);
 
             tableView.getColumns().add(column);
 
@@ -140,8 +159,26 @@ public class TableViewBlock extends BlockModel {
             columnLetterGrid.add(letterLabel, i, 0);
         }
 
-        // Bind column letter grid width to table width
-//        columnLetterGrid.prefWidthProperty().bind(tableView.widthProperty());
+        // Detect Column Sorting - Ascending and Descending
+        tableView.getColumns().forEach(column
+                -> column.sortTypeProperty().addListener((obs, oldVal, newVal) -> {
+                    if (tableView.getSortOrder().contains(column)) {
+                        System.out.println("Sorted column: " + column.getText() + " (" + newVal + ")");
+                    }
+                })
+        );
+
+        // Detect Column Reordering
+        tableView.getColumns().addListener((javafx.collections.ListChangeListener.Change<? extends TableColumn<List<Object>, ?>> change) -> {
+            System.out.println("CHANGE COLUMN ORDER");
+            while (change.next()) {
+                if (change.wasAdded() && change.wasRemoved() && change.wasReplaced()) { // Column order changed
+                    System.out.println("CHANGE COLUMN ORDER 3");
+                    updateColumnHeaders();
+                }
+            }
+        });
+
         // Fill row numbers (1, 2, 3, ...)
         rowHeaders.getItems().addAll(IntStream.rangeClosed(1, rows.size())
                 .mapToObj(String::valueOf)
@@ -225,6 +262,30 @@ public class TableViewBlock extends BlockModel {
         if (columnIndex < columnLetterGrid.getChildren().size()) {
             Label label = (Label) columnLetterGrid.getChildren().get(columnIndex);
             label.setMinWidth(newWidth);
+        }
+    }
+
+    private void updateColumnHeaders() {
+        columnListeners.forEach(Subscription::unsubscribe);
+        columnListeners.clear();
+        columnLetterGrid.getChildren().clear(); // Clear old headers
+
+        for (int i = 0; i < tableView.getColumns().size(); i++) {
+            TableColumn<?, ?> column = tableView.getColumns().get(i);
+            final int colIndex = i;
+            String columnLetter = getColumnLetter(i); // Get updated letter
+
+            Label letterLabel = new Label(columnLetter);
+            letterLabel.setAlignment(Pos.CENTER);
+            letterLabel.setStyle("-fx-padding: 5px; -fx-border-color: gray;");
+            letterLabel.setMinWidth(column.getWidth());
+
+            columnLetterGrid.add(letterLabel, i, 0);
+
+            Subscription columnListener = column.widthProperty().subscribe((o, n) -> {
+                adjustColumnHeaderWidth(colIndex, n.doubleValue());
+            });
+            columnListeners.add(columnListener);
         }
     }
 

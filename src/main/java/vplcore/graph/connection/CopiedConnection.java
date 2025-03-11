@@ -1,4 +1,4 @@
-package vplcore.graph.util;
+package vplcore.graph.connection;
 
 import vplcore.graph.block.BlockModel;
 

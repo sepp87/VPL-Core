@@ -3,7 +3,7 @@ package vplcore.context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import vplcore.graph.util.CopiedConnection;
+import vplcore.graph.connection.CopiedConnection;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BlockView;
 import vplcore.graph.connection.ConnectionModel;

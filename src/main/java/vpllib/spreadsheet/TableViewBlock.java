@@ -8,8 +8,10 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
@@ -47,6 +49,9 @@ public class TableViewBlock extends BlockModel {
     private ScrollPane columnLetterScrollPane;
     private HBox columnLetterBar;
     private GridPane columnLetterGrid;
+    private Region spacer;
+    private ScrollBar tableVScrollBar;
+    private ScrollBar rowHeaderVScrollBar;
 
     public TableViewBlock(WorkspaceModel workspace) {
         super(workspace);
@@ -67,20 +72,10 @@ public class TableViewBlock extends BlockModel {
         columnLetterBar = new HBox();
 
         // Detect Column Sorting - Ascending and Unsorted
-        tableView.getSortOrder().addListener((ListChangeListener<TableColumn<List<Object>, ?>>) change -> {
-            while (change.next()) {
-                System.out.println(change.wasAdded() + " " + change.wasPermutated() + " " + change.wasRemoved() + " " + change.wasReplaced() + " " + change.wasUpdated());
-                if (change.wasAdded() || change.wasRemoved()) {
-                    TableColumn<List<Object>, ?> sortedColumn = tableView.getSortOrder().isEmpty() ? null : tableView.getSortOrder().get(0);
-                    if (sortedColumn != null) {
-                        System.out.println("Sorted column: " + sortedColumn.getText() + " (" + sortedColumn.getSortType() + ")");
-                    }
-                }
-            }
-        });
+        tableView.getSortOrder().addListener(tableViewSortListener);
 
         // Spacer for aligning the column headers with row headers
-        Region spacer = new Region();
+        spacer = new Region();
         spacer.minWidthProperty().bind(rowHeaders.widthProperty()); // Match row header width
 
         // Wrap column letters in a ScrollPane for horizontal scrolling
@@ -107,6 +102,20 @@ public class TableViewBlock extends BlockModel {
         return layout;
     }
 
+    private final ListChangeListener<TableColumn<List<Object>, ?>> tableViewSortListener = this::onTableViewSorted;
+
+    private void onTableViewSorted(Change<? extends TableColumn<List<Object>, ?>> change) {
+        while (change.next()) {
+            System.out.println(change.wasAdded() + " " + change.wasPermutated() + " " + change.wasRemoved() + " " + change.wasReplaced() + " " + change.wasUpdated());
+            if (change.wasAdded() || change.wasRemoved()) {
+                TableColumn<List<Object>, ?> sortedColumn = tableView.getSortOrder().isEmpty() ? null : tableView.getSortOrder().get(0);
+                if (sortedColumn != null) {
+                    System.out.println("Sorted column: " + sortedColumn.getText() + " (" + sortedColumn.getSortType() + ")");
+                }
+            }
+        }
+    }
+
     @Override
     protected void process() throws Exception {
         DataSheet dataSheet = (DataSheet) inputPorts.get(0).getData();
@@ -117,18 +126,38 @@ public class TableViewBlock extends BlockModel {
         if (dataSheet != null) {
             updateTableView(dataSheet);
             syncScrollBars();
-
         }
     }
 
+    // horizontal scroll listener DONE
+    // vertical scroll binding DONE
+    // row height listener
+    // column sort listener - table view DONE
+    // column sort subscriptions - letter bar DONE
+    // column width subscriptions - letter bar DONE
+    // column order listener DONE
+    // unknown string binding UNNEEDED -> only when switching data sheet rows to observable lists, if data sheet updates should be reflected automatically by the table views
+    // spacer width binding DONE
     private void clearTableView() {
         tableView.getColumns().clear();
         tableView.getItems().clear();
         rowHeaders.getItems().clear();
         columnLetterGrid.getChildren().clear();
+        columnWidthSubscriptions.forEach(Subscription::unsubscribe);
+        columnWidthSubscriptions.clear();
+        columnSortSubscriptions.forEach(Subscription::unsubscribe);
+        columnSortSubscriptions.clear();
+        tableView.getColumns().removeListener(columnsListener);
+        if (rowHeaderVScrollBar != null && tableVScrollBar != null) {
+            rowHeaderVScrollBar.valueProperty().unbindBidirectional(tableVScrollBar.valueProperty());
+        }
+        horizontalScrollBarSubscriptions.forEach(Subscription::unsubscribe);
+        horizontalScrollBarSubscriptions.clear();
     }
 
-    private final List<Subscription> columnListeners = new ArrayList<>();
+    private final List<Subscription> columnWidthSubscriptions = new ArrayList<>();
+    private final List<Subscription> columnSortSubscriptions = new ArrayList<>();
+    private final List<Subscription> horizontalScrollBarSubscriptions = new ArrayList<>();
 
     private void updateTableView(DataSheet dataSheet) {
         List<String> headers = dataSheet.getHeaderRow();
@@ -138,16 +167,19 @@ public class TableViewBlock extends BlockModel {
 
         for (int i = 0; i < headers.size(); i++) {
             TableColumn<List<Object>, String> column = new TableColumn<>(headers.get(i));
-            column.setMinWidth(20);
             final int colIndex = i;
-            column.setCellValueFactory(cellData -> Bindings.createStringBinding(()
-                    -> (cellData.getValue().size() > colIndex) ? String.valueOf(cellData.getValue().get(colIndex)) : ""));
+
+            // When underlying data does not change
+//            column.setCellValueFactory(cellData
+//                    -> new SimpleStringProperty((cellData.getValue().size() > colIndex)
+//                            ? String.valueOf(cellData.getValue().get(colIndex)) : ""));
+            column.setCellValueFactory(cellData
+                    -> new SimpleObjectProperty((cellData.getValue().size() > colIndex) // tenary check needed, because otherwise empty trailing rows will cause index out of bounds 
+                            ? cellData.getValue().get(colIndex) : ""));
+
 
             column.setPrefWidth(100);
-            Subscription columnListener = column.widthProperty().subscribe((o, n) -> {
-                adjustColumnHeaderWidth(colIndex, n.doubleValue());
-            });
-            columnListeners.add(columnListener);
+            column.setMinWidth(20);
 
             tableView.getColumns().add(column);
 
@@ -157,27 +189,30 @@ public class TableViewBlock extends BlockModel {
             letterLabel.setStyle("-fx-padding: 5px; -fx-border-color: gray;");
             letterLabel.setMinWidth(column.getWidth());
             columnLetterGrid.add(letterLabel, i, 0);
+
         }
 
-        // Detect Column Sorting - Ascending and Descending
-        tableView.getColumns().forEach(column
-                -> column.sortTypeProperty().addListener((obs, oldVal, newVal) -> {
-                    if (tableView.getSortOrder().contains(column)) {
-                        System.out.println("Sorted column: " + column.getText() + " (" + newVal + ")");
-                    }
-                })
-        );
+        for (int i = 0; i < headers.size(); i++) {
+            TableColumn<List<Object>, String> column = new TableColumn<>(headers.get(i));
+            final int colIndex = i;
+
+            // Detect column width changes
+            Subscription columnWidthSubscriber = column.widthProperty().subscribe((o, n) -> {
+                adjustColumnHeaderWidth(colIndex, n.doubleValue());
+            });
+            columnWidthSubscriptions.add(columnWidthSubscriber);
+
+            // Detect column sorting - ascending and descending
+            Subscription columnSortSubscriber = column.sortTypeProperty().subscribe((o, n) -> {
+                if (tableView.getSortOrder().contains(column)) {
+                    System.out.println("Sorted column: " + column.getText() + " (" + n + ")");
+                }
+            });
+            columnSortSubscriptions.add(columnSortSubscriber);
+        }
 
         // Detect Column Reordering
-        tableView.getColumns().addListener((javafx.collections.ListChangeListener.Change<? extends TableColumn<List<Object>, ?>> change) -> {
-            System.out.println("CHANGE COLUMN ORDER");
-            while (change.next()) {
-                if (change.wasAdded() && change.wasRemoved() && change.wasReplaced()) { // Column order changed
-                    System.out.println("CHANGE COLUMN ORDER 3");
-                    updateColumnHeaders();
-                }
-            }
-        });
+        tableView.getColumns().addListener(columnsListener);
 
         // Fill row numbers (1, 2, 3, ...)
         rowHeaders.getItems().addAll(IntStream.rangeClosed(1, rows.size())
@@ -200,6 +235,16 @@ public class TableViewBlock extends BlockModel {
         tableView.getItems().addAll(rows);
     }
 
+    private final ListChangeListener<TableColumn<List<Object>, ?>> columnsListener = this::onColumnsChanged;
+
+    private void onColumnsChanged(Change<? extends TableColumn<List<Object>, ?>> change) {
+        while (change.next()) {
+            if (change.wasAdded() && change.wasRemoved() && change.wasReplaced()) { // Column order changed
+                updateColumnHeaders();
+            }
+        }
+    }
+
     private void adjustColumnWidth() {
         Platform.runLater(() -> {
             for (TableColumn<?, ?> column : tableView.getColumns()) {
@@ -218,17 +263,20 @@ public class TableViewBlock extends BlockModel {
 
             if (tableHScrollBar != null && columnLetterHScrollBar != null) {
 
-                columnLetterHScrollBar.valueProperty().addListener((b, o, n) -> {
+                Subscription columnLetterHScrollBarSubscriber = columnLetterHScrollBar.valueProperty().subscribe((o, n) -> {
                     tableHScrollBar.setValue(n.doubleValue() * tableHScrollBar.getMax());
                 });
+                horizontalScrollBarSubscriptions.add(columnLetterHScrollBarSubscriber);
 
-                tableHScrollBar.valueProperty().addListener((b, o, n) -> {
+                Subscription tableHScrollBarSubscriber = tableHScrollBar.valueProperty().subscribe((o, n) -> {
                     columnLetterScrollPane.setHvalue(n.doubleValue() / tableHScrollBar.getMax());
                 });
+                horizontalScrollBarSubscriptions.add(tableHScrollBarSubscriber);
+
             }
 
-            ScrollBar tableVScrollBar = (ScrollBar) tableView.lookup(".scroll-bar:vertical");
-            ScrollBar rowHeaderVScrollBar = (ScrollBar) rowHeaders.lookup(".scroll-bar:vertical");
+            tableVScrollBar = (ScrollBar) tableView.lookup(".scroll-bar:vertical");
+            rowHeaderVScrollBar = (ScrollBar) rowHeaders.lookup(".scroll-bar:vertical");
 
             if (tableVScrollBar != null && rowHeaderVScrollBar != null) {
                 rowHeaderVScrollBar.valueProperty().bindBidirectional(tableVScrollBar.valueProperty());
@@ -266,8 +314,8 @@ public class TableViewBlock extends BlockModel {
     }
 
     private void updateColumnHeaders() {
-        columnListeners.forEach(Subscription::unsubscribe);
-        columnListeners.clear();
+        columnWidthSubscriptions.forEach(Subscription::unsubscribe);
+        columnWidthSubscriptions.clear();
         columnLetterGrid.getChildren().clear(); // Clear old headers
 
         for (int i = 0; i < tableView.getColumns().size(); i++) {
@@ -285,7 +333,7 @@ public class TableViewBlock extends BlockModel {
             Subscription columnListener = column.widthProperty().subscribe((o, n) -> {
                 adjustColumnHeaderWidth(colIndex, n.doubleValue());
             });
-            columnListeners.add(columnListener);
+            columnWidthSubscriptions.add(columnListener);
         }
     }
 
@@ -303,6 +351,13 @@ public class TableViewBlock extends BlockModel {
 
     @Override
     protected void onRemoved() {
+        if (tableView == null) {
+            return;
+        }
+        tableView.getSortOrder().removeListener(tableViewSortListener);
+        spacer.minWidthProperty().unbind();
+        clearTableView();
+
     }
 
 }

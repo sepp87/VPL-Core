@@ -633,3 +633,60 @@
 .scroll-pane:hover .scroll-bar:vertical {
     -fx-opacity: 1;
 }
+
+
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header,
+.table-view .column-header-background,
+.table-view .table-header-row,
+.table-view .table-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: lightgray; /* Light gray border */
+    -fx-border-width: 0 0 1px 0; /* Only bottom border for separation */
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: transparent;
+}
+
+
+/* Fix for disappearing rows when selection changes */
+.table-view .table-row-cell:filled {
+    -fx-background-color: transparent;
+}
+
+/* Selection styling */
+.table-view .table-row-cell:selected {
+    -fx-background-color: lightblue !important; /* Subtle blue for selection */
+    -fx-text-fill: black; /* Keep text black */
+}
+
+
+/* Ensure text remains black even when selected */
+.table-view .table-row-cell:selected .text {
+    -fx-fill: black;
+}
+
+/* Dragged column header */
+.table-view .column-drag-header {
+    -fx-background-color: lightblue; /* Light blue for dragged column */
+}
+
+/* Drop target indicator (where the column will be placed) */
+.column-drag-header-line {
+    -fx-background-color: salmon; /* Salmon color for drop target line */
+    -fx-pref-height: 3px; /* Make the line more visible */
+}

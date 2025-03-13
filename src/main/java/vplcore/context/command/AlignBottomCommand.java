@@ -22,7 +22,9 @@ public class AlignBottomCommand implements UndoableCommand {
     private final Map<String, Double> previousLocations = new TreeMap<>();
 
     public AlignBottomCommand(WorkspaceController workspace) {
+
         this.blocks = workspace.getSelectedBlockControllers();
+        System.out.println(blocks.size() + " number of blocks");
     }
 
     @Override
@@ -32,7 +34,9 @@ public class AlignBottomCommand implements UndoableCommand {
             blockViews.add(blockController.getView());
         }
         Bounds bBox = BlockView.getBoundingBoxOfBlocks(blockViews);
+        System.out.println("Bottom");
         for (BlockController blockController : blocks) {
+            System.out.println("Bottom 2");
             BlockModel blockModel = blockController.getModel();
             BlockView blockView = blockController.getView();
             previousLocations.put(blockModel.getId(), blockModel.layoutYProperty().get());

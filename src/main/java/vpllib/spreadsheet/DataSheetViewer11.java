@@ -1,17 +1,14 @@
 package vpllib.spreadsheet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ListChangeListener.Change;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
@@ -20,63 +17,45 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Subscription;
-import vplcore.graph.block.BlockMetadata;
-import vplcore.graph.block.BlockModel;
-import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author joostmeulenkamp
  */
-@BlockMetadata(
-        identifier = "Spreadsheet.tableView",
-        category = "Spreadsheet",
-        description = "View the spreadsheet data in the data sheet with this table view.",
-        tags = {"tableView", "spreadsheet"})
-public class TableViewBlock extends BlockModel {
+public class DataSheetViewer11 extends BorderPane {
 
-    private TableView<List<Object>> tableView;
-    private ListView<String> rowHeaders;
-    private ScrollPane columnLetterScrollPane;
-    private HBox columnLetterBar;
-    private GridPane columnLetterGrid;
-    private Region spacer;
+    private final TableView<List<Object>> tableView;
+    private final ListView<String> rowHeaders;
+    private final VBox rowHeadersBar;
+    private final ScrollPane columnLetterScrollPane;
+    private final HBox columnLetterBar;
+    private final GridPane columnLetterGrid;
+    private final Region spacerHorizontal;
+    private final Region spacerVertical;
     private ScrollBar tableVScrollBar;
     private ScrollBar rowHeaderVScrollBar;
 
-    public TableViewBlock(WorkspaceModel workspace) {
-        super(workspace);
-        nameProperty().set("Table");
-        resizableProperty().set(true);
-        addInputPort("Data", DataSheet.class);
-    }
-
-    @Override
-    protected void initialize() {
-    }
-
-    @Override
-    public Region getCustomization() {
+    public DataSheetViewer11() {
         tableView = new TableView<>();
         rowHeaders = new ListView<>();
+        rowHeadersBar = new VBox();
         columnLetterGrid = new GridPane();
         columnLetterBar = new HBox();
 
         // Detect Column Sorting - Ascending and Unsorted
         tableView.getSortOrder().addListener(tableViewSortListener);
+        tableView.setPrefWidth(425);
 
         // Spacer for aligning the column headers with row headers
-        spacer = new Region();
-        spacer.minWidthProperty().bind(rowHeaders.widthProperty()); // Match row header width
+        spacerHorizontal = new Region();
+        spacerHorizontal.minWidthProperty().bind(rowHeaders.widthProperty()); // Match row header width
 
         // Wrap column letters in a ScrollPane for horizontal scrolling
         columnLetterScrollPane = new ScrollPane(columnLetterGrid);
@@ -85,26 +64,44 @@ public class TableViewBlock extends BlockModel {
         columnLetterScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         columnLetterScrollPane.setStyle("-fx-background: transparent; -fx-border-color: gray;");
 
-        columnLetterBar.getChildren().addAll(spacer, columnLetterScrollPane);
+        columnLetterBar.getChildren().addAll(spacerHorizontal, columnLetterScrollPane);
         columnLetterBar.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: gray;");
         columnLetterBar.setAlignment(Pos.CENTER_LEFT);
 
+        // Spacer for aligning the column headers with row headers
+        spacerVertical = new Region();
+        spacerVertical.setMinHeight(25); // Match column header height
+
         // Style row headers
         rowHeaders.setPrefWidth(50);
-        rowHeaders.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: gray;");
+        rowHeaders.setStyle("-fx-background-color: #f0f0f0;");
+
+        rowHeadersBar.getChildren().addAll(spacerVertical, rowHeaders);
 
         // Layout structure
-        BorderPane layout = new BorderPane();
-        layout.setTop(columnLetterBar);
-        layout.setLeft(rowHeaders);
-        layout.setCenter(tableView);
+        this.setTop(columnLetterBar);
+        this.setLeft(rowHeadersBar);
+        this.setCenter(tableView);
+    }
 
-        return layout;
+    public void setDataSheet(DataSheet dataSheet) {
+        clearTableView();
+        if (dataSheet == null) {
+            return;
+        }
+        updateTableView(dataSheet);
+        syncScrollBars();
+    }
+
+    public void remove() {
+        tableView.getSortOrder().removeListener(tableViewSortListener);
+        spacerHorizontal.minWidthProperty().unbind();
+        clearTableView();
     }
 
     private final ListChangeListener<TableColumn<List<Object>, ?>> tableViewSortListener = this::onTableViewSorted;
 
-    private void onTableViewSorted(Change<? extends TableColumn<List<Object>, ?>> change) {
+    private void onTableViewSorted(ListChangeListener.Change<? extends TableColumn<List<Object>, ?>> change) {
         while (change.next()) {
             System.out.println(change.wasAdded() + " " + change.wasPermutated() + " " + change.wasRemoved() + " " + change.wasReplaced() + " " + change.wasUpdated());
             if (change.wasAdded() || change.wasRemoved()) {
@@ -113,19 +110,6 @@ public class TableViewBlock extends BlockModel {
                     System.out.println("Sorted column: " + sortedColumn.getText() + " (" + sortedColumn.getSortType() + ")");
                 }
             }
-        }
-    }
-
-    @Override
-    protected void process() throws Exception {
-        DataSheet dataSheet = (DataSheet) inputPorts.get(0).getData();
-
-        // Clear the table once before adding new data
-        clearTableView();
-
-        if (dataSheet != null) {
-            updateTableView(dataSheet);
-            syncScrollBars();
         }
     }
 
@@ -159,6 +143,9 @@ public class TableViewBlock extends BlockModel {
     private final List<Subscription> columnSortSubscriptions = new ArrayList<>();
     private final List<Subscription> horizontalScrollBarSubscriptions = new ArrayList<>();
 
+    // Create a Map to store row heights for visible rows only
+    private final Map<Integer, Double> visibleRowHeights = new HashMap<>();
+
     private void updateTableView(DataSheet dataSheet) {
         List<String> headers = dataSheet.getHeaderRow();
         List<List<Object>> rows = dataSheet.getDataRows();
@@ -166,28 +153,28 @@ public class TableViewBlock extends BlockModel {
         columnLetterGrid.getChildren().clear();
 
         for (int i = 0; i < headers.size(); i++) {
-            TableColumn<List<Object>, String> column = new TableColumn<>(headers.get(i));
+            TableColumn<List<Object>, String> letterColumn = new TableColumn<>(getColumnLetter(i));
+            TableColumn<List<Object>, String> namedColumn = new TableColumn<>(headers.get(i));
             final int colIndex = i;
 
-            // When underlying data does not change
+            // TBD Switch to actual column types e.g. String, Boolean, Double etc.
 //            column.setCellValueFactory(cellData
 //                    -> new SimpleStringProperty((cellData.getValue().size() > colIndex)
 //                            ? String.valueOf(cellData.getValue().get(colIndex)) : ""));
-            column.setCellValueFactory(cellData
+            namedColumn.setCellValueFactory(cellData
                     -> new SimpleObjectProperty((cellData.getValue().size() > colIndex) // tenary check needed, because otherwise empty trailing rows will cause index out of bounds 
                             ? cellData.getValue().get(colIndex) : ""));
 
+            namedColumn.setPrefWidth(100);
+            namedColumn.setMinWidth(20);
 
-            column.setPrefWidth(100);
-            column.setMinWidth(20);
-
-            tableView.getColumns().add(column);
+            tableView.getColumns().add(namedColumn);
 
             // Add column letter label
             Label letterLabel = new Label(getColumnLetter(i));
             letterLabel.setAlignment(Pos.CENTER);
             letterLabel.setStyle("-fx-padding: 5px; -fx-border-color: gray;");
-            letterLabel.setMinWidth(column.getWidth());
+            letterLabel.setMinWidth(namedColumn.getWidth());
             columnLetterGrid.add(letterLabel, i, 0);
 
         }
@@ -219,17 +206,9 @@ public class TableViewBlock extends BlockModel {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.toList()));
 
-        // Sync row height with table row height
-        tableView.setRowFactory(tv -> {
-            TableRow<List<Object>> row = new TableRow<>();
-            row.indexProperty().addListener((obs, oldIndex, newIndex) -> {
-                if (newIndex.intValue() >= 0 && newIndex.intValue() < rowHeaders.getItems().size()) {
-                    row.heightProperty().addListener((obs2, oldHeight, newHeight)
-                            -> adjustRowHeaderHeight(newIndex.intValue(), newHeight.doubleValue()));
-                }
-            });
-            return row;
-        });
+        // Sync row headers with table scrolling
+        rowHeaders.setFixedCellSize(25);
+        tableView.setFixedCellSize(25);
 
         // Add rows to the table
         tableView.getItems().addAll(rows);
@@ -237,7 +216,7 @@ public class TableViewBlock extends BlockModel {
 
     private final ListChangeListener<TableColumn<List<Object>, ?>> columnsListener = this::onColumnsChanged;
 
-    private void onColumnsChanged(Change<? extends TableColumn<List<Object>, ?>> change) {
+    private void onColumnsChanged(ListChangeListener.Change<? extends TableColumn<List<Object>, ?>> change) {
         while (change.next()) {
             if (change.wasAdded() && change.wasRemoved() && change.wasReplaced()) { // Column order changed
                 updateColumnHeaders();
@@ -341,23 +320,6 @@ public class TableViewBlock extends BlockModel {
         if (rowIndex < rowHeaders.getItems().size()) {
             rowHeaders.setFixedCellSize(newHeight);
         }
-    }
-
-    @Override
-    public BlockModel copy() {
-        TableViewBlock tableViewBlock = new TableViewBlock(workspace);
-        return tableViewBlock;
-    }
-
-    @Override
-    protected void onRemoved() {
-        if (tableView == null) {
-            return;
-        }
-        tableView.getSortOrder().removeListener(tableViewSortListener);
-        spacer.minWidthProperty().unbind();
-        clearTableView();
-
     }
 
 }

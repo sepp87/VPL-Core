@@ -8,6 +8,7 @@ import vpllib.method.JsonMethods;
 import vpllib.method.SpreadsheetMethods;
 import vpllib.spreadsheet.DataSheet;
 
+// 0 BUG align commands not working because the selectedblocks were zero when initialized
 // 0 BUG letterbar does not resize to absolute column minimum width, due to label needing minimum width
 // 0 BUG tableviewblock rename block causes info button not to align on the right
 // 0 remove handlers, listeners, bindings of customization

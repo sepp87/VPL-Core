@@ -8,7 +8,6 @@ import vpllib.method.JsonMethods;
 import vpllib.method.SpreadsheetMethods;
 import vpllib.spreadsheet.DataSheet;
 
-// 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
 // 0 DataSheet support spreadsheets without headers
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
@@ -49,6 +48,8 @@ import vpllib.spreadsheet.DataSheet;
 // CSV Blocks
 // 
 // DONE
+// 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
+//          Resolved in PortModel onConnectionsChanged. Only call onIncoming added or removed for input ports
 // 0 DataSheetBlock hide scroll bars when not hovering over
 // 4 IMPROVEMENT add scrollbars for TextBlock 
 // 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation

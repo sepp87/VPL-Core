@@ -189,11 +189,14 @@ public class PortModel extends BaseModel {
             data.set(null);
         }
 
-        if (change.wasAdded()) {
-            block.onIncomingConnectionAdded();
-        } else {
-            block.onIncomingConnectionRemoved();
+        if (portType == PortType.INPUT) {
+            if (change.wasAdded()) {
+                block.onIncomingConnectionAdded();
+            } else {
+                block.onIncomingConnectionRemoved();
+            }
         }
+
     }
 
     public ChangeListener<Object> getStartPortDataChangedListener() {

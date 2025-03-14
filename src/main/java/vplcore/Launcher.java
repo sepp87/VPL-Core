@@ -50,41 +50,6 @@ import vpllib.spreadsheet.DataSheet;
 // DONE
 // 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
 //          Resolved in PortModel onConnectionsChanged. Only call onIncoming added or removed for input ports
-// 0 DataSheetBlock hide scroll bars when not hovering over
-// 4 IMPROVEMENT add scrollbars for TextBlock 
-// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
-//          Resolved by activating blocks first when put on the workspace
-// 0 Reload stylesheets on the fly for easier styling during development
-// 4 IMPROVEMENT reload plugins on demand from menu bar
-//          Resolved with - first block Loader refactor iteration
-// 0 BUG align commands not working because the selectedblocks were zero when initialized
-// 0 remove handlers, listeners, bindings of customization > double checked and removed from CustomColorBox
-// 0 THOUGHT on connection remove - connection is calling calculate data so it is set to null for the port, does that make sense? - solved, when last connection is removed the port sets its own data to null
-// 0 BUG exception panel closes if new exception is added - solved by removing old exceptions first after processing, keeping the exceptions list populated, so the exception panel does not remove itself
-// 0 BUG Connections are not removed when block is removed
-// 0 BUG null from string not forwarded to json aslist
-// 0 BUG for blockmethod, even without input block already throws exception
-// 0 baseModel removed to readonly
-// 0 Reset undo/redo stack when loading file and creating a new file
-// undo/redo - align, createBlock, moveBlock, resizeBlock, RemoveSelectedBlocks, RemoveGroup, GroupBlocks, CreateConnection, RemoveConnection, PasteBlocks
-//      0 revive block subclasses, add abstract initialize method to BlockModel and call from revive();
-//      0 revive ports
-//      0 GroupBlocks command should not be recorded in case there are less than two selected blocks 
-//      0 PasteBlocks command should not be recorded in case there are no copied blocks available
-//      0 remove connection command in conjunction with removal of block
-//      0 remove connection command in conjunction with connection created for occupied port
-//      0 revive block / groups / connections routinemake new objects or revive old objects? 
-//          0 thought on using new objects - guaranteed that listeners, handlers and bindings are correct, but when replacing old block with new blocks, redo/undo could yield unexecutable situations because there is no reference to the replacement block -> so revival method needed
-// 0 IMPROVEMENT first set blocks active when added to workspace, instead of deactivating in copypastememory and activating on paste
-// File Methods
-// ObserveFileBlock - observe if file is updated
-// Date.fromString block
-// StringBlock add date support
-// 0 BaseModel activeProperty should be readonly
-// BUG addition throws error in text panel, cause? append text replaced by setText
-// 0 REFACTOR Connection / Port who removes what? does Port remove itself and connection also only removes itself
-// BUG string to text connection does not calculate immediately
-// 2 IMPROVEMENT Add MethodHub support for methods with more than 2 in ports 
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

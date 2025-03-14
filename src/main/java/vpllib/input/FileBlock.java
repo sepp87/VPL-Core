@@ -70,9 +70,6 @@ public class FileBlock extends BlockModel {
 
     private void onPathChanged(Object b, String o, String n) {
         processSafely();
-        // TODO move to process
-//        File file = new File(n);
-//        outputPorts.get(0).setData(file);
     }
 
     private void focusOnTextField(MouseEvent event) {
@@ -94,7 +91,6 @@ public class FileBlock extends BlockModel {
             // when path changes, process is triggered
         } else {
             path.set(null);
-//            outputPorts.get(0).setData(null);
             // when path changes, process is triggered
         }
     }

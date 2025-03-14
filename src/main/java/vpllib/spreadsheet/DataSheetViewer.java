@@ -71,6 +71,7 @@ public class DataSheetViewer extends BorderPane {
     // unknown string binding UNNEEDED -> only when switching data sheet rows to observable lists, if data sheet updates should be reflected automatically by the table views
     // spacer width binding DONE
     private void clearTableView() {
+        System.out.println("CLEAR TABLE VIEWs");
         tableView.getColumns().clear();
         tableView.getItems().clear();
         tableView.getColumns().removeListener(columnsListener);
@@ -155,16 +156,23 @@ public class DataSheetViewer extends BorderPane {
                         setText(item);
 
                         // Style specific to row number cells
-                        setStyle("-fx-alignment: center;"
-                                + "-fx-font-weight: bold;");
+//                        setStyle("-fx-alignment: center;"
+//                                + "-fx-font-weight: bold;");
+                        getStyleClass().add("numbers-column");
 
                     }
                 }
             };
         });
-        
-        
 
+        Node corner = tableView.lookup(".corner");
+
+        if (corner != null) {
+            // 3. Set the corner to be transparent
+            corner.setStyle("-fx-background-color: transparent;");
+        } else {
+            System.out.println("Corner node not found!");
+        }
     }
 
     private final ListChangeListener<TableColumn<List<Object>, ?>> columnsListener = this::onColumnsChanged;

@@ -8,16 +8,13 @@ import vpllib.method.JsonMethods;
 import vpllib.method.SpreadsheetMethods;
 import vpllib.spreadsheet.DataSheet;
 
-// 0 BUG align commands not working because the selectedblocks were zero when initialized
-// 0 BUG letterbar does not resize to absolute column minimum width, due to label needing minimum width
+// 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
+// 0 DataSheet support spreadsheets without headers
+// 0 DataSheet support LocalDate instead of Date
+// 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
-// 0 remove handlers, listeners, bindings of customization
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
-// 0 Block Loader refactor
-// 0 return BlockGroup blocks as immutable list
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
-// 4 IMPROVEMENT add scrollbars for TextBlock 
-// 4 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
 //
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
@@ -25,14 +22,13 @@ import vpllib.spreadsheet.DataSheet;
 //      0 TODO Move and Resize commands do not need to be executed, only recorded
 //
 // BACKLOG
+// 0 return BlockGroup blocks as immutable list
 // 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 4 IMPROVEMENT add save and save as commands
-// 4 IMPROVEMENT reload plugins on demand from menu bar
 // 4 IMPROVEMENT multi workspace support with copy-paste
-// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
@@ -40,6 +36,7 @@ import vpllib.spreadsheet.DataSheet;
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
+// 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
 //
 // BACKLOG BLOCKS
 // TemporalUnitBlock
@@ -52,6 +49,16 @@ import vpllib.spreadsheet.DataSheet;
 // CSV Blocks
 // 
 // DONE
+// 0 DataSheetBlock hide scroll bars when not hovering over
+// 4 IMPROVEMENT add scrollbars for TextBlock 
+// 4 IMPROVEMENT TODO set blocks in CopyPasteMemory to deactivated to disable unnecessary calculations. First needed when introducing dynamic blocks (e.g. timers, counters, file observers and so on) anything that could trigger an automatic recalculation
+//          Resolved by activating blocks first when put on the workspace
+// 0 Reload stylesheets on the fly for easier styling during development
+// 4 IMPROVEMENT reload plugins on demand from menu bar
+//          Resolved with - first block Loader refactor iteration
+// 0 BUG align commands not working because the selectedblocks were zero when initialized
+// 0 remove handlers, listeners, bindings of customization > double checked and removed from CustomColorBox
+// 0 THOUGHT on connection remove - connection is calling calculate data so it is set to null for the port, does that make sense? - solved, when last connection is removed the port sets its own data to null
 // 0 BUG exception panel closes if new exception is added - solved by removing old exceptions first after processing, keeping the exceptions list populated, so the exception panel does not remove itself
 // 0 BUG Connections are not removed when block is removed
 // 0 BUG null from string not forwarded to json aslist

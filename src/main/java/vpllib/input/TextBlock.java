@@ -56,21 +56,10 @@ public class TextBlock extends BlockModel {
         textArea = new TextArea();
         textArea.setMinSize(220, 220);
         textArea.setPrefSize(220, 220);
-        textArea.layoutBoundsProperty().addListener(layoutBoundsListener);
         textArea.textProperty().bindBidirectional(string);
         textArea.setOnKeyPressed(this::ignoreShortcuts);
         textArea.editableProperty().bind(editable); // set text area to editable when there is no active connection
         return textArea;
-    }
-
-    private final ChangeListener<Object> layoutBoundsListener = this::onLayoutBoundsChanged;
-
-    private void onLayoutBoundsChanged(Object b, Object o, Object n) {
-        ScrollBar scrollBarv = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
-        scrollBarv.setDisable(true);
-        ScrollPane pane = (ScrollPane) textArea.lookup(".scroll-pane");
-        pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
     @Override
@@ -186,7 +175,6 @@ public class TextBlock extends BlockModel {
         string.removeListener(stringListener);
         editable.unbind();
         if (textArea != null) {
-            textArea.layoutBoundsProperty().removeListener(layoutBoundsListener);
             textArea.textProperty().unbindBidirectional(string);
             textArea.setOnKeyPressed(null);
             textArea.editableProperty().unbind();

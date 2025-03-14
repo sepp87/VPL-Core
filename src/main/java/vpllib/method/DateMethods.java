@@ -6,6 +6,7 @@ import java.time.Month;
 import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.util.DateTimeUtils;
@@ -191,6 +192,15 @@ public class DateMethods {
             category = "Core")
     public static boolean isEqual(LocalDate date, LocalDate other) {
         return date.isEqual(other);
+    }
+
+    @BlockMetadata(
+            name = "daysBetween",
+            description = "Calculates the amount of time between two dates.",
+            identifier = "Date.daysBetween",
+            category = "Core")
+    public static long daysBetween(LocalDate start, LocalDate end) {
+        return ChronoUnit.DAYS.between(start, end);
     }
 
 }

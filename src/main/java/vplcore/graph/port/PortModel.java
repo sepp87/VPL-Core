@@ -185,6 +185,10 @@ public class PortModel extends BaseModel {
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
         boolean isActive = !connections.isEmpty();
         active.set(isActive);
+        if (!isActive && portType == PortType.INPUT) {
+            data.set(null);
+        }
+
         if (change.wasAdded()) {
             block.onIncomingConnectionAdded();
         } else {
@@ -257,7 +261,7 @@ public class PortModel extends BaseModel {
                     data.set(startPort.getData());
                 }
 
-            } else { // if there are no incoming connections, set data to null
+            } else { // if there are no incoming connections, set data to null - REDUNDANT since data already set to null in onConnectionsChanged
                 data.set(null);
             }
         } else { // if output port then simply set the data

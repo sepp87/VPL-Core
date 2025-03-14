@@ -39,7 +39,7 @@ public class RadialMenu extends Group {
     }
 
     public RadialMenu(List<RadialMenuItem> items) {
-        this.getStylesheets().add(Config.get().stylesheets());
+//        this.getStylesheets().add(Config.get().stylesheets());
         this.items = items;
 
         Circle outer = new Circle(0, 0, OUTER_RADIUS);

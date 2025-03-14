@@ -1,8 +1,18 @@
 package vplcore;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.Properties;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.scene.Scene;
 import vplcore.util.FileUtils;
 import vplcore.util.SystemUtils.OperatingSystem;
 import vplcore.util.SystemUtils;
@@ -101,6 +111,33 @@ public class Config {
         } else {
             PREFERENCES.put(LAST_DIRECTORY_KEY, file.getParent());
         }
+    }
+
+    public static void setStylesheets(Scene scene) {
+        Path path = Paths.get("src/main/resources/" + Config.get().stylesheets());
+        scene.getStylesheets().add(path.toUri().toString());
+        System.out.println("CSS Loaded: " + path.toUri().toString());
+        new Thread(() -> {
+            try ( WatchService watchService = FileSystems.getDefault().newWatchService()) {
+
+                path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                while (true) {
+                    WatchKey key = watchService.take();
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (event.context().toString().equals(path.getFileName().toString())) {
+                            Platform.runLater(() -> {
+                                scene.getStylesheets().clear();
+                                scene.getStylesheets().add(path.toUri().toString());
+                                System.out.println("CSS Reloaded!");
+                            });
+                        }
+                    }
+                    key.reset();
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
 }

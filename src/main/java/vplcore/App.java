@@ -106,6 +106,7 @@ public class App extends Application {
 //        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceController, workspaceModel);
         editorView.printMenuBarHeight();
 
+        Config.setStylesheets(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook

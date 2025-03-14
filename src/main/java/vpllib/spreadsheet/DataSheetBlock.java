@@ -38,7 +38,6 @@ public class DataSheetBlock extends BlockModel {
     @Override
     protected void process() throws Exception {
         DataSheet dataSheet = (DataSheet) inputPorts.get(0).getData();
-
         if (dataSheetViewer == null) {
             return;
         }

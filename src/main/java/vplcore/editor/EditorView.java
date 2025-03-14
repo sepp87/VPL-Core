@@ -15,7 +15,7 @@ public class EditorView extends AnchorPane {
 
     public EditorView(RadialMenuView radialMenuView, WorkspaceView workspaceView, MenuBarView menuBarView, ZoomView zoomView, SelectionRectangleView selectionRectangleView, BlockSearchView blockSearchView) {
 
-        this.getStylesheets().add(Config.get().stylesheets());
+//        this.getStylesheets().add(Config.get().stylesheets());
         this.getStyleClass().add("vpl");
 
         this.menuBarView = menuBarView;

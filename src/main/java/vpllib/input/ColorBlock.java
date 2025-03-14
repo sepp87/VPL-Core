@@ -77,6 +77,7 @@ public class ColorBlock extends BlockModel {
         outputPorts.get(0).dataProperty().unbind();
         if (picker != null) {
             picker.customColorProperty().unbindBidirectional(color);
+            picker.remove();
         }
     }
 

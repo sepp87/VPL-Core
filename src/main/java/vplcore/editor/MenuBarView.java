@@ -54,7 +54,6 @@ public class MenuBarView extends MenuBar {
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
         extrasMenu.getItems().addAll(reloadPlugins, logErrors);
 
-        reloadPlugins.setDisable(true);
         logErrors.setDisable(true);
 
         this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);

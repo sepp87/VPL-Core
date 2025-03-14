@@ -6,6 +6,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
@@ -35,6 +36,7 @@ public class CustomColorBox extends VBox {
             = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
     private Pane colorRect;
+    private Pane colorRectHue;
     private final Pane colorBar;
     private final Pane colorRectOverlayOne;
     private final Pane colorRectOverlayTwo;
@@ -54,6 +56,20 @@ public class CustomColorBox extends VBox {
         }
     };
 
+    public void remove() {
+        customColorProperty.removeListener(colorListener);
+        colorRectHue.backgroundProperty().unbind();
+        colorRectOverlayTwo.setOnMouseDragged(null);
+        colorRectOverlayTwo.setOnMousePressed(null);
+        colorRectIndicator.layoutXProperty().unbind();
+        colorRectIndicator.layoutYProperty().unbind();
+        colorBarIndicator.layoutXProperty().unbind();
+        colorBar.setOnMouseDragged(null);
+        colorBar.setOnMousePressed(null);
+    }
+
+    private ChangeListener<Object> colorListener = (b, o, n) -> colorChanged();
+
     public CustomColorBox() {
 
         getStylesheets().add("css/color.css");
@@ -62,7 +78,7 @@ public class CustomColorBox extends VBox {
         VBox box = new VBox();
 
         box.getStyleClass().add("color-rect-pane");
-        customColorProperty().addListener((ov, t, t1) -> colorChanged());
+        customColorProperty().addListener(colorListener);
 
         colorRectIndicator = new Region();
         colorRectIndicator.setId("color-rect-indicator");
@@ -75,7 +91,7 @@ public class CustomColorBox extends VBox {
         colorRect = new StackPane();
         colorRect.getStyleClass().addAll("color-rect", "transparent-pattern");
 
-        Pane colorRectHue = new Pane();
+        colorRectHue = new Pane();
         colorRectHue.backgroundProperty().bind(new ObjectBinding<Background>() {
 
             {

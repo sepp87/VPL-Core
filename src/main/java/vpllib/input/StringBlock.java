@@ -27,7 +27,7 @@ import vplcore.util.DateTimeUtils;
 @BlockMetadata(
         identifier = "Input.string",
         category = "Input",
-        description = "Input a line of text",
+        description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.",
         tags = {"input", "line", "string"})
 public class StringBlock extends BlockModel {
 

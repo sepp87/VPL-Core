@@ -36,9 +36,9 @@ public class ConnectionModel extends BaseModel {
 
     @Override
     public void remove() {
+        startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
         startPort.removeConnection(this);
         endPort.removeConnection(this);
-        startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
         endPort.calculateData();
         super.remove();
     }

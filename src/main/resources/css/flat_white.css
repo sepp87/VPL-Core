@@ -588,15 +588,31 @@
     -fx-background-color: rgba(0, 0, 0, 0.8);
 }
 
-/* Hide the navigation buttons (arrows) */
-.scroll-bar .increment-button,
-.scroll-bar .decrement-button {
-    -fx-pref-width: 0; /* No width */
-    -fx-pref-height: 0; /* No height */
-    -fx-background-color: transparent; /* Transparent background */
-    -fx-opacity: 0; /* Invisible */
+/* 
+Hide the navigation buttons (arrows) 
+Split between vertical and horizontal so vertical thumbs do not disappear
+*/
+.scroll-bar:vertical  .increment-button,
+.scroll-bar:vertical  .decrement-button {
+    -fx-pref-width: 20;
+    -fx-pref-height: 0;
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+    -fx-padding: 0;
 }
 
+/* 
+Hide the navigation buttons (arrows) 
+Split between vertical and horizontal so vertical thumbs do not disappear
+*/
+.scroll-bar:horizontal .increment-button,
+.scroll-bar:horizontal .decrement-button {
+    -fx-pref-width: 0;
+    -fx-pref-height: 20;
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
 
 .scroll-bar .thumb:hover {
     -fx-background-color: rgba(0, 0, 0, 0.8);
@@ -631,10 +647,31 @@
 /* Smooth fade effect on scrollbar when focused or hovered */
 .scroll-pane:hover .scroll-bar:horizontal,
 .scroll-pane:hover .scroll-bar:vertical {
-    -fx-opacity: 1;
+    -fx-opacity: 1 !important;
 }
 
+/* Full transparent background for ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-padding: 0 !important;
+    -fx-border-insets: 0 !important;
+    -fx-background-insets: 0 !important;
+}
 
+/* Forcefully hide the corner */
+.scroll-pane .corner {
+    -fx-background-color: transparent !important;
+    -fx-opacity: 0 !important;
+    -fx-padding: 0 !important;
+    -fx-border-insets: 0 !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* If there's any space, remove that too */
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
 /*////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////*/
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -645,17 +682,46 @@
     -fx-background-color: transparent;
 }
 
+/* Ensure text inside the placeholder remains visible */
+.table-view .placeholder .label {
+    -fx-font-family:'Source Code Pro';
+    -fx-font-size: 12px;
+}
+
 .table-view .column-header,
 .table-view .column-header-background,
+.table-view .filler, /* Grey box underneath the headers */
 .table-view .table-header-row,
 .table-view .table-header-background {
     -fx-background-color: transparent;
 }
 
+/* Ensure column headers also have a vertical border */
+.table-view .column-header {
+    -fx-border-color: WhiteSmoke; /* Match the table-cell border */
+    -fx-border-width: 0 1px 0 0; /* Right-side border */
+}
+
+.numbers-column {
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+}
+
+/* Dragged column header */
+.table-view .column-drag-header {
+    -fx-background-color: lightblue; /* Light blue for dragged column */
+}
+
+.table-view .table-cell {
+    -fx-border-color: WhiteSMoke; /* Change to your preferred color */
+    -fx-border-width: 0 1px 0 0; /* Right border only */
+
+}
+
 .table-view .table-row-cell {
     -fx-background-color: transparent;
-    -fx-border-color: lightgray; /* Light gray border */
-    -fx-border-width: 0 0 1px 0; /* Only bottom border for separation */
+    -fx-border-color: WhiteSmoke; /* Light gray border */
+    -fx-border-width: 1px 0 0 0; /* Only bottom border for separation */
 }
 
 .table-view .table-row-cell:odd {
@@ -680,13 +746,53 @@
     -fx-fill: black;
 }
 
-/* Dragged column header */
-.table-view .column-drag-header {
-    -fx-background-color: lightblue; /* Light blue for dragged column */
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////*/
+
+/* TableView specific scrollbar styling */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
 }
 
-/* Drop target indicator (where the column will be placed) */
+.table-view:hover .scroll-bar:vertical,
+.table-view:hover .scroll-bar:horizontal {
+    -fx-opacity: 1;
+}
+
+/* TableView virtual flow - the internal scroll container */
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:horizontal {
+    -fx-opacity: 0;
+}
+
+.table-view:hover .virtual-flow .scroll-bar:vertical,
+.table-view:hover .virtual-flow .scroll-bar:horizontal {
+    -fx-opacity: 1;
+}
+
+/* Make sure the thumb is styled consistently */
+.table-view .virtual-flow .scroll-bar .thumb {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.table-view .virtual-flow .scroll-bar:hover .thumb {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+
+
+
+/* DOES NOT WORK (overwrite TableViewSkin and TableHeaderRow since column-drag-header-line is not available through CSS)- Drop target indicator (where the column will be placed) */
 .column-drag-header-line {
     -fx-background-color: salmon; /* Salmon color for drop target line */
     -fx-pref-height: 3px; /* Make the line more visible */
+
 }
+

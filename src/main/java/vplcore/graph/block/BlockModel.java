@@ -63,7 +63,10 @@ public abstract class BlockModel extends BaseModel {
             }
             return;
         }
-        processSafely();
+        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty()) {
+//        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty() || inputPorts.stream().anyMatch(PortModel::isActive)) {
+            processSafely();
+        }
     }
 
     public ObservableList<BlockException> getExceptions() {
@@ -102,23 +105,26 @@ public abstract class BlockModel extends BaseModel {
 
     public final void processSafely() {
         Set<BlockException> previousExceptions = new HashSet<>(exceptions);
-//        exceptions.clear();
 
         // Ensure processing only happens when active
         if (!this.isActive()) {
             return;
         }
 
-        // Process if the block has a default output, no input ports, or at least one active input port
-        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty() || inputPorts.stream().anyMatch(PortModel::isActive)) {
-            try {
-                process();
-            } catch (Exception exception) {
-                BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
-                exceptions.add(blockException);
-                Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
-            }
+        try {
+            process();
+        } catch (Exception exception) {
+            BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
+            exceptions.add(blockException);
+            Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
         }
+        
+        // When there are no more incoming connections, all exceptions should be cleared, since there is nothing to process
+        if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
+            exceptions.clear();
+            return;
+        }
+        
         exceptions.removeAll(previousExceptions);
     }
 

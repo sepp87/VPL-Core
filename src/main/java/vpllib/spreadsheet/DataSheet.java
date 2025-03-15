@@ -23,6 +23,10 @@ public class DataSheet {
     private final List<List<Object>> dataRows;
     private final List<List<Object>> trailingRows;
 
+    public DataSheet(List<List<Object>> rows) {
+        this(Collections.emptyList(), Collections.emptyMap(), rows, Collections.emptyList());
+    }
+    
     public DataSheet(List<String> headers, Map<String, Class<?>> columnTypes, List<List<Object>> dataRows, List<List<Object>> leadingRows) {
         this.headerRow = headers;
         this.columnTypes = columnTypes;
@@ -41,6 +45,10 @@ public class DataSheet {
 
     public List<List<Object>> getLeadingRows() {
         return leadingRows;
+    }
+    
+    public boolean hasHeaderRow() {
+        return !headerRow.isEmpty();
     }
 
     public List<String> getHeaderRow() {

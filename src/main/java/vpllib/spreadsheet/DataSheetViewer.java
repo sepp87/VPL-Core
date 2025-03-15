@@ -9,6 +9,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -185,14 +187,6 @@ public class DataSheetViewer extends BorderPane {
         }
     }
 
-    private void adjustColumnWidth() {
-        Platform.runLater(() -> {
-            for (TableColumn<?, ?> column : tableView.getColumns()) {
-                column.setPrefWidth(Math.min(column.getWidth(), 120)); // Auto-size but cap at 120px
-            }
-        });
-    }
-
     private String getColumnLetter(int index) {
         StringBuilder sb = new StringBuilder();
         while (index >= 0) {
@@ -201,6 +195,27 @@ public class DataSheetViewer extends BorderPane {
         }
         return sb.toString();
 
+    }
+
+    private void adjustColumnWidth() {
+        Platform.runLater(() -> {
+            for (TableColumn<?, ?> column : tableView.getColumns()) {
+                column.setPrefWidth(Math.min(column.getWidth(), 120)); // Auto-size but cap at 120px
+            }
+        });
+    }
+
+    private ScrollBar getScrollBar(Control control, String orientation) {
+        for (Node node : control.lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar) {
+                ScrollBar scrollBar = (ScrollBar) node;
+                if (("horizontal".equals(orientation) && scrollBar.getOrientation() == javafx.geometry.Orientation.HORIZONTAL)
+                        || ("vertical".equals(orientation) && scrollBar.getOrientation() == javafx.geometry.Orientation.VERTICAL)) {
+                    return scrollBar;
+                }
+            }
+        }
+        return null;
     }
 
 }

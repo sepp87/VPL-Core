@@ -7,24 +7,24 @@
     <packaging>jar</packaging>
     
     <dependencies>
-        <!-- Apache POI - Core Library for Excel (.xls/.xlsx) -->
+        <!-- Apache POI - Core Library for Excel (.xls/.xlsx) 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>5.2.3</version>
-        </dependency>
+        </dependency> -->
         <!-- Apache POI - .xlsx Support -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
         </dependency>
-        <!-- Apache POI - XMLBeans (needed for POI) -->
+        <!-- Apache POI - XMLBeans (needed for POI)
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
             <version>5.1.1</version>
-        </dependency>
+        </dependency> -->
         <!-- Apache Commons CSV for handling CSV files -->
         <dependency>
             <groupId>org.apache.commons</groupId>

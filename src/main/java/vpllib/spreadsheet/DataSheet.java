@@ -23,16 +23,30 @@ public class DataSheet {
     private final List<List<Object>> dataRows;
     private final List<List<Object>> trailingRows;
 
+    private final int lengthOfLongestRow;
+
     public DataSheet(List<List<Object>> rows) {
-        this(Collections.emptyList(), Collections.emptyMap(), rows, Collections.emptyList());
+        this(Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), rows, Collections.emptyList());
     }
-    
-    public DataSheet(List<String> headers, Map<String, Class<?>> columnTypes, List<List<Object>> dataRows, List<List<Object>> leadingRows) {
-        this.headerRow = headers;
+
+    public DataSheet(List<String> headerRow, Map<String, Class<?>> columnTypes, List<List<Object>> leadingRows, List<List<Object>> dataRows, List<List<Object>> trailingRows) {
+        this.headerRow = headerRow;
         this.columnTypes = columnTypes;
         this.leadingRows = leadingRows;
         this.dataRows = dataRows;
-        this.trailingRows = Collections.emptyList();
+        this.trailingRows = trailingRows;
+        this.lengthOfLongestRow = getLongestRowLength();
+    }
+
+    private int getLongestRowLength() {
+        List<List<Object>> rows = getAllRows();
+        int result = -1;
+        for (List<Object> row : rows) {
+            if (row.size() > result) {
+                result = row.size();
+            }
+        }
+        return result;
     }
 
     public StringProperty nameProperty() {
@@ -46,7 +60,7 @@ public class DataSheet {
     public List<List<Object>> getLeadingRows() {
         return leadingRows;
     }
-    
+
     public boolean hasHeaderRow() {
         return !headerRow.isEmpty();
     }
@@ -63,13 +77,19 @@ public class DataSheet {
         return trailingRows;
     }
 
-    public List<List<? extends Object>> getAllRows() {
-        List<List<? extends Object>> result = new ArrayList<>();
+    public List<List<Object>> getAllRows() {
+        List<List<Object>> result = new ArrayList<>();
         result.addAll(leadingRows);
-        result.add(headerRow);
+        if (hasHeaderRow()) {
+            result.add(new ArrayList<>(headerRow));
+        }
         result.addAll(dataRows);
         result.addAll(trailingRows);
         return result;
+    }
+
+    public int lengthOfLongestRow() {
+        return lengthOfLongestRow;
     }
 
     public Map<String, Object> getRowAsMap(int rowIndex) {

@@ -44,15 +44,14 @@ public class SpreadsheetMethods {
 
     @BlockMetadata(
             name = "readCsv",
-            description = "",
+            description = "Reads a CSV file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             identifier = "Spreadsheet.readCsv",
             category = "Core")
-    public static DataSheet readCsv(File csv) throws IOException {
+    public static DataSheet readCsv(File csv, Integer headerRowNumber) throws IOException {
         try (Reader reader = new FileReader(csv); CSVParser csvParser = CSVParser.parse(reader,
                 CSVFormat.Builder.create(CSVFormat.DEFAULT).setSkipHeaderRecord(false).build())) {
 
             List<List<Object>> rows = new ArrayList<>();
-
             for (CSVRecord record : csvParser) {
                 List<Object> row = new ArrayList<>();
                 for (String value : record) {
@@ -61,11 +60,7 @@ public class SpreadsheetMethods {
                 rows.add(row);
             }
 
-            int headerRowNumber = detectHeaderRowNumber(rows);
-            List<String> headers = getHeadersByRowNumber(rows, headerRowNumber);
-            List<List<Object>> firstRows = removeFirstRows(rows, headerRowNumber);
-            Map<String, Class<?>> columnTypes = detectColumnTypes(rows);
-            return new DataSheet(headers, columnTypes, rows, firstRows);
+            return convertRowsToDataSheet(rows, headerRowNumber);
         }
     }
 
@@ -75,20 +70,28 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeCsv",
             category = "Core")
     public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(dataSheet.getHeaderRow().toArray(new String[0])))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer,
+                CSVFormat.Builder.create(CSVFormat.DEFAULT).build())) {
 
-            for (List<Object> row : dataSheet.getDataRows()) {
-                csvPrinter.printRecord(row);
-            }
+            printRowsToCsv(csvPrinter, dataSheet.getLeadingRows());
+            csvPrinter.printRecord(dataSheet.getHeaderRow());
+            printRowsToCsv(csvPrinter, dataSheet.getDataRows());
+            printRowsToCsv(csvPrinter, dataSheet.getTrailingRows());
+        }
+    }
+
+    private static void printRowsToCsv(CSVPrinter csvPrinter, List<List<Object>> rows) throws IOException {
+        for (List<Object> row : rows) {
+            csvPrinter.printRecord(row);
         }
     }
 
     @BlockMetadata(
             name = "readExcel",
-            description = "",
+            description = "Reads an XLSX file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             identifier = "Spreadsheet.readExcel",
             category = "Core")
-    public static DataSheet readExcel(File excel) throws IOException {
+    public static DataSheet readExcel(File excel, Integer headerRowNumber) throws IOException {
         try (FileInputStream fis = new FileInputStream(excel); Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheetAt(0);
@@ -107,35 +110,77 @@ public class SpreadsheetMethods {
                 }
                 rows.add(rowData);
             }
-
-            int headerRowNumber = detectHeaderRowNumber(rows);
-            List<String> headers = getHeadersByRowNumber(rows, headerRowNumber);
-            List<List<Object>> firstRows = removeFirstRows(rows, headerRowNumber);
-
-            Map<String, Class<?>> columnTypes = detectColumnTypes(rows);
-            return new DataSheet(headers, columnTypes, rows, firstRows);
+            DataSheet dataSheet = convertRowsToDataSheet(rows, headerRowNumber);
+            dataSheet.nameProperty().set(sheet.getSheetName());
+            return dataSheet;
         }
     }
 
-    private static List<List<Object>> removeFirstRows(List<List<Object>> rows, int rowNumber) {
-        List<List<Object>> firstRows = new ArrayList<>();
-        for (int i = 0; i <= rowNumber; i++) {
-            firstRows.add(rows.removeFirst());
+    private static DataSheet convertRowsToDataSheet(List<List<Object>> rows, Integer headerRowNumber) {
+        if (headerRowNumber == null) {
+            headerRowNumber = detectHeaderRowNumber(rows);
         }
-        return firstRows;
+        // if there is no header row detected or specified, just return a data sheet with all rows as data rows
+        if (headerRowNumber == -1) {
+            return new DataSheet(rows);
+        } else if (headerRowNumber > 0) {
+            headerRowNumber--;
+
+        }
+        List<String> headerRow = getHeaderRowByRowNumber(rows, headerRowNumber);
+        List<List<Object>> leadingRows = removeLeadingRows(rows, headerRowNumber);
+        rows.removeFirst(); // also remove the header row, after stripping the leading rows, the header row is first
+        List<List<Object>> trailingRows = removeTrailingRows(rows); // remove trailing rows with only null values
+        Map<String, Class<?>> columnTypes = detectColumnTypes(rows);
+        List<List<Object>> dataRows = rows;
+        return new DataSheet(headerRow, columnTypes, leadingRows, dataRows, trailingRows);
     }
 
-    private static List<String> getHeadersByRowNumber(List<List<Object>> rows, int rowNumber) {
-        List<String> headers = new ArrayList<>();
-        List<Object> headerRow = rows.get(rowNumber);
+    private static List<List<Object>> removeTrailingRows(List<List<Object>> rows) {
+        List<List<Object>> trailingRows = new ArrayList<>();
+        int last = rows.size() - 1;
+        reversedLoop:
+        for (int i = last; i > -1; i--) {
+            List<Object> row = rows.get(i);
+            for (Object object : row) {
+                if (object != null) {
+                    break reversedLoop;
+                }
+            }
+
+            trailingRows.add(rows.removeLast());
+        }
+        Collections.reverse(trailingRows);
+        return trailingRows;
+    }
+
+    private static List<List<Object>> removeLeadingRows(List<List<Object>> rows, int headerRowNumber) {
+        List<List<Object>> leadingRows = new ArrayList<>();
+        for (int i = 0; i < headerRowNumber; i++) {
+            leadingRows.add(rows.removeFirst());
+        }
+        System.out.println("LEADING ROWS " + leadingRows.size());
+        return leadingRows;
+    }
+
+    private static List<String> getHeaderRowByRowNumber(List<List<Object>> rows, int headerRowNumber) {
+        List<String> result = new ArrayList<>();
+        List<Object> headerRow = rows.get(headerRowNumber);
         for (Object header : headerRow) {
-            headers.add((String) header);
+            result.add((String) header);
         }
-        return headers;
+        return result;
     }
 
+    /**
+     *
+     * @param rows
+     * @return Result will be -1 in case no header row was found
+     */
     private static int detectHeaderRowNumber(List<List<Object>> rows) {
         int mostRecurringColumnCount = getMostRecurringColumnCount(rows);
+
+        System.out.println(rows.get(0).size() + " == " + mostRecurringColumnCount + " rows.get(0).size() == mostRecurringColumnCount");
 
         // case A - promote the first row to header if it has the same number of colums as the data
         if (rows.get(0).size() == mostRecurringColumnCount) {
@@ -196,20 +241,30 @@ public class SpreadsheetMethods {
 
             Sheet sheet = workbook.createSheet("Sheet1");
 
-            Row headerRow = sheet.createRow(0);
+            int index = 0;
+            addRowsToSheet(dataSheet.getLeadingRows(), sheet, index);
+            index += dataSheet.getLeadingRows().size();
+
+            Row headerRow = sheet.createRow(index++);
             for (int i = 0; i < dataSheet.getHeaderRow().size(); i++) {
                 headerRow.createCell(i).setCellValue(dataSheet.getHeaderRow().get(i));
             }
 
-            int rowIndex = 1;
-            for (List<Object> row : dataSheet.getDataRows()) {
-                Row excelRow = sheet.createRow(rowIndex++);
-                for (int i = 0; i < row.size(); i++) {
-                    setCellValue(excelRow.createCell(i), row.get(i));
-                }
-            }
+            addRowsToSheet(dataSheet.getDataRows(), sheet, index);
+            index += dataSheet.getDataRows().size();
+
+            addRowsToSheet(dataSheet.getTrailingRows(), sheet, index);
 
             workbook.write(fos);
+        }
+    }
+
+    private static void addRowsToSheet(List<List<Object>> rows, Sheet sheet, int startIndex) {
+        for (List<Object> row : rows) {
+            Row excelRow = sheet.createRow(startIndex++);
+            for (int i = 0; i < row.size(); i++) {
+                setCellValue(excelRow.createCell(i), row.get(i));
+            }
         }
     }
 
@@ -269,7 +324,7 @@ public class SpreadsheetMethods {
 
     private static Object getCellValue(Cell cell) {
         if (cell == null) {
-            return "";
+            return null;
         }
         switch (cell.getCellType()) {
             case STRING:
@@ -297,7 +352,7 @@ public class SpreadsheetMethods {
             case FORMULA:
                 return cell.getCellFormula();
             default:
-                return "";
+                return null;
         }
     }
 
@@ -366,7 +421,7 @@ public class SpreadsheetMethods {
                 .filter(row -> condition.test(row.get(colIndex)))
                 .collect(Collectors.toList());
 
-        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), filteredRows, dataSheet.getLeadingRows());
+        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), dataSheet.getLeadingRows(), filteredRows, dataSheet.getTrailingRows());
     }
 
     @BlockMetadata(
@@ -387,7 +442,7 @@ public class SpreadsheetMethods {
             Collections.reverse(sortedRows);
         }
 
-        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), sortedRows, dataSheet.getLeadingRows());
+        return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), dataSheet.getLeadingRows(), sortedRows, dataSheet.getTrailingRows());
     }
 
     @BlockMetadata(
@@ -400,13 +455,16 @@ public class SpreadsheetMethods {
             throw new IllegalArgumentException("Headers must match to merge DataSheets");
         }
 
+        List<List<Object>> mergedLeadingRows = new ArrayList<>(sheet1.getLeadingRows());
+        mergedLeadingRows.addAll(sheet2.getLeadingRows());
+
         List<List<Object>> mergedRows = new ArrayList<>(sheet1.getDataRows());
         mergedRows.addAll(sheet2.getDataRows());
 
-        List<List<Object>> mergedFirstRows = new ArrayList<>(sheet1.getLeadingRows());
-        mergedFirstRows.addAll(sheet2.getLeadingRows());
+        List<List<Object>> mergedTrailingRows = new ArrayList<>(sheet1.getLeadingRows());
+        mergedTrailingRows.addAll(sheet2.getLeadingRows());
 
-        return new DataSheet(sheet1.getHeaderRow(), sheet1.getColumnTypes(), mergedRows, mergedFirstRows);
+        return new DataSheet(sheet1.getHeaderRow(), sheet1.getColumnTypes(), mergedLeadingRows, mergedRows, mergedTrailingRows);
     }
 
     @BlockMetadata(
@@ -490,7 +548,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.convertExcelToCsv",
             category = "Core")
     public static void convertExcelToCsv(File excel, File csv) throws IOException {
-        DataSheet sheet = readExcel(excel);
+        DataSheet sheet = readExcel(excel, -1);
         writeCsv(csv, sheet);
     }
 
@@ -500,7 +558,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.convertCsvToExcel",
             category = "Core")
     public static void convertCsvToExcel(File csv, File excel) throws IOException {
-        DataSheet sheet = readCsv(csv);
+        DataSheet sheet = readCsv(csv, -1);
         writeExcel(excel, sheet);
     }
 

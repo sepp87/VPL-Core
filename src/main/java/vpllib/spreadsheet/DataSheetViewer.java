@@ -63,15 +63,6 @@ public class DataSheetViewer extends BorderPane {
         }
     }
 
-    // horizontal scroll listener DONE
-    // vertical scroll binding DONE
-    // row height listener
-    // column sort listener - table view DONE
-    // column sort subscriptions - letter bar DONE
-    // column width subscriptions - letter bar DONE
-    // column order listener DONE
-    // unknown string binding UNNEEDED -> only when switching data sheet rows to observable lists, if data sheet updates should be reflected automatically by the table views
-    // spacer width binding DONE
     private void clearTableView() {
         System.out.println("CLEAR TABLE VIEWs");
         tableView.getColumns().clear();
@@ -83,46 +74,46 @@ public class DataSheetViewer extends BorderPane {
 
     private final List<Subscription> columnSortSubscriptions = new ArrayList<>();
 
-    // Create a Map to store row heights for visible rows only
-    private final Map<Integer, Double> visibleRowHeights = new HashMap<>();
-
     private void updateTableView(DataSheet dataSheet) {
 
+        boolean hasHeaderRow = dataSheet.hasHeaderRow();
         List<String> headers = dataSheet.getHeaderRow();
-        List<List<Object>> rows = dataSheet.getDataRows();
+        List<List<Object>> rows = hasHeaderRow ? dataSheet.getDataRows() : dataSheet.getAllRows();
+        int limit = hasHeaderRow ? headers.size() : dataSheet.lengthOfLongestRow();
 
-        for (int i = 0; i < headers.size(); i++) {
+        System.out.println(rows.size() + " number of rows");
+        
+        for (int i = 0; i < limit; i++) {
 
             TableColumn<List<Object>, String> letterColumn = new TableColumn<>(getColumnLetter(i));
-            TableColumn<List<Object>, String> namedColumn = new TableColumn<>(headers.get(i));
-            letterColumn.getColumns().addAll(namedColumn);
+            tableView.getColumns().add(letterColumn);
+            letterColumn.setSortable(false);
+            TableColumn<List<Object>, String> dataColumn = letterColumn;
+            if (hasHeaderRow) {
+                TableColumn<List<Object>, String> namedColumn = new TableColumn<>(headers.get(i));
+                letterColumn.getColumns().add(namedColumn);
+                dataColumn = namedColumn;
+
+                // Detect column sorting - ascending and descending
+                Subscription columnSortSubscriber = namedColumn.sortTypeProperty().subscribe((o, n) -> {
+                    if (tableView.getSortOrder().contains(namedColumn)) {
+                        System.out.println("Sorted column: " + namedColumn.getText() + " (" + n + ")");
+                    }
+                });
+
+                columnSortSubscriptions.add(columnSortSubscriber);
+            }
             final int colIndex = i;
 
             // TBD Switch to actual column types e.g. String, Boolean, Double etc.
 //            column.setCellValueFactory(cellData
 //                    -> new SimpleStringProperty((cellData.getValue().size() > colIndex)
 //                            ? String.valueOf(cellData.getValue().get(colIndex)) : ""));
-            namedColumn.setCellValueFactory(cellData
+            dataColumn.setCellValueFactory(cellData
                     -> new SimpleObjectProperty((cellData.getValue().size() > colIndex) // tenary check needed, because otherwise empty trailing rows will cause index out of bounds 
                             ? cellData.getValue().get(colIndex) : ""));
+            dataColumn.setPrefWidth(100);
 
-            tableView.setStyle("-fx-background-color: transparent;");
-
-            letterColumn.setStyle("-fx-background-color: transparent;");
-
-            namedColumn.setPrefWidth(100);
-            namedColumn.setMinWidth(20);
-
-            tableView.getColumns().add(letterColumn);
-
-            // Detect column sorting - ascending and descending
-            Subscription columnSortSubscriber = namedColumn.sortTypeProperty().subscribe((o, n) -> {
-                if (tableView.getSortOrder().contains(namedColumn)) {
-                    System.out.println("Sorted column: " + namedColumn.getText() + " (" + n + ")");
-                }
-            });
-
-            columnSortSubscriptions.add(columnSortSubscriber);
         }
 
         // Detect Column Reordering
@@ -132,18 +123,20 @@ public class DataSheetViewer extends BorderPane {
         // Add rows to the table
         tableView.getItems().addAll(rows);
 
-        TableColumn<List<Object>, String> cornerColumn = new TableColumn<>();
         TableColumn<List<Object>, String> rowNumColumn = new TableColumn<>("#");
-        cornerColumn.getColumns().add(rowNumColumn);
-        rowNumColumn.setCellValueFactory(data
-                -> new SimpleStringProperty(String.valueOf(tableView.getItems().indexOf(data.getValue()) + 1)));
+        if (hasHeaderRow) {
+            TableColumn<List<Object>, String> cornerColumn = new TableColumn<>();
+            cornerColumn.getColumns().add(rowNumColumn);
+            tableView.getColumns().add(0, cornerColumn);
+        } else {
+            tableView.getColumns().add(0, rowNumColumn);
+        }
         rowNumColumn.setSortable(false);
         rowNumColumn.setReorderable(false);
         rowNumColumn.setPrefWidth(50);
-        tableView.getColumns().add(0, cornerColumn);
 
         // Add custom styling to the row number column
-//        rowNumColumn.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: gray;");
+        rowNumColumn.getStyleClass().add("numbers-column");
         // For more advanced styling, you can set a custom cell factory
         rowNumColumn.setCellFactory(column -> {
             return new TableCell<List<Object>, String>() {
@@ -151,18 +144,12 @@ public class DataSheetViewer extends BorderPane {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        setText(item);
+                    setText(String.valueOf(getIndex() + 1)); // Correct row number
 
-                        // Style specific to row number cells
-//                        setStyle("-fx-alignment: center;"
-//                                + "-fx-font-weight: bold;");
-                        getStyleClass().add("numbers-column");
-
+                    if (!getStyleClass().contains("numbers-column")) {
+                        getStyleClass().add("numbers-column"); // Prevent duplicate additions
                     }
+
                 }
             };
         });
@@ -170,7 +157,7 @@ public class DataSheetViewer extends BorderPane {
         Node corner = tableView.lookup(".corner");
 
         if (corner != null) {
-            // 3. Set the corner to be transparent
+            // Set the bottom left corner of the scrollpane to be transparent
             corner.setStyle("-fx-background-color: transparent;");
         } else {
             System.out.println("Corner node not found!");

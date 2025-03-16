@@ -8,7 +8,7 @@ import vpllib.method.JsonMethods;
 import vpllib.method.SpreadsheetMethods;
 import vpllib.spreadsheet.DataSheet;
 
-// 0 DataSheet support spreadsheets without headers
+// 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
@@ -38,6 +38,10 @@ import vpllib.spreadsheet.DataSheet;
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
 //
 // BACKLOG BLOCKS
+// JSON get key e.g. foo.bar.x[1]
+// FILE get encoding of file
+// Spreadsheet methods support loading multiple sheets
+// DataSheetViewer - hide cells with no data
 // TemporalUnitBlock
 // 3DViewerBlock
 // Geometry Blocks
@@ -48,6 +52,8 @@ import vpllib.spreadsheet.DataSheet;
 // CSV Blocks
 // 
 // DONE
+// 0 DataSheet support spreadsheets without headers
+// 0 DataSheet support name of sheet
 // 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
 //          Resolved in PortModel onConnectionsChanged. Only call onIncoming added or removed for input ports
 //

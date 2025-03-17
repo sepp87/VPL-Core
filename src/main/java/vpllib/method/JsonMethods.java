@@ -1,5 +1,6 @@
 package vpllib.method;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -8,8 +9,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import vplcore.graph.block.BlockMetadata;
 
 /**
@@ -23,83 +26,41 @@ public class JsonMethods {
             .setPrettyPrinting()
             .create();
 
+
     @BlockMetadata(
             identifier = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
-    public static List<?> asList(String json) throws JsonParseException {
-        JsonElement root = PARSER.parse(json);
-        if (!root.isJsonArray()) {
-            System.out.println("BEFORE EXCEPTION");
-            throw new JsonParseException("Input data is not a JSON array.");
-        }
-        JsonArray array = root.getAsJsonArray();
+    public static List<Object> asList(String jsonArray) {
+        JsonElement element = PARSER.parse(jsonArray);
+        return parseJsonElement(element);
+    }
 
-        Boolean isIntegerList = isIntegerList(array);
-        if (isIntegerList == null) {
-            List<String> result = new ArrayList<>();
-            for (JsonElement element : array) {
-                String value = element.toString();
-                result.add(value);
-            }
-            return result;
-        }
-
-        if (isIntegerList) {
-            List<Integer> result = new ArrayList<>();
-            for (JsonElement element : array) {
-                Integer value = null;
-                if (!element.isJsonNull()) {
-                    value = element.getAsNumber().intValue();
+    private static List<Object> parseJsonElement(JsonElement element) {
+        List<Object> list = new ArrayList<>();
+        if (element.isJsonArray()) {
+            for (JsonElement item : element.getAsJsonArray()) {
+                if (item.isJsonObject()) {
+                    list.add(new Gson().fromJson(item, Map.class));
+                } else if (item.isJsonArray()) {
+                    list.add(parseJsonElement(item));
+                } else if (item.isJsonPrimitive()) {
+                    JsonPrimitive primitive = item.getAsJsonPrimitive();
+                    if (primitive.isString()) {
+                        list.add(primitive.getAsString());
+                    } else if (primitive.isNumber()) {
+                        list.add(primitive.getAsNumber());
+                    } else if (primitive.isBoolean()) {
+                        list.add(primitive.getAsBoolean());
+                    }
+                } else {
+                    list.add(null);
                 }
-                result.add(value);
             }
-            return result;
         }
-
-        List<Double> result = new ArrayList<>();
-        for (JsonElement element : array) {
-            Double value = null;
-            if (!element.isJsonNull()) {
-                value = element.getAsNumber().doubleValue();
-            }
-            result.add(value);
-        }
-        return result;
+        return list;
     }
 
-    /**
-     *
-     * @param a
-     * @return returns true when array contains only integers, false when double
-     * and null when none of both
-     */
-    private static Boolean isIntegerList(JsonArray a) {
-        Boolean result = true;
-        Iterator<JsonElement> iterator = a.iterator();
-        while (iterator.hasNext()) {
-
-            JsonElement next = iterator.next();
-
-            if (next.isJsonNull()) {
-                continue;
-            }
-
-            if (!next.isJsonPrimitive()) {
-                return null;
-            }
-
-            JsonPrimitive primitive = next.getAsJsonPrimitive();
-            if (!primitive.isNumber()) {
-                return null;
-            }
-
-            if (primitive.getAsNumber().doubleValue() % 1 != 0) {
-                result = false;
-            }
-        }
-        return result;
-    }
 
     @BlockMetadata(
             identifier = "Json.getKey",

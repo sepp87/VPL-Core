@@ -48,7 +48,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.readCsv",
             category = "Core")
     public static DataSheet readCsv(File csv, Integer headerRowNumber) throws IOException {
-        try (Reader reader = new FileReader(csv); CSVParser csvParser = CSVParser.parse(reader,
+        try ( Reader reader = new FileReader(csv);  CSVParser csvParser = CSVParser.parse(reader,
                 CSVFormat.Builder.create(CSVFormat.DEFAULT).setSkipHeaderRecord(false).build())) {
 
             List<List<Object>> rows = new ArrayList<>();
@@ -70,7 +70,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeCsv",
             category = "Core")
     public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer,
+        try ( BufferedWriter writer = new BufferedWriter(new FileWriter(csv));  CSVPrinter csvPrinter = new CSVPrinter(writer,
                 CSVFormat.Builder.create(CSVFormat.DEFAULT).build())) {
 
             printRowsToCsv(csvPrinter, dataSheet.getLeadingRows());
@@ -92,7 +92,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.readExcel",
             category = "Core")
     public static DataSheet readExcel(File excel, Integer headerRowNumber) throws IOException {
-        try (FileInputStream fis = new FileInputStream(excel); Workbook workbook = new XSSFWorkbook(fis)) {
+        try ( FileInputStream fis = new FileInputStream(excel);  Workbook workbook = new XSSFWorkbook(fis)) {
 
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -119,13 +119,10 @@ public class SpreadsheetMethods {
     private static DataSheet convertRowsToDataSheet(List<List<Object>> rows, Integer headerRowNumber) {
         if (headerRowNumber == null) {
             headerRowNumber = detectHeaderRowNumber(rows);
-        }
-        // if there is no header row detected or specified, just return a data sheet with all rows as data rows
-        if (headerRowNumber == -1) {
-            return new DataSheet(rows);
+        } else if (headerRowNumber == -1) {
+            return new DataSheet(rows); // if there is no header row detected or specified, just return a data sheet with all rows as data rows
         } else if (headerRowNumber > 0) {
-            headerRowNumber--;
-
+            headerRowNumber--; // headerRowNumber was input by user, decrement row number by one, since data sheets row numbering starts with one
         }
         List<String> headerRow = getHeaderRowByRowNumber(rows, headerRowNumber);
         List<List<Object>> leadingRows = removeLeadingRows(rows, headerRowNumber);
@@ -237,7 +234,7 @@ public class SpreadsheetMethods {
             identifier = "Spreadsheet.writeExcel",
             category = "Core")
     public static void writeExcel(File excel, DataSheet dataSheet) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook(); FileOutputStream fos = new FileOutputStream(excel)) {
+        try ( Workbook workbook = new XSSFWorkbook();  FileOutputStream fos = new FileOutputStream(excel)) {
 
             Sheet sheet = workbook.createSheet("Sheet1");
 

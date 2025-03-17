@@ -30,9 +30,9 @@ public class DataSheet {
     }
 
     public DataSheet(List<String> headerRow, Map<String, Class<?>> columnTypes, List<List<Object>> leadingRows, List<List<Object>> dataRows, List<List<Object>> trailingRows) {
+        this.leadingRows = leadingRows;
         this.headerRow = headerRow;
         this.columnTypes = columnTypes;
-        this.leadingRows = leadingRows;
         this.dataRows = dataRows;
         this.trailingRows = trailingRows;
         this.lengthOfLongestRow = getLongestRowLength();

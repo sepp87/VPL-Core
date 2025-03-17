@@ -36,12 +36,12 @@ public class DataSheetViewer extends BorderPane {
         this.setCenter(tableView);
     }
 
-    public void setDataSheet(DataSheet dataSheet) {
+    public void setDataSheet(DataSheet dataSheet, boolean showAll) {
         clearTableView();
         if (dataSheet == null) {
             return;
         }
-        updateTableView(dataSheet);
+        updateTableView(dataSheet, showAll);
     }
 
     public void remove() {
@@ -74,15 +74,15 @@ public class DataSheetViewer extends BorderPane {
 
     private final List<Subscription> columnSortSubscriptions = new ArrayList<>();
 
-    private void updateTableView(DataSheet dataSheet) {
+    private void updateTableView(DataSheet dataSheet, boolean showAll) {
 
-        boolean hasHeaderRow = dataSheet.hasHeaderRow();
+        boolean hasHeaderRow = showAll ? false : dataSheet.hasHeaderRow();
         List<String> headers = dataSheet.getHeaderRow();
         List<List<Object>> rows = hasHeaderRow ? dataSheet.getDataRows() : dataSheet.getAllRows();
         int limit = hasHeaderRow ? headers.size() : dataSheet.lengthOfLongestRow();
 
         System.out.println(rows.size() + " number of rows");
-        
+
         for (int i = 0; i < limit; i++) {
 
             TableColumn<List<Object>, String> letterColumn = new TableColumn<>(getColumnLetter(i));

@@ -1,14 +1,11 @@
 package vplcore;
 
-import java.io.File;
 import java.io.IOException;
 import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
-import vpllib.method.SpreadsheetMethods;
-import vpllib.spreadsheet.DataSheet;
 
-// 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
+// 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
@@ -48,10 +45,13 @@ import vpllib.spreadsheet.DataSheet;
 // ChatGPT Block
 // WebClientBlock
 // 2d Map
-// Excel Blocks
-// CSV Blocks
 // 
 // DONE
+// 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
+//      Solved - already thrown but with one minus index off due to row number starting at 1
+// Boolean input block
+// Excel Blocks
+// CSV Blocks
 // 0 DataSheet support spreadsheets without headers
 // 0 DataSheet support name of sheet
 // 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 

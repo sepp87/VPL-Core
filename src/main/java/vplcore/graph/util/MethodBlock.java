@@ -21,6 +21,7 @@ import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockView;
 import vplcore.graph.block.ExceptionPanel;
 import vplcore.graph.block.ExceptionPanel.BlockException;
+import vplcore.util.ListUtils;
 
 /**
  *
@@ -146,7 +147,7 @@ public class MethodBlock extends BlockModel {
 
     private Object invokeListMethodArgs2(Object a, Object b) throws Exception {
         // both objects are single values
-        if (!isList(b)) {
+        if (!ListUtils.isList(b)) {
             try {
                 Object result = method.invoke(null, a, b);
                 return result;
@@ -222,7 +223,7 @@ public class MethodBlock extends BlockModel {
 
             for (int i = 0; i < shortestListSize; i++) {
                 Object p = parameters[i];
-                if (isList(p)) {
+                if (ListUtils.isList(p)) {
                     continue;
                 }
                 List<Object> list = new ArrayList<>();
@@ -247,18 +248,12 @@ public class MethodBlock extends BlockModel {
         return result;
     }
 
-    public boolean isList(Object o) {
-        if (o == null) {
-            return false;
-        } else {
-            return List.class.isAssignableFrom(o.getClass());
-        }
-    }
+
 
     private int getListCount(Object... parameters) {
         int result = 0;
         for (Object p : parameters) {
-            if (isList(p)) {
+            if (ListUtils.isList(p)) {
                 result++;
             }
         }
@@ -273,7 +268,7 @@ public class MethodBlock extends BlockModel {
         }
         result = first.size();
         for (Object p : parameters) {
-            if (isList(p)) {
+            if (ListUtils.isList(p)) {
                 List<?> list = (List<?>) p;
                 result = list.size() < result ? list.size() : result;
             }
@@ -283,7 +278,7 @@ public class MethodBlock extends BlockModel {
 
     private List<?> getFirstList(Object... parameters) {
         for (Object p : parameters) {
-            if (isList(p)) {
+            if (ListUtils.isList(p)) {
                 return (List<?>) p;
             }
         }

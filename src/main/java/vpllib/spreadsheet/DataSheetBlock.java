@@ -22,7 +22,16 @@ public class DataSheetBlock extends BlockModel {
         super(workspace);
         nameProperty().set("Table");
         resizableProperty().set(true);
-        addInputPort("Data", DataSheet.class);
+        addInputPort("data", DataSheet.class);
+        addInputPort("showAll", Boolean.class);
+        addOutputPort("dataSheet", DataSheet.class);
+        addOutputPort("allRows", Object.class);
+        addOutputPort("leadingRows", Object.class);
+        addOutputPort("headerRow", String.class);
+        addOutputPort("columnTypes", Object.class);
+        addOutputPort("dataRows", Object.class);
+        addOutputPort("trailingRows", Object.class);
+
     }
 
     @Override
@@ -38,10 +47,23 @@ public class DataSheetBlock extends BlockModel {
     @Override
     protected void process() throws Exception {
         DataSheet dataSheet = (DataSheet) inputPorts.get(0).getData();
+        Boolean showAll = (Boolean) inputPorts.get(1).getData();
+        showAll = (showAll != null) ? showAll : false;
+
+        if (dataSheet != null) {
+            outputPorts.get(0).setData(dataSheet);
+            outputPorts.get(1).setData(dataSheet.getAllRows());
+            outputPorts.get(2).setData(dataSheet.getLeadingRows());
+            outputPorts.get(3).setData(dataSheet.getHeaderRow());
+            outputPorts.get(4).setData(dataSheet.getColumnTypes());
+            outputPorts.get(5).setData(dataSheet.getDataRows());
+            outputPorts.get(6).setData(dataSheet.getTrailingRows());
+        }
+
         if (dataSheetViewer == null) {
             return;
         }
-        dataSheetViewer.setDataSheet(dataSheet);
+        dataSheetViewer.setDataSheet(dataSheet, showAll);
     }
 
     @Override

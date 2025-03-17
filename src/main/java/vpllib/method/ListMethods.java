@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.ListUtils;
 
 /**
  *
@@ -216,6 +217,68 @@ public class ListMethods {
     public static <T extends Comparable<? super T>> List<T> sort(List<T> list, Integer index) {
         List<T> result = new ArrayList<>(list);
         Collections.sort(result);
+        return result;
+    }
+
+    @BlockMetadata(
+            identifier = "List.transpose",
+            category = "Core",
+            description = "Swap rows and columns, so that the first row becomes the first column, the second row becomes the second column, and so on.")
+    public static <T> List<List<T>> transpose(List<List<T>> matrix) {
+        if (matrix == null || matrix.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        int rowCount = matrix.size();
+        int colCount = matrix.get(0).size(); // Assuming all rows have the same length
+
+        List<List<T>> transposed = new ArrayList<>();
+        for (int col = 0; col < colCount; col++) {
+            List<T> newRow = new ArrayList<>();
+            for (int row = 0; row < rowCount; row++) {
+                if (col < matrix.get(row).size()) { // Prevent IndexOutOfBounds
+                    newRow.add(matrix.get(row).get(col));
+                }
+            }
+            transposed.add(newRow);
+        }
+        return transposed;
+    }
+    @BlockMetadata(
+            identifier = "List.indexOf",
+            category = "Core",
+            description = "Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element.")
+    public static <T> int indexOf(List<T> list, Object o) {
+        return list.indexOf(o);
+    }
+
+    private static boolean allLists(List list) {
+        for (Object o : list) {
+            if (!ListUtils.isList(o)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static int countNestedLists(List list) {
+        int result = 0;
+        for (Object p : list) {
+            if (ListUtils.isList(p)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private static int sizeOfLongestNestedList(List list) {
+        int result = -1;
+        for (Object p : list) {
+            if (ListUtils.isList(p)) {
+                List<?> nestedList = (List<?>) p;
+                result = nestedList.size() > result ? nestedList.size() : result;
+            }
+        }
         return result;
     }
 

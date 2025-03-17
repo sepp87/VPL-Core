@@ -5,6 +5,7 @@ import vplcore.util.DataParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
+// 0 Improve transpose with jagged lists
 // 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C

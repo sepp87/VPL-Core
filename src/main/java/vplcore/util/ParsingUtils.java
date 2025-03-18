@@ -1,20 +1,22 @@
 package vplcore.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author joostmeulenkamp
  */
-public class DataParsingUtils {
+public class ParsingUtils {
 
-    
+    public static Object castToBestNumericType(Number value) {
+        double number = value.doubleValue();
+        if (number % 1 == 0) { // If no decimal part
+            if (number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE) {
+                return (int) number; // Convert to Integer
+            } else {
+                return (long) number; // Convert to Long
+            }
+        }
+        return number;
+    }
 
     /**
      * @param rawValue the string to check
@@ -81,8 +83,5 @@ public class DataParsingUtils {
 
         return newValue;
     }
-
-
-
 
 }

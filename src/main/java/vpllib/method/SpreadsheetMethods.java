@@ -34,6 +34,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.ParsingUtils;
 import vpllib.spreadsheet.DataSheet;
 
 /**
@@ -117,8 +118,11 @@ public class SpreadsheetMethods {
     }
 
     private static DataSheet convertRowsToDataSheet(List<List<Object>> rows, Integer headerRowNumber) {
+        int size = rows.size();
         if (headerRowNumber == null) {
             headerRowNumber = detectHeaderRowNumber(rows);
+        } else if (headerRowNumber < -1 || headerRowNumber > size) {
+            throw new IndexOutOfBoundsException("Header row number " + headerRowNumber + " out of bounds; index should be within -1 and " + size);
         } else if (headerRowNumber == -1) {
             return new DataSheet(rows); // if there is no header row detected or specified, just return a data sheet with all rows as data rows
         } else if (headerRowNumber > 0) {
@@ -336,14 +340,7 @@ public class SpreadsheetMethods {
                     return cell.getDateCellValue();
                 }
                 double number = cell.getNumericCellValue();
-                if (number % 1 == 0) { // If no decimal part
-                    if (number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE) {
-                        return (int) number; // Convert to Integer
-                    } else {
-                        return (long) number; // Convert to Long
-                    }
-                }
-                return cell.getNumericCellValue();
+                return ParsingUtils.castToBestNumericType(number);
             case BOOLEAN:
                 return cell.getBooleanCellValue();
             case FORMULA:

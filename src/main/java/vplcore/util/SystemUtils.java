@@ -28,7 +28,7 @@ public class SystemUtils {
             }
             return path.endsWith(".jar") ? path.substring(0, path.lastIndexOf(File.separatorChar) + 1) : fallbackPath;
         } catch (URISyntaxException ex) {
-            Logger.getLogger(DataParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return fallbackPath;
     }

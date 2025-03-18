@@ -1,18 +1,17 @@
 package vplcore;
 
 import java.io.IOException;
-import vplcore.util.DataParsingUtils;
+import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 // 0 Improve transpose with jagged lists
-// 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
-//
+// 
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
 // 1 IMPROVEMENT Add undo/redo functionality
@@ -48,8 +47,8 @@ import vpllib.method.JsonMethods;
 // 2d Map
 // 
 // DONE
+// 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
-//      Solved - already thrown but with one minus index off due to row number starting at 1
 // Boolean input block
 // Excel Blocks
 // CSV Blocks
@@ -124,10 +123,10 @@ public class Launcher {
     }
 
     static void TestGetDoubleValue() {
-        Double value = DataParsingUtils.getDoubleValue("100 000");
-        value = DataParsingUtils.getDoubleValue("100,000");
-        value = DataParsingUtils.getDoubleValue("100000");
-        value = DataParsingUtils.getDoubleValue("100000d");
+        Double value = ParsingUtils.getDoubleValue("100 000");
+        value = ParsingUtils.getDoubleValue("100,000");
+        value = ParsingUtils.getDoubleValue("100000");
+        value = ParsingUtils.getDoubleValue("100000d");
         System.out.println(value + " ");
     }
 

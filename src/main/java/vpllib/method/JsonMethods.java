@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.ParsingUtils;
 
 /**
  *
@@ -49,7 +50,8 @@ public class JsonMethods {
                     if (primitive.isString()) {
                         list.add(primitive.getAsString());
                     } else if (primitive.isNumber()) {
-                        list.add(primitive.getAsNumber());
+                        Number number = primitive.getAsNumber();
+                        list.add(ParsingUtils.castToBestNumericType(number));
                     } else if (primitive.isBoolean()) {
                         list.add(primitive.getAsBoolean());
                     }

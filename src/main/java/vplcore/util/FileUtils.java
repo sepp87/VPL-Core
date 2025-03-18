@@ -144,7 +144,7 @@ public class FileUtils {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(DataParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return stringList;
     }
@@ -163,7 +163,7 @@ public class FileUtils {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(DataParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -173,7 +173,7 @@ public class FileUtils {
             try {
                 file.createNewFile();
             } catch (IOException ex) {
-                Logger.getLogger(DataParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return file;
@@ -191,7 +191,7 @@ public class FileUtils {
         try ( InputStream inputStream = new FileInputStream(file)) {
             properties.load(inputStream);
         } catch (IOException ex) {
-            Logger.getLogger(DataParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return properties;
     }

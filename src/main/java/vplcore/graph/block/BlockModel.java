@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import vplcore.graph.port.PortModel;
@@ -14,6 +15,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -127,7 +129,6 @@ public abstract class BlockModel extends BaseModel {
         
         exceptions.removeAll(previousExceptions);
     }
-
     protected abstract void process() throws Exception;
 
     public abstract BlockModel copy();

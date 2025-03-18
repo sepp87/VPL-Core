@@ -8,8 +8,8 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import jo.vpl.xml.BlockTag;
@@ -80,10 +80,29 @@ public class MethodBlock extends BlockModel {
     private final Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
 
     /**
-     * calculate function is called whenever new data is incoming
+     * process function is called whenever new data is incoming
      */
     @Override
-    public void process() {
+    public final void process() {
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                processLater();
+                return null;
+            }
+        };
+
+        // Run the task in a separate thread
+        new Thread(task).start();
+    }
+
+    public void processLater() {
+//    @Override
+//    public void process() {
+
+        final Object[] resultRef = {null}; // Use an array instead of AtomicReference
+        final Throwable[] exceptionRef = {null};
 
         traversalLog.clear();
         Object result = null;
@@ -94,18 +113,21 @@ public class MethodBlock extends BlockModel {
                 Object a = inputPorts.get(0).getData();
 //                result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs1(a);
                 result = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs3(a);
+                resultRef[0] = isListOperator ? invokeListMethodArgs1(a) : invokeMethodArgs3(a);
 
             } else if (count == 2) {
                 Object a = inputPorts.get(0).getData();
                 Object b = inputPorts.get(1).getData();
 //                result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs2(a, b);
                 result = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs3(a, b);
+                resultRef[0] = isListOperator ? invokeListMethodArgs2(a, b) : invokeMethodArgs3(a, b);
 
             } else if (count == 3) {
                 Object a = inputPorts.get(0).getData();
                 Object b = inputPorts.get(1).getData();
                 Object c = inputPorts.get(2).getData();
                 result = invokeMethodArgs3(a, b, c);
+                resultRef[0] = invokeMethodArgs3(a, b, c);
                 // ToDo
 
             }
@@ -114,16 +136,29 @@ public class MethodBlock extends BlockModel {
             if (e.getCause() != null) {
                 throwable = e.getCause();
             }
-            BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
-            exceptions.add(exception);
+            exceptionRef[0] = (e.getCause() != null) ? e.getCause() : e;
+            Platform.runLater(() -> {
+                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(),
+                        ExceptionPanel.Severity.ERROR, exceptionRef[0]);
+                exceptions.add(exception);
+            });
+
+//            BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
+//            exceptions.add(exception);
         }
 
-        if (isListReturnType && result != null) {
-            List<?> list = (List) result;
+        if (isListReturnType && resultRef[0] != null) {
+            List<?> list = (List<?>) resultRef[0];
             determineOutPortDataTypeFromList(list);
         }
+        Platform.runLater(() -> outputPorts.get(0).setData(resultRef[0]));
 
-        outputPorts.get(0).setData(result);
+        // Process list return type if needed
+//        if (isListReturnType && result != null) {
+//            List<?> list = (List) result;
+//            determineOutPortDataTypeFromList(list);
+//        }
+//        outputPorts.get(0).setData(result);
     }
 
     private void determineOutPortDataTypeFromList(List<?> list) {
@@ -180,12 +215,21 @@ public class MethodBlock extends BlockModel {
                 return result;
             } catch (Exception e) {
 
-                Throwable throwable = e;
-                if (e.getCause() != null) {
-                    throwable = e.getCause();
-                }
-                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
-                exceptions.add(exception);
+//                Throwable throwable = e;
+//                if (e.getCause() != null) {
+//                    throwable = e.getCause();
+//                }
+//
+//                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
+//                exceptions.add(exception);
+
+                final Throwable[] exceptionRef = {null};
+                exceptionRef[0] = (e.getCause() != null) ? e.getCause() : e;
+                Platform.runLater(() -> {
+                    BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(),
+                            ExceptionPanel.Severity.ERROR, exceptionRef[0]);
+                    exceptions.add(exception);
+                });
 
                 System.out.println("EXCEPTION CLASS " + e.getClass().toString());
                 if (e.getCause() != null) {
@@ -247,8 +291,6 @@ public class MethodBlock extends BlockModel {
         }
         return result;
     }
-
-
 
     private int getListCount(Object... parameters) {
         int result = 0;

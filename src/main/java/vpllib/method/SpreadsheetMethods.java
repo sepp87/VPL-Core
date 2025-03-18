@@ -186,24 +186,24 @@ public class SpreadsheetMethods {
         // case A - promote the first row to header if it has the same number of colums as the data
         if (rows.get(0).size() == mostRecurringColumnCount) {
             return 0;
+        }
 
-            // case B - look for the first row that has as many columns as the data and does not have any missing data
-        } else {
-            int headerRowNumber = -1;
-            rowLoop:
-            for (List<Object> headerRowCandidate : rows) {
-                headerRowNumber++;
-                if (headerRowCandidate.size() == mostRecurringColumnCount) {
-                    for (Object cell : headerRowCandidate) {
-                        if (cell == null || (cell instanceof String && cell.equals(""))) {
-                            continue rowLoop;
-                        }
+        // case B - look for the first row that has as many columns as the data and does not have any missing data
+        int headerRowNumber = -1;
+        rowLoop:
+        for (List<Object> headerRowCandidate : rows) {
+            headerRowNumber++;
+            if (headerRowCandidate.size() == mostRecurringColumnCount) {
+                for (Object cell : headerRowCandidate) {
+                    if (cell == null || (cell instanceof String && cell.equals(""))) {
+                        continue rowLoop;
                     }
-                    return headerRowNumber;
-
                 }
+                return headerRowNumber;
+
             }
         }
+
         return -1;
     }
 
@@ -211,14 +211,9 @@ public class SpreadsheetMethods {
         Map<Integer, Integer> columnCount = new HashMap<>();
 
         for (List<Object> row : rows) {
-
             int lastCell = row.size();
-            if (columnCount.containsKey(lastCell)) {
-                int count = columnCount.get(lastCell) + 1;
-                columnCount.put(lastCell, count);
-            } else {
-                columnCount.put(lastCell, 1);
-            }
+            int count = columnCount.getOrDefault(lastCell, 0) + 1;
+            columnCount.put(lastCell, count);
         }
 
         Integer mostRecurringColumnCount = -1;
@@ -226,6 +221,7 @@ public class SpreadsheetMethods {
 
         for (Entry<Integer, Integer> count : columnCount.entrySet()) {
             if (count.getValue() > recurrences) {
+                recurrences = count.getValue();
                 mostRecurringColumnCount = count.getKey();
             }
         }

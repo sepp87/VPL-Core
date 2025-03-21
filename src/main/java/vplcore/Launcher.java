@@ -1,10 +1,12 @@
 package vplcore;
 
 import java.io.IOException;
+import org.apache.poi.util.IOUtils;
 import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
+// 0 when built the app cannot find circle-xmark-solid.svg
 // 0 support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 0 add getColumn and transpose to Matrix methods
@@ -83,7 +85,7 @@ import vpllib.method.JsonMethods;
 public class Launcher {
 
     public static void main(String[] args) throws IOException {
-
+        IOUtils.setByteArrayMaxOverride(300_000_000);
         if (false) {
             return;
         }

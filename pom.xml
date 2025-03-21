@@ -121,7 +121,7 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>jo.vpl.Launcher</mainClass>
+                        <mainClass>vplcore.Launcher</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>

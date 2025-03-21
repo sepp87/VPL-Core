@@ -10,8 +10,14 @@ import java.util.List;
 import java.util.Set;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import jo.vpl.xml.BlockTag;
 import vplcore.IconType;
 import vplcore.graph.block.BlockModel;
@@ -35,11 +41,15 @@ import vplcore.util.ListUtils;
 public class MethodBlock extends BlockModel {
 
     private final BlockMetadata info;
-    public String identifier;
-    public String category;
-    public String description;
-    public String[] tags;
-    public Method method;
+    private String identifier;
+    private String category;
+    private String description;
+    private String[] tags;
+    private Method method;
+
+    private StackPane container;
+    private ProgressIndicator spinner;
+    private Label label;
 
     public MethodBlock(WorkspaceModel workspace, Method method) {
         super(workspace);
@@ -52,6 +62,10 @@ public class MethodBlock extends BlockModel {
         this.method = method;
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
     @Override
     protected void initialize() {
 
@@ -59,7 +73,9 @@ public class MethodBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        Label label;
+
+        spinner = new ProgressIndicator();
+
         if (!info.icon().equals(IconType.NULL)) {
             label = BlockView.getAwesomeIcon(info.icon());
 
@@ -72,7 +88,9 @@ public class MethodBlock extends BlockModel {
             label = new Label(shortName);
             label.getStyleClass().add("block-text");
         }
-        return label;
+        spinner.prefWidthProperty().bind(label.widthProperty());
+        container = new StackPane(label);
+        return container;
     }
 
     public boolean isListOperator = false;
@@ -93,8 +111,24 @@ public class MethodBlock extends BlockModel {
             }
         };
 
+        if (container != null && label.getWidth() != 0.0) {
+            task.setOnSucceeded(event -> Platform.runLater(() -> {
+                container.getChildren().clear();
+                container.getChildren().add(label);
+
+            }));
+        }
+
+        if (container != null  && label.getWidth() != 0.0) {
+            spinner.setMinWidth(label.getWidth());
+            container.getChildren().clear();
+            container.getChildren().add(spinner);
+        }
+
         // Run the task in a separate thread
-        new Thread(task).start();
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void processLater() {
@@ -222,7 +256,6 @@ public class MethodBlock extends BlockModel {
 //
 //                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(), ExceptionPanel.Severity.ERROR, throwable);
 //                exceptions.add(exception);
-
                 final Throwable[] exceptionRef = {null};
                 exceptionRef[0] = (e.getCause() != null) ? e.getCause() : e;
                 Platform.runLater(() -> {
@@ -352,7 +385,9 @@ public class MethodBlock extends BlockModel {
 
     @Override
     protected void onRemoved() {
-
+        if (container != null) {
+            container.prefWidthProperty().unbind();
+        }
     }
 
     enum LacingMode {

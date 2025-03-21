@@ -244,7 +244,8 @@ public class PortModel extends BaseModel {
                 data.set(listOfLists);
 
             } else if (!connections.isEmpty()) { // incoming data of one single incoming connection
-                System.out.println("Data Received: " + value);
+//                System.out.println("Data Received: " + value);
+                System.out.println("Data Received:");
 
                 //Cast all primitive dataType to String if this port dataType is String
                 PortModel startPort = connections.iterator().next().getStartPort();

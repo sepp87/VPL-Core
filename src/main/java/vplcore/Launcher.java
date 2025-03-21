@@ -5,6 +5,9 @@ import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
+// 0 support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
+// 0 adding huge lists to input.text causes long loading. should be made concurrent also
+// 0 add getColumn and transpose to Matrix methods
 // 0 Improve transpose with jagged lists
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
@@ -18,6 +21,8 @@ import vpllib.method.JsonMethods;
 //      0 TODO Move and Resize commands do not need to be executed, only recorded
 //
 // BACKLOG
+// 0 refactor concurrency of method blocks
+// 0 refactor spinner need for checking label width != 0.0
 // 0 return BlockGroup blocks as immutable list
 // 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC

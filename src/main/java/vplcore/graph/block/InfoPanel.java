@@ -148,7 +148,7 @@ public class InfoPanel extends Pane {
     private Label buildDescription() {
         BlockMetadata info;
         if (blockModel instanceof MethodBlock methodBlock) {
-            info = methodBlock.method.getAnnotation(BlockMetadata.class);
+            info = methodBlock.getMethod().getAnnotation(BlockMetadata.class);
         } else {
             info = blockModel.getClass().getAnnotation(BlockMetadata.class);
         }

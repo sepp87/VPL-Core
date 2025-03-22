@@ -2,7 +2,9 @@ package vplcore;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -114,12 +116,28 @@ public class Config {
     }
 
     public static void setStylesheets(Scene scene) {
-        Path path = Paths.get("src/main/resources/" + Config.get().stylesheets());
-        scene.getStylesheets().add(path.toUri().toString());
-        System.out.println("CSS Loaded: " + path.toUri().toString());
-        new Thread(() -> {
-            try ( WatchService watchService = FileSystems.getDefault().newWatchService()) {
+        // Load the CSS from classpath using ClassLoader
+        String stylesheetPath = Config.get().stylesheets(); // Adjust based on your structure
+        URL resourceUrl = Config.get().getClass().getClassLoader().getResource(stylesheetPath);
 
+        if (resourceUrl != null) {
+            scene.getStylesheets().add(resourceUrl.toExternalForm());
+            System.out.println("CSS Loaded: " + resourceUrl.toExternalForm());
+        } else {
+            System.err.println("Stylesheet not found: " + stylesheetPath);
+            return;
+        }
+
+        // Enable file watching only if running in IDE (not in JAR)
+        Path filePath = Paths.get("src/main/resources/", stylesheetPath); // Path in IDE
+        if (Files.exists(filePath)) {
+            watchForCssChanges(scene, filePath);
+        }
+    }
+
+    private static void watchForCssChanges(Scene scene, Path path) {
+        new Thread(() -> {
+            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
                 path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                 while (true) {
                     WatchKey key = watchService.take();
@@ -139,5 +157,32 @@ public class Config {
             }
         }).start();
     }
+
+//    public static void setStylesheets(Scene scene) {
+//        Path path = Paths.get("src/main/resources/" + Config.get().stylesheets());
+//        scene.getStylesheets().add(path.toUri().toString());
+//        System.out.println("CSS Loaded: " + path.toUri().toString());
+//        new Thread(() -> {
+//            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+//
+//                path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+//                while (true) {
+//                    WatchKey key = watchService.take();
+//                    for (WatchEvent<?> event : key.pollEvents()) {
+//                        if (event.context().toString().equals(path.getFileName().toString())) {
+//                            Platform.runLater(() -> {
+//                                scene.getStylesheets().clear();
+//                                scene.getStylesheets().add(path.toUri().toString());
+//                                System.out.println("CSS Reloaded!");
+//                            });
+//                        }
+//                    }
+//                    key.reset();
+//                }
+//            } catch (IOException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
 
 }

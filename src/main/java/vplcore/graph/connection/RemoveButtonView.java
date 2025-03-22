@@ -1,6 +1,7 @@
 package vplcore.graph.connection;
 
 import java.io.File;
+import java.io.InputStream;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -17,7 +18,8 @@ public class RemoveButtonView extends Group {
     private static final String svg;
 
     static {
-        xml = FileUtils.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
+//        xml = FileUtils.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
+        xml = FileUtils.readResourceAsString(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg");
         svg = xml.split("path d=\"")[1].replace("\"/></svg>", "");
     }
 
@@ -56,6 +58,5 @@ public class RemoveButtonView extends Group {
         this.setVisible(false);
         this.setMouseTransparent(true);
     }
-
 
 }

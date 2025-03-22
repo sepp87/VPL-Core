@@ -107,7 +107,7 @@ public class App extends Application {
         editorView.printMenuBarHeight();
 
         scene.getStylesheets().add(Config.get().stylesheets());
-//        Config.setStylesheets(scene);
+        Config.setStylesheets(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook

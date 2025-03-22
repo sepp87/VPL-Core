@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -136,7 +137,7 @@ public class FileUtils {
     public static List<String> readFile(File file) {
         List<String> stringList = new ArrayList<>();
 
-        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
+        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -155,7 +156,7 @@ public class FileUtils {
      */
     public static String readFileAsString(File file) {
         String result = "";
-        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
+        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -164,6 +165,18 @@ public class FileUtils {
 
         } catch (IOException ex) {
             Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public static String readResourceAsString(String path) {
+        String result = "";
+        try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("fontawesome-svg/circle-xmark-solid.svg");
+            result = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            inputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -188,7 +201,7 @@ public class FileUtils {
 
     public static Properties loadProperties(File file) {
         Properties properties = new Properties();
-        try ( InputStream inputStream = new FileInputStream(file)) {
+        try (InputStream inputStream = new FileInputStream(file)) {
             properties.load(inputStream);
         } catch (IOException ex) {
             Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);

@@ -6,7 +6,6 @@ import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
-// 0 when built the app cannot find circle-xmark-solid.svg
 // 0 support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 0 add getColumn and transpose to Matrix methods
@@ -23,6 +22,7 @@ import vpllib.method.JsonMethods;
 //      0 TODO Move and Resize commands do not need to be executed, only recorded
 //
 // BACKLOG
+
 // 0 refactor concurrency of method blocks
 // 0 refactor spinner need for checking label width != 0.0
 // 0 return BlockGroup blocks as immutable list
@@ -42,6 +42,7 @@ import vpllib.method.JsonMethods;
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
 //
 // BACKLOG BLOCKS
+// 0 when built the app cannot find circle-xmark-solid.svg
 // JSON get key e.g. foo.bar.x[1]
 // FILE get encoding of file
 // Spreadsheet methods support loading multiple sheets
@@ -54,6 +55,7 @@ import vpllib.method.JsonMethods;
 // 2d Map
 // 
 // DONE
+// Show progress indicator for CPU intensive (method) blocks 
 // 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
 // Boolean input block

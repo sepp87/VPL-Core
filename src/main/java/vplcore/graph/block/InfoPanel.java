@@ -195,7 +195,6 @@ public class InfoPanel extends Pane {
         //
         double tailHeight = 30; // 30.1
         double radius = 3; // 4.99
-//        double degrees = 37.5;
 
         double degrees = 30;
         double radians = Math.toRadians(degrees);
@@ -214,7 +213,6 @@ public class InfoPanel extends Pane {
         Point2D intersection2 = new Point2D(0, centerY + tailHeight);
 
         Path tail = new Path();
-//        VBox.setMargin(tail, new Insets(0, 0, 0, 40));
         tail.setTranslateX(40);
         tail.getElements().add(new MoveTo(bottomLeft.getX(), bottomLeft.getY()));
         tail.getElements().add(new LineTo(bottomRight.getX(), bottomRight.getY()));
@@ -228,9 +226,7 @@ public class InfoPanel extends Pane {
 
     public void remove() {
         removed.set(true);
-//        workspaceView.getInfoLayer().getChildren().remove(InfoPanel.this);
         closeButton.setOnAction(null);
-//        blockView.removeInfoPanel();
         messagePane.setOnMousePressed(null);
 
         for (Label label : inputs) {

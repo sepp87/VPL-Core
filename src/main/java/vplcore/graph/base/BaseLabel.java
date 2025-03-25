@@ -31,7 +31,8 @@ public class BaseLabel extends Button {
 
         HBox.setHgrow(this, Priority.ALWAYS);
         this.setMaxWidth(Double.MAX_VALUE);
-        textField.maxWidthProperty().bind(this.widthProperty());
+//        textField.maxWidthProperty().bind(this.widthProperty());
+        textField.prefWidthProperty().bind(this.widthProperty());
 
         getStyleClass().add("vpl-tag");
         textField.getStyleClass().add("vpl-tag");
@@ -79,7 +80,8 @@ public class BaseLabel extends Button {
     }
 
     public void remove() {
-        textField.maxWidthProperty().unbind();
+//        textField.maxWidthProperty().unbind();
+        textField.prefWidthProperty().unbind();
         textField.textProperty().unbindBidirectional(textProperty());
         textField.setOnKeyPressed(null);
         textField.setOnMouseExited(null);

@@ -194,6 +194,7 @@
     -fx-font-size: 18;
     -fx-text-fill: #5F5F5F;
     -fx-highlight-fill: #F8644C;
+    -fx-text-overrun: ellipsis;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/

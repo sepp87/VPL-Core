@@ -23,10 +23,6 @@ import vplcore.graph.port.PortView;
 
 /**
  *
- * @author Joost
- */
-/**
- *
  * @author JoostMeulenkamp
  */
 public class BlockView extends GridPane {
@@ -58,6 +54,8 @@ public class BlockView extends GridPane {
         menuBox.setAlignment(Pos.BOTTOM_LEFT);
         menuBox.getStyleClass().add("block-header");
         menuBox.getChildren().addAll(captionLabel);
+        menuBox.setMinWidth(0); // Allow shrinking
+        menuBox.setPrefWidth(0); // Allow shrinking
 
         this.add(menuBox, 1, 0);
 
@@ -121,6 +119,9 @@ public class BlockView extends GridPane {
         infoButton.setVisible(false);
         exceptionButton.setVisible(false);
         menuBox.getChildren().addAll(exceptionButton, infoButton);
+
+        menuBox.maxWidthProperty().bind(contentGrid.widthProperty());
+//        menuBox.prefWidthProperty().bind(contentGrid.widthProperty());
 
     }
 

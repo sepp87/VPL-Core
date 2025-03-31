@@ -12,7 +12,6 @@ import vpllib.method.JsonMethods;
 // 0 Improve transpose with jagged lists
 // 0 DataSheet support LocalDate instead of Date
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
-// 0 BUG tableviewblock rename block causes info button not to align on the right
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
@@ -22,9 +21,8 @@ import vpllib.method.JsonMethods;
 //      0 TODO Move and Resize commands do not need to be executed, only recorded
 //
 // BACKLOG
-
 // 0 refactor concurrency of method blocks
-// 0 refactor spinner need for checking label width != 0.0
+// 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
 // 0 return BlockGroup blocks as immutable list
 // 0 REFACTOR Port - evaluate if calculate is not called to often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
@@ -55,6 +53,10 @@ import vpllib.method.JsonMethods;
 // 2d Map
 // 
 // DONE
+// 0 BUG tableviewblock rename block causes info button not to align on the right
+//      Solved by binding BaseLabel.textField.prefWidth to BaseLabel.width and 
+// 0 BUG baseLabel prevents block to resize to size less than its width
+//      Solved by setting BaseLabel.minWidth and prefWidth to Region.USE_COMPUTED_SIZE and menuBox.setMinWidth(0) and menuBox.setPrefWidth(0);
 // Show progress indicator for CPU intensive (method) blocks 
 // 0 Improve Json.asList to cast as long or integer
 // 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data

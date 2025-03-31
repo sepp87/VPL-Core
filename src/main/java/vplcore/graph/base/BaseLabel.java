@@ -10,6 +10,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 /**
  *
@@ -29,10 +30,18 @@ public class BaseLabel extends Button {
         hostElement = box;
         textField = new TextField();
 
-        HBox.setHgrow(this, Priority.ALWAYS);
+        HBox.setHgrow(this, Priority.SOMETIMES);
         this.setMaxWidth(Double.MAX_VALUE);
-//        textField.maxWidthProperty().bind(this.widthProperty());
-        textField.prefWidthProperty().bind(this.widthProperty());
+        this.setMinWidth(Region.USE_COMPUTED_SIZE); // Let the parent decide
+        this.setPrefWidth(Region.USE_COMPUTED_SIZE); // Let the parent decide
+//        this.setPrefWidth(0); // Let the parent decide
+
+//        textField.prefWidthProperty().bind(this.widthProperty());
+//        textField.setMinWidth(0); // Allow shrinking
+        HBox.setHgrow(textField, Priority.SOMETIMES);
+        textField.setMinWidth(Region.USE_COMPUTED_SIZE); // Let the parent decide
+        textField.setPrefWidth(Region.USE_COMPUTED_SIZE); // Let the parent decide
+        textField.setMaxWidth(Double.MAX_VALUE);
 
         getStyleClass().add("vpl-tag");
         textField.getStyleClass().add("vpl-tag");

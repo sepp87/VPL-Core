@@ -1,7 +1,9 @@
 package vplcore;
 
 import java.io.IOException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
+import org.xml.sax.SAXException;
 import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
@@ -88,7 +90,8 @@ import vpllib.method.JsonMethods;
  */
 public class Launcher {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
+
         IOUtils.setByteArrayMaxOverride(300_000_000);
         if (false) {
             return;

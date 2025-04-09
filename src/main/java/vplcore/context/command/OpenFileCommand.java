@@ -4,6 +4,8 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import vplcore.App;
 import vplcore.Config;
+import vplcore.context.Command;
+import vplcore.context.DisableSaveCommand;
 import vplcore.graph.io.GraphLoader;
 import vplcore.context.ResetHistoryCommand;
 import vplcore.workspace.WorkspaceController;
@@ -12,7 +14,7 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class OpenFileCommand implements ResetHistoryCommand {
+public class OpenFileCommand implements Command, ResetHistoryCommand, DisableSaveCommand {
 
     private final WorkspaceController workspaceController;
 

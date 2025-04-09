@@ -1,12 +1,19 @@
 package vplcore.workspace;
 
+import java.io.File;
 import java.util.List;
+import javafx.beans.property.BooleanProperty;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.port.PortModel;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -22,22 +29,25 @@ public class WorkspaceModel {
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
 
-    private final BlockGroupIndex blockGroupIndex;
+    private final BlockGroupIndex blockGroupIndex = new BlockGroupIndex();
 
-    private final DoubleProperty zoomFactor;
-    private final DoubleProperty translateX;
-    private final DoubleProperty translateY;
+    private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", true);
+    private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
+
+    private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);
+    private final DoubleProperty translateX = new SimpleDoubleProperty(0.);
+    private final DoubleProperty translateY = new SimpleDoubleProperty(0.);
 
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
 
-    public WorkspaceModel() {
-        blockGroupIndex = new BlockGroupIndex();
+    public BooleanProperty savableProperty() {
+        return savable;
+    }
 
-        zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);
-        translateX = new SimpleDoubleProperty(0.);
-        translateY = new SimpleDoubleProperty(0.);
+    public ObjectProperty<File> fileProperty() {
+        return file;
     }
 
     public DoubleProperty zoomFactorProperty() {
@@ -141,7 +151,7 @@ public class WorkspaceModel {
         System.out.println("TEsT1");
         List<ConnectionModel> connections = blockModel.getConnections();
         for (ConnectionModel connection : connections) {
-                    System.out.println("TEsT   2 ");
+            System.out.println("TEsT   2 ");
 
             removeConnectionModel(connection);
         }

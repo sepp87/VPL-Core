@@ -25,6 +25,7 @@ public class MenuBarController extends BaseController {
             item.setOnAction(menuBarItemClickedHandler);
         }
 
+        view.getFileMenu().showingProperty().addListener(fileMenuShownListener);
         view.getEditMenu().showingProperty().addListener(editMenuShownListener);
         view.getUndoMenuItem().setOnAction((e) -> undo());
         view.getRedoMenuItem().setOnAction((e) -> redo());
@@ -38,6 +39,12 @@ public class MenuBarController extends BaseController {
         actionManager.redo();
     }
 
+    private final ChangeListener<Boolean> fileMenuShownListener = this::onFileMenuShown;
+
+    private void onFileMenuShown(Object b, Boolean o, Boolean n) {
+        view.getSaveMenuItem().setDisable(!actionManager.getWorkspaceModel().savableProperty().get());
+    }
+
     private final ChangeListener<Boolean> editMenuShownListener = this::onEditMenuShown;
 
     private void onEditMenuShown(Object b, Boolean o, Boolean n) {
@@ -46,8 +53,8 @@ public class MenuBarController extends BaseController {
 
         boolean isGroupable = actionManager.getWorkspaceController().areSelectedBlocksGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);
-
     }
+
     private final EventHandler<ActionEvent> menuBarItemClickedHandler = this::handleMenuBarItemClicked;
 
     private void handleMenuBarItemClicked(ActionEvent event) {

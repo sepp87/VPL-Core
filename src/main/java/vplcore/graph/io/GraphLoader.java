@@ -56,6 +56,9 @@ public class GraphLoader {
             GroupsTag groups = documentTag.getGroups();
             deserializeGroups(groups, workspaceController, workspaceModel);
 
+            // set file reference for quick save
+            workspaceModel.fileProperty().set(file);
+            
         } catch (JAXBException | SecurityException | IllegalArgumentException ex) {
             Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, null, ex);
         }

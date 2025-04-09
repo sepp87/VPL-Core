@@ -8,20 +8,16 @@ import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
-// 0 support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
-// 0 add getColumn and transpose to Matrix methods
-// 0 Improve transpose with jagged lists
-// 0 DataSheet support LocalDate instead of Date
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
 // 1 IMPROVEMENT clean up App and Workspace according to UI structure
-// 1 IMPROVEMENT Add undo/redo functionality
-//      0 TODO Move and Resize commands do not need to be executed, only recorded
+//      rename Workspace helpers to managers?
 //
 // BACKLOG
+// 0 refactor port data type with gson type (? somewhat) to support data structures
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
 // 0 return BlockGroup blocks as immutable list
@@ -29,7 +25,6 @@ import vpllib.method.JsonMethods;
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
-// 4 IMPROVEMENT add save and save as commands
 // 4 IMPROVEMENT multi workspace support with copy-paste
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
@@ -39,22 +34,38 @@ import vpllib.method.JsonMethods;
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
-// 5 IMPROVEMENT datasheet viewer reordering columns does not update data sheet
+// 5 IMPROVEMENT - SpreadSheets
+//      - datasheet viewer reordering columns does not update data sheet
+//      - add getColumn and transpose to Matrix methods
+//      - Improve transpose with jagged lists
+//      - DataSheet support LocalDate instead of Date
+//      - support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
+//      - Spreadsheet methods support loading multiple sheets
+//      - DataSheetViewer - hide trailing cells with no data
+//   
 //
 // BACKLOG BLOCKS
-// 0 when built the app cannot find circle-xmark-solid.svg
 // JSON get key e.g. foo.bar.x[1]
 // FILE get encoding of file
-// Spreadsheet methods support loading multiple sheets
-// DataSheetViewer - hide cells with no data
 // TemporalUnitBlock
 // 3DViewerBlock
 // Geometry Blocks
 // ChatGPT Block
 // WebClientBlock
 // 2d Map
+// special block/new control: retrigger block process 
+// accumulate results + reset possibility
 // 
+//
+// QUESTIONS
+// getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
+//
+//
 // DONE
+// 4 IMPROVEMENT add save and save as commands
+// 0 when built the app cannot find circle-xmark-solid.svg
+// 1 IMPROVEMENT Add undo/redo functionality
+//      0 REJECTED Move and Resize commands do not need to be executed, only recorded > current behaviour does NOT break the app
 // 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
 //      Solved by binding BaseLabel.textField.prefWidth to BaseLabel.width and 

@@ -1,13 +1,13 @@
 package vplcore.context.command;
 
-import vplcore.context.ResetHistoryCommand;
+import vplcore.context.Command;
 import vplcore.graph.util.BlockLibraryLoader;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class ReloadPluginsCommand implements ResetHistoryCommand {
+public class ReloadPluginsCommand implements Command {
 
     public ReloadPluginsCommand() {
     }

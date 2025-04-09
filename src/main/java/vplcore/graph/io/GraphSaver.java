@@ -20,7 +20,6 @@ import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.connection.ConnectionModel;
-import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -37,7 +36,7 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    public static void serialize(File file, WorkspaceModel workspaceModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();
@@ -71,6 +70,9 @@ public class GraphSaver {
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(document, file);
+
+            // set file reference for quick save
+            workspaceModel.fileProperty().set(file);
 
         } catch (JAXBException ex) {
             Logger.getLogger(GraphSaver.class.getName()).log(Level.SEVERE, null, ex);

@@ -172,7 +172,7 @@ public class FileUtils {
     public static String readResourceAsString(String path) {
         String result = "";
         try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream("fontawesome-svg/circle-xmark-solid.svg");
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
             result = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             inputStream.close();
         } catch (IOException ex) {

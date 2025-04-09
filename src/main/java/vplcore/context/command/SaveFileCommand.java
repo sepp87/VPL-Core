@@ -1,40 +1,32 @@
 package vplcore.context.command;
 
 import java.io.File;
-import javafx.stage.FileChooser;
-import vplcore.App;
 import vplcore.Config;
-import vplcore.graph.io.GraphSaver;
 import vplcore.context.Command;
-import vplcore.workspace.WorkspaceController;
+import vplcore.context.DisableSaveCommand;
+import vplcore.graph.io.GraphSaver;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author Joost
  */
-public class SaveFileCommand implements Command {
+public class SaveFileCommand implements Command, DisableSaveCommand {
 
-    private final WorkspaceController workspaceController;
+    private final WorkspaceModel workspaceModel;
 
-    public SaveFileCommand(WorkspaceController workspaceController) {
-        this.workspaceController = workspaceController;
+    public SaveFileCommand(WorkspaceModel workspaceModel) {
+        this.workspaceModel = workspaceModel;
     }
 
     @Override
     public boolean execute() {
 
-        FileChooser chooser = new FileChooser();
-        File lastOpenedDirectory = Config.getLastOpenedDirectory();
-        if (lastOpenedDirectory != null) {
-            chooser.setInitialDirectory(lastOpenedDirectory);
-        }
-        chooser.setTitle("Save as vplXML...");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("vplXML", "*.vplxml"));
-        File file = chooser.showSaveDialog(App.getStage());
+        File file = workspaceModel.fileProperty().get();
 
         if (file != null) {
             Config.setLastOpenedDirectory(file);
-            GraphSaver.serialize(file, workspaceController, workspaceController.getModel());
+            GraphSaver.serialize(file, workspaceModel);
         }
         return true;
 

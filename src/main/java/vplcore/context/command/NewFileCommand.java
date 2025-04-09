@@ -1,5 +1,6 @@
 package vplcore.context.command;
 
+import vplcore.context.Command;
 import vplcore.context.ResetHistoryCommand;
 import vplcore.workspace.WorkspaceController;
 
@@ -7,7 +8,7 @@ import vplcore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class NewFileCommand implements ResetHistoryCommand {
+public class NewFileCommand implements Command, ResetHistoryCommand {
 
     private final WorkspaceController workspace;
 

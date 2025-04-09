@@ -34,8 +34,8 @@ public class Config {
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
     private static final String CONFIG_DIRECTORY = "config" + File.separatorChar;
     private static final String SETTINGS_FILE = "settings.txt";
-    private static final String RESOURCES_DIRECTORY = "src" + File.separatorChar + "main" + File.separatorChar + "resources" + File.separatorChar;
-    private static final String ICONS_DIRECTORY = RESOURCES_DIRECTORY + "fontawesome-svg" + File.separatorChar;
+//    private static final String RESOURCES_DIRECTORY = "src" + File.separatorChar + "main" + File.separatorChar + "resources" + File.separatorChar;
+    private static final String ICONS_DIRECTORY = "fontawesome-svg" + File.separatorChar;
 
     private String appRootDirectory;
     private OperatingSystem operatingSystem;
@@ -74,10 +74,6 @@ public class Config {
         return appRootDirectory + LIBRARY_DIRECTORY;
     }
 
-    public String resourcesDirectory() {
-        return RESOURCES_DIRECTORY;
-    }
-
     public String iconsDirectory() {
         return ICONS_DIRECTORY;
     }
@@ -87,8 +83,9 @@ public class Config {
     }
 
     public String stylesheets() {
-//        String defaultStyle = "css/flat_dark.css";
-//        String defaultStyle = "css/flat_singer.css";
+//        String defaultStyle = "css" + File.separatorChar + "flat_dark.css";
+//        String defaultStyle = "css" + File.separatorChar + "flat_singer.css";
+//        String defaultStyle = "css" + File.separatorChar + "flat_white.css";
         String defaultStyle = "css/flat_white.css";
         return settings.getProperty("stylesheets", defaultStyle);
     }
@@ -137,7 +134,7 @@ public class Config {
 
     private static void watchForCssChanges(Scene scene, Path path) {
         new Thread(() -> {
-            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+            try ( WatchService watchService = FileSystems.getDefault().newWatchService()) {
                 path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                 while (true) {
                     WatchKey key = watchService.take();
@@ -184,5 +181,4 @@ public class Config {
 //            }
 //        }).start();
 //    }
-
 }

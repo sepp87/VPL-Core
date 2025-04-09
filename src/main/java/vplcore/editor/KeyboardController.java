@@ -20,6 +20,7 @@ import vplcore.context.command.GroupBlocksCommand;
 import vplcore.context.command.NewFileCommand;
 import vplcore.context.command.OpenFileCommand;
 import vplcore.context.command.PasteBlocksCommand;
+import vplcore.context.command.SaveAsFileCommand;
 import vplcore.context.command.SaveFileCommand;
 import vplcore.context.command.SelectAllBlocksCommand;
 import vplcore.context.command.ZoomInCommand;
@@ -81,7 +82,12 @@ public class KeyboardController extends BaseController {
                 break;
             case S:
                 if (isModifierDown) {
-                    command = new SaveFileCommand(actionManager.getWorkspaceController());
+                    if (event.isShiftDown()) {
+                        command = new SaveAsFileCommand(actionManager.getWorkspaceModel());
+
+                    } else if (actionManager.getWorkspaceModel().savableProperty().get()) {
+                        command = new SaveFileCommand(actionManager.getWorkspaceModel());
+                    }
                 }
                 break;
             case O:

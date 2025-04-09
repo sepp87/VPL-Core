@@ -4,6 +4,6 @@ package vplcore.context;
  *
  * @author joostmeulenkamp
  */
-public interface ResetHistoryCommand {
+public interface DisableSaveCommand {
     
 }

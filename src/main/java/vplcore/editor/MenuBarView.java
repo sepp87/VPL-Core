@@ -11,6 +11,9 @@ import javafx.scene.control.MenuBar;
  */
 public class MenuBarView extends MenuBar {
 
+    private final Menu fileMenu;
+    private final MenuItem save;
+
     private final Menu editMenu;
     private final MenuItem undo;
     private final MenuItem redo;
@@ -19,11 +22,12 @@ public class MenuBarView extends MenuBar {
     public MenuBarView() {
         this.setUseSystemMenuBar(false);
 
-        Menu fileMenu = new Menu("File");
+        fileMenu = new Menu("File");
         MenuItem newFile = new MenuItem("New file", "NEW_FILE");
         MenuItem openFile = new MenuItem("Open file", "OPEN_FILE");
-        MenuItem save = new MenuItem("Save", "SAVE_FILE");
-        fileMenu.getItems().addAll(newFile, openFile, save);
+        save = new MenuItem("Save", "SAVE_FILE");
+        MenuItem saveAs = new MenuItem("Save as", "SAVE_AS_FILE");
+        fileMenu.getItems().addAll(newFile, openFile, save, saveAs);
 
         this.editMenu = new Menu("Edit");
         this.undo = new MenuItem("Undo", "UNDO");
@@ -57,6 +61,14 @@ public class MenuBarView extends MenuBar {
         logErrors.setDisable(true);
 
         this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);
+    }
+
+    public Menu getFileMenu() {
+        return fileMenu;
+    }
+
+    public MenuItem getSaveMenuItem() {
+        return save;
     }
 
     public Menu getEditMenu() {

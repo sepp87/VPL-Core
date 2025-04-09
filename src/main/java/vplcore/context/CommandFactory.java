@@ -13,6 +13,7 @@ import vplcore.context.command.OpenFileCommand;
 import vplcore.context.command.PasteBlocksCommand;
 import vplcore.context.command.ReloadPluginsCommand;
 import vplcore.context.command.RemoveSelectedBlocksCommand;
+import vplcore.context.command.SaveAsFileCommand;
 import vplcore.context.command.SaveFileCommand;
 import vplcore.context.command.ZoomInCommand;
 import vplcore.context.command.ZoomOutCommand;
@@ -41,7 +42,9 @@ public class CommandFactory {
             case "OPEN_FILE":
                 return new OpenFileCommand(workspaceController);
             case "SAVE_FILE":
-                return new SaveFileCommand(workspaceController);
+                return new SaveFileCommand(workspaceModel);
+            case "SAVE_AS_FILE":
+                return new SaveAsFileCommand(workspaceModel);
             case "COPY_BLOCKS":
                 return new CopyBlocksCommand(workspaceController);
             case "PASTE_BLOCKS":

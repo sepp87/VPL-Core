@@ -13,7 +13,6 @@ import vpllib.method.JsonMethods;
 // 0 add getColumn and transpose to Matrix methods
 // 0 Improve transpose with jagged lists
 // 0 DataSheet support LocalDate instead of Date
-// 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
@@ -40,6 +39,7 @@ import vpllib.method.JsonMethods;
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 5 IMPROVEMENT datasheet viewer reordering columns does not update data sheet
 //
 // BACKLOG BLOCKS
 // 0 when built the app cannot find circle-xmark-solid.svg
@@ -55,6 +55,7 @@ import vpllib.method.JsonMethods;
 // 2d Map
 // 
 // DONE
+// 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
 // 0 BUG tableviewblock rename block causes info button not to align on the right
 //      Solved by binding BaseLabel.textField.prefWidth to BaseLabel.width and 
 // 0 BUG baseLabel prevents block to resize to size less than its width
@@ -84,6 +85,7 @@ import vpllib.method.JsonMethods;
 // Create connection - Link backward and link forward
 // MethodBlock - lacing of lists
 // Remove block - remove block and connections
+
 /**
  *
  * @author joostmeulenkamp

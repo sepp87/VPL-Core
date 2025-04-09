@@ -170,6 +170,13 @@ public class DataSheetViewer extends BorderPane {
         while (change.next()) {
             if (change.wasAdded() && change.wasRemoved() && change.wasReplaced()) { // Column order changed
                 // mutate data sheet
+                
+                int size = tableView.getColumns().size();
+                for (int i = 1; i < size; i++) {
+                    TableColumn<List<Object>, ?> letterColumn = tableView.getColumns().get(i);
+                    int letterIndex = i - 1;
+                    letterColumn.setText(getColumnLetter(letterIndex));
+                }
             }
         }
     }

@@ -23,7 +23,6 @@ import vplcore.graph.util.BlockFactory;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.port.PortModel;
-import vplcore.workspace.WorkspaceController;
 
 /**
  *
@@ -31,7 +30,7 @@ import vplcore.workspace.WorkspaceController;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    public static void deserialize(File file,  WorkspaceModel workspaceModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -46,25 +45,25 @@ public class GraphLoader {
 
             // deserialize blocks of graph
             BlocksTag blocksTag = documentTag.getBlocks();
-            deserializeBlocks(blocksTag, workspaceController, workspaceModel);
+            deserializeBlocks(blocksTag, workspaceModel);
 
             // deserialize connections of graph
             ConnectionsTag connectionsTag = documentTag.getConnections();
-            deserializeConnections(connectionsTag, workspaceController, workspaceModel);
+            deserializeConnections(connectionsTag, workspaceModel);
 
             // deserialize groups of graph
             GroupsTag groups = documentTag.getGroups();
-            deserializeGroups(groups, workspaceController, workspaceModel);
+            deserializeGroups(groups, workspaceModel);
 
             // set file reference for quick save
             workspaceModel.fileProperty().set(file);
-            
+
         } catch (JAXBException | SecurityException | IllegalArgumentException ex) {
             Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceModel workspaceModel) {
         List<BlockTag> blockTagList = blocksTag.getBlock();
         if (blockTagList == null) {
             return;
@@ -74,7 +73,8 @@ public class GraphLoader {
 
             String blockIdentifier = blockTag.getType();
 
-            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
+//            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
+            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier);
             if (blockModel == null) {
                 System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
                 return;
@@ -85,7 +85,7 @@ public class GraphLoader {
         }
     }
 
-    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceModel workspaceModel) {
         List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
         if (connectionTagList == null) {
             return;
@@ -117,7 +117,7 @@ public class GraphLoader {
         }
     }
 
-    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
+    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceModel workspaceModel) {
         if (groupsTag == null) {
             return;
         }

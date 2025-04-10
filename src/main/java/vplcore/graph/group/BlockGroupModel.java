@@ -2,6 +2,8 @@ package vplcore.graph.group;
 
 import java.util.Collection;
 import java.util.HashSet;
+import javafx.beans.property.ReadOnlySetProperty;
+import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import jo.vpl.xml.BlockReferenceTag;
@@ -18,12 +20,13 @@ import vplcore.workspace.BlockGroupIndex;
  */
 public class BlockGroupModel extends BaseModel {
 
-    private final ObservableSet<BlockModel> blocks;
+    private final ObservableSet<BlockModel> internalBlocks = FXCollections.observableSet();
+    private final ObservableSet<BlockModel> readonlyBlocks = FXCollections.unmodifiableObservableSet(internalBlocks);
     private final BlockGroupIndex blockGroupIndex;
 
     public BlockGroupModel(BlockGroupIndex blockGroupIndex) {
         this.blockGroupIndex = blockGroupIndex;
-        blocks = FXCollections.observableSet();
+
         nameProperty().set("Name group here...");
     }
 
@@ -34,25 +37,25 @@ public class BlockGroupModel extends BaseModel {
     }
 
     public void addBlock(BlockModel blockModel) {
-        blocks.add(blockModel);
+        internalBlocks.add(blockModel);
         blockModel.groupedProperty().set(true);
         blockGroupIndex.register(blockModel, this);
     }
 
     public void removeBlock(BlockModel blockModel) {
-        blocks.remove(blockModel);
+        internalBlocks.remove(blockModel);
         blockModel.groupedProperty().set(false);
         blockGroupIndex.unregister(blockModel);
     }
 
     // return set as immutable
     public ObservableSet<BlockModel> getBlocks() {
-        return blocks;
+        return readonlyBlocks;
     }
 
     @Override
     public void remove() {
-        for (BlockModel blockModel : new HashSet<>(blocks)) {
+        for (BlockModel blockModel : new HashSet<>(internalBlocks)) {
             removeBlock(blockModel);
         }
         super.remove();
@@ -61,7 +64,7 @@ public class BlockGroupModel extends BaseModel {
     public void serialize(GroupTag xmlTag) {
         ObjectFactory factory = getObjectFactory();
         xmlTag.setName(nameProperty().get());
-        for (BlockModel block : blocks) {
+        for (BlockModel block : internalBlocks) {
             BlockReferenceTag blockReferenceTag = factory.createBlockReferenceTag();
             blockReferenceTag.setUUID(block.idProperty().get());
             xmlTag.getBlockReference().add(blockReferenceTag);

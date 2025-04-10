@@ -1,5 +1,8 @@
 package vplcore.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  *
  * @author joostmeulenkamp
@@ -7,65 +10,89 @@ package vplcore.util;
 public class ParsingUtils {
 
     public static Object castToBestNumericType(Number value) {
-        double number = value.doubleValue();
-        if (number % 1 == 0) { // If no decimal part
-            if (number >= Integer.MIN_VALUE && number <= Integer.MAX_VALUE) {
-                return (int) number; // Convert to Integer
-            } else {
-                return (long) number; // Convert to Long
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Integer || value instanceof Short || value instanceof Byte) {
+            return value.intValue();
+        }
+
+        if (value instanceof Long) {
+            long l = value.longValue();
+            if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+                return (int) l;
+            }
+            return l;
+        }
+
+        if (value instanceof BigInteger) {
+            BigInteger bigInt = (BigInteger) value;
+            if (bigInt.bitLength() <= 31) {
+                return bigInt.intValue();
+            } else if (bigInt.bitLength() <= 63) {
+                return bigInt.longValue();
+            }
+            return bigInt;
+        }
+
+        if (value instanceof Float || value instanceof Double) {
+            double d = value.doubleValue();
+            if (d % 1 == 0) {
+                if (d >= Integer.MIN_VALUE && d <= Integer.MAX_VALUE) {
+                    return (int) d;
+                } else if (d >= Long.MIN_VALUE && d <= Long.MAX_VALUE) {
+                    return (long) d;
+                }
+            }
+            return d;
+        }
+
+        if (value instanceof BigDecimal) {
+            BigDecimal bigDecimal = (BigDecimal) value;
+            try {
+                BigInteger unscaled = bigDecimal.toBigIntegerExact();
+                // Check if it's actually an integer
+                return castToBestNumericType(unscaled);
+            } catch (ArithmeticException e) {
+                // Not an exact integer, keep as BigDecimal
+                return bigDecimal;
             }
         }
-        return number;
+
+        // Fallback
+        return value;
     }
 
-    /**
-     * @param rawValue the string to check
-     * @return a double when the string is a valid number, otherwise null.
-     */
-    public static Double getDoubleValue(String rawValue) {
-        Double newValue = null;
-        //http://stackoverflow.com/questions/3133770/how-to-find-out-if-the-value-contained-in-a-string-is-double-or-not
-        String regExp = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
-        boolean isDouble = rawValue.matches(regExp);
-
-        if (isDouble) {
-            newValue = Double.parseDouble(rawValue);
+    public static Object castToBestNumericTypeOrNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
         }
-        return newValue;
-    }
 
-    /**
-     * @param rawValue the string to check
-     * @return an integer when the string is a valid number, otherwise null.
-     */
-    public static Integer getIntegerValue(String rawValue) {
-        Integer newValue = null;
-        //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
-//        String regExp = "^\\d+$";
-        String regExp = "-?[0-9]{1,10}";
-        boolean isInteger = rawValue.matches(regExp);
-
-        if (isInteger) {
-            newValue = Integer.parseInt(rawValue);
+        String integerRegex = "-?\\d+";
+        if (value.matches(integerRegex)) {
+            BigInteger bigInteger = new BigInteger(value);
+            return castToBestNumericType(bigInteger);
         }
-        return newValue;
-    }
 
-    /**
-     * @param rawValue the string to check
-     * @return a long when the string is a valid number, otherwise null.
-     */
-    public static Long getLongValue(String rawValue) {
-        Long newValue = null;
+        // http://stackoverflow.com/questions/3133770/how-to-find-out-if-the-value-contained-in-a-string-is-double-or-not
+        String doubleRegex = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
+        if (value.matches(doubleRegex)) {
+            try {
+                Double doubleValue = Double.valueOf(value);
+                if (!doubleValue.isInfinite()) {
+                    return Double.valueOf(value);
+                }
+            } catch (NumberFormatException ignored) {
+            }
 
-        //http://stackoverflow.com/questions/16331423/whats-the-java-regular-expression-for-an-only-integer-numbers-string
-        String regExp = "-?[0-9]{1,19}";
-        boolean isLong = rawValue.matches(regExp);
-
-        if (isLong) {
-            newValue = Long.parseLong(rawValue);
+            try {
+                return new BigDecimal(value);
+            } catch (NumberFormatException ignored) {
+            }
         }
-        return newValue;
+
+        return null;
     }
 
     /**

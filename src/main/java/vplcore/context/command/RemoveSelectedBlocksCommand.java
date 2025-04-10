@@ -33,7 +33,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
 
     @Override
     public boolean execute() {
-        if (App.FUTURE_TESTS) {
+        if (App.LOG_METHOD_CALLS) {
             System.out.println("RemoveSelectedBlocksCommand.execute()");
         }
         workspaceController.deselectAllBlocks();

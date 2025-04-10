@@ -4,7 +4,6 @@ import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
 import org.xml.sax.SAXException;
-import vplcore.util.ParsingUtils;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
@@ -17,19 +16,16 @@ import vpllib.method.JsonMethods;
 //      rename Workspace helpers to managers?
 //
 // BACKLOG
-// 0 refactor port data type with gson type (? somewhat) to support data structures
+// 3 REFACTOR merge integer and double slider and refactor event handlers
+// 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
-// 0 return BlockGroup blocks as immutable list
-// 0 REFACTOR Port - evaluate if calculate is not called to often
+// 0 REFACTOR Port - evaluate if process() is not called too often
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
-// 4 IMPROVEMENT multi workspace support with copy-paste
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
 // 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
-// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
-// 3 REFACTOR merge integer and double slider and refactor event handlers
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
@@ -62,6 +58,10 @@ import vpllib.method.JsonMethods;
 //
 //
 // DONE
+// 4 IMPROVEMENT multi workspace support with copy-paste
+//      - blocks are now unaware of their workspace, so blocks can be pasted from one workspace to another freely
+// 0 return BlockGroup blocks as immutable list
+// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
 // 4 IMPROVEMENT add save and save as commands
 // 0 when built the app cannot find circle-xmark-solid.svg
 // 1 IMPROVEMENT Add undo/redo functionality
@@ -96,7 +96,6 @@ import vpllib.method.JsonMethods;
 // Create connection - Link backward and link forward
 // MethodBlock - lacing of lists
 // Remove block - remove block and connections
-
 /**
  *
  * @author joostmeulenkamp
@@ -104,6 +103,9 @@ import vpllib.method.JsonMethods;
 public class Launcher {
 
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
+//        TestGetIntegerValue();
+//        TestGetLongValue();
+//        TestGetDoubleValue();
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
         if (false) {
@@ -115,9 +117,6 @@ public class Launcher {
 
         System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
 
-//        TestGetIntegerValue();
-//        TestGetDoubleValue();
-//        TestGetLongValue();
 //        test();
         // a = 0,0 > 0,10
         // b = 125,0 > 
@@ -139,6 +138,9 @@ public class Launcher {
         String regExp = "-?[0-9]{1,10}";
         boolean isLong = rawValue.matches(regExp);
         System.out.println(isLong);
+        System.out.println(Integer.valueOf("1.0"));
+        System.out.println(Integer.valueOf(" 1.0 "));
+        System.out.println(Integer.valueOf(" -1.0 "));
     }
 
     static void TestGetLongValue() {
@@ -149,12 +151,5 @@ public class Launcher {
         Long lng = Long.parseLong("123456");
     }
 
-    static void TestGetDoubleValue() {
-        Double value = ParsingUtils.getDoubleValue("100 000");
-        value = ParsingUtils.getDoubleValue("100,000");
-        value = ParsingUtils.getDoubleValue("100000");
-        value = ParsingUtils.getDoubleValue("100000d");
-        System.out.println(value + " ");
-    }
 
 }

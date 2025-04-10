@@ -36,8 +36,9 @@ public class IntegerSlider extends BlockModel {
     private final IntegerProperty integerMax = new SimpleIntegerProperty(10);
     private final IntegerProperty integerStep = new SimpleIntegerProperty(1);
 
-    public IntegerSlider(WorkspaceModel workspaceModel) {
-        super(workspaceModel);
+    public IntegerSlider() {
+//    public IntegerSlider(WorkspaceModel workspaceModel) {
+//        super(workspaceModel);
         this.nameProperty().set("Integer");
         addOutputPort("int", Integer.class);
     }
@@ -274,7 +275,8 @@ public class IntegerSlider extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        IntegerSlider block = new IntegerSlider(workspace);
+        IntegerSlider block = new IntegerSlider();
+//        IntegerSlider block = new IntegerSlider(workspace);
         block.integerValue.set(this.integerValue.get());
         block.integerMin.set(this.integerMin.get());
         block.integerMax.set(this.integerMax.get());

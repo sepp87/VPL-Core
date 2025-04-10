@@ -46,7 +46,7 @@ public class KeyboardController extends BaseController {
     }
 
     public void handleShortcutTriggered(KeyEvent event) {
-        if (App.FUTURE_TESTS) {
+        if (App.LOG_METHOD_CALLS) {
             System.out.println("KeyboardController.handleShortcutTriggered()");
         }
         Command command = null;
@@ -77,7 +77,7 @@ public class KeyboardController extends BaseController {
                 break;
             case N:
                 if (isModifierDown) {
-                    command = new NewFileCommand(actionManager.getWorkspaceController());
+                    command = new NewFileCommand(actionManager.getWorkspaceModel());
                 }
                 break;
             case S:
@@ -92,7 +92,7 @@ public class KeyboardController extends BaseController {
                 break;
             case O:
                 if (isModifierDown) {
-                    command = new OpenFileCommand(actionManager.getWorkspaceController());
+                    command = new OpenFileCommand(actionManager.getWorkspaceModel());
                 }
                 break;
             case A:

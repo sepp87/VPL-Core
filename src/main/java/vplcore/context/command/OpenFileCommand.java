@@ -5,21 +5,21 @@ import javafx.stage.FileChooser;
 import vplcore.App;
 import vplcore.Config;
 import vplcore.context.Command;
-import vplcore.context.DisableSaveCommand;
 import vplcore.graph.io.GraphLoader;
 import vplcore.context.ResetHistoryCommand;
-import vplcore.workspace.WorkspaceController;
+import vplcore.context.MarkSavedCommand;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
  * @author Joost
  */
-public class OpenFileCommand implements Command, ResetHistoryCommand, DisableSaveCommand {
+public class OpenFileCommand implements Command, ResetHistoryCommand, MarkSavedCommand {
 
-    private final WorkspaceController workspaceController;
+    private final WorkspaceModel workspaceModel;
 
-    public OpenFileCommand(WorkspaceController workspaceController) {
-        this.workspaceController = workspaceController;
+    public OpenFileCommand(WorkspaceModel workspaceModel) {
+        this.workspaceModel = workspaceModel;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class OpenFileCommand implements Command, ResetHistoryCommand, DisableSav
 
         Config.setLastOpenedDirectory(file);
 
-        //Clear Layout
-        workspaceController.reset();
+        //Clear the workspace
+        workspaceModel.reset();
 
         //Load file
-        GraphLoader.deserialize(file, workspaceController, workspaceController.getModel());
+        GraphLoader.deserialize(file, workspaceModel);
         return true;
 
     }

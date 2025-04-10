@@ -35,8 +35,9 @@ public class TextBlock extends BlockModel {
     private final BooleanProperty editable = new SimpleBooleanProperty();
     private TextArea textArea;
 
-    public TextBlock(WorkspaceModel workspace) {
-        super(workspace);
+    public TextBlock() {
+//    public TextBlock(WorkspaceModel workspace) {
+//        super(workspace);
         nameProperty().set("Panel");
         resizableProperty().set(true);
         addInputPort("any", Object.class);
@@ -161,7 +162,8 @@ public class TextBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        TextBlock block = new TextBlock(workspace);
+        TextBlock block = new TextBlock();
+//        TextBlock block = new TextBlock(workspace);
         block.widthProperty().set(this.widthProperty().get());
         block.heightProperty().set(this.heightProperty().get());
         if (editable.get()) {

@@ -31,8 +31,9 @@ public class BooleanBlock extends BlockModel {
     private String offIcon;
     private String onIcon;
 
-    public BooleanBlock(WorkspaceModel workspaceModel) {
-        super(workspaceModel);
+    public BooleanBlock() {
+//    public BooleanBlock(WorkspaceModel workspaceModel) {
+//        super(workspaceModel);
         this.nameProperty().set("Boolean");
         addOutputPort("value", Boolean.class);
         initialize();
@@ -84,7 +85,8 @@ public class BooleanBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        BooleanBlock block = new BooleanBlock(workspace);
+        BooleanBlock block = new BooleanBlock();
+//        BooleanBlock block = new BooleanBlock(workspace);
         block.bool.set(this.bool.get());
         return block;
     }

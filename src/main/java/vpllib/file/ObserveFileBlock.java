@@ -40,9 +40,10 @@ public class ObserveFileBlock extends BlockModel {
     private Future<?> watchTask;
     private File observedFile;
     private long lastModifiedTime = 0;  // Track last modified time
-
-    public ObserveFileBlock(WorkspaceModel workspace) {
-        super(workspace);
+    
+    public ObserveFileBlock() {
+//    public ObserveFileBlock(WorkspaceModel workspace) {
+//        super(workspace);
         nameProperty().set("Observe");
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
@@ -173,7 +174,8 @@ public class ObserveFileBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        ObserveFileBlock fileBlock = new ObserveFileBlock(workspace);
+        ObserveFileBlock fileBlock = new ObserveFileBlock();
+//        ObserveFileBlock fileBlock = new ObserveFileBlock(workspace);
         return fileBlock;
     }
 }

@@ -17,35 +17,41 @@ import vplcore.graph.block.BlockMetadata;
  */
 public class BlockFactory {
 
-    public static BlockModel createBlock(String blockIdentifier, WorkspaceModel workspaceModel) {
+//    public static BlockModel createBlock(String blockIdentifier, WorkspaceModel workspaceModel) {
+    public static BlockModel createBlock(String blockIdentifier) {
         BlockModel blockModel = null;
         Object type = BlockLibraryLoader.BLOCK_LIBRARY.get(blockIdentifier);
 
         if (type.getClass().equals(Class.class)) {
             Class<?> clazz = (Class) type;
-            blockModel = createBlockFromClass(clazz, workspaceModel);
+//            blockModel = createBlockFromClass(clazz, workspaceModel);
+            blockModel = createBlockFromClass(clazz);
         } else if (type.getClass().equals(Method.class)) {
             Method method = (Method) type;
-            blockModel = createBlockFromMethod(method, workspaceModel);
+//            blockModel = createBlockFromMethod(method, workspaceModel);
+            blockModel = createBlockFromMethod(method);
         }
         return blockModel;
     }
 
-    public static BlockModel createBlockFromClass(Class<?> clazz, WorkspaceModel workspaceModel) {
+//    public static BlockModel createBlockFromClass(Class<?> clazz, WorkspaceModel workspaceModel) {
+    public static BlockModel createBlockFromClass(Class<?> clazz) {
         BlockModel blockModel = null;
         try {
-            blockModel = (BlockModel) clazz.getConstructor(workspaceModel.getClass()).newInstance(workspaceModel);
+//            blockModel = (BlockModel) clazz.getConstructor(workspaceModel.getClass()).newInstance(workspaceModel);
+            blockModel = (BlockModel) clazz.getConstructor().newInstance();
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
             Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return blockModel;
     }
 
-    public static MethodBlock createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
+//    public static MethodBlock createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
+    public static MethodBlock createBlockFromMethod(Method method) {
         MethodBlock blockModel = null;
         try {
             BlockMetadata info = method.getAnnotation(BlockMetadata.class);
-            blockModel = new MethodBlock(workspaceModel, method);
+            blockModel = new MethodBlock(method);
 
             Class<?> returnType = method.getReturnType();
             if (returnType.equals(Number.class)) {

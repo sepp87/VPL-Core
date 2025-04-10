@@ -35,7 +35,7 @@ import vplcore.workspace.WorkspaceView;
  */
 public class App extends Application {
 
-    public static final boolean FUTURE_TESTS = true;
+    public static final boolean LOG_METHOD_CALLS = true;
     public static final boolean BLOCK_MVC = true;
 
     private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
@@ -99,7 +99,7 @@ public class App extends Application {
         stage.show();
         stage.setFullScreen(false);
 
-        GraphLoader.deserialize(new File("vplxml/read-excel.vplxml"), workspaceController, workspaceModel);
+        GraphLoader.deserialize(new File("vplxml/method-block.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceController, workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceController, workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceController, workspaceModel);

@@ -39,8 +39,9 @@ public class DoubleSlider extends BlockModel {
     private final DoubleProperty doubleMax = new SimpleDoubleProperty(10);
     private final DoubleProperty doubleStep = new SimpleDoubleProperty(0.1);
 
-    public DoubleSlider(WorkspaceModel workspaceModel) {
-        super(workspaceModel);
+    public DoubleSlider() {
+//    public DoubleSlider(WorkspaceModel workspaceModel) {
+//        super(workspaceModel);
         this.nameProperty().set("Double");
         addOutputPort("double", Double.class);
         initialize();
@@ -303,7 +304,8 @@ public class DoubleSlider extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        DoubleSlider block = new DoubleSlider(workspace);
+        DoubleSlider block = new DoubleSlider();
+//        DoubleSlider block = new DoubleSlider(workspace);
         block.doubleValue.set(this.doubleValue.get());
         block.doubleMin.set(this.doubleMin.get());
         block.doubleMax.set(this.doubleMax.get());

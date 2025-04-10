@@ -1,5 +1,6 @@
 package vplcore.graph.block;
 
+import static java.lang.Thread.sleep;
 import vplcore.graph.base.BaseModel;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import vplcore.graph.port.PortModel;
@@ -15,7 +15,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -32,16 +31,16 @@ import vplcore.workspace.WorkspaceModel;
  */
 public abstract class BlockModel extends BaseModel {
 
-    protected final WorkspaceModel workspace;
-
+//    protected final WorkspaceModel workspace;
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
     protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
 
     private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
-    public BlockModel(WorkspaceModel workspace) {
-        this.workspace = workspace;
+    public BlockModel() {
+//    public BlockModel(WorkspaceModel workspace) {
+//        this.workspace = workspace;
         this.active.addListener(activeListener);
     }
 
@@ -120,15 +119,19 @@ public abstract class BlockModel extends BaseModel {
             exceptions.add(blockException);
             Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
         }
-        
+
         // When there are no more incoming connections, all exceptions should be cleared, since there is nothing to process
         if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
             exceptions.clear();
             return;
         }
-        
-        exceptions.removeAll(previousExceptions);
+
+        if (!(this instanceof MethodBlock)) {
+            exceptions.removeAll(previousExceptions);
+        }
+
     }
+
     protected abstract void process() throws Exception;
 
     public abstract BlockModel copy();

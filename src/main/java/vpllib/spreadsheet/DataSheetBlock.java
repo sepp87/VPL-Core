@@ -18,8 +18,9 @@ public class DataSheetBlock extends BlockModel {
 
     private DataSheetViewer dataSheetViewer;
 
-    public DataSheetBlock(WorkspaceModel workspace) {
-        super(workspace);
+    public DataSheetBlock() {
+//    public DataSheetBlock(WorkspaceModel workspace) {
+//        super(workspace);
         nameProperty().set("Table");
         resizableProperty().set(true);
         addInputPort("data", DataSheet.class);
@@ -68,7 +69,8 @@ public class DataSheetBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        DataSheetBlock tableViewBlock = new DataSheetBlock(workspace);
+//        DataSheetBlock tableViewBlock = new DataSheetBlock(workspace);
+        DataSheetBlock tableViewBlock = new DataSheetBlock();
         return tableViewBlock;
     }
 

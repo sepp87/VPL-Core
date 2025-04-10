@@ -38,9 +38,9 @@ public class CommandFactory {
     public Command createCommand(String id) {
         switch (id) {
             case "NEW_FILE":
-                return new NewFileCommand(workspaceController);
+                return new NewFileCommand(workspaceModel);
             case "OPEN_FILE":
-                return new OpenFileCommand(workspaceController);
+                return new OpenFileCommand(workspaceModel);
             case "SAVE_FILE":
                 return new SaveFileCommand(workspaceModel);
             case "SAVE_AS_FILE":

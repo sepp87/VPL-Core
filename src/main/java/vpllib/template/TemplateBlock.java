@@ -24,8 +24,9 @@ import vplcore.workspace.WorkspaceModel;
         tags = {"template", "dummy", "example"})
 public class TemplateBlock extends BlockModel {
 
-    public TemplateBlock(WorkspaceModel workspace) {
-        super(workspace);
+    public TemplateBlock() {
+//    public TemplateBlock(WorkspaceModel workspace) {
+//        super(workspace);
         this.nameProperty().set("Template");
         addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
@@ -96,7 +97,8 @@ public class TemplateBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        TemplateBlock block = new TemplateBlock(workspace);
+//        TemplateBlock block = new TemplateBlock(workspace);
+        TemplateBlock block = new TemplateBlock();
         //Specify further copy statements here
         return block;
     }

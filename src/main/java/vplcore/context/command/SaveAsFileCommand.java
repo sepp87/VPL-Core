@@ -6,14 +6,14 @@ import vplcore.App;
 import vplcore.Config;
 import vplcore.graph.io.GraphSaver;
 import vplcore.context.Command;
-import vplcore.context.DisableSaveCommand;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.MarkSavedCommand;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class SaveAsFileCommand implements Command, DisableSaveCommand {
+public class SaveAsFileCommand implements Command, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
 

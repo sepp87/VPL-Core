@@ -31,7 +31,7 @@ public class WorkspaceModel {
 
     private final BlockGroupIndex blockGroupIndex = new BlockGroupIndex();
 
-    private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", true);
+    private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", false);
     private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
 
     private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);

@@ -14,6 +14,7 @@ import java.util.Map;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
+import vplcore.App;
 import vplcore.editor.BaseController;
 import vplcore.graph.connection.ConnectionController;
 import vplcore.graph.connection.ConnectionView;
@@ -89,7 +90,9 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
-        System.out.println("WorkspaceController.onBlockModelsChanged()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.onBlockModelsChanged()");
+        }
         if (change.wasAdded()) {
             addBlock(change.getElementAdded());
         } else {
@@ -98,7 +101,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlock(BlockModel blockModel) {
-        System.out.println("WorkspaceController.addBlock()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.addBlock()");
+        }
         BlockView blockView = new BlockView();
         view.getBlockLayer().getChildren().add(blockView);
         BlockController blockController = new BlockController(this, blockModel, blockView);
@@ -106,7 +111,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeBlock(BlockModel blockModel) {
-        System.out.println("WorkspaceController.removeBlock()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.removeBlock()");
+        }
         BlockController blockController = blocks.remove(blockModel);
         selectionHelper.deselectBlock(blockController); // deselect in case the block was selected
         view.getBlockLayer().getChildren().remove(blockController.getView());
@@ -139,7 +146,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlockGroup(BlockGroupModel blockGroupModel) {
-        System.out.println("WorkspaceController.addBlockGroup()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.addBlockGroup()");
+        }
         BlockGroupView blockGroupView = new BlockGroupView();
         view.getGroupLayer().getChildren().add(0, blockGroupView);
         BlockGroupController blockGroupController = new BlockGroupController(this, blockGroupModel, blockGroupView);
@@ -152,7 +161,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
-        System.out.println("WorkspaceController.removeBlockGroup()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.removeBlockGroup()");
+        }
         BlockGroupController blockGroupController = blockGroups.remove(blockGroupModel);
         view.getGroupLayer().getChildren().remove(blockGroupController.getView());
         blockGroupController.remove();
@@ -164,7 +175,9 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<ConnectionModel> connectionModelsListener = this::onConnectionModelsChanged;
 
     private void onConnectionModelsChanged(Change<? extends ConnectionModel> change) {
-        System.out.println("WorkspaceController.onConnectionModelsChanged()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.onConnectionModelsChanged()");
+        }
         if (change.wasAdded()) {
             addConnection(change.getElementAdded());
         } else {
@@ -173,7 +186,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addConnection(ConnectionModel connectionModel) {
-        System.out.println("WorkspaceController.addConnection()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.addConnection()");
+        }
         ConnectionView connectionView = new ConnectionView();
         int position = blockGroups.size() + 1; // connections should be placed above groups, otherwise the remove button is not shown
 //        view.getChildren().add(position, connectionView);
@@ -185,7 +200,9 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
-        System.out.println("WorkspaceController.removeConnection()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.removeConnection()");
+        }
         ConnectionController connectionController = connections.remove(connectionModel);
         view.getConnectionLayer().getChildren().remove(connectionController.getView());
         connectionController.remove();
@@ -198,7 +215,9 @@ public class WorkspaceController extends BaseController {
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
     public void initiateConnection(PortController portController) {
-        System.out.println("WorkspaceController.initiateConnection()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.initiateConnection()");
+        }
         if (preConnection == null) {
             preConnection = new PreConnection(WorkspaceController.this, portController);
             view.getConnectionLayer().getChildren().add(0, preConnection);
@@ -207,7 +226,9 @@ public class WorkspaceController extends BaseController {
 
     // method is unneeded if createConnection catches the second click
     public void removePreConnection(PreConnection preConnection) {
-        System.out.println("WorkspaceController.removePreConnection()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceController.removePreConnection()");
+        }
         view.getConnectionLayer().getChildren().remove(preConnection);
         this.preConnection = null;
     }
@@ -287,11 +308,4 @@ public class WorkspaceController extends BaseController {
         return selectionHelper.getSelectedBlockControllers();
     }
 
-    /**
-     * MISC
-     */
-    public void reset() {
-        model.reset();
-        view.reset();
-    }
 }

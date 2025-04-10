@@ -1,5 +1,7 @@
 package vpllib.input;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,14 +13,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import static vplcore.util.ParsingUtils.getBooleanValue;
-import static vplcore.util.ParsingUtils.getDoubleValue;
-import static vplcore.util.ParsingUtils.getIntegerValue;
-import static vplcore.util.ParsingUtils.getLongValue;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.util.DateTimeUtils;
+import vplcore.util.ParsingUtils;
 
 /**
  *
@@ -34,8 +34,9 @@ public class StringBlock extends BlockModel {
     private final StringProperty string = new SimpleStringProperty();
     private TextField textField;
 
-    public StringBlock(WorkspaceModel workspace) {
-        super(workspace);
+//    public StringBlock(WorkspaceModel workspace) {
+//        super(workspace);
+    public StringBlock() {
         this.nameProperty().set("String");
         addOutputPort("Value", String.class);
         initialize();
@@ -99,30 +100,11 @@ public class StringBlock extends BlockModel {
             return;
         }
 
-        Integer integer = getIntegerValue(str);
-        if (integer != null) {
-
+        Object number = ParsingUtils.castToBestNumericTypeOrNull(str);
+        if (number != null && !(number instanceof BigDecimal) && !(number instanceof BigInteger)) {
             //Set outgoing data
-            outputPorts.get(0).dataTypeProperty().set(Integer.class);
-            outputPorts.get(0).setData(integer);
-            return;
-        }
-
-        Long lng = getLongValue(str);
-        if (lng != null) {
-
-            //Set outgoing data
-            outputPorts.get(0).dataTypeProperty().set(Long.class);
-            outputPorts.get(0).setData(lng);
-            return;
-        }
-
-        Double dbl = getDoubleValue(str);
-        if (dbl != null) {
-
-            //Set outgoing data
-            outputPorts.get(0).dataTypeProperty().set(Double.class);
-            outputPorts.get(0).setData(dbl);
+            outputPorts.get(0).dataTypeProperty().set(number.getClass());
+            outputPorts.get(0).setData(number);
             return;
         }
 
@@ -187,7 +169,8 @@ public class StringBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        StringBlock block = new StringBlock(workspace);
+        StringBlock block = new StringBlock();
+//        StringBlock block = new StringBlock(workspace);
         block.string.set(this.string.get());
         return block;
     }

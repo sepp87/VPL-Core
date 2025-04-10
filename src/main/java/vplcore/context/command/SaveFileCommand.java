@@ -3,15 +3,15 @@ package vplcore.context.command;
 import java.io.File;
 import vplcore.Config;
 import vplcore.context.Command;
-import vplcore.context.DisableSaveCommand;
 import vplcore.graph.io.GraphSaver;
 import vplcore.workspace.WorkspaceModel;
+import vplcore.context.MarkSavedCommand;
 
 /**
  *
  * @author Joost
  */
-public class SaveFileCommand implements Command, DisableSaveCommand {
+public class SaveFileCommand implements Command, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
 

@@ -52,7 +52,7 @@ public class BlockGroupController extends BaseController {
 
         // Listeners
         model.getBlocks().addListener(blocksListener);
-
+        
         // Bindings
         view.getLabel().textProperty().bindBidirectional(model.nameProperty());
     }

@@ -2,7 +2,7 @@ package vplcore.context.command;
 
 import vplcore.context.Command;
 import vplcore.context.ResetHistoryCommand;
-import vplcore.workspace.WorkspaceController;
+import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -10,15 +10,15 @@ import vplcore.workspace.WorkspaceController;
  */
 public class NewFileCommand implements Command, ResetHistoryCommand {
 
-    private final WorkspaceController workspace;
+    private final WorkspaceModel workspaceModel;
 
-    public NewFileCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public NewFileCommand(WorkspaceModel workspaceModel) {
+        this.workspaceModel = workspaceModel;
     }
 
     @Override
     public boolean execute() {
-        workspace.reset();
+        workspaceModel.reset();
         return true;
 
     }

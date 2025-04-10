@@ -26,7 +26,8 @@ public class CreateBlockCommand implements UndoableCommand {
     @Override
     public boolean execute() {
         if (blockModel == null) {
-            blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
+//            blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
+            blockModel = BlockFactory.createBlock(blockIdentifier);
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
         } else {

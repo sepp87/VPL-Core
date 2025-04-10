@@ -25,8 +25,9 @@ public class ColorBlock extends BlockModel {
     private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.WHITE);
     private CustomColorBox picker;
 
-    public ColorBlock(WorkspaceModel workspaceModel) {
-        super(workspaceModel);
+    public ColorBlock() {
+//    public ColorBlock(WorkspaceModel workspaceModel) {
+//        super(workspaceModel);
         this.nameProperty().set("Color Picker");
         addOutputPort("color", Color.class);
         initialize();
@@ -67,7 +68,8 @@ public class ColorBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        ColorBlock block = new ColorBlock(workspace);
+        ColorBlock block = new ColorBlock();
+//        ColorBlock block = new ColorBlock(workspace);
         block.color.set(this.color.get());
         return block;
     }

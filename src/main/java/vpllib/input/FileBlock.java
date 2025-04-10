@@ -37,8 +37,9 @@ public class FileBlock extends BlockModel {
     private BaseButton button;
     private TextField textField;
 
-    public FileBlock(WorkspaceModel workspaceModel) {
-        super(workspaceModel);
+    public FileBlock( ) {
+//    public FileBlock(WorkspaceModel workspaceModel) {
+//        super(workspaceModel);
         this.nameProperty().set("File");
         addOutputPort("file", File.class);
         initialize();
@@ -133,7 +134,8 @@ public class FileBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        FileBlock block = new FileBlock(workspace);
+        FileBlock block = new FileBlock();
+//        FileBlock block = new FileBlock(workspace);
         block.path.set(this.path.get());
         return block;
     }

@@ -89,13 +89,31 @@ public abstract class BlockModel extends BaseModel {
         return grouped;
     }
 
-    // should be private or protected and should be a listener to inputPorts
-    public void onIncomingConnectionAdded() {
-        processSafely();
+    /**
+     * Safeguard against null data to ensure errors are shown. If there was no
+     * previous connection, the data was already null. Since the new incoming
+     * data is also null, onInputDataChanged wasn't triggered. However, now that
+     * the user is interacting with the block, we should clearly indicate that
+     * input data is missing. Therefor, processSafely is triggered in case of
+     * null.
+     */
+    public void onIncomingConnectionAdded(Object data) {
+        if (data == null) {
+            processSafely();
+        }
     }
 
-    public void onIncomingConnectionRemoved() {
-        processSafely();
+    /**
+     * Safeguard against null data to ensure obsolete errors are cleared. If the
+     * removed data was already null, it remains null and onInputDataChanged
+     * won’t be triggered. Since the user is actively removing the connection,
+     * any related errors are no longer relevant. Therefor, processSafely is
+     * triggered in case of null.
+     */
+    public void onIncomingConnectionRemoved(Object data) {
+        if (data == null) {
+            processSafely();
+        }
     }
 
     public abstract Region getCustomization();

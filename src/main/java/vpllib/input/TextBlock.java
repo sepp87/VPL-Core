@@ -83,7 +83,7 @@ public class TextBlock extends BlockModel {
     }
 
     @Override
-    public void onIncomingConnectionRemoved() {
+    public void onIncomingConnectionRemoved(Object data) {
         string.set(null);
     }
 

@@ -30,6 +30,7 @@ public class ListMethods {
 
     @BlockMetadata(
             identifier = "List.get",
+            aliases = {"List.getIndex"},
             category = "Core",
             description = "Returns the element at the specified position in this list.")
     public static <T> T get(List<T> list, Integer index) {
@@ -112,9 +113,10 @@ public class ListMethods {
     // TODO return the replaced item
     @BlockMetadata(
             identifier = "List.set",
+            aliases = {"List.replace"},
             category = "Core",
             description = "Replaces the element at the specified position in this list with the specified element.")
-    public static <T> List<T> set(List<T> list, T t, int index) {
+    public static <T> List<T> set(List<T> list, int index, T t) {
         List<T> result = new ArrayList<>(list);
         result.set(index, t);
         return result;
@@ -244,6 +246,7 @@ public class ListMethods {
         }
         return transposed;
     }
+
     @BlockMetadata(
             identifier = "List.indexOf",
             category = "Core",

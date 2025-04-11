@@ -191,9 +191,11 @@ public class PortModel extends BaseModel {
 
         if (portType == PortType.INPUT) {
             if (change.wasAdded()) {
-                block.onIncomingConnectionAdded();
+                Object incomingData = change.getElementAdded().getStartPort().getData();
+                block.onIncomingConnectionAdded(incomingData);
             } else {
-                block.onIncomingConnectionRemoved();
+                Object removedData = change.getElementRemoved().getStartPort().getData();
+                block.onIncomingConnectionRemoved(removedData);
             }
         }
 

@@ -47,7 +47,6 @@ public class ParsingUtils {
             }
             return d;
         }
-
         if (value instanceof BigDecimal) {
             BigDecimal bigDecimal = (BigDecimal) value;
             try {

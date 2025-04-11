@@ -127,7 +127,6 @@ public class BlockLibraryLoader {
         return result;
     }
 
-
     private static void loadInternalBlockMethods() {
         loadMethodBlocks(INTERNAL_METHOD_BLOCKS, false);
     }
@@ -140,8 +139,12 @@ public class BlockLibraryLoader {
         List<Method> methods = getStaticMethodsFromClasses(classes);
         methods = filterEligibleMethods(methods);
         for (Method blockType : methods) {
-            String identifier = getBlockMetadata(blockType).identifier();
+            BlockMetadata metadata = getBlockMetadata(blockType);
+            String identifier = metadata.identifier();
             addBlockType(identifier, blockType, isExternal);
+            for (String alias : metadata.aliases()) {
+                addBlockType(alias, blockType, isExternal);
+            }
         }
     }
 

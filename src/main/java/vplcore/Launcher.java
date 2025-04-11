@@ -20,7 +20,6 @@ import vpllib.method.JsonMethods;
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
-// 0 REFACTOR Port - evaluate if process() is not called too often, e.g. double call onIncomingConnectionAdded and incomingDataChanged
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
@@ -38,7 +37,6 @@ import vpllib.method.JsonMethods;
 //      - support reading larger excel files. at the moment excels of 80k rows, with 5MB are okay, 12MB or so are not. At least 20MB should be okay
 //      - Spreadsheet methods support loading multiple sheets
 //      - DataSheetViewer - hide trailing cells with no data
-//   
 //
 // BACKLOG BLOCKS
 // JSON get key e.g. foo.bar.x[1]
@@ -51,36 +49,15 @@ import vpllib.method.JsonMethods;
 // 2d Map
 // special block/new control: retrigger block process 
 // accumulate results + reset possibility
-// 
 //
 // QUESTIONS
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
-//
 // DONE
-// 4 IMPROVEMENT multi workspace support with copy-paste
-//      - blocks are now unaware of their workspace, so blocks can be pasted from one workspace to another freely
-// 0 return BlockGroup blocks as immutable list
-// 3 IMPROVEMENT test between integer or boolean using modulus operation instead of trying to cast
-// 4 IMPROVEMENT add save and save as commands
-// 0 when built the app cannot find circle-xmark-solid.svg
-// 1 IMPROVEMENT Add undo/redo functionality
-//      0 REJECTED Move and Resize commands do not need to be executed, only recorded > current behaviour does NOT break the app
-// 0 BUG re-ordering columns in table view does not update the columns to A, B, C but B, A, C
-// 0 BUG tableviewblock rename block causes info button not to align on the right
-//      Solved by binding BaseLabel.textField.prefWidth to BaseLabel.width and 
-// 0 BUG baseLabel prevents block to resize to size less than its width
-//      Solved by setting BaseLabel.minWidth and prefWidth to Region.USE_COMPUTED_SIZE and menuBox.setMinWidth(0) and menuBox.setPrefWidth(0);
-// Show progress indicator for CPU intensive (method) blocks 
-// 0 Improve Json.asList to cast as long or integer
-// 0 DataSheet throw index out of bounds for -2 and int number bigger than row count, and use -1 as default case so user can inspect data
-// Boolean input block
-// Excel Blocks
-// CSV Blocks
-// 0 DataSheet support spreadsheets without headers
-// 0 DataSheet support name of sheet
-// 0 BUG adding readExcel to textpanel while already connected to DataSheetBlock triggers recalculation? 
-//          Resolved in PortModel onConnectionsChanged. Only call onIncoming added or removed for input ports
+// Support block aliases
+// Bug fix - Json String as list, fix parsing numbers instead lazily parsed numbers
+// 0 REFACTOR Port - evaluate if process() is not called too often, e.g. double call onIncomingConnectionAdded and incomingDataChanged, also on onConnectionRemoved
+//      - Trigger only when connections are added or removed and data changed. In case data changed and a connection was removed or added, process safely is only called once.
 //
 // NOTES
 // Mouse position is needed when pasting blocks and when creating a new connection 

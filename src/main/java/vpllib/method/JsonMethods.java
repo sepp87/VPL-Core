@@ -50,7 +50,7 @@ public class JsonMethods {
                     if (primitive.isString()) {
                         list.add(primitive.getAsString());
                     } else if (primitive.isNumber()) {
-                        Number number = primitive.getAsNumber();
+                        Number number = primitive.getAsNumber().doubleValue();
                         list.add(ParsingUtils.castToBestNumericType(number));
                     } else if (primitive.isBoolean()) {
                         list.add(primitive.getAsBoolean());

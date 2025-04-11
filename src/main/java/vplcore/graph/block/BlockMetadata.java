@@ -24,7 +24,7 @@ public @interface BlockMetadata {
 
     String[] tags() default {};
     
-    String[] alias() default {};
+    String[] aliases() default {};
 
     IconType icon() default IconType.NULL;
     

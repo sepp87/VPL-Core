@@ -104,7 +104,7 @@ public abstract class BlockModel extends BaseModel {
         return null;
     }
 
-    public final void processSafely() {
+    public void processSafely() {
         Set<BlockException> previousExceptions = new HashSet<>(exceptions);
 
         // Ensure processing only happens when active

@@ -20,7 +20,7 @@ import vpllib.method.JsonMethods;
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
-// 0 REFACTOR Port - evaluate if process() is not called too often
+// 0 REFACTOR Port - evaluate if process() is not called too often, e.g. double call onIncomingConnectionAdded and incomingDataChanged
 // 0 REFACTOR BlockInfoPanel, BlockExceptionPanel to MVC
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test

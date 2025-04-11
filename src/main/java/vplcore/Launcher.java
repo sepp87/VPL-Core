@@ -8,7 +8,6 @@ import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
-// 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
@@ -16,6 +15,7 @@ import vpllib.method.JsonMethods;
 //      rename Workspace helpers to managers?
 //
 // BACKLOG
+// BlockInfoPanel remove space below each label e.g. port descriptions
 // 3 REFACTOR merge integer and double slider and refactor event handlers
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
@@ -54,6 +54,8 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
+//      - Still not quite clear, but cleaned up superfluous exceptions
 // Support block aliases
 // Bug fix - Json String as list, fix parsing numbers instead lazily parsed numbers
 // 0 REFACTOR Port - evaluate if process() is not called too often, e.g. double call onIncomingConnectionAdded and incomingDataChanged, also on onConnectionRemoved

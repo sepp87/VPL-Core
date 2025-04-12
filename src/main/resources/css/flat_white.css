@@ -511,13 +511,13 @@
 .block-info .label {
     -fx-font-size: 12px;
     -fx-text-fill: white;
-    -fx-padding: 0 0 12 0;
+    -fx-padding: 0 0 0 0;
 }
 
 .block-info .header {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-padding: 0;
+    -fx-padding: 12 0 0 0;
 }
 
 .block-exception-bubble {

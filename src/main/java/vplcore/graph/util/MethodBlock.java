@@ -33,10 +33,10 @@ import vplcore.util.ListUtils;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Core.reflectionBlock",
+        identifier = "Core.methodBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
-        tags = {"core", "reflection", "block"})
+        tags = {"core", "method", "block"})
 public class MethodBlock extends BlockModel {
 
     private final BlockMetadata info;

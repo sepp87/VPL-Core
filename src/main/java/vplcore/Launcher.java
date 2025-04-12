@@ -1,12 +1,19 @@
 package vplcore;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
 import org.xml.sax.SAXException;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
+// 0 reimplement focusing e.g. when click onFreeSpace the edtor should request focus. Because at the moment it is to strict e.g. hovering a combo box list loses focus to the editor and collapses the menu
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
@@ -15,7 +22,6 @@ import vpllib.method.JsonMethods;
 //      rename Workspace helpers to managers?
 //
 // BACKLOG
-// BlockInfoPanel remove space below each label e.g. port descriptions
 // 3 REFACTOR merge integer and double slider and refactor event handlers
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
@@ -39,7 +45,7 @@ import vpllib.method.JsonMethods;
 //      - DataSheetViewer - hide trailing cells with no data
 //
 // BACKLOG BLOCKS
-// JSON get key e.g. foo.bar.x[1]
+// ComboBoxBlock
 // FILE get encoding of file
 // TemporalUnitBlock
 // 3DViewerBlock
@@ -54,6 +60,8 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// JSON get key e.g. foo.bar.x[1]
+// BlockInfoPanel remove space below each label e.g. port descriptions
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
 //      - Still not quite clear, but cleaned up superfluous exceptions
 // Support block aliases
@@ -85,6 +93,7 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetLongValue();
 //        TestGetDoubleValue();
+        test();
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
         if (false) {
@@ -103,6 +112,50 @@ public class Launcher {
         // 
         //Launch the UI
         App.launch(App.class);
+    }
+
+    static void test() {
+        for (Method m : Launcher.class.getDeclaredMethods()) {
+            if (m.getName().equals("getKey")) {
+                Type genericReturnType = m.getGenericReturnType();
+                if (genericReturnType instanceof ParameterizedType) {
+                    ParameterizedType pt = (ParameterizedType) genericReturnType;
+
+                    System.out.println("Raw type: " + pt.getRawType()); // Map
+
+                    for (Type arg : pt.getActualTypeArguments()) {
+                        System.out.println("Type arg: " + arg); // String, Integer
+                    }
+                } else {
+                    System.out.println("Not parameterized");
+                    System.out.println(genericReturnType.getTypeName());
+                }
+
+                Type[] types = m.getGenericParameterTypes();
+                for (Type type : types) {
+//                    if (type instanceof ParameterizedType pt) {
+//                        System.out.println("Raw type: " + pt.getRawType()); // Map
+//
+//                        for (Type arg : pt.getActualTypeArguments()) {
+//                            System.out.println("Type arg: " + arg); // String, Integer
+//                        }
+//                    } else {
+                        System.out.println("Not parameterized");
+                        System.out.println(type.getTypeName());
+
+//                    }
+
+                }
+            }
+        }
+    }
+
+    static <T> T getKey(Map<String, T> map) {
+        return map.get("tets");
+    }
+
+    static Map<String, Integer> testGenerics(List<String> list, Double dbl, Map<String, Integer> map) {
+        return Collections.emptyMap();
     }
 
     static void TestJsonAsList() {
@@ -129,6 +182,5 @@ public class Launcher {
         System.out.println(isLong);
         Long lng = Long.parseLong("123456");
     }
-
 
 }

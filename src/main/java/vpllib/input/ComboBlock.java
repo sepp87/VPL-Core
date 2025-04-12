@@ -1,10 +1,14 @@
-package vpllib.template;
+package vpllib.input;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.event.EventHandler;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javax.xml.namespace.QName;
 import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
@@ -17,15 +21,16 @@ import vplcore.graph.block.BlockView;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Util.Template",
+        identifier = "Core.comboBlock",
         category = "General",
-        description = "A template block for further customization",
-        tags = {"template", "dummy", "example"})
-public class TemplateBlock extends BlockModel {
+        description = "A generic block used to convert static lists into combo boxes",
+        tags = {"core", "combo", "block"})
+public class ComboBlock extends BlockModel {
 
-    public TemplateBlock() {
+    private ComboBox<String> comboBox;
+    
+    public ComboBlock() {
         this.nameProperty().set("Template");
-        addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
     }
 
@@ -36,8 +41,32 @@ public class TemplateBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        Label label = BlockView.getAwesomeIcon(IconType.FA_PAPER_PLANE);
-        return label;
+
+        // Create a ComboBox with sample values
+        comboBox = new ComboBox<>();
+        comboBox.getItems().addAll("Apple", "Banana", "Cherry", "Date", "Elderberry");
+
+        // Label to display the selected item
+        Label selectedLabel = new Label("Select a fruit");
+
+        // Update label when a selection is made
+        comboBox.setOnAction(e -> {
+            String selected = comboBox.getValue();
+            selectedLabel.setText("You selected: " + selected);
+        });
+
+        // Layout
+        VBox root = new VBox(10, comboBox, selectedLabel);
+        return root;
+    }
+
+    @Override
+    public EventHandler<MouseEvent> onMouseEntered() {
+        return this::focusOnComboBox;
+    }
+
+    private void focusOnComboBox(MouseEvent event) {
+        comboBox.requestFocus();
     }
 
     /**
@@ -45,35 +74,6 @@ public class TemplateBlock extends BlockModel {
      */
     @Override
     public void process() {
-
-        //Get incoming data
-        Object raw = inputPorts.get(0).getData();
-
-        //Finish calculate if there is no incoming data
-        if (raw == null) {
-            outputPorts.get(0).setData(null);
-            return;
-        }
-
-        //Process incoming data
-        if (raw instanceof List) {
-            List<Object> nodes = (List<Object>) raw;
-
-            //Example code to handle collections
-            List<String> strList = nodes.stream()
-                    .map(e -> e.toString())
-                    .collect(Collectors.toCollection(ArrayList<String>::new));
-
-            //Set outgoing data
-            outputPorts.get(0).setData(strList);
-
-        } else {
-            //Example code to handle a single object instance
-            String str = ((Object) raw).toString();
-
-            //Set outgoing data
-            outputPorts.get(0).setData(str);
-        }
     }
 
     @Override
@@ -94,7 +94,7 @@ public class TemplateBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        TemplateBlock block = new TemplateBlock();
+        ComboBlock block = new ComboBlock();
         //Specify further copy statements here
         return block;
     }

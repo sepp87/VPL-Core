@@ -27,7 +27,6 @@ public class JsonMethods {
             .setPrettyPrinting()
             .create();
 
-
     @BlockMetadata(
             identifier = "Json.asList",
             category = "Core",
@@ -63,7 +62,6 @@ public class JsonMethods {
         return list;
     }
 
-
     @BlockMetadata(
             identifier = "Json.getKey",
             category = "Core",
@@ -81,11 +79,47 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
+            identifier = "Json.getPath",
+            category = "Core",
+            description = "Returns the element with the specified path in this JSON object.")
+    public static String getPath(String json, String path) {
+        JsonElement element = PARSER.parse(json);
+        String[] parts = path.split("\\.");
+
+        for (String part : parts) {
+            if (part.contains("[") && part.contains("]")) {
+                // Handle array index like "bar[0]"
+                String key = part.substring(0, part.indexOf("["));
+
+//                String[] indeces = part.replaceFirst(key, "").replaceAll("\\[", "]").replaceAll("]]", "]").split("]");
+                String[] indices = part.replaceAll(".*?\\[", "").split("\\]|\\[");
+
+                if (!key.isEmpty()) {
+                    element = element.getAsJsonObject().get(key);
+                }
+
+                for (String value : indices) {
+                    if (value.isEmpty()) {
+                        throw new IllegalArgumentException("Index cannot be empty in path: " + path);
+                    }
+                    int index = Integer.parseInt(value);
+                    element = element.getAsJsonArray().get(index);
+                }
+
+            } else {
+                // Handle regular object key
+                element = element.getAsJsonObject().get(part);
+            }
+        }
+
+        return element.toString();
+    }
+
+    @BlockMetadata(
             identifier = "Json.toJson",
             category = "Core",
             description = "This method serializes the specified object into its equivalent Json representation.")
     public static String toJson(Object object) {
         return GSON.toJson(object);
     }
-
 }

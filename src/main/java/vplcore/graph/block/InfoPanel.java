@@ -36,7 +36,7 @@ public class InfoPanel extends Pane {
     protected final WorkspaceView workspaceView;
     protected final BlockModel blockModel;
     protected final BlockView blockView;
-    
+
     private final BooleanProperty removed = new SimpleBooleanProperty(this, "removed", false);
 
     protected Button closeButton;
@@ -72,8 +72,8 @@ public class InfoPanel extends Pane {
 
         setPosition();
     }
-    
-    public ReadOnlyBooleanProperty removedProperty(){
+
+    public ReadOnlyBooleanProperty removedProperty() {
         return removed;
     }
 
@@ -125,6 +125,7 @@ public class InfoPanel extends Pane {
         Label descriptionHeader = buildHeader("DESCRIPTION");
         Label inputHeader = buildHeader("INPUT");
         Label outputHeader = buildHeader("OUTPUT");
+        Label trailingLine = new Label("\n");
 
         // create content
         Label description = buildDescription();
@@ -136,6 +137,7 @@ public class InfoPanel extends Pane {
         content.getChildren().addAll(inputs);
         content.getChildren().addAll(outputHeader);
         content.getChildren().addAll(outputs);
+        content.getChildren().addAll(trailingLine);
         return content;
     }
 

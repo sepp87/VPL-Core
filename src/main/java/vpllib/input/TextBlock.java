@@ -36,8 +36,6 @@ public class TextBlock extends BlockModel {
     private TextArea textArea;
 
     public TextBlock() {
-//    public TextBlock(WorkspaceModel workspace) {
-//        super(workspace);
         nameProperty().set("Panel");
         resizableProperty().set(true);
         addInputPort("any", Object.class);

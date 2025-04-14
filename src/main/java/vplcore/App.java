@@ -9,7 +9,9 @@ import java.util.Map;
 import vplcore.editor.EditorController;
 import vplcore.editor.EditorView;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import vplcore.editor.KeyboardController;
 import vplcore.editor.MenuBarController;
@@ -90,7 +92,7 @@ public class App extends Application {
         new PanController(contextId, workspaceModel);
         new RadialMenuController(contextId, radialMenuView);
         new MenuBarController(contextId, menuBarView);
-        new EditorController(contextId, editorView);
+        EditorController editorController = new EditorController(contextId, editorView);
         new KeyboardController(contextId);
 
         // Setup scene
@@ -100,9 +102,9 @@ public class App extends Application {
         stage.setFullScreen(false);
 
 //        GraphLoader.deserialize(new File("vplxml/method-block.vplxml"), workspaceModel);
-        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceModel);
-//        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceModel);
+        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceModel);
         editorView.printMenuBarHeight();
 
@@ -112,6 +114,8 @@ public class App extends Application {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
         });
+
+        editorController.initialize(scene);
     }
 
     public static Stage getStage() {

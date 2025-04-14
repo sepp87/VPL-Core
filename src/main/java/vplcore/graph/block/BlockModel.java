@@ -39,8 +39,6 @@ public abstract class BlockModel extends BaseModel {
     private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
     public BlockModel() {
-//    public BlockModel(WorkspaceModel workspace) {
-//        this.workspace = workspace;
         this.active.addListener(activeListener);
     }
 

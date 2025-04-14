@@ -83,7 +83,8 @@ public class StringBlock extends BlockModel {
     @Override
     public void process() {
         String str = string.get();
-
+        System.out.println
+                (textField.getWidth());
         //Forward null and empty string as null
         if (str == null || str.equals("")) {
             outputPorts.get(0).dataTypeProperty().set(String.class);

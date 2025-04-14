@@ -1,19 +1,26 @@
 package vplcore;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
 import org.xml.sax.SAXException;
+import vplcore.graph.port.PortType;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
-// 0 reimplement focusing e.g. when click onFreeSpace the edtor should request focus. Because at the moment it is to strict e.g. hovering a combo box list loses focus to the editor and collapses the menu
+// REFACIOR Block search - list view select cell on hover
+// 0 REFACTOR event handlers on scene / editor controller level
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
@@ -45,9 +52,7 @@ import vpllib.method.JsonMethods;
 //      - DataSheetViewer - hide trailing cells with no data
 //
 // BACKLOG BLOCKS
-// ComboBoxBlock
 // FILE get encoding of file
-// TemporalUnitBlock
 // 3DViewerBlock
 // Geometry Blocks
 // ChatGPT Block
@@ -60,6 +65,11 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// IMPROVEMENT aliases for blocks from classes
+// ComboBoxBlock - ON HOLD, currently no use to further develop, since the only use case for now is the temporal unit block
+// TemporalUnitBlock
+// 0 reimplement focusing e.g. when click onFreeSpace the edtor should request focus. Because at the moment it is to strict e.g. hovering a combo box list loses focus to the editor and collapses the menu
+//      solved - added global key input listeners on scene level
 // JSON get key e.g. foo.bar.x[1]
 // BlockInfoPanel remove space below each label e.g. port descriptions
 // 0 IMRPOVEMENT Method block exceptions e.g. when not all inputs are set, the exception is not quite understandable
@@ -93,7 +103,7 @@ public class Launcher {
 //        TestGetIntegerValue();
 //        TestGetLongValue();
 //        TestGetDoubleValue();
-        test();
+        testField();
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
         if (false) {
@@ -113,8 +123,30 @@ public class Launcher {
         //Launch the UI
         App.launch(App.class);
     }
+    List<ChronoUnit> stringList;
 
-    static void test() {
+    static void testField() {
+        try {
+            Field f = Launcher.class.getDeclaredField("stringList");
+            if (List.class.isAssignableFrom(f.getType())) {
+                if (f.getGenericType() instanceof ParameterizedType pt) {
+                    if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz) {
+                        System.out.println(pt.getActualTypeArguments()[0]);
+                        System.out.println(clazz.getName());
+                    }
+                    List<TemporalUnit> test = List.of(ChronoUnit.MONTHS);
+                    List<PortType> test2 = List.of(PortType.INPUT);
+
+                }
+
+            }
+
+        } catch (NoSuchFieldException | SecurityException ex) {
+            Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    static void testMethod() {
         for (Method m : Launcher.class.getDeclaredMethods()) {
             if (m.getName().equals("getKey")) {
                 Type genericReturnType = m.getGenericReturnType();
@@ -140,11 +172,10 @@ public class Launcher {
 //                            System.out.println("Type arg: " + arg); // String, Integer
 //                        }
 //                    } else {
-                        System.out.println("Not parameterized");
-                        System.out.println(type.getTypeName());
+                    System.out.println("Not parameterized");
+                    System.out.println(type.getTypeName());
 
 //                    }
-
                 }
             }
         }

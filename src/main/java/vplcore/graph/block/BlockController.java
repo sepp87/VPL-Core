@@ -157,8 +157,6 @@ public class BlockController extends BaseController {
         if (model.resizableProperty().get()) {
             view.getResizeButton().setVisible(false);
         }
-        //Change focus on exit to workspace so controls do not interrupt key events
-        this.getEditorContext().returnFocusToEditor();
     }
 
     private void handleMoveStartedAndUpdateSelection(MouseEvent event) {

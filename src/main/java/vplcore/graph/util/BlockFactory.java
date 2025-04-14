@@ -1,8 +1,12 @@
 package vplcore.graph.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +14,7 @@ import vplcore.IconType;
 import vplcore.graph.block.BlockModel;
 import vplcore.workspace.WorkspaceModel;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.port.PortType;
 
 /**
  *
@@ -24,17 +29,14 @@ public class BlockFactory {
 
         if (type.getClass().equals(Class.class)) {
             Class<?> clazz = (Class) type;
-//            blockModel = createBlockFromClass(clazz, workspaceModel);
             blockModel = createBlockFromClass(clazz);
         } else if (type.getClass().equals(Method.class)) {
             Method method = (Method) type;
-//            blockModel = createBlockFromMethod(method, workspaceModel);
             blockModel = createBlockFromMethod(method);
         }
         return blockModel;
     }
 
-//    public static BlockModel createBlockFromClass(Class<?> clazz, WorkspaceModel workspaceModel) {
     public static BlockModel createBlockFromClass(Class<?> clazz) {
         BlockModel blockModel = null;
         try {
@@ -46,7 +48,6 @@ public class BlockFactory {
         return blockModel;
     }
 
-//    public static MethodBlock createBlockFromMethod(Method method, WorkspaceModel workspaceModel) {
     public static MethodBlock createBlockFromMethod(Method method) {
         MethodBlock blockModel = null;
         try {
@@ -88,6 +89,22 @@ public class BlockFactory {
             Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return blockModel;
+    }
+
+    public static BlockModel createBlockFromField(Field field) {
+        BlockModel blockModel = null;
+        if (List.class.isAssignableFrom(field.getType())) {
+            if (field.getGenericType() instanceof ParameterizedType pt) {
+                if (pt.getActualTypeArguments()[0] instanceof Class<?> clazz) {
+                    System.out.println(pt.getActualTypeArguments()[0]);
+                    System.out.println(clazz.getSimpleName());
+                }
+
+            }
+
+        }
+        return blockModel;
+
     }
 
 }

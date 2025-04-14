@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import vplcore.editor.EditorView;
+import static vplcore.util.EditorUtils.onFreeSpace;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -46,6 +47,11 @@ public class EditorContext {
 
     private void trackMouse(MouseEvent event) {
         mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
+        
+        boolean isEditorFocused = editorView.getScene().focusOwnerProperty().get() instanceof EditorView;
+        if (!isEditorFocused && onFreeSpace(event)) {
+            editorView.requestFocus();
+        }
     }
 
     public String getId() {
@@ -91,7 +97,7 @@ public class EditorContext {
     public Point2D sceneToWorkspace(Point2D sceneCoordinates) {
         return workspaceView.sceneToLocal(sceneCoordinates);
     }
-    
+
     public void returnFocusToEditor() {
         editorView.requestFocus();
     }

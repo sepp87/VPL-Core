@@ -27,10 +27,11 @@ public class TemplateBlock extends BlockModel {
         this.nameProperty().set("Template");
         addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
+        initialize();
     }
 
     @Override
-    protected void initialize() {
+    protected final void initialize() {
         // Event handlers, change listeners and bindings
     }
 

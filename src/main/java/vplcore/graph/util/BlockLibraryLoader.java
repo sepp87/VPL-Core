@@ -4,7 +4,9 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -74,10 +76,7 @@ public class BlockLibraryLoader {
      */
     private static void loadInternalBlockClasses() {
         Set<Class<? extends BlockModel>> blockTypes = getBlockTypes(INTERNAL_PACKAGES);
-        for (Class<?> blockType : blockTypes) {
-            String identifier = getBlockMetadata(blockType).identifier();
-            addBlockType(identifier, blockType, false);
-        }
+        loadBlockClasses(blockTypes, false);
     }
 
     private static Set<Class<? extends BlockModel>> getBlockTypes(List<String> packages) {
@@ -94,10 +93,18 @@ public class BlockLibraryLoader {
      * Retrieve all blocks from external libraries
      */
     private static void loadExternalBlockClasses(List<Class<?>> externalClasses) {
-        externalClasses = filterEligibleClasses(externalClasses);
-        for (Class<?> blockType : externalClasses) {
-            String identifier = getBlockMetadata(blockType).identifier();
-            addBlockType(identifier, blockType, true);
+        List<Class<? extends BlockModel>> blockTypes = filterEligibleClasses(externalClasses);
+        loadBlockClasses(blockTypes, true);
+    }
+
+    private static void loadBlockClasses(Collection<Class<? extends BlockModel>> classes, boolean isExternal) {
+        for (Class<?> blockType : classes) {
+            BlockMetadata metadata = getBlockMetadata(blockType);
+            String identifier = metadata.identifier();
+            addBlockType(identifier, blockType, isExternal);
+            for (String alias : metadata.aliases()) {
+                addBlockType(alias, blockType, isExternal);
+            }
         }
     }
 
@@ -117,11 +124,11 @@ public class BlockLibraryLoader {
         }
     }
 
-    private static List<Class<?>> filterEligibleClasses(List<Class<?>> classes) {
-        List<Class<?>> result = new ArrayList<>();
+    private static List<Class<? extends BlockModel>> filterEligibleClasses(List<Class<?>> classes) {
+        List<Class<? extends BlockModel>> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
             if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
-                result.add(clazz);
+                result.add((Class<? extends BlockModel>) clazz);
             }
         }
         return result;

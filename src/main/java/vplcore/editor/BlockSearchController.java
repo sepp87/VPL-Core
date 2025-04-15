@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -59,7 +60,25 @@ public class BlockSearchController extends BaseController {
 
         listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
         listView.setOnMouseClicked(this::handleCreateBlock);
-        listView.setOnMouseMoved(this::handleSelectHoveredItem);
+//        listView.setOnMouseMoved(this::handleSelectHoveredItem);
+        listView.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item);
+                }
+            };
+
+            // Do NOT use onMouseEntered, otherwise the selection keeps jumping back to the cell underneath the mouse whilst navigating with keys up and down
+            cell.setOnMouseMoved(e -> {
+                if (!cell.isEmpty()) {
+                    lv.getSelectionModel().select(cell.getIndex());
+                }
+            });
+
+            return cell;
+        });
 
         eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::toggleBlockSearch);
     }

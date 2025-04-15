@@ -19,7 +19,6 @@ import vplcore.graph.port.PortType;
 import vplcore.graph.util.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
-// REFACIOR Block search - list view select cell on hover
 // 0 REFACTOR event handlers on scene / editor controller level
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -65,6 +64,7 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// REFACIOR Block search - list view select cell on hover
 // IMPROVEMENT aliases for blocks from classes
 // ComboBoxBlock - ON HOLD, currently no use to further develop, since the only use case for now is the temporal unit block
 // TemporalUnitBlock

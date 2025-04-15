@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.util.FileUtils;
 
 /**
  *
@@ -63,7 +64,7 @@ public class FileMethods {
     public static List<File> list(File dir) throws IOException {
         Path dirPath = dir.toPath();
         List<File> result = new ArrayList<>();
-        try (Stream<Path> stream = Files.list(dirPath)) {
+        try ( Stream<Path> stream = Files.list(dirPath)) {
             stream.map(Path::toFile).forEach(result::add);
         }
         return result;
@@ -88,4 +89,14 @@ public class FileMethods {
         Path path = file.toPath();
         return Files.isWritable(path);
     }
+
+    @BlockMetadata(
+            name = "Encoding",
+            description = "Detect a file's encoding. If no match was found, it defaults to UTF-8.",
+            identifier = "File.detectEncoding",
+            category = "Core")
+    public static String detectEncoding(File file) {
+        return FileUtils.detectEncoding(file);
+    }
+
 }

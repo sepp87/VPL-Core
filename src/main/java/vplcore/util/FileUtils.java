@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mozilla.universalchardet.UniversalDetector;
 
 /**
  *
@@ -137,7 +138,7 @@ public class FileUtils {
     public static List<String> readFile(File file) {
         List<String> stringList = new ArrayList<>();
 
-        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
+        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -145,7 +146,7 @@ public class FileUtils {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return stringList;
     }
@@ -156,7 +157,7 @@ public class FileUtils {
      */
     public static String readFileAsString(File file) {
         String result = "";
-        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
+        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -164,7 +165,7 @@ public class FileUtils {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -201,11 +202,35 @@ public class FileUtils {
 
     public static Properties loadProperties(File file) {
         Properties properties = new Properties();
-        try (InputStream inputStream = new FileInputStream(file)) {
+        try ( InputStream inputStream = new FileInputStream(file)) {
             properties.load(inputStream);
         } catch (IOException ex) {
-            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return properties;
+    }
+
+    public static String detectEncoding(File file)  {
+        byte[] buf = new byte[4096];
+        String encoding = null;
+        try ( FileInputStream fis = new FileInputStream(file)) {
+            UniversalDetector detector = new UniversalDetector(null);
+            int nread;
+            while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+                detector.handleData(buf, 0, nread);
+            }
+            detector.dataEnd();
+            encoding = detector.getDetectedCharset();
+            detector.reset();
+        } catch (IOException ex) {
+            Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (encoding == null) {
+            Logger.getLogger(FileUtils.class.getName()).log(Level.INFO, "Unknown file encoding, defaulting to UTF-8");
+            encoding = "UTF-8";
+        }
+
+        return encoding;
     }
 }

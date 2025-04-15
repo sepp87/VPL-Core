@@ -51,7 +51,6 @@ import vpllib.method.JsonMethods;
 //      - DataSheetViewer - hide trailing cells with no data
 //
 // BACKLOG BLOCKS
-// FILE get encoding of file
 // 3DViewerBlock
 // Geometry Blocks
 // ChatGPT Block
@@ -64,6 +63,8 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// FILE get encoding of file
+// Password block
 // REFACIOR Block search - list view select cell on hover
 // IMPROVEMENT aliases for blocks from classes
 // ComboBoxBlock - ON HOLD, currently no use to further develop, since the only use case for now is the temporal unit block

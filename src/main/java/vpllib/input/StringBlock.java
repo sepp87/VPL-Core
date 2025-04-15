@@ -34,11 +34,9 @@ public class StringBlock extends BlockModel {
     private final StringProperty string = new SimpleStringProperty();
     private TextField textField;
 
-//    public StringBlock(WorkspaceModel workspace) {
-//        super(workspace);
     public StringBlock() {
         this.nameProperty().set("String");
-        addOutputPort("Value", String.class);
+        addOutputPort("value", String.class);
         initialize();
     }
 
@@ -83,8 +81,7 @@ public class StringBlock extends BlockModel {
     @Override
     public void process() {
         String str = string.get();
-        System.out.println
-                (textField.getWidth());
+
         //Forward null and empty string as null
         if (str == null || str.equals("")) {
             outputPorts.get(0).dataTypeProperty().set(String.class);

@@ -9,13 +9,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Subscription;
 import javax.xml.namespace.QName;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockModel;
+import vplcore.util.ListViewHoverSelectBehaviour;
 
 /**
  *
@@ -26,19 +30,20 @@ import vplcore.graph.block.BlockModel;
         description = "A standard set of date periods units.",
         category = "Core")
 public class ChronoUnitBlock extends BlockModel {
-
-    private final Map<String, Object> values;
-    private final ObjectProperty unit = new SimpleObjectProperty();
-
+    
+    private final Map<String, Object> unitsMap;
+    private final ObjectProperty value = new SimpleObjectProperty();
+    
     private ComboBox<String> comboBox;
-
+    private ListView<String> listView;
+    
     public ChronoUnitBlock() {
         this.nameProperty().set("Temporal Unit");
         addOutputPort("selected", TemporalUnit.class);
-        this.values = getChronoUnits();
+        this.unitsMap = getChronoUnits();
         initialize();
     }
-
+    
     private Map<String, Object> getChronoUnits() {
         Class<?> clazz = java.time.temporal.ChronoUnit.class;
         Map<String, Object> result = new HashMap<>();
@@ -47,13 +52,13 @@ public class ChronoUnitBlock extends BlockModel {
         }
         return result;
     }
-
+    
     @Override
     protected final void initialize() {
         // Event handlers, change listeners and bindings
-        outputPorts.get(0).dataProperty().bind(unit);
+        outputPorts.get(0).dataProperty().bind(value);
     }
-
+    
     @Override
     public Region getCustomization() {
 
@@ -62,28 +67,34 @@ public class ChronoUnitBlock extends BlockModel {
         comboBox.setPrefWidth(202);
         comboBox.setMaxWidth(202);
         comboBox.setPromptText("Select a value");
-        comboBox.getItems().addAll(values.keySet());
-        comboBox.setCellFactory(lv -> {
-            ListCell<String> cell = new ListCell<>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(item);
-//                    setText(item == null || empty ? null : item.toString());
-                }
-            };
-
-            // Replace hover logic
-            cell.setOnMouseEntered(e -> {
-                if (!cell.isEmpty()) {
-                    lv.getSelectionModel().select(cell.getIndex());
-                }
-            });
-
-            return cell;
+        comboBox.getItems().addAll(unitsMap.keySet());
+//        comboBox.setCellFactory(lv -> {
+//            ListCell<String> cell = new ListCell<>() {
+//                @Override
+//                protected void updateItem(String item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    setText(item);
+////                    setText(item == null || empty ? null : item.toString());
+//                }
+//            };
+//
+//            // Replace hover logic
+//            cell.setOnMouseEntered(e -> {
+//                if (!cell.isEmpty()) {
+//                    lv.getSelectionModel().select(cell.getIndex());
+//                }
+//            });
+//
+//            return cell;
+//        });
+        comboBox.setOnShown(event -> {
+            ComboBoxListViewSkin<String> skin = (ComboBoxListViewSkin<String>) comboBox.getSkin();
+            this.listView = (ListView<String>) skin.getPopupContent();
+            new ListViewHoverSelectBehaviour(listView);
         });
-        if (unit.get() != null) {
-            comboBox.getSelectionModel().select(unit.get().toString());
+
+        if (value.get() != null) {
+            comboBox.getSelectionModel().select(value.get().toString());
         }
         comboBox.showingProperty().addListener(hiddenListener);
         comboBox.valueProperty().addListener(upDownListener);
@@ -92,28 +103,28 @@ public class ChronoUnitBlock extends BlockModel {
         VBox root = new VBox(comboBox);
         return root;
     }
-
+    
     private final ChangeListener<Boolean> hiddenListener = this::onHiddenUpdateSelected;
-
+    
     private void onHiddenUpdateSelected(Object b, boolean o, boolean isShowing) {
         if (!isShowing) {
-            unit.set(values.get(comboBox.getValue()));
+            value.set(unitsMap.get(comboBox.getValue()));
         }
     }
-
+    
     private final ChangeListener<Object> upDownListener = this::onUpDownUpdateSelected;
-
+    
     private void onUpDownUpdateSelected(Object b, Object o, Object n) {
         if (!comboBox.isShowing()) {
-            unit.set(values.get(comboBox.getValue()));
+            value.set(unitsMap.get(comboBox.getValue()));
         }
     }
-
+    
     @Override
     public EventHandler<MouseEvent> onMouseEntered() {
         return this::focusOnComboBox;
     }
-
+    
     private void focusOnComboBox(MouseEvent event) {
         comboBox.requestFocus();
     }
@@ -124,32 +135,32 @@ public class ChronoUnitBlock extends BlockModel {
     @Override
     public void process() {
     }
-
+    
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         //Retrieval of custom attribute
-        xmlTag.getOtherAttributes().put(QName.valueOf("unit"), unit.get().toString());
+        xmlTag.getOtherAttributes().put(QName.valueOf("value"), value.get().toString());
     }
-
+    
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
         //Retrieval of custom attribute
-        String key = xmlTag.getOtherAttributes().get(QName.valueOf("unit"));
-        unit.set(values.get(key));
-        if(comboBox != null) {
+        String key = xmlTag.getOtherAttributes().get(QName.valueOf("value"));
+        value.set(unitsMap.get(key));
+        if (comboBox != null) {
             comboBox.setValue(key);
         }
     }
-
+    
     @Override
     public BlockModel copy() {
         ChronoUnitBlock block = new ChronoUnitBlock();
         //Specify further copy statements here
         return block;
     }
-
+    
     @Override
     protected void onRemoved() {
         outputPorts.get(0).dataProperty().unbind();
@@ -160,6 +171,11 @@ public class ChronoUnitBlock extends BlockModel {
         }
         comboBox.showingProperty().removeListener(hiddenListener);
         comboBox.valueProperty().removeListener(upDownListener);
-
+        
+        if (listView == null) {
+            return;
+        }
+        listView.setOnMouseMoved(null);
+        
     }
 }

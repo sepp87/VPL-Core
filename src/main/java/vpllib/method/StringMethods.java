@@ -1,5 +1,6 @@
 package vpllib.method;
 
+import java.util.List;
 import vplcore.graph.block.BlockMetadata;
 
 /**
@@ -9,20 +10,11 @@ import vplcore.graph.block.BlockMetadata;
 public class StringMethods {
 
     @BlockMetadata(
-            identifier = "String.fromObject",
-            category = "Core",
-            description = "Returns a string representation of the object.",
-            name = "toString")
-    public static String fromObject(Object object) {
-        return object.toString();
-    }
-
-    @BlockMetadata(
             identifier = "String.length",
             category = "Core",
             description = "Returns the length of this string. The length is equal to the number of Unicode code units in the string.",
             tags = {"size"})
-    public static Integer getLength(String string) {
+    public static Integer length(String string) {
         return string.length();
     }
 
@@ -116,8 +108,16 @@ public class StringMethods {
             identifier = "String.equals",
             category = "Core",
             description = "Compares this string to the specified object. The result is true if and only if the argument is not null and is a String object that represents the same sequence of characters as this object.")
-    public static Boolean equals(String string, String anotherString) {
-        return string.equals(anotherString);
+    public static Boolean equals(String a, String another) {
+        return a.equals(another);
+    }
+
+    @BlockMetadata(
+            identifier = "String.equalsIgnoreCase",
+            category = "Core",
+            description = "Compares this String to another String, ignoring case considerations. Two strings are considered equal ignoring case if they are of the same length and corresponding Unicode code points in the two strings are equal ignoring case.")
+    public static boolean equalsIgnoreCase(String a, String another) {
+        return a.equalsIgnoreCase(another);
     }
 
     @BlockMetadata(
@@ -182,4 +182,37 @@ public class StringMethods {
         }
         return result;
     }
+
+    @BlockMetadata(
+            identifier = "String.matches",
+            category = "Core",
+            description = "Tells whether or not this string matches the given regular expression.")
+    public static Boolean matches(String value, String regex) {
+        return value.matches(regex);
+    }
+
+    @BlockMetadata(
+            identifier = "String.split",
+            category = "Core",
+            description = "Splits this string around matches of the given regular expression.")
+    public static List<String> split(String value, String regex) {
+        return List.of(value.split(regex));
+    }
+
+    @BlockMetadata(
+            identifier = "String.isBlank",
+            category = "Core",
+            description = "Returns true if the string is empty or contains only white space codepoints, otherwise false.")
+    public static Boolean isBlank(String value) {
+        return value.isBlank();
+    }
+
+    @BlockMetadata(
+            identifier = "String.isEmpty",
+            category = "Core",
+            description = "Returns true if, and only if, length() is 0.")
+    public static Boolean isEmpty(String value) {
+        return value.isEmpty();
+    }
+
 }

@@ -18,4 +18,8 @@ public class BaseButton extends Button {
         setPrefWidth(Region.USE_COMPUTED_SIZE);
     }
 
+    public void setText(IconType type) {
+        setText(type.getUnicode() + "");
+    }
+
 }

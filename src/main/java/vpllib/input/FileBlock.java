@@ -18,7 +18,6 @@ import vplcore.IconType;
 import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.block.BlockModel;
-import vplcore.workspace.WorkspaceModel;
 
 /**
  *
@@ -37,9 +36,7 @@ public class FileBlock extends BlockModel {
     private BaseButton button;
     private TextField textField;
 
-    public FileBlock( ) {
-//    public FileBlock(WorkspaceModel workspaceModel) {
-//        super(workspaceModel);
+    public FileBlock( ) {        
         this.nameProperty().set("File");
         addOutputPort("file", File.class);
         initialize();

@@ -1,8 +1,12 @@
 package vplcore.util;
 
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.skin.ListViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
+import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -71,5 +75,38 @@ public class ListViewUtils {
     // Method to determine the height of a cell in the ListView
     public static double getCellHeight(ListView<String> listView) {
         return listView.lookup(".list-cell").getLayoutBounds().getHeight();
+    }
+
+    public static double getVisibleHeightOfCell(ListView listView, Integer index) {
+        if (index == null) {
+            return 0;
+        }
+
+        // Look up the ListCell node for the index
+        VirtualFlow<?> virtualFlow = findVirtualFlow(listView);
+        if (virtualFlow == null) {
+            return 0;
+        }
+
+        ListCell<?> firstCell = (ListCell<?>) virtualFlow.getCell(index);
+        if (firstCell == null) {
+            return 0;
+        }
+
+        Bounds cellBounds = firstCell.getBoundsInParent();
+        double clippedTop = Math.max(0, -cellBounds.getMinY()); // Amount scrolled out
+        return Math.max(0, firstCell.getHeight() - clippedTop);
+    }
+
+    private static VirtualFlow<?> findVirtualFlow(ListView<?> listView) {
+        if (listView.getSkin() instanceof ListViewSkin<?>) {
+            ListViewSkin<?> skin = (ListViewSkin<?>) listView.getSkin();
+            for (Node node : skin.getChildren()) {
+                if (node instanceof VirtualFlow<?>) {
+                    return (VirtualFlow<?>) node;
+                }
+            }
+        }
+        return null;
     }
 }

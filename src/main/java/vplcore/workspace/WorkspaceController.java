@@ -42,12 +42,6 @@ public class WorkspaceController extends BaseController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
-    private final BooleanProperty wirelessVisible = new SimpleBooleanProperty(this, "transmittableVisible", false);
-
-    // TODO Remove public access to info panel 
-    public boolean typeSensitive = true;
-
-    //Radial menu
     public WorkspaceController(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
         super(contextId);
         this.model = workspaceModel;
@@ -61,10 +55,6 @@ public class WorkspaceController extends BaseController {
         model.addBlockGroupModelsListener(blockGroupModelsListener);
     }
     
-    public BooleanProperty wirelessVisibibleProperty() {
-        return wirelessVisible;
-    }
-
     public void registerPort(PortController portController) {
         ports.put(portController.getModel().idProperty().get(), portController);
     }

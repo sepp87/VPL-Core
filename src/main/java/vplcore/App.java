@@ -9,6 +9,8 @@ import java.util.Map;
 import vplcore.editor.EditorController;
 import vplcore.editor.EditorView;
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;

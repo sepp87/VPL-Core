@@ -82,17 +82,7 @@ public class PreConnection extends Line {
          * Check if the data type from the sending port is the same or a sub
          * class of the receiving port.
          */
-        if (((TypeExtensions.isCastableTo(startPortModel.getDataType(), endPortModel.getDataType())
-                && workspaceController.typeSensitive && endPortModel.getPortType() == PortType.INPUT)
-                || (TypeExtensions.isCastableTo(endPortModel.getDataType(), startPortModel.getDataType())
-                && workspaceController.typeSensitive && endPortModel.getPortType() == PortType.OUTPUT)
-                // IN case dataProperty type does not matter
-                || (!workspaceController.typeSensitive))
-                // Cannot be the same port type; IN > OUT or OUT > IN
-                && endPortModel.getPortType() != startPortModel.getPortType()
-                // Cannot be the same block
-                && !endPortModel.getBlock().equals(startPortModel.getBlock())) {
-
+        if (ConnectionModel.isEligible(startPortModel, endPortModel)) {
             /**
              * Make a new connection and remove all the existing connections
              * Where is multi connect?

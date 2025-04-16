@@ -14,6 +14,8 @@ import java.nio.file.WatchService;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import vplcore.util.FileUtils;
 import vplcore.util.SystemUtils.OperatingSystem;
@@ -24,6 +26,8 @@ import vplcore.util.SystemUtils;
  * @author joostmeulenkamp
  */
 public class Config {
+
+    private final BooleanProperty wirelessVisible = new SimpleBooleanProperty(this, "wirelessVisible", false);
 
     public static final boolean TYPE_SENSITIVE = true;
 

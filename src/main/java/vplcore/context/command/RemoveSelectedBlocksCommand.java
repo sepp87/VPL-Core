@@ -60,6 +60,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
             BlockModel blockModel = blockController.getModel();
             // remove connections before, otherwise the connections are already removed from the block
             Collection<ConnectionModel> removedConnections = workspaceModel.removeConnectionModels(blockModel);
+            // TODO retrieve wireless receivers and connect to next in line
             connections.addAll(removedConnections);
             workspaceModel.removeBlockModel(blockModel);
             workspaceModel.removeBlockFromGroup(blockModel); // can be null and could also be removed

@@ -19,7 +19,7 @@ import jo.vpl.xml.GroupTag;
 import jo.vpl.xml.GroupsTag;
 import jo.vpl.xml.ObjectFactory;
 import vplcore.workspace.WorkspaceModel;
-import vplcore.graph.util.BlockFactory;
+import vplcore.graph.block.BlockFactory;
 import vplcore.graph.group.BlockGroupModel;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.port.PortModel;

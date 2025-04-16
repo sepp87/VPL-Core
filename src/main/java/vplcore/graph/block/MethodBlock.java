@@ -1,4 +1,4 @@
-package vplcore.graph.util;
+package vplcore.graph.block;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

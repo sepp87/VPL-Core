@@ -1,6 +1,7 @@
 package vplcore.workspace;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import vplcore.graph.group.BlockGroupModel;
@@ -12,11 +13,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
+import vplcore.App;
 
 /**
  *
@@ -30,6 +31,7 @@ public class WorkspaceModel {
     public static final double ZOOM_STEP = 0.1;
 
     private final BlockGroupIndex blockGroupIndex = new BlockGroupIndex();
+    private final WirelessIndex wirelessIndex = new WirelessIndex();
 
     private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", false);
     private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
@@ -41,6 +43,11 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
+    private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
+    
+    public WirelessIndex getWirelessIndex(){
+        return wirelessIndex;
+    }
 
     public BooleanProperty savableProperty() {
         return savable;
@@ -94,12 +101,23 @@ public class WorkspaceModel {
      * BLOCKS
      */
     public void addBlockModel(BlockModel blockModel) {
+        List<PortModel> transmittingPorts = blockModel.getTransmittingPorts();
+        for (PortModel port : transmittingPorts) {
+            dataTransmittors.computeIfAbsent(port.getDataType(), dataType -> new ArrayList<>()).add(port);
+        }
         blockModels.add(blockModel);
         blockModel.setActive(true); // blocks are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
 
     }
 
     public void removeBlockModel(BlockModel blockModel) {
+        List<PortModel> transmittingPorts = blockModel.getTransmittingPorts();
+        for (PortModel port : transmittingPorts) {
+            List<PortModel> list = dataTransmittors.get(port.getDataType());
+            if (list != null) {
+                list.remove(port);
+            }
+        }
         blockModels.remove(blockModel);
         blockModel.remove();
     }
@@ -148,11 +166,11 @@ public class WorkspaceModel {
     }
 
     public List<ConnectionModel> removeConnectionModels(BlockModel blockModel) {
-        System.out.println("TEsT1");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceModel.removeConnectionModels()");
+        }
         List<ConnectionModel> connections = blockModel.getConnections();
         for (ConnectionModel connection : connections) {
-            System.out.println("TEsT   2 ");
-
             removeConnectionModel(connection);
         }
         return connections;
@@ -163,7 +181,9 @@ public class WorkspaceModel {
      * GROUPS
      */
     public void removeBlockGroupModel(BlockGroupModel blockGroupModel) {
-        System.out.println("WorkspaceModel.removeBlockGroupModel()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceModel.removeBlockGroupModel()");
+        }
         blockGroupModels.remove(blockGroupModel);
         blockGroupModel.remove();
     }
@@ -181,12 +201,16 @@ public class WorkspaceModel {
     }
 
     public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
-        System.out.println("WorkspaceModel.addBlockGroupModel()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceModel.addBlockGroupModel()");
+        }
         blockGroupModels.add(blockGroupModel);
     }
 
     public BlockGroupModel removeBlockFromGroup(BlockModel blockModel) {
-        System.out.println("WorkspaceModel.removeBlockFromGroup()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("WorkspaceModel.removeBlockFromGroup()");
+        }
         BlockGroupModel blockGroupModel = blockGroupIndex.getBlockGroup(blockModel);
         if (blockGroupModel != null) {
             blockGroupModel.removeBlock(blockModel);

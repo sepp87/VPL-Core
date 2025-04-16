@@ -6,6 +6,8 @@ import vplcore.graph.block.BlockModel;
 import vplcore.graph.group.BlockGroupModel;
 
 /**
+ * Registers which block belongs to which group. To provide easy access to a
+ * block's group and ensure blocks are only grouped once.
  *
  * @author Joost
  */

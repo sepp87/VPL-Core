@@ -16,7 +16,7 @@ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
 import org.xml.sax.SAXException;
 import vplcore.graph.port.PortType;
-import vplcore.graph.util.BlockLibraryLoader;
+import vplcore.graph.block.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
 // 0 REFACTOR event handlers on scene / editor controller level
@@ -89,6 +89,11 @@ import vpllib.method.JsonMethods;
 // Put everything inside the models that needs to be saved and all business logic needed to make a script work in headless mode
 // TODO naming conventions for event handlers & change listeners and placement of handlers / listeners in code
 // When a dedicated listener is needed, it should be declared directly above the method it calls, so it easier to find it
+// Naming
+//            Name	Purpose                                 Implied Behavior                    Good For
+//            *Index	Lookup tables, mostly passive           Read-heavy, structure-only          Groups, hierarchies
+//            *Registry	Active coordination via registration	Event-aware, dynamic resolution     Plugins, wireless ports
+//            *Manager	Heavy orchestration, lifecycles         Stateful control, complex logic     NodeManager, SessionManager
 //
 // TESTS 
 // Create connection - Link backward and link forward

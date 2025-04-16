@@ -3,7 +3,7 @@ package vplcore.editor;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import vplcore.graph.util.BlockLibraryLoader;
+import vplcore.graph.block.BlockLibraryLoader;
 
 /**
  *

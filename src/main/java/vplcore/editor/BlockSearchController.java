@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import vplcore.App;
-import vplcore.graph.util.BlockLibraryLoader;
+import vplcore.graph.block.BlockLibraryLoader;
 import vplcore.util.ListViewUtils;
 import vplcore.util.NodeHierarchyUtils;
 import vplcore.context.ActionManager;

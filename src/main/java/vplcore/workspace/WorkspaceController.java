@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
@@ -40,6 +42,8 @@ public class WorkspaceController extends BaseController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
+    private final BooleanProperty wirelessVisible = new SimpleBooleanProperty(this, "transmittableVisible", false);
+
     // TODO Remove public access to info panel 
     public boolean typeSensitive = true;
 
@@ -55,6 +59,10 @@ public class WorkspaceController extends BaseController {
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
+    }
+    
+    public BooleanProperty wirelessVisibibleProperty() {
+        return wirelessVisible;
     }
 
     public void registerPort(PortController portController) {

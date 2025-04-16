@@ -1,4 +1,4 @@
-package vplcore.graph.util;
+package vplcore.graph.block;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -1,4 +1,4 @@
-package vplcore.graph.util;
+package vplcore.graph.block;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -22,6 +22,7 @@ import org.reflections.Reflections;
 import vplcore.util.FileUtils;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.block.BlockMetadata;
+import vplcore.graph.util.JarClassLoader;
 
 /**
  *

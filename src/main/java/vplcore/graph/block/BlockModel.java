@@ -22,7 +22,6 @@ import jo.vpl.xml.BlockTag;
 import vplcore.graph.block.ExceptionPanel.BlockException;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortType;
-import vplcore.graph.util.MethodBlock;
 import vplcore.workspace.WorkspaceModel;
 
 /**
@@ -156,8 +155,26 @@ public abstract class BlockModel extends BaseModel {
         return FXCollections.unmodifiableObservableList(inputPorts);
     }
 
+    public List<PortModel> getReceivingPorts() {
+        return getWirelessPorts(inputPorts);
+    }
+
     public ObservableList<PortModel> getOutputPorts() {
         return FXCollections.unmodifiableObservableList(outputPorts);
+    }
+
+    public List<PortModel> getTransmittingPorts() {
+        return getWirelessPorts(outputPorts);
+    }
+
+    private List<PortModel> getWirelessPorts(List<PortModel> ports) {
+        List<PortModel> result = new ArrayList<>();
+        for (PortModel port : ports) {
+            if (port.wirelessProperty().get()) {
+                result.add(port);
+            }
+        }
+        return result;
     }
 
     public PortModel addInputPort(String name, Class<?> type) {
@@ -171,10 +188,6 @@ public abstract class BlockModel extends BaseModel {
 
     private void onInputDataChanged(ObservableValue b, Object o, Object n) {
         processSafely();
-        // TODO try to process 
-        // TODO if successful, remove any shown block expections
-        // TODO when exception thrown by process
-        // TODO create and set active block exception 
     }
 
     public PortModel addOutputPort(String name, Class<?> type) {

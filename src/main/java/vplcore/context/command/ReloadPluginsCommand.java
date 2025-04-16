@@ -1,7 +1,7 @@
 package vplcore.context.command;
 
 import vplcore.context.Command;
-import vplcore.graph.util.BlockLibraryLoader;
+import vplcore.graph.block.BlockLibraryLoader;
 
 /**
  *

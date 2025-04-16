@@ -107,9 +107,11 @@ import vplcore.graph.util.TypeExtensions;
  */
 public class PortModel extends BaseModel {
 
+    private final BooleanProperty wireless = new SimpleBooleanProperty(this, "wireless", false);
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
+
     private final PortType portType;
     private final int index;
     private final boolean multiDockAllowed;
@@ -129,6 +131,10 @@ public class PortModel extends BaseModel {
     @Override
     public void setActive(boolean isActive) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("PortModel controls its own active state.");
+    }
+    
+    public BooleanProperty wirelessProperty() {
+        return wireless;
     }
 
     public PortType getPortType() {

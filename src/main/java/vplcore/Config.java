@@ -25,6 +25,8 @@ import vplcore.util.SystemUtils;
  */
 public class Config {
 
+    public static final boolean TYPE_SENSITIVE = true;
+
     private static Config config;
 
     private static final Preferences PREFERENCES = Preferences.userNodeForPackage(Config.class);
@@ -34,7 +36,6 @@ public class Config {
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
     private static final String CONFIG_DIRECTORY = "config" + File.separatorChar;
     private static final String SETTINGS_FILE = "settings.txt";
-//    private static final String RESOURCES_DIRECTORY = "src" + File.separatorChar + "main" + File.separatorChar + "resources" + File.separatorChar;
     private static final String ICONS_DIRECTORY = "fontawesome-svg" + File.separatorChar;
 
     private String appRootDirectory;
@@ -42,8 +43,6 @@ public class Config {
     private Properties settings;
 
     private Config() {
-//        this.appRootDirectory = Util.getAppRootDirectory(this, BUILD_DIRECTORY);
-//        this.operatingSystem = Util.determineOperatingSystem();
     }
 
     public static Config get() {
@@ -155,30 +154,4 @@ public class Config {
         }).start();
     }
 
-//    public static void setStylesheets(Scene scene) {
-//        Path path = Paths.get("src/main/resources/" + Config.get().stylesheets());
-//        scene.getStylesheets().add(path.toUri().toString());
-//        System.out.println("CSS Loaded: " + path.toUri().toString());
-//        new Thread(() -> {
-//            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
-//
-//                path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
-//                while (true) {
-//                    WatchKey key = watchService.take();
-//                    for (WatchEvent<?> event : key.pollEvents()) {
-//                        if (event.context().toString().equals(path.getFileName().toString())) {
-//                            Platform.runLater(() -> {
-//                                scene.getStylesheets().clear();
-//                                scene.getStylesheets().add(path.toUri().toString());
-//                                System.out.println("CSS Reloaded!");
-//                            });
-//                        }
-//                    }
-//                    key.reset();
-//                }
-//            } catch (IOException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//    }
 }

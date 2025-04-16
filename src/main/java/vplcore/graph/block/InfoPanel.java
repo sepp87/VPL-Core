@@ -22,7 +22,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import vplcore.FontAwesomeIcon;
-import vplcore.graph.util.MethodBlock;
 import vplcore.workspace.WorkspaceView;
 
 /**

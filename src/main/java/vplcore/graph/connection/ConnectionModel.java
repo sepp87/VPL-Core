@@ -2,7 +2,11 @@ package vplcore.graph.connection;
 
 import vplcore.graph.port.PortModel;
 import jo.vpl.xml.ConnectionTag;
+import vplcore.App;
+import vplcore.Config;
 import vplcore.graph.base.BaseModel;
+import vplcore.graph.port.PortType;
+import vplcore.graph.util.TypeExtensions;
 
 /**
  *
@@ -17,6 +21,10 @@ public class ConnectionModel extends BaseModel {
         this.startPort = startPort;
         this.endPort = endPort;
         initialize();
+    }
+
+    public boolean isWireless() {
+        return startPort.wirelessProperty().get();
     }
 
     private void initialize() {
@@ -54,6 +62,25 @@ public class ConnectionModel extends BaseModel {
         xmlTag.setStartIndex(startPort.getIndex());
         xmlTag.setEndBlock(endPort.getBlock().idProperty().get());
         xmlTag.setEndIndex(endPort.getIndex());
+    }
+
+    public static boolean isEligible(PortModel startPortModel, PortModel endPortModel) {
+        boolean differentPortTypes = endPortModel.getPortType() != startPortModel.getPortType();
+        boolean differentBlocks = !endPortModel.getBlock().equals(startPortModel.getBlock());
+
+        return isTypeCompatible(startPortModel, endPortModel) && differentPortTypes && differentBlocks;
+    }
+
+    private static boolean isTypeCompatible(PortModel startPortModel, PortModel endPortModel) {
+        if (!App.TYPE_SENSITIVE) {
+            return true;
+        }
+
+        boolean isInput = endPortModel.getPortType() == PortType.INPUT;
+        Class<?> outputType = isInput ? startPortModel.getDataType() : endPortModel.getDataType();
+        Class<?> inputType = isInput ? endPortModel.getDataType() : startPortModel.getDataType();
+
+        return TypeExtensions.isCastableTo(outputType, inputType);
     }
 }
 

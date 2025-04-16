@@ -37,6 +37,7 @@ import vplcore.workspace.WorkspaceView;
  */
 public class App extends Application {
 
+    public static final boolean TYPE_SENSITIVE = true;
     public static final boolean LOG_METHOD_CALLS = true;
     public static final boolean BLOCK_MVC = true;
 

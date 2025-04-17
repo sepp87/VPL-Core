@@ -1,7 +1,9 @@
 package vplcore.context.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.geometry.Point2D;
 import vplcore.graph.block.BlockFactory;
 import vplcore.graph.block.BlockModel;
@@ -20,7 +22,7 @@ public class CreateBlockCommand implements UndoableCommand {
     private final Point2D location;
     private final WorkspaceModel workspaceModel;
     private BlockModel blockModel;
-    private final List<ConnectionModel> connections = new ArrayList<>();
+    private final List<ConnectionModel> wirelessConnections = new ArrayList<>();
 
     public CreateBlockCommand(WorkspaceModel workspaceModel, String blockIdentifier, Point2D location) {
         this.workspaceModel = workspaceModel;
@@ -38,27 +40,58 @@ public class CreateBlockCommand implements UndoableCommand {
             List<PortModel> transmitters = blockModel.getTransmittingPorts();
             for (PortModel port : transmitters) {
                 List<ConnectionModel> autoConnections = workspaceModel.getWirelessIndex().registerTransmitter(port);
-                connections.addAll(autoConnections);
+                wirelessConnections.addAll(autoConnections);
             }
 
             List<PortModel> receivers = blockModel.getReceivingPorts();
             for (PortModel port : receivers) {
                 ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
                 if (autoConnection != null) {
-                    connections.add(autoConnection);
+                    wirelessConnections.add(autoConnection);
                 }
             }
 
-        } else {
+        } else { // redo triggered
             blockModel.revive();
+            for (ConnectionModel connection : wirelessConnections) {
+                connection.revive();
+            }
         }
         workspaceModel.addBlockModel(blockModel);
+        for (ConnectionModel connection : wirelessConnections) {
+            workspaceModel.addConnectionModel(connection);
+        }
+
         return true;
     }
 
+    private final Map<Integer, List<PortModel>> recordedTransmitters = new HashMap<>();
+    private final List<PortModel> recordedReceivers = new ArrayList<>();
+
     @Override
     public void undo() {
+        List<PortModel> transmitters = blockModel.getTransmittingPorts();
+        for (PortModel port : transmitters) {
+            int index = workspaceModel.getWirelessIndex().getTransmitterIndex(port);
+            recordedTransmitters.computeIfAbsent(index, k -> new ArrayList<>()).add(port);
+            for (ConnectionModel connection : port.getConnections()) {
+                recordedReceivers.add(connection.getEndPort());
+            }
+        }
+
+        for (PortModel port : transmitters) {
+            workspaceModel.getWirelessIndex().unregisterTransmitter(port);
+        }
+
+        for (PortModel port : recordedReceivers) {
+            workspaceModel.getWirelessIndex().registerReceiver(port);
+        }
+
         workspaceModel.removeBlockModel(blockModel);
+        for (ConnectionModel connection : wirelessConnections) {
+            workspaceModel.removeConnectionModel(connection);
+        }
+
     }
 
 }

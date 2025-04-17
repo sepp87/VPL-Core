@@ -59,6 +59,11 @@ import vpllib.method.JsonMethods;
 // special block/new control: retrigger block process 
 // accumulate results + reset possibility
 //
+// THOUGHTS
+// Connections
+//      - as soon as a connection is created is actively added to a block, although it is not yet on the workspace. Might want to rethink this e.g. first activate/init connection on adding to workspace
+//      - when RemoveSelectedBlocks, removeConnectionsModels(blockModel) is triggered. this potentially contains duplicate connections. Need to double check. Afterwards connections are also remove by removeBlock(), these are of course already removed
+//
 // QUESTIONS
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import vplcore.App;
 import vplcore.graph.block.BlockModel;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortModel;
@@ -72,7 +73,19 @@ public class WirelessIndex {
         return null;
     }
 
-    private void unregisterTransmitter(PortModel transmitter) {
+    public int getTransmitterIndex(PortModel transmitter) {
+        int result = -1;
+        Class<?> type = transmitter.getDataType();
+        if (transmitters.containsKey(type)) {
+            return transmitters.get(type).indexOf(transmitter);
+        }
+        if(result == -1 && App.LOG_POTENTIAL_BUGS) {
+            System.out.println("ERROR: Transmitter was NOT found, eventhough it should have been registered.");
+        }
+        return result;
+    }
+
+    public void unregisterTransmitter(PortModel transmitter) {
         Class<?> type = transmitter.getDataType();
         if (transmitters.containsKey(type)) {
             transmitters.get(type).remove(transmitter);

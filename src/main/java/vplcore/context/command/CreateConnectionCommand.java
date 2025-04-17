@@ -1,7 +1,6 @@
 package vplcore.context.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import vplcore.graph.connection.ConnectionModel;
 import vplcore.graph.port.PortModel;
@@ -19,14 +18,14 @@ public class CreateConnectionCommand implements UndoableCommand {
     private final WorkspaceModel workspaceModel;
     private final PortModel startPortModel;
     private final PortModel endPortModel;
-    private final List<ConnectionModel> removedConnections;
+    private final Set<ConnectionModel> removedConnections;
     private ConnectionModel newConnection;
 
     public CreateConnectionCommand(WorkspaceModel workspaceModel, PortModel startPort, PortModel endPort) {
         this.workspaceModel = workspaceModel;
         this.startPortModel = startPort;
         this.endPortModel = endPort;
-        this.removedConnections = new ArrayList<>();
+        this.removedConnections = new HashSet<>();
     }
 
     @Override
@@ -34,10 +33,10 @@ public class CreateConnectionCommand implements UndoableCommand {
         System.out.println("CreateConnectionCommand.execute()");
         if (!endPortModel.isMultiDockAllowed()) { // remove all connections for the receiving (INPUT) port if multi dock is NOT allowed
             Set<ConnectionModel> connections = endPortModel.getConnections();
+            removedConnections.addAll(connections);
             for (ConnectionModel connection : connections) {
                 workspaceModel.removeConnectionModel(connection);
             }
-            removedConnections.addAll(connections);
         }
 
         if (newConnection == null) { // create the new connection

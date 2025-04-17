@@ -1,9 +1,7 @@
 package vplcore.context.command;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javafx.geometry.Point2D;
 import vplcore.graph.block.BlockFactory;
 import vplcore.graph.block.BlockModel;
@@ -36,55 +34,65 @@ public class CreateBlockCommand implements UndoableCommand {
             blockModel = BlockFactory.createBlock(blockIdentifier);
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
-
-            List<PortModel> transmitters = blockModel.getTransmittingPorts();
-            for (PortModel port : transmitters) {
-                List<ConnectionModel> autoConnections = workspaceModel.getWirelessIndex().registerTransmitter(port);
-                wirelessConnections.addAll(autoConnections);
-            }
-
-            List<PortModel> receivers = blockModel.getReceivingPorts();
-            for (PortModel port : receivers) {
-                ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
-                if (autoConnection != null) {
-                    wirelessConnections.add(autoConnection);
-                }
-            }
-
+            
         } else { // redo triggered
             blockModel.revive();
-            for (ConnectionModel connection : wirelessConnections) {
-                connection.revive();
+        }
+        
+        workspaceModel.addBlockModel(blockModel);
+
+        // auto-connect transmitters
+        wirelessConnections.clear();
+        List<PortModel> transmitters = blockModel.getTransmittingPorts();
+        for (PortModel port : transmitters) {
+            List<ConnectionModel> autoConnections = workspaceModel.getWirelessIndex().registerTransmitter(port);
+            wirelessConnections.addAll(autoConnections);
+        }
+        
+        // auto-connect receivers
+        List<PortModel> receivers = blockModel.getReceivingPorts();
+        for (PortModel port : receivers) {
+            ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
+            if (autoConnection != null) {
+                wirelessConnections.add(autoConnection);
             }
         }
-        workspaceModel.addBlockModel(blockModel);
+        
+        // place wireless connections on the workspace
         for (ConnectionModel connection : wirelessConnections) {
             workspaceModel.addConnectionModel(connection);
         }
 
+        System.out.println("PENDING RECEIVERS " + workspaceModel.getWirelessIndex().pendingReceivers.size());
+        
         return true;
     }
 
-    private final Map<Integer, List<PortModel>> recordedTransmitters = new HashMap<>();
-    private final List<PortModel> recordedReceivers = new ArrayList<>();
-
+    /**
+     * Info - there is no need to record the index of the transmitter when
+     * removing it from the registry, since this newly added block is always
+     * last in the list
+     */
     @Override
     public void undo() {
-        List<PortModel> transmitters = blockModel.getTransmittingPorts();
-        for (PortModel port : transmitters) {
-            int index = workspaceModel.getWirelessIndex().getTransmitterIndex(port);
-            recordedTransmitters.computeIfAbsent(index, k -> new ArrayList<>()).add(port);
-            for (ConnectionModel connection : port.getConnections()) {
-                recordedReceivers.add(connection.getEndPort());
-            }
-        }
 
+        // first unregister all transmitters, so receivers won't auto-connect to them again 
+        List<PortModel> transmitters = blockModel.getTransmittingPorts();
         for (PortModel port : transmitters) {
             workspaceModel.getWirelessIndex().unregisterTransmitter(port);
         }
 
-        for (PortModel port : recordedReceivers) {
-            workspaceModel.getWirelessIndex().registerReceiver(port);
+        // now connected receivers can be safely registered to await a new transmitter, without causing connections with the freshly removed transmitters
+        for (PortModel transmitter : transmitters) {
+            for (PortModel port : transmitter.getConnectedPorts()) {
+                workspaceModel.getWirelessIndex().registerReceiver(port);
+            }
+        }
+
+        // remove all receivers of the block itself
+        for (PortModel port : blockModel.getReceivingPorts()) {
+            workspaceModel.getWirelessIndex().unregisterReceiver(port);
+
         }
 
         workspaceModel.removeBlockModel(blockModel);
@@ -95,3 +103,5 @@ public class CreateBlockCommand implements UndoableCommand {
     }
 
 }
+
+

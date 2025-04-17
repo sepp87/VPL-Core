@@ -2,6 +2,7 @@ package vplcore.context;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import vplcore.App;
 
 /**
  *
@@ -20,7 +21,9 @@ public class StateManager {
     }
 
     private void printMode(Object b, Object o, Object n) {
-        System.out.println("State " + n);
+        if (App.LOG_EDITOR_STATE) {
+            System.out.println("State " + n);
+        }
     }
 
     public boolean isIdle() {

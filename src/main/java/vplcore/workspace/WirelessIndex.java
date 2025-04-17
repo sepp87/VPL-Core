@@ -23,8 +23,8 @@ import vplcore.graph.port.PortModel;
  */
 public class WirelessIndex {
 
-    private static final Map<Class<?>, List<PortModel>> transmitters = new HashMap<>();
-    private static final Map<Class<?>, List<PortModel>> pendingReceivers = new HashMap<>();
+    private final Map<Class<?>, List<PortModel>> transmitters = new HashMap<>();
+    public final Map<Class<?>, List<PortModel>> pendingReceivers = new HashMap<>();
 
     public void registerEligiblePorts(BlockModel block) {
         for (PortModel transmitter : block.getTransmittingPorts()) {
@@ -45,16 +45,29 @@ public class WirelessIndex {
     }
 
     public List<ConnectionModel> registerTransmitter(PortModel transmitter) {
+        return registerTransmitter(null, transmitter, false);
+    }
+
+    public List<ConnectionModel> registerTransmitter(Integer index, PortModel transmitter, boolean silent) {
         Class<?> type = transmitter.getDataType();
-        transmitters.computeIfAbsent(type, key -> new ArrayList<>()).add(transmitter);
+        if (index == null) {
+            transmitters.computeIfAbsent(type, key -> new ArrayList<>()).add(transmitter);
+        } else {
+            transmitters.get(type).add(index, transmitter);
+        }
 
         // Connect any waiting receivers
         List<ConnectionModel> result = new ArrayList<>();
         if (pendingReceivers.containsKey(type)) {
             // TODO connect
             for (PortModel receiver : pendingReceivers.get(type)) {
-                ConnectionModel connection = new ConnectionModel(transmitter, receiver);
-                result.add(connection);
+                if (silent) {
+                    continue;
+                }
+                if (ConnectionModel.isEligible(transmitter, receiver)) {
+                    ConnectionModel connection = new ConnectionModel(transmitter, receiver);
+                    result.add(connection);
+                }
             }
             pendingReceivers.remove(type); // assuming one match needed
         }
@@ -66,7 +79,9 @@ public class WirelessIndex {
         List<PortModel> existing = transmitters.get(type);
         if (existing != null && !existing.isEmpty()) {
             PortModel transmitter = existing.get(0);
-            return new ConnectionModel(transmitter, receiver);
+            if (ConnectionModel.isEligible(transmitter, receiver)) {
+                return new ConnectionModel(transmitter, receiver);
+            }
         } else {
             pendingReceivers.computeIfAbsent(type, key -> new ArrayList<>()).add(receiver);
         }
@@ -79,7 +94,7 @@ public class WirelessIndex {
         if (transmitters.containsKey(type)) {
             return transmitters.get(type).indexOf(transmitter);
         }
-        if(result == -1 && App.LOG_POTENTIAL_BUGS) {
+        if (result == -1 && App.LOG_POTENTIAL_BUGS) {
             System.out.println("ERROR: Transmitter was NOT found, eventhough it should have been registered.");
         }
         return result;
@@ -95,7 +110,7 @@ public class WirelessIndex {
         // or put all receivers into pending
     }
 
-    private void unregisterReceiver(PortModel receiver) {
+    public void unregisterReceiver(PortModel receiver) {
         Class<?> type = receiver.getDataType();
         if (pendingReceivers.containsKey(type)) {
             pendingReceivers.get(type).remove(receiver);

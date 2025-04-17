@@ -1,6 +1,5 @@
 package vplcore;
 
-import java.io.File;
 import vplcore.context.event.FocusNotRequiredEvent;
 import vplcore.context.EditorContext;
 import vplcore.context.EventRouter;
@@ -9,11 +8,7 @@ import java.util.Map;
 import vplcore.editor.EditorController;
 import vplcore.editor.EditorView;
 import javafx.application.Application;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import vplcore.editor.KeyboardController;
 import vplcore.editor.MenuBarController;
@@ -30,7 +25,6 @@ import vplcore.editor.ZoomView;
 import vplcore.editor.BlockSearchController;
 import vplcore.editor.BlockSearchView;
 import vplcore.context.ActionManager;
-import vplcore.graph.io.GraphLoader;
 import vplcore.workspace.WorkspaceView;
 
 /**
@@ -40,8 +34,10 @@ import vplcore.workspace.WorkspaceView;
 public class App extends Application {
 
     public static final boolean LOG_POTENTIAL_BUGS = true;
+    public static final boolean LOG_METHOD_CALLS = false;
+    public static final boolean LOG_EDITOR_STATE = false;
+
     public static final boolean TYPE_SENSITIVE = true;
-    public static final boolean LOG_METHOD_CALLS = true;
     public static final boolean BLOCK_MVC = true;
 
     private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
@@ -108,7 +104,7 @@ public class App extends Application {
 //        GraphLoader.deserialize(new File("vplxml/method-block.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/aslist.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/addition.vplxml"), workspaceModel);
-        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceModel);
+//        GraphLoader.deserialize(new File("vplxml/file.vplxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("vplxml/string-to-text.vplxml"), workspaceModel);
         editorView.printMenuBarHeight();
 

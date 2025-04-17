@@ -47,32 +47,32 @@ public class TemplateBlock extends BlockModel {
     @Override
     public void process() {
 
-        //Get incoming data
+        // Get incoming data
         Object raw = inputPorts.get(0).getData();
 
-        //Finish calculate if there is no incoming data
+        // Finish calculate if there is no incoming data
         if (raw == null) {
             outputPorts.get(0).setData(null);
             return;
         }
 
-        //Process incoming data
+        // Process incoming data
         if (raw instanceof List) {
             List<Object> nodes = (List<Object>) raw;
 
-            //Example code to handle collections
+            // Example code to handle collections
             List<String> strList = nodes.stream()
                     .map(e -> e.toString())
                     .collect(Collectors.toCollection(ArrayList<String>::new));
 
-            //Set outgoing data
+            // Set outgoing data
             outputPorts.get(0).setData(strList);
 
         } else {
-            //Example code to handle a single object instance
+            // Example code to handle a single object instance
             String str = ((Object) raw).toString();
 
-            //Set outgoing data
+            // Set outgoing data
             outputPorts.get(0).setData(str);
         }
     }
@@ -80,23 +80,23 @@ public class TemplateBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        //Retrieval of custom attribute
+        // Retrieval of custom attribute
         xmlTag.getOtherAttributes().put(QName.valueOf("key"), "value");
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
-        //Retrieval of custom attribute
+        // Retrieval of custom attribute
         String value = xmlTag.getOtherAttributes().get(QName.valueOf("key"));
-        //Specify further initialization statements here
+        // Specify further initialization statements here
         this.processSafely();
     }
 
     @Override
     public BlockModel copy() {
         TemplateBlock block = new TemplateBlock();
-        //Specify further copy statements here
+        // Specify further copy statements here
         return block;
     }
 

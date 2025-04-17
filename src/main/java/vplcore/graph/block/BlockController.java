@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import vplcore.App;
 import vplcore.context.ActionManager;
 import vplcore.context.command.MoveBlocksCommand;
 import vplcore.context.command.ResizeBlockCommand;
@@ -194,12 +195,17 @@ public class BlockController extends BaseController {
     private final ListChangeListener<BlockException> exceptionsListener = this::onExceptionsChanged;
 
     private void onExceptionsChanged(Change<? extends BlockException> change) {
-        System.out.println("BlockController.onExceptionsChanged()");
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("BlockController.onExceptionsChanged()");
+        }
         showExceptionButton();
     }
 
     private void showExceptionButton() {
-        System.out.println("BlockController.showExceptionButton() exceptionShown " + exceptionShown);
+        if (App.LOG_METHOD_CALLS) {
+            System.out.println("BlockController.showExceptionButton() exceptionShown " + exceptionShown);
+        }
+
         if (exceptionShown) {
             return;
         }

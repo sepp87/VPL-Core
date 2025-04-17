@@ -132,7 +132,7 @@ public class PortModel extends BaseModel {
     public void setActive(boolean isActive) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("PortModel controls its own active state.");
     }
-    
+
     public BooleanProperty wirelessProperty() {
         return wireless;
     }
@@ -186,6 +186,19 @@ public class PortModel extends BaseModel {
 //        return new ArrayList<>(connections);
         return connections;
     }
+
+    public List<PortModel> getConnectedPorts() {
+        List<PortModel> result = new ArrayList<>();
+        for (ConnectionModel connection : connections) {
+            if (this.portType == PortType.OUTPUT) {
+                result.add(connection.getEndPort());
+            } else {
+                result.add(connection.getStartPort());
+            }
+        }
+        return result;
+    }
+
     private final SetChangeListener<ConnectionModel> connectionsListener = this::onConnectionsChanged;
 
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {

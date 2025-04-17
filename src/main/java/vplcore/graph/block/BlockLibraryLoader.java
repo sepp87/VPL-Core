@@ -4,7 +4,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,8 +19,6 @@ import javafx.collections.ObservableMap;
 import vplcore.Config;
 import org.reflections.Reflections;
 import vplcore.util.FileUtils;
-import vplcore.graph.block.BlockModel;
-import vplcore.graph.block.BlockMetadata;
 import vplcore.graph.util.JarClassLoader;
 
 /**
@@ -30,7 +27,7 @@ import vplcore.graph.util.JarClassLoader;
  */
 public class BlockLibraryLoader {
 
-    private static final List<String> INTERNAL_PACKAGES = List.of("vpllib.input", "vpllib.file", "vpllib.spreadsheet");
+    private static final List<String> INTERNAL_PACKAGES = List.of("vpllib.input", "vpllib.file", "vpllib.spreadsheet", "vpllib.autoconnect");
     private static final List<Class<?>> INTERNAL_METHOD_BLOCKS = List.of(
             vpllib.method.DateMethods.class,
             vpllib.method.FileMethods.class,

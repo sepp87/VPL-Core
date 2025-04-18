@@ -186,6 +186,10 @@ public class PortModel extends BaseModel {
 //        return new ArrayList<>(connections);
         return connections;
     }
+    
+    public boolean isConnected() {
+        return !connections.isEmpty();
+    }
 
     public List<PortModel> getConnectedPorts() {
         List<PortModel> result = new ArrayList<>();

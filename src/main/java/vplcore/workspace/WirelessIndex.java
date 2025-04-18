@@ -61,6 +61,9 @@ public class WirelessIndex {
         if (pendingReceivers.containsKey(type)) {
             // TODO connect
             for (PortModel receiver : pendingReceivers.get(type)) {
+                if (!receiver.getConnections().isEmpty() && App.LOG_POTENTIAL_BUGS) {
+                    System.out.println("WARNING: Receiver was already connected eventhough it is registered. This issue might occur when reviving wireless connections");
+                }
                 if (silent) {
                     continue;
                 }
@@ -75,6 +78,9 @@ public class WirelessIndex {
     }
 
     public ConnectionModel registerReceiver(PortModel receiver) {
+        if (!receiver.getConnections().isEmpty() && App.LOG_POTENTIAL_BUGS) {
+            System.out.println("WARNING: Receiver was already connected before registering. Evaluate if this case should be caught");
+        }
         Class<?> type = receiver.getDataType();
         List<PortModel> existing = transmitters.get(type);
         if (existing != null && !existing.isEmpty()) {

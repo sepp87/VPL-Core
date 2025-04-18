@@ -19,8 +19,8 @@ import vplcore.graph.port.PortType;
 import vplcore.graph.block.BlockLibraryLoader;
 import vpllib.method.JsonMethods;
 
-
-// 0 After unregister transmitter by undo, add transmitter back in line by redo
+// 0 IMPROVEMENT Hide auto-connections / Show wireless connections
+// 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
 // 0 REFACTOR event handlers on scene / editor controller level
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -70,6 +70,7 @@ import vpllib.method.JsonMethods;
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 0 After unregister transmitter by undo, add transmitter back in line by redo
 // Auto-Connect proof of concept
 // 0 Autoconnect after removal of autoconnection
 // FILE get encoding of file

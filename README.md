@@ -1,5 +1,5 @@
-### DESCRIPTION<br>
-A visual programming environment build with JavaFX.<br>
+### BlockSmith - Blocks to Scripts
+A node flow environment built with JavaFX.<br>
 
 See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br><br>

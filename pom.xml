@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>jo.vpl</groupId>
-    <artifactId>VPL-Core</artifactId>
-    <version>2</version>
+    
+    <groupId>io.blocksmith</groupId>
+    <artifactId>blocksmith-core</artifactId>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
     
+    <name>BlockSmith: Blocks to Script</name>
+    <description>A node flow environment built with JavaFX.</description>
+
     <dependencies>
         <!-- Apache POI - Core Library for Excel (.xls/.xlsx) 
         <dependency>
@@ -94,7 +98,7 @@
     </properties>
     
     <build>
-        <finalName>VPL-Core</finalName>
+        <finalName>BlockSmith</finalName>
         <plugins>   
             
             <plugin>
@@ -131,7 +135,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>vplcore.Launcher</mainClass>
+                            <mainClass>btscore.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -162,8 +166,8 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>${basedir}/target/VPL-Core-jar-with-dependencies.jar</sourceFile>
-                            <destinationFile>${basedir}/build/VPL-Core.jar</destinationFile>
+                            <sourceFile>${basedir}/target/BlockSmith-jar-with-dependencies.jar</sourceFile>
+                            <destinationFile>${basedir}/build/BlockSmith.jar</destinationFile>
                         </configuration>
                     </execution>
                 </executions>

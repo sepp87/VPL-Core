@@ -29,10 +29,14 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br>
 
 ### FUNCTIONALITIES
-* Input functions to generate primitve data types e.g. String, Boolean, Integer, Long, Double
-* Math functions such as multiply, divide, add and substract
-* List functions to get, add, remove and replace items
-* Json functions to get properties
+* Input blocks to generate primitve data types e.g. String, Boolean, Integer, Long, Double
+* Math blocks such as multiply, divide, add and substract
+* List blocks to get, add, remove and replace items
+* Json blocks to get properties
+* Date blocks
+* File blocks
+* Spreadsheet blocks
+* String blocks
 <br>
 
 ### CUSTOMIZE
@@ -44,7 +48,6 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 * Change styles in App.java to either flat white, flat dark or default
 * Customize your own style by using one of the above styles as template
 <br>
-
 
 ### TODO
 * General UI/UX

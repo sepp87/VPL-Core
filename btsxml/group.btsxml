@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.blocksmith.io/xml" Scale="1.0" TranslateX="-24.0" TranslateY="-142.0">
+    <Blocks>
+        <Block Type="Input.text" UUID="a7bc7bf4-fe09-4ff5-80b9-cdf41de36b57" X="369.0" Y="607.0" text=""/>
+        <Block Type="Input.string" UUID="ea1590e2-c3ec-48b4-aeb7-213c245c7f1f" X="117.0" Y="296.0" string="" outDataType="String"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="ea1590e2-c3ec-48b4-aeb7-213c245c7f1f" StartIndex="0" EndBlock="a7bc7bf4-fe09-4ff5-80b9-cdf41de36b57" EndIndex="0"/>
+    </Connections>
+    <Groups>
+        <Group Name="Name group here...">
+            <BlockReference UUID="a7bc7bf4-fe09-4ff5-80b9-cdf41de36b57"/>
+            <BlockReference UUID="ea1590e2-c3ec-48b4-aeb7-213c245c7f1f"/>
+        </Group>
+    </Groups>
+</Document>

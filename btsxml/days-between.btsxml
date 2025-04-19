@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.blocksmith.io/xml" Scale="0.8" TranslateX="-54.057131224763" TranslateY="108.70158301372089">
+    <Blocks>
+        <Block Type="Input.string" UUID="d4b6778c-516c-4871-836d-d4c894fabab3" X="108.42857142857149" Y="327.4285714285719" string="2022-11-03" outDataType="LocalDate"/>
+        <Block Type="Input.text" UUID="09a8e1dd-3d51-4214-a591-0205b45647ff" X="766.7142857142858" Y="209.81747000558065" Width="-1.0" Height="-1.0" text=""/>
+        <Block Type="Date.daysBetween" UUID="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" X="437.57142857142867" Y="363.85714285714283"/>
+        <Block Type="Input.string" UUID="343ba93b-e095-4f88-89fc-29a1c4cbe08e" X="113.85714285714285" Y="442.42857142857133" string="2023-01-31" outDataType="LocalDate"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" StartIndex="0" EndBlock="09a8e1dd-3d51-4214-a591-0205b45647ff" EndIndex="0"/>
+        <Connection StartBlock="343ba93b-e095-4f88-89fc-29a1c4cbe08e" StartIndex="0" EndBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" EndIndex="1"/>
+        <Connection StartBlock="d4b6778c-516c-4871-836d-d4c894fabab3" StartIndex="0" EndBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" EndIndex="0"/>
+    </Connections>
+</Document>

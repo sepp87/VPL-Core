@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns:jxb="https://jakarta.ee/xml/ns/jaxb" 
+            jxb:version="3.0"
+            xmlns:btsxml="http://www.blocksmith.io/xml"
+            targetNamespace="http://www.blocksmith.io/xml"
+            elementFormDefault="qualified">
+    
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jxb:schemaBindings>
+                <jxb:package name="btsxml"/>
+            </jxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+    
+    <!-- definition of simple elements -->
+    <xsd:simpleType name="String">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Integer">
+        <xsd:restriction base="xsd:int"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Double">
+        <xsd:restriction base="xsd:double"/>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="Boolean">
+        <xsd:restriction base="xsd:boolean"/>
+    </xsd:simpleType>
+    
+    <!-- definition of complex elements -->
+    <xsd:complexType name="BlocksTag">
+        <xsd:sequence>
+            <xsd:element name="Block" maxOccurs="unbounded" type="btsxml:BlockTag"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="BlockTag">
+        <xsd:attribute name="Type" type="btsxml:String" use="required"/>
+        <xsd:attribute name="UUID" type="btsxml:String" use="required"/>
+        <xsd:attribute name="X" type="btsxml:Double" use="required"/>
+        <xsd:attribute name="Y" type="btsxml:Double" use="required"/>   
+        <xsd:attribute name="Width" type="btsxml:Double" use="optional"/> 
+        <xsd:attribute name="Height" type="btsxml:Double" use="optional"/>
+        <xsd:anyAttribute processContents="skip"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ConnectionsTag">
+        <xsd:sequence>
+            <xsd:element name="Connection" maxOccurs="unbounded" type="btsxml:ConnectionTag"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ConnectionTag">
+        <xsd:attribute name="StartBlock" type="btsxml:String" use="required"/>
+        <xsd:attribute name="StartIndex" type="btsxml:Integer" use="required"/>
+        <xsd:attribute name="EndBlock" type="btsxml:String" use="required"/>    
+        <xsd:attribute name="EndIndex" type="btsxml:Integer" use="required"/> 
+    </xsd:complexType>
+    
+    <xsd:complexType name="GroupsTag">
+        <xsd:sequence>
+            <xsd:element name="Group" maxOccurs="unbounded" type="btsxml:GroupTag"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="GroupTag">
+        <xsd:sequence>
+            <xsd:element name="BlockReference" maxOccurs="unbounded" type="btsxml:BlockReferenceTag"/>
+        </xsd:sequence>
+        <xsd:attribute name="Name" type="btsxml:String" use="required"/>  
+        <xsd:anyAttribute processContents="skip"/>  
+    </xsd:complexType>
+    
+    <xsd:complexType name="BlockReferenceTag">
+        <xsd:attribute name="UUID" type="btsxml:String" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="DocumentTag">
+        <xsd:sequence>
+            <xsd:element name="Blocks" maxOccurs="1" type="btsxml:BlocksTag"/>
+            <xsd:element name="Connections" maxOccurs="1" type="btsxml:ConnectionsTag"/>
+            <xsd:element name="Groups" maxOccurs="1" type="btsxml:GroupsTag"/>
+        </xsd:sequence>
+        <xsd:attribute name="Scale" type="btsxml:Double" use="required"/> 
+        <xsd:attribute name="TranslateX" type="btsxml:Double" use="required"/>
+        <xsd:attribute name="TranslateY" type="btsxml:Double" use="required"/>    
+    </xsd:complexType>
+
+    <xsd:element name="Document" type="btsxml:DocumentTag"/>
+
+</xsd:schema>

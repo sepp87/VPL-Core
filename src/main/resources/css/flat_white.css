@@ -297,6 +297,7 @@
     -fx-font-family: 'Source Code Pro';
 }
 
+
 .block .list-view .list-cell {
     -fx-text-fill: #5F5F5F;
 }
@@ -305,6 +306,8 @@
     -fx-background-color: salmon;
     -fx-text-fill: white;
 }
+
+
 
 .block .list-view .list-cell:even {
     -fx-background-color: rgba(127,127,127,0.1);
@@ -326,6 +329,46 @@
 .block .list-view .scroll-bar:horizontal .increment-button,
 .block .list-view .scroll-bar:horizontal .decrement-button {
     -fx-padding:0;
+}
+
+/* Combo block extras - TODO consolidate */
+
+.block .list-view {
+    -fx-background-color: white;
+}
+
+/* Collapsed ComboBox (button cell) */
+.block .combo-box {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0; 
+}
+
+
+
+
+/* This is the button cell (collapsed ComboBox display) */
+.block .combo-box .cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5F5F5F;
+}
+
+/* Hover color */
+/*.block .list-view .list-cell:hover {
+    -fx-background-color: salmon;
+    -fx-text-fill: white;
+}*/
+
+/* Keep chevron visible */
+.block .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.block .combo-box .arrow {
+
+    -fx-background-color: #5F5F5F;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -511,13 +554,13 @@
 .block-info .label {
     -fx-font-size: 12px;
     -fx-text-fill: white;
-    -fx-padding: 0 0 12 0;
+    -fx-padding: 0 0 0 0;
 }
 
 .block-info .header {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-padding: 0;
+    -fx-padding: 12 0 0 0;
 }
 
 .block-exception-bubble {

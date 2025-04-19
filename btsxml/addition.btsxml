@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.blocksmith.io/xml" Scale="0.5" TranslateX="-17.55140565268971" TranslateY="235.67856566216142">
+    <Blocks>
+        <Block Type="Math.add" UUID="57bd9ecc-37e4-4aa2-87a1-1605c1c01b0d" X="786.428571428571" Y="-1.142854963030132"/>
+        <Block Type="Json.asList" UUID="804f3032-b756-49a3-8eaf-3be23c09b277" X="532.1428571428572" Y="28.85714367457809"/>
+        <Block Type="Input.text" UUID="97bcacad-b328-4369-b536-72a2ba7086fc" X="842.0000000000006" Y="270.4285714285714" Width="220.0" Height="220.0" text=""/>
+        <Block Type="Input.string" UUID="e077e793-aea6-4e86-97e6-be0ab81d01c7" X="167.0" Y="197.0" string="[1,2,2,4,5,6]" outDataType="String"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="804f3032-b756-49a3-8eaf-3be23c09b277" StartIndex="0" EndBlock="57bd9ecc-37e4-4aa2-87a1-1605c1c01b0d" EndIndex="1"/>
+        <Connection StartBlock="57bd9ecc-37e4-4aa2-87a1-1605c1c01b0d" StartIndex="0" EndBlock="97bcacad-b328-4369-b536-72a2ba7086fc" EndIndex="0"/>
+        <Connection StartBlock="e077e793-aea6-4e86-97e6-be0ab81d01c7" StartIndex="0" EndBlock="804f3032-b756-49a3-8eaf-3be23c09b277" EndIndex="0"/>
+        <Connection StartBlock="804f3032-b756-49a3-8eaf-3be23c09b277" StartIndex="0" EndBlock="57bd9ecc-37e4-4aa2-87a1-1605c1c01b0d" EndIndex="0"/>
+    </Connections>
+    <Groups>
+        <Group Name="Name group here...">
+            <BlockReference UUID="e077e793-aea6-4e86-97e6-be0ab81d01c7"/>
+            <BlockReference UUID="97bcacad-b328-4369-b536-72a2ba7086fc"/>
+        </Group>
+    </Groups>
+</Document>

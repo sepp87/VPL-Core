@@ -4,8 +4,8 @@ import btscore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import btscore.App;
-import btscore.context.EventRouter;
-import btscore.context.StateManager;
+import btscore.editor.context.EventRouter;
+import btscore.editor.context.StateManager;
 import static btscore.util.EditorUtils.onFreeSpace;
 
 /**

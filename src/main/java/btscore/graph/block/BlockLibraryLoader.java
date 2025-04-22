@@ -19,7 +19,7 @@ import javafx.collections.ObservableMap;
 import btscore.Config;
 import org.reflections.Reflections;
 import btscore.util.FileUtils;
-import btscore.graph.util.JarClassLoader;
+import btscore.util.JarClassLoaderUtils;
 
 /**
  *
@@ -69,7 +69,7 @@ public class BlockLibraryLoader {
     private static void loadExternalBlocks() {
         File dir = new File(Config.get().libraryDirectory());
         File[] libraries = FileUtils.getFilesByExtensionFrom(dir, ".jar");
-        List<Class<?>> externalClasses = JarClassLoader.getClassesFromLibraries(libraries);
+        List<Class<?>> externalClasses = JarClassLoaderUtils.getClassesFromLibraries(libraries);
         loadExternalBlockClasses(externalClasses);
         loadExternalBlockMethods(externalClasses);
     }

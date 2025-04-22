@@ -4,12 +4,12 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import btscore.App;
-import btscore.context.ActionManager;
-import btscore.context.EventRouter;
-import btscore.context.StateManager;
-import btscore.context.Command;
-import btscore.context.command.DeselectAllBlocksCommand;
-import btscore.context.command.RectangleSelectCommand;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.EventRouter;
+import btscore.editor.context.StateManager;
+import btscore.editor.context.Command;
+import btscore.editor.commands.DeselectAllBlocksCommand;
+import btscore.editor.commands.RectangleSelectCommand;
 import static btscore.util.EditorUtils.onFreeSpace;
 
 /**

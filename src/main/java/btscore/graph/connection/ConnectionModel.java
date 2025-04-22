@@ -6,7 +6,7 @@ import btscore.App;
 import btscore.Config;
 import btscore.graph.base.BaseModel;
 import btscore.graph.port.PortType;
-import btscore.graph.util.TypeExtensions;
+import btscore.util.TypeCastUtils;
 
 /**
  *
@@ -80,7 +80,7 @@ public class ConnectionModel extends BaseModel {
         Class<?> outputType = isInput ? startPortModel.getDataType() : endPortModel.getDataType();
         Class<?> inputType = isInput ? endPortModel.getDataType() : startPortModel.getDataType();
 
-        return TypeExtensions.isCastableTo(outputType, inputType);
+        return TypeCastUtils.isCastableTo(outputType, inputType);
     }
 }
 

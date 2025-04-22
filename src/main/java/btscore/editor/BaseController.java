@@ -1,7 +1,7 @@
 package btscore.editor;
 
 import btscore.App;
-import btscore.context.EditorContext;
+import btscore.editor.context.EditorContext;
 
 /**
  *

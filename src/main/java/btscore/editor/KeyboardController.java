@@ -11,41 +11,34 @@ import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import btscore.App;
 import btscore.util.EventUtils;
-import btscore.context.ActionManager;
-import btscore.context.EventRouter;
-import btscore.context.Command;
-import btscore.context.command.CopyBlocksCommand;
-import btscore.context.command.RemoveSelectedBlocksCommand;
-import btscore.context.command.GroupBlocksCommand;
-import btscore.context.command.NewFileCommand;
-import btscore.context.command.OpenFileCommand;
-import btscore.context.command.PasteBlocksCommand;
-import btscore.context.command.SaveAsFileCommand;
-import btscore.context.command.SaveFileCommand;
-import btscore.context.command.SelectAllBlocksCommand;
-import btscore.context.command.ZoomInCommand;
-import btscore.context.command.ZoomOutCommand;
-import btscore.context.command.ZoomToFitCommand;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.EventRouter;
+import btscore.editor.context.Command;
+import btscore.editor.context.EditorContext;
+import btscore.editor.commands.CopyBlocksCommand;
+import btscore.editor.commands.RemoveSelectedBlocksCommand;
+import btscore.editor.commands.GroupBlocksCommand;
+import btscore.editor.commands.NewFileCommand;
+import btscore.editor.commands.OpenFileCommand;
+import btscore.editor.commands.PasteBlocksCommand;
+import btscore.editor.commands.SaveAsFileCommand;
+import btscore.editor.commands.SaveFileCommand;
+import btscore.editor.commands.SelectAllBlocksCommand;
+import btscore.editor.commands.ZoomInCommand;
+import btscore.editor.commands.ZoomOutCommand;
+import btscore.editor.commands.ZoomToFitCommand;
 import btscore.workspace.WorkspaceController;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class KeyboardController extends BaseController {
+public class KeyboardController {
 
-    private final EventRouter eventRouter;
-    private final ActionManager actionManager;
 
-    public KeyboardController(String contextId) {
-        super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.actionManager = App.getContext(contextId).getActionManager();
-
-        eventRouter.addEventListener(KeyEvent.KEY_PRESSED, this::handleShortcutTriggered);
-    }
-
-    public void handleShortcutTriggered(KeyEvent event) {
+    public static void handleShortcutTriggered(KeyEvent event) {
+        ActionManager actionManager = App.getCurrentContext().getActionManager();
+        
         if (App.LOG_METHOD_CALLS) {
             System.out.println("KeyboardController.handleShortcutTriggered()");
         }

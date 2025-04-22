@@ -18,7 +18,7 @@ import javafx.collections.SetChangeListener.Change;
 import btscore.graph.base.BaseModel;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
-import btscore.graph.util.TypeExtensions;
+import btscore.util.TypeCastUtils;
 
 //import javafx.beans.property.ObjectProperty;
 //import javafx.beans.property.SimpleDoubleProperty;
@@ -250,7 +250,7 @@ public class PortModel extends BaseModel {
 
                     //Cast all primitive dataType to String if this port dataType is String
                     PortModel startPort = connection.getStartPort();
-                    if (this.getDataType() == String.class && TypeExtensions.contains(startPort.getDataType())) {
+                    if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
                         if (startPort.getData() instanceof List) {
                             List list = (List) startPort.getData();
                             List newList = new ArrayList<>();
@@ -274,7 +274,7 @@ public class PortModel extends BaseModel {
 
                 //Cast all primitive dataType to String if this port dataType is String
                 PortModel startPort = connections.iterator().next().getStartPort();
-                if (this.getDataType() == String.class && TypeExtensions.contains(startPort.getDataType())) {
+                if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
 
                     if (startPort.getData() instanceof List) {
                         List list = (List) startPort.getData();

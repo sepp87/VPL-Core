@@ -7,8 +7,8 @@
     <version>2.0.0</version>
     <packaging>jar</packaging>
     
-    <name>BlockSmith: Blocks to Script</name>
-    <description>A node flow environment built with JavaFX.</description>
+    <name>BlockSmith</name>
+    <description>Blocks to Script. A node flow environment built with JavaFX.</description>
 
     <dependencies>
         <!-- Apache POI - Core Library for Excel (.xls/.xlsx) 
@@ -135,7 +135,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>btscore.Launcher</mainClass>
+                            <mainClass>btscore.AppLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

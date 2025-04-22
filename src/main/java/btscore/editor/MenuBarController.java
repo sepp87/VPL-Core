@@ -5,7 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import btscore.App;
-import btscore.context.ActionManager;
+import btscore.editor.context.ActionManager;
 
 /**
  *

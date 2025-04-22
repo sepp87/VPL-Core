@@ -7,7 +7,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import btscore.App;
-import btscore.context.EventRouter;
+import btscore.editor.context.EventRouter;
 import static btscore.util.EditorUtils.onFreeSpace;
 
 /**

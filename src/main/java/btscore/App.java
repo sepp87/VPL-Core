@@ -1,15 +1,16 @@
 package btscore;
 
-import btscore.context.event.FocusNotRequiredEvent;
-import btscore.context.EditorContext;
-import btscore.context.EventRouter;
-import java.util.HashMap;
-import java.util.Map;
-import btscore.editor.EditorController;
-import btscore.editor.EditorView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import btscore.editor.context.EditorContext;
+import btscore.editor.context.EventRouter;
+import btscore.editor.EditorController;
+import btscore.editor.EditorView;
 import btscore.editor.KeyboardController;
 import btscore.editor.MenuBarController;
 import btscore.editor.MenuBarView;
@@ -24,10 +25,9 @@ import btscore.editor.ZoomController;
 import btscore.editor.ZoomView;
 import btscore.editor.BlockSearchController;
 import btscore.editor.BlockSearchView;
-import btscore.context.ActionManager;
+import btscore.editor.context.ActionManager;
 import btscore.workspace.WorkspaceView;
 import btsxml.io.GraphLoader;
-import java.io.File;
 
 /**
  *
@@ -51,12 +51,6 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        if (btscore.App.BLOCK_MVC) {
-
-        } else {
-
-        }
-
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
@@ -79,7 +73,6 @@ public class App extends Application {
 
         // initialize EventRouter for Context
         EventRouter eventRouter = new EventRouter();
-        eventRouter.fireEvent(new FocusNotRequiredEvent());
         context.initializeEventRouter(eventRouter);
 
         // initialize ActionManager for Context
@@ -94,8 +87,7 @@ public class App extends Application {
         new PanController(contextId, workspaceModel);
         new RadialMenuController(contextId, radialMenuView);
         new MenuBarController(contextId, menuBarView);
-        EditorController editorController = new EditorController(contextId, editorView);
-        new KeyboardController(contextId);
+        new EditorController(contextId, editorView);
 
         // Setup scene
         Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
@@ -117,7 +109,8 @@ public class App extends Application {
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
         });
 
-        editorController.initialize(scene);
+        scene.setOnKeyPressed(KeyboardController::handleShortcutTriggered);
+
     }
 
     public static Stage getStage() {
@@ -126,6 +119,10 @@ public class App extends Application {
 
     public static EditorContext getContext(String contextId) {
         return CONTEXTS.get(contextId);
+    }
+
+    public static EditorContext getCurrentContext() {
+        return CONTEXTS.values().iterator().next();
     }
 
 }

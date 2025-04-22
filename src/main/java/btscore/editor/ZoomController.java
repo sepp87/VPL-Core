@@ -1,6 +1,6 @@
 package btscore.editor;
 
-import btscore.context.EditorMode;
+import btscore.editor.context.EditorMode;
 import btscore.workspace.WorkspaceModel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
@@ -14,13 +14,13 @@ import btscore.App;
 import btscore.Config;
 import btscore.util.NodeHierarchyUtils;
 import btscore.util.SystemUtils;
-import btscore.context.ActionManager;
-import btscore.context.EventRouter;
-import btscore.context.StateManager;
-import btscore.context.Command;
-import btscore.context.command.ApplyZoomCommand;
-import btscore.context.command.ZoomInCommand;
-import btscore.context.command.ZoomOutCommand;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.EventRouter;
+import btscore.editor.context.StateManager;
+import btscore.editor.context.Command;
+import btscore.editor.commands.ApplyZoomCommand;
+import btscore.editor.commands.ZoomInCommand;
+import btscore.editor.commands.ZoomOutCommand;
 
 /**
  * Manages zooming functionality and controls in the workspace.

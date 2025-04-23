@@ -178,7 +178,12 @@ public class MethodBlock extends BlockModel {
             if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
                 exceptions.clear();
             }
-            outputPorts.get(0).setData(result[0].data().get());
+            Object data = result[0].data().get();
+            outputPorts.get(0).setData(data);
+            if((data != null) && !List.class.isAssignableFrom(data.getClass())) {
+                outputPorts.get(0).dataTypeProperty().set(data.getClass());
+            }
+         
         });
 
     }

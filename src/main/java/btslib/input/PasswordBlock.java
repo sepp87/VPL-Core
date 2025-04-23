@@ -70,16 +70,17 @@ public class PasswordBlock extends BlockModel {
         textField.setStyle(
                 "-fx-pref-column-count: 26;\n"
                 + "fx-font-size: 10;\n");
-        textField.textProperty().bindBidirectional(value);
+
         textField.managedProperty().bind(hidden.not()); // Bind visibility and management based on hidden property
         textField.visibleProperty().bind(hidden.not());
         textField.textProperty().bindBidirectional(value); // Sync content between password field and text field
-        textField.textProperty().bindBidirectional(passwordField.textProperty());
+        passwordField.textProperty().bindBidirectional(value);
 
         toggleButton = new BaseButton(FontAwesomeSolid.EYE_SLASH);
         toggleButton.setOnAction(this::toggleHidden);
 
         HBox root = new HBox(10, passwordField, textField, toggleButton);
+        System.out.println(value.get());
 
         return root;
     }

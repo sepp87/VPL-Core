@@ -31,7 +31,7 @@ public class WorkspaceModel {
     public static final double ZOOM_STEP = 0.1;
 
     private final BlockGroupIndex blockGroupIndex = new BlockGroupIndex();
-    private final WirelessIndex wirelessIndex = new WirelessIndex();
+    private final AutoConnectIndex wirelessIndex = new AutoConnectIndex();
 
     private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", false);
     private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
@@ -45,7 +45,7 @@ public class WorkspaceModel {
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
     private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
     
-    public WirelessIndex getWirelessIndex(){
+    public AutoConnectIndex getWirelessIndex(){
         return wirelessIndex;
     }
 

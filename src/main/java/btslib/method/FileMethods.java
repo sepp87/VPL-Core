@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import btscore.graph.block.BlockMetadata;
-import btscore.util.FileUtils;
+import btscore.utils.FileUtils;
 
 /**
  *

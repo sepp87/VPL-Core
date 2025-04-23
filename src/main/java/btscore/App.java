@@ -27,7 +27,7 @@ import btscore.editor.BlockSearchController;
 import btscore.editor.BlockSearchView;
 import btscore.editor.context.ActionManager;
 import btscore.workspace.WorkspaceView;
-import btsxml.io.GraphLoader;
+import btscore.graph.io.GraphLoader;
 
 /**
  *
@@ -127,10 +127,3 @@ public class App extends Application {
 
 }
 
-/**
- *
- * Context - id - Action Manager - State Manager - Event Router
- *
- * ClipBoard - copied Connections - copied Blocks
- *
- */

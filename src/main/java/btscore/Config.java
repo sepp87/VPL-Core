@@ -17,9 +17,9 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
-import btscore.util.FileUtils;
-import btscore.util.SystemUtils.OperatingSystem;
-import btscore.util.SystemUtils;
+import btscore.utils.FileUtils;
+import btscore.utils.SystemUtils.OperatingSystem;
+import btscore.utils.SystemUtils;
 
 /**
  *

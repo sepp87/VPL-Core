@@ -25,7 +25,7 @@ import btscore.graph.port.PortController;
 import btscore.graph.port.PortModel;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
-import btscore.util.EventUtils;
+import btscore.utils.EventUtils;
 import btscore.workspace.WorkspaceController;
 
 /**

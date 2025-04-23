@@ -6,7 +6,7 @@ import btscore.App;
 import btscore.Config;
 import btscore.graph.base.BaseModel;
 import btscore.graph.port.PortType;
-import btscore.util.TypeCastUtils;
+import btscore.utils.TypeCastUtils;
 
 /**
  *

@@ -178,8 +178,13 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addInputPort(String name, Class<?> type) {
+        return addInputPort(name, type, false);
+    }
+
+    public PortModel addInputPort(String name, Class<?> type, boolean isAutoConnectable) {
         PortModel port = new PortModel(name, PortType.INPUT, type, this, false);
         port.dataProperty().addListener(inputDataListener);
+        port.wirelessProperty().set(isAutoConnectable);
         inputPorts.add(port);
         return port;
     }
@@ -191,7 +196,11 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addOutputPort(String name, Class<?> type) {
+        return addOutputPort(name, type, false);
+    }
+    public PortModel addOutputPort(String name, Class<?> type, boolean isAutoConnectable) {
         PortModel port = new PortModel(name, PortType.OUTPUT, type, this, true);
+        port.wirelessProperty().set(isAutoConnectable);
         outputPorts.add(port);
         return port;
     }
@@ -224,6 +233,9 @@ public abstract class BlockModel extends BaseModel {
 
     @Override
     public void remove() {
+        // clean up routine for sub-classes
+        onRemoved();
+
         // stop processing
         setActive(false);
 
@@ -237,7 +249,6 @@ public abstract class BlockModel extends BaseModel {
             port.remove();
         }
 
-        onRemoved();
         super.remove();
     }
 

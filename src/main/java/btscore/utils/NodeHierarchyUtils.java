@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;

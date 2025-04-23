@@ -8,10 +8,8 @@ public class Notes {
     
 }
 
-// 0 FEATURE auto-connection by method block parameter data type
-// 0 IMPROVEMENT Hide auto-connections / Show wireless connections
+
 // 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
-// 0 REFACTOR event handlers on scene / editor controller level
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
@@ -60,6 +58,10 @@ public class Notes {
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// Hardcoded BTS references (namespace and file extensions) - moved to Config
+// 0 REFACTOR key input listener on scene / editor controller level
+// 0 REFACTOR replace IconType with FontAwesomeIcon
+// 0 FEATURE auto-connection by method block parameter data type
 // 0 After unregister transmitter by undo, add transmitter back in line by redo
 // Auto-Connect proof of concept
 // 0 Autoconnect after removal of autoconnection
@@ -103,5 +105,3 @@ public class Notes {
 // Auto-create connection undo/redo
 //
 // REMINDERS
-// Hardcoded BTS references (namespace and file extensions) - found in Config
-//      - BlockLibraryLoader > "btslib.input", "btslib.file", "btslib.spreadsheet", "btslib.autoconnect"

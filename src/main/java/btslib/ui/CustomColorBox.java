@@ -1,4 +1,4 @@
-package btslib.util;
+package btslib.ui;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;

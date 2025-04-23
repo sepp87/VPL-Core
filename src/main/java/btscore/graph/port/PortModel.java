@@ -18,7 +18,7 @@ import javafx.collections.SetChangeListener.Change;
 import btscore.graph.base.BaseModel;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
-import btscore.util.TypeCastUtils;
+import btscore.utils.TypeCastUtils;
 
 //import javafx.beans.property.ObjectProperty;
 //import javafx.beans.property.SimpleDoubleProperty;

@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

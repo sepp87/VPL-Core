@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

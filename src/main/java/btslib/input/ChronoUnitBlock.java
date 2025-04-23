@@ -19,7 +19,7 @@ import javax.xml.namespace.QName;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
-import btscore.util.ListViewHoverSelectBehaviour;
+import btscore.utils.ListViewHoverSelectBehaviour;
 
 /**
  *

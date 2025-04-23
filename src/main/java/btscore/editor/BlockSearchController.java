@@ -11,15 +11,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import btscore.App;
 import btscore.graph.block.BlockLibraryLoader;
-import btscore.util.ListViewUtils;
-import btscore.util.NodeHierarchyUtils;
+import btscore.utils.ListViewUtils;
+import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.StateManager;
 import btscore.editor.commands.CreateBlockCommand;
-import static btscore.util.EditorUtils.onFreeSpace;
-import static btscore.util.EventUtils.isDoubleClick;
-import btscore.util.ListViewHoverSelectBehaviour;
+import static btscore.utils.EditorUtils.onFreeSpace;
+import static btscore.utils.EventUtils.isDoubleClick;
+import btscore.utils.ListViewHoverSelectBehaviour;
 import btscore.workspace.WorkspaceController;
 
 /**

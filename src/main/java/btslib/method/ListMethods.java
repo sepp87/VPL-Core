@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import btscore.graph.block.BlockMetadata;
-import btscore.util.ListUtils;
+import btscore.utils.ListUtils;
 
 /**
  *

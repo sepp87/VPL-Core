@@ -1,4 +1,4 @@
-package btsxml.io;
+package btscore.graph.io;
 
 import btscore.Config;
 import jakarta.xml.bind.JAXBContext;

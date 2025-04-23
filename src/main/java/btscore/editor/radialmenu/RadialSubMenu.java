@@ -1,8 +1,8 @@
 package btscore.editor.radialmenu;
 
+import btscore.icons.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
-import btscore.IconType;
 
 /**
  *
@@ -12,11 +12,11 @@ public class RadialSubMenu extends RadialMenuItem {
 
     final List<RadialMenuItem> items = new ArrayList<>();
 
-    public RadialSubMenu(String name, IconType icon) {
+    public RadialSubMenu(String name, FontAwesomeSolid icon) {
         super(name, null, icon);
     }
 
-    public RadialSubMenu(String name, IconType icon, double iconRotation) {
+    public RadialSubMenu(String name, FontAwesomeSolid icon, double iconRotation) {
         super(name, null, icon, iconRotation);
     }
 

@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;

@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;

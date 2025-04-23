@@ -71,7 +71,6 @@
 }
 
 .radial-menu-item-icon{
-    -fx-font-family: FontAwesome;
     -fx-font-size: 24;
     -fx-text-fill: #000000;
 }
@@ -85,12 +84,18 @@
     -fx-fill: salmon;
 }
 
-.radial-sub-menu-item-icon{
-    -fx-font-family: FontAwesome;
+.radial-sub-menu-item-icon {
     -fx-font-size: 24;
     -fx-text-fill: #000000;
 }
 
+.font-awesome-solid {
+    -fx-font-family: 'Font Awesome 6 Free Solid';
+}
+
+.font-awesome-regular {
+    -fx-font-family: 'Font Awesome 6 Free Regular';
+}
 
 .selection-rectangle {
     -fx-border-color: lightgrey;
@@ -160,7 +165,7 @@
     -fx-background-color: transparent;
     -fx-border-insets: 0;
     -fx-border-width: 0;
-    -fx-font-family: FontAwesome;
+    -fx-font-family: 'Font Awesome 6 Free Solid';
     -fx-font-size: 24;
     -fx-text-fill: #5F5F5F;
 }
@@ -238,7 +243,7 @@
 }
 
 .block-awesome-icon{
-    -fx-font-family: FontAwesome;
+    /*-fx-font-family: 'Font Awesome 6 Free Solid';*/
     -fx-font-size: 30;
     -fx-text-fill: #5F5F5F;
 }
@@ -343,7 +348,7 @@
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-background-insets: 0;
-    -fx-padding: 0; 
+    -fx-padding: 0;
 }
 
 

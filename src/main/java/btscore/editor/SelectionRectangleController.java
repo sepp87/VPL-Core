@@ -10,7 +10,7 @@ import btscore.editor.context.StateManager;
 import btscore.editor.context.Command;
 import btscore.editor.commands.DeselectAllBlocksCommand;
 import btscore.editor.commands.RectangleSelectCommand;
-import static btscore.util.EditorUtils.onFreeSpace;
+import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
  *

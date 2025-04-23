@@ -1,5 +1,6 @@
 package btslib.file;
 
+import btscore.icons.FontAwesomeSolid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -13,11 +14,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
-import btscore.IconType;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
-import btscore.workspace.WorkspaceModel;
 
 /**
  * Note to self - if multiple changes due to saving recur, it might be worth
@@ -42,8 +41,6 @@ public class ObserveFileBlock extends BlockModel {
     private long lastModifiedTime = 0;  // Track last modified time
     
     public ObserveFileBlock() {
-//    public ObserveFileBlock(WorkspaceModel workspace) {
-//        super(workspace);
         nameProperty().set("Observe");
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
@@ -71,7 +68,7 @@ public class ObserveFileBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        Label icon = BlockView.getAwesomeIcon(IconType.FA_EYE);
+        Label icon = BlockView.getAwesomeIcon(FontAwesomeSolid.EYE);
         return icon;
     }
 

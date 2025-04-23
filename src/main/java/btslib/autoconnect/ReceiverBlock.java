@@ -1,13 +1,9 @@
 package btslib.autoconnect;
 
+import btscore.icons.FontAwesomeSolid;
 import java.net.http.HttpClient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
-import javax.xml.namespace.QName;
-import btscore.IconType;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
@@ -38,7 +34,7 @@ public class ReceiverBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        Label label = BlockView.getAwesomeIcon(IconType.FA_PAPER_PLANE);
+        Label label = BlockView.getAwesomeIcon(FontAwesomeSolid.PAPER_PLANE);
         return label;
     }
 

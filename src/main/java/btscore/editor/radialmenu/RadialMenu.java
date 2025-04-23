@@ -13,6 +13,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
 import btscore.Config;
+import btscore.icons.FontAwesomeSolid;
 
 /**
  *
@@ -39,7 +40,6 @@ public class RadialMenu extends Group {
     }
 
     public RadialMenu(List<RadialMenuItem> items) {
-//        this.getStylesheets().add(Config.get().stylesheets());
         this.items = items;
 
         Circle outer = new Circle(0, 0, OUTER_RADIUS);
@@ -109,7 +109,8 @@ public class RadialMenu extends Group {
         }
 
         // build exit button
-        RadialMenuItem exit = new RadialMenuItem( "Return\nto main", null, subMenu.icon);
+//        RadialMenuItem exit = new RadialMenuItem( "Return\nto main", null, subMenu.icon);
+        RadialMenuItem exit = new RadialMenuItem("Return\nto main", null, subMenu.icon);
         exit.index = subMenu.index;
         exit.length = subMenu.length;
         addRadialMenuItem(exit, true);
@@ -127,9 +128,9 @@ public class RadialMenu extends Group {
 
         Path path = new Path();
         path.getStyleClass().add("radial" + sub + "-menu-item");
+
 //        path.getProperties().put("index", index);
 //        path.setFill(Color.RED);
-
         double length = item.length;
         int index = item.index;
         int next = index + 1;
@@ -193,11 +194,14 @@ public class RadialMenu extends Group {
         double centerY = centerRadius * Math.cos(length * index + centerOffset);
 
 //        Label label = new Label(index + "");
-        Label label = new Label(item.icon.getUnicode() + "");
+//        Label label = new Label(item.icon.getUnicode() + "");
+        Label label = new Label(item.icon.unicode() + "");
         label.setRotate(item.iconRotation);
         label.getStyleClass().add("radial" + sub + "-menu-item-icon");
         label.layoutXProperty().bind(label.widthProperty().divide(2).negate().add(centerX));
         label.layoutYProperty().bind(label.heightProperty().divide(2).negate().add(centerY));
+        String fontStyle = item.icon instanceof FontAwesomeSolid ? "font-awesome-solid" : "font-awesome-regular";
+        label.getStyleClass().add(fontStyle);
 
         // group everything together and return
         item.getChildren().add(path);

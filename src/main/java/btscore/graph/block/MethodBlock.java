@@ -1,6 +1,6 @@
 package btscore.graph.block;
 
-import java.lang.reflect.InvocationTargetException;
+import btscore.icons.FontAwesomeSolid;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -19,14 +19,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import btsxml.BlockTag;
-import btscore.IconType;
-import btscore.graph.block.BlockModel;
 import btscore.graph.port.PortModel;
-import btscore.graph.block.BlockMetadata;
-import btscore.graph.block.BlockView;
-import btscore.graph.block.ExceptionPanel;
 import btscore.graph.block.ExceptionPanel.BlockException;
-import btscore.util.ListUtils;
+import btscore.utils.ListUtils;
 
 /**
  *
@@ -50,8 +45,6 @@ public class MethodBlock extends BlockModel {
     private ProgressIndicator spinner;
     private Label label;
 
-//    public MethodBlock(WorkspaceModel workspace, Method method) {
-//        super(workspace);
     public MethodBlock(Method method) {
         this.info = method.getAnnotation(BlockMetadata.class);
         this.identifier = info.identifier();
@@ -75,7 +68,7 @@ public class MethodBlock extends BlockModel {
 
         spinner = new ProgressIndicator();
 
-        if (!info.icon().equals(IconType.NULL)) {
+        if (!info.icon().equals(FontAwesomeSolid.NULL)) {
             label = BlockView.getAwesomeIcon(info.icon());
 
         } else if (!info.name().equals("")) {

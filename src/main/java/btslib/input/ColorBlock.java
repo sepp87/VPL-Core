@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
-import btslib.util.CustomColorBox;
+import btslib.ui.CustomColorBox;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;

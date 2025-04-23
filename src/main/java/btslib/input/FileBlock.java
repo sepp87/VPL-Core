@@ -1,5 +1,6 @@
 package btslib.input;
 
+import btscore.icons.FontAwesomeSolid;
 import java.io.File;
 import java.nio.file.NoSuchFileException;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +15,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
 import btscore.graph.base.BaseButton;
-import btscore.IconType;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
@@ -53,7 +53,7 @@ public class FileBlock extends BlockModel {
         textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
 
-        button = new BaseButton(IconType.FA_FOLDER_OPEN);
+        button = new BaseButton(FontAwesomeSolid.FOLDER_OPEN);
         button.setOnAction(this::handleOpenFile);
 
         HBox box = new HBox(5);
@@ -132,7 +132,6 @@ public class FileBlock extends BlockModel {
     @Override
     public BlockModel copy() {
         FileBlock block = new FileBlock();
-//        FileBlock block = new FileBlock(workspace);
         block.path.set(this.path.get());
         return block;
     }

@@ -12,13 +12,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
-import static btscore.util.ParsingUtils.getBooleanValue;
+import static btscore.utils.ParsingUtils.getBooleanValue;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockModel;
 import btscore.workspace.WorkspaceModel;
 import btscore.graph.block.BlockMetadata;
-import btscore.util.DateTimeUtils;
-import btscore.util.ParsingUtils;
+import btscore.utils.DateTimeUtils;
+import btscore.utils.ParsingUtils;
 
 /**
  *

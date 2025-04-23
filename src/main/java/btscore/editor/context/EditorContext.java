@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import btscore.editor.EditorView;
-import static btscore.util.EditorUtils.onFreeSpace;
+import static btscore.utils.EditorUtils.onFreeSpace;
 import btscore.workspace.WorkspaceView;
 
 /**

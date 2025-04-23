@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import btscore.icons.FontAwesomeSolid;
 import btscore.graph.base.BaseLabel;
 import btscore.graph.base.BaseButton;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
-import btscore.IconType;
 import btscore.graph.port.PortView;
+import btscore.icons.FontAwesomeIcon;
 
 /**
  *
@@ -36,10 +37,12 @@ public class BlockView extends GridPane {
     private final GridPane contentGrid;
     private final GridPane mainContentGrid;
 
-    private final BaseButton infoButton = new BaseButton(IconType.FA_INFO_CIRCLE);
+//    private final BaseButton infoButton = new BaseButton(IconType.FA_INFO_CIRCLE);
+    private final BaseButton infoButton = new BaseButton(FontAwesomeSolid.INFO_CIRCLE);
     private InfoPanel infoPanel;
 
-    private final BaseButton exceptionButton = new BaseButton(IconType.FA_WARNING);
+//    private final BaseButton exceptionButton = new BaseButton(IconType.FA_WARNING);
+    private final BaseButton exceptionButton = new BaseButton(FontAwesomeSolid.EXCLAMATION_TRIANGLE);
     private ExceptionPanel exceptionPanel;
 
     private ResizeButton resizeButton;
@@ -211,9 +214,16 @@ public class BlockView extends GridPane {
         }
     }
 
-    public static Label getAwesomeIcon(IconType type) {
-        Label label = new Label(type.getUnicode() + "");
+//    public static Label getAwesomeIcon(IconType type) {
+//        Label label = new Label(type.getUnicode() + "");
+//        label.getStyleClass().add("block-awesome-icon");
+//        return label;
+//    }
+    public static Label getAwesomeIcon(FontAwesomeIcon type) {
+        Label label = new Label(type.unicode());
         label.getStyleClass().add("block-awesome-icon");
+        String fontStyle = type instanceof FontAwesomeSolid ? "font-awesome-solid" : "font-awesome-regular";
+        label.getStyleClass().add(fontStyle);
         return label;
     }
 }

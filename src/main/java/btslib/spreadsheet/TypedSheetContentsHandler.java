@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.model.StylesTable;
-import btscore.util.ParsingUtils;
+import btscore.utils.ParsingUtils;
 
 /**
  *

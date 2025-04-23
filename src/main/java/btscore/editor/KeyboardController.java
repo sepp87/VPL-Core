@@ -10,7 +10,7 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import btscore.App;
-import btscore.util.EventUtils;
+import btscore.utils.EventUtils;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.Command;

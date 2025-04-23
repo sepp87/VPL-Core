@@ -21,7 +21,7 @@ import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import btscore.FontAwesomeIcon;
+import btscore.icons.FontAwesomeSolid;
 import btscore.workspace.WorkspaceView;
 
 /**
@@ -86,7 +86,7 @@ public class InfoPanel extends Pane {
     private VBox buildInfoBubble() {
 
         // create title box
-        this.closeButton = new Button(FontAwesomeIcon.TIMES.unicode());
+        this.closeButton = new Button(FontAwesomeSolid.TIMES.unicode());
         closeButton.getStyleClass().add("block-info-close-button");
         closeButton.setOnAction(e -> remove());
         HBox titleBox = new HBox(closeButton);

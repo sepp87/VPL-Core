@@ -4,13 +4,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
 import btscore.App;
-import btscore.util.NodeHierarchyUtils;
+import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.StateManager;
 import btscore.editor.BaseController;
-import static btscore.util.EditorUtils.onFreeSpace;
-import static btscore.util.EventUtils.isRightClick;
+import static btscore.utils.EditorUtils.onFreeSpace;
+import static btscore.utils.EventUtils.isRightClick;
 
 /**
  *

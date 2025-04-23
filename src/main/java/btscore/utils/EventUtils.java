@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;

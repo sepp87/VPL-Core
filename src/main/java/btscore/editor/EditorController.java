@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import btscore.App;
 import btscore.editor.context.EventRouter;
-import static btscore.util.EditorUtils.onFreeSpace;
+import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
  *
@@ -33,10 +33,6 @@ public class EditorController extends BaseController {
         view.addEventHandler(ScrollEvent.SCROLL_STARTED, scrollStartedHandler);
         view.addEventHandler(ScrollEvent.SCROLL, scrollUpdatedHandler);
         view.addEventHandler(ScrollEvent.SCROLL_FINISHED, scrollFinishedHandler);
-    }
-
-    public void initialize(Scene scene) {
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, keyPressedHandler);
     }
 
     private final EventHandler<MouseEvent> mouseClickedHandler = this::handleMouseClicked;
@@ -78,12 +74,6 @@ public class EditorController extends BaseController {
     private final EventHandler<ScrollEvent> scrollFinishedHandler = this::handleScrollFinished;
 
     private void handleScrollFinished(ScrollEvent event) {
-        eventRouter.fireEvent(event);
-    }
-
-    private final EventHandler<KeyEvent> keyPressedHandler = this::handleKeyPressed;
-
-    private void handleKeyPressed(KeyEvent event) {
         eventRouter.fireEvent(event);
     }
 

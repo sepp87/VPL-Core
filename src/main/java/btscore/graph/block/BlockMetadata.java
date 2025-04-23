@@ -1,10 +1,10 @@
 package btscore.graph.block;
 
+import btscore.icons.FontAwesomeSolid;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import btscore.IconType;
 
 /**
  *
@@ -26,7 +26,8 @@ public @interface BlockMetadata {
     
     String[] aliases() default {};
 
-    IconType icon() default IconType.NULL;
+//    IconType icon() default IconType.NULL;
+    FontAwesomeSolid icon() default FontAwesomeSolid.NULL;
     
     boolean hasDefaultOutput() default false;
 

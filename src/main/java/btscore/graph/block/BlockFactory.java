@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import btscore.icons.FontAwesomeSolid;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,7 +9,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import btscore.IconType;
 
 /**
  *
@@ -46,18 +46,31 @@ public class BlockFactory {
             BlockMetadata info = method.getAnnotation(BlockMetadata.class);
             blockModel = new MethodBlock(method);
 
-            Class<?> returnType = method.getReturnType();
-            if (returnType.equals(Number.class)) {
-                blockModel.addOutputPort("double", double.class);
-            } else if (List.class.isAssignableFrom(returnType)) {
-
-                blockModel.isListReturnType = true;
-                blockModel.addOutputPort(Object.class.getSimpleName(), Object.class);
-            } else {
-                blockModel.addOutputPort(returnType.getSimpleName(), returnType);
+            // set input ports
+            for (Parameter p : method.getParameters()) {
+                boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(p.getType());
+                if (List.class.isAssignableFrom(p.getType())) {
+                    blockModel.addInputPort("Object : List", Object.class, isAutoConnectable);
+                } else {
+                    blockModel.addInputPort(p.getName(), p.getType(), isAutoConnectable);
+                }
             }
 
-            if (!info.name().equals("") && info.icon().equals(IconType.NULL)) {
+            // set output port
+            Class<?> returnType = method.getReturnType();
+            boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(returnType);
+
+            if (returnType.equals(Number.class)) {
+                blockModel.addOutputPort("double", double.class, isAutoConnectable);
+            } else if (List.class.isAssignableFrom(returnType)) {
+                blockModel.isListReturnType = true;
+                blockModel.addOutputPort(Object.class.getSimpleName(), Object.class, isAutoConnectable);
+            } else {
+                blockModel.addOutputPort(returnType.getSimpleName(), returnType, isAutoConnectable);
+            }
+
+            // set the name
+            if (!info.name().equals("") && info.icon().equals(FontAwesomeSolid.NULL)) {
                 blockModel.nameProperty().set(info.name());
             } else {
                 String shortName = info.identifier().split("\\.")[1];
@@ -67,14 +80,6 @@ public class BlockFactory {
             // If first input parameter is of type list, then this is a list operator block
             if (method.getParameters().length > 0 && List.class.isAssignableFrom(method.getParameters()[0].getType())) {
                 blockModel.isListOperator = true;
-            }
-
-            for (Parameter p : method.getParameters()) {
-                if (List.class.isAssignableFrom(p.getType())) {
-                    blockModel.addInputPort("Object : List", Object.class);
-                } else {
-                    blockModel.addInputPort(p.getName(), p.getType());
-                }
             }
 
         } catch (Exception e) {

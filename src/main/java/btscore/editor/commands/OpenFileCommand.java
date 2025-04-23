@@ -5,7 +5,7 @@ import javafx.stage.FileChooser;
 import btscore.App;
 import btscore.Config;
 import btscore.editor.context.Command;
-import btsxml.io.GraphLoader;
+import btscore.graph.io.GraphLoader;
 import btscore.editor.context.ResetHistoryCommand;
 import btscore.editor.context.MarkSavedCommand;
 import btscore.workspace.WorkspaceModel;

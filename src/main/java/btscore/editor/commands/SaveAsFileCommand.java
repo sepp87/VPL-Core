@@ -4,7 +4,7 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import btscore.App;
 import btscore.Config;
-import btsxml.io.GraphSaver;
+import btscore.graph.io.GraphSaver;
 import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;

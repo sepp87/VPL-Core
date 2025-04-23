@@ -18,8 +18,8 @@ import javafx.collections.ObservableMap;
 
 import btscore.Config;
 import org.reflections.Reflections;
-import btscore.util.FileUtils;
-import btscore.util.JarClassLoaderUtils;
+import btscore.utils.FileUtils;
+import btscore.utils.JarClassLoaderUtils;
 
 /**
  *

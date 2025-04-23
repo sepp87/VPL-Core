@@ -10,7 +10,7 @@ import btscore.editor.BaseController;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
-import static btscore.util.EventUtils.isLeftClick;
+import static btscore.utils.EventUtils.isLeftClick;
 import btscore.workspace.WorkspaceController;
 
 /**

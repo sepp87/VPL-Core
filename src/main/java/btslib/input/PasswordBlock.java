@@ -1,5 +1,6 @@
 package btslib.input;
 
+import btscore.icons.FontAwesomeSolid;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,17 +8,13 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
-import btscore.IconType;
 import btscore.graph.base.BaseButton;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockMetadata;
@@ -79,7 +76,7 @@ public class PasswordBlock extends BlockModel {
         textField.textProperty().bindBidirectional(value); // Sync content between password field and text field
         textField.textProperty().bindBidirectional(passwordField.textProperty());
 
-        toggleButton = new BaseButton(IconType.FA_EYE_SLASH);
+        toggleButton = new BaseButton(FontAwesomeSolid.EYE_SLASH);
         toggleButton.setOnAction(this::toggleHidden);
 
         HBox root = new HBox(10, passwordField, textField, toggleButton);
@@ -90,7 +87,7 @@ public class PasswordBlock extends BlockModel {
     private void toggleHidden(ActionEvent event) {
         boolean isHidden = hidden.get();
         hidden.set(!isHidden);
-        IconType icon = !isHidden ? IconType.FA_EYE_SLASH : IconType.FA_EYE;
+        FontAwesomeSolid icon = !isHidden ? FontAwesomeSolid.EYE_SLASH : FontAwesomeSolid.EYE;
         toggleButton.setText(icon);
     }
 

@@ -1,16 +1,12 @@
 package btscore.graph.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import btscore.FontAwesomeIcon;
+import btscore.icons.FontAwesomeSolid;
 import btscore.workspace.WorkspaceView;
 
 // TODO Block should llsten to when the exception panel is removed and as such decide to show the exception button again only in case the exception is still present
@@ -21,10 +17,8 @@ import btscore.workspace.WorkspaceView;
 public class ExceptionPanel extends InfoPanel {
 
     private final ObservableList<BlockException> exceptions;
-    private BlockException currentException;
     private int currentIndex = 0;
 
-//    private Label messageLabel;
     private Label exceptionType;
     private Label exceptionMessage;
     private Label severityHeader;
@@ -102,8 +96,8 @@ public class ExceptionPanel extends InfoPanel {
         this.pagingLabel = new Label("1 of 10");
 
         // Create paging buttons
-        this.previousButton = new Button(FontAwesomeIcon.CHEVRON_LEFT.unicode());
-        this.nextButton = new Button(FontAwesomeIcon.CHEVRON_RIGHT.unicode());
+        this.previousButton = new Button(FontAwesomeSolid.CHEVRON_LEFT.unicode());
+        this.nextButton = new Button(FontAwesomeSolid.CHEVRON_RIGHT.unicode());
 
         // Set navigation button handlers
         previousButton.setOnAction(e -> showPreviousMessage());
@@ -137,7 +131,6 @@ public class ExceptionPanel extends InfoPanel {
     // Update UI to reflect the current exception and pagination
     private void updateLabels() {
         BlockException blockException = exceptions.get(currentIndex);
-        currentException = blockException;
 
         severityHeader.setText(buildSeverityHeader(blockException));
         String conflictResolution = "The process has encountered an unexpected interruption.";

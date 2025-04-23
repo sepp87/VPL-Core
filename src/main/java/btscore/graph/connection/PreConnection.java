@@ -11,7 +11,7 @@ import btscore.editor.commands.RemoveConnectionCommand;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
-import btscore.util.TypeCastUtils;
+import btscore.utils.TypeCastUtils;
 import btscore.workspace.WorkspaceController;
 import btscore.workspace.WorkspaceModel;
 import btscore.workspace.WorkspaceView;

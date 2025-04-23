@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import btscore.App;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.StateManager;
-import static btscore.util.EditorUtils.onFreeSpace;
+import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
  *

@@ -11,7 +11,7 @@ import btsxml.GroupTag;
 import btsxml.ObjectFactory;
 import btscore.graph.block.BlockModel;
 import btscore.graph.base.BaseModel;
-import static btsxml.io.GraphSaver.getObjectFactory;
+import static btscore.graph.io.GraphSaver.getObjectFactory;
 import btscore.workspace.BlockGroupIndex;
 
 /**

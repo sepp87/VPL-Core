@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import btscore.graph.block.BlockMetadata;
-import btscore.util.DateTimeUtils;
+import btscore.utils.DateTimeUtils;
 
 /**
  *

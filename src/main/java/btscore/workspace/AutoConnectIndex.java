@@ -21,7 +21,7 @@ import btscore.graph.port.PortModel;
  *
  * @author joostmeulenkamp
  */
-public class WirelessIndex {
+public class AutoConnectIndex {
 
     private final Map<Class<?>, List<PortModel>> transmitters = new HashMap<>();
     public final Map<Class<?>, List<PortModel>> pendingReceivers = new HashMap<>();

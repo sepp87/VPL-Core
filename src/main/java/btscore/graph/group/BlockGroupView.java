@@ -1,12 +1,12 @@
 package btscore.graph.group;
 
+import btscore.icons.FontAwesomeSolid;
 import java.util.Collection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import btscore.IconType;
 import btscore.graph.base.BaseLabel;
 import btscore.graph.block.BlockView;
 import btscore.graph.base.BaseButton;
@@ -28,7 +28,7 @@ public class BlockGroupView extends GridPane {
 
         blocks = FXCollections.observableSet();
 
-        binButton = new BaseButton(IconType.FA_MINUS_CIRCLE);
+        binButton = new BaseButton(FontAwesomeSolid.MINUS_CIRCLE);
         binButton.setVisible(false);
 
         menuBox = new HBox(5);

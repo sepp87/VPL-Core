@@ -3,7 +3,7 @@ package btscore.editor.commands;
 import java.io.File;
 import btscore.Config;
 import btscore.editor.context.Command;
-import btsxml.io.GraphSaver;
+import btscore.graph.io.GraphSaver;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
 

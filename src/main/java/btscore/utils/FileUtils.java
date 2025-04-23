@@ -1,4 +1,4 @@
-package btscore.util;
+package btscore.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,17 +1,16 @@
 package btslib.input;
 
+import btscore.icons.FontAwesomeSolid;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
-import btscore.IconType;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
-import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -32,8 +31,6 @@ public class BooleanBlock extends BlockModel {
     private String onIcon;
 
     public BooleanBlock() {
-//    public BooleanBlock(WorkspaceModel workspaceModel) {
-//        super(workspaceModel);
         this.nameProperty().set("Boolean");
         addOutputPort("value", Boolean.class);
         initialize();
@@ -46,9 +43,9 @@ public class BooleanBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        onOffSwitch = BlockView.getAwesomeIcon(IconType.FA_TOGGLE_OFF);
+        onOffSwitch = BlockView.getAwesomeIcon(FontAwesomeSolid.TOGGLE_OFF);
         offIcon = onOffSwitch.getText();
-        onIcon = IconType.FA_TOGGLE_ON.getUnicode() + "";
+        onIcon = FontAwesomeSolid.TOGGLE_ON.unicode();
         bool.addListener(boolListener);
         onOffSwitch.setOnMouseClicked(event -> bool.set(!bool.get()));
         return onOffSwitch;

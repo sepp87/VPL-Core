@@ -4,6 +4,6 @@ package btscore.graph.block;
  *
  * @author joostmeulenkamp
  */
-public interface Transmittable {
+public interface AutoConnectable {
     
 }

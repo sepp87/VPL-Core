@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import btscore.graph.port.AutoConnectable;
 import btscore.icons.FontAwesomeSolid;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

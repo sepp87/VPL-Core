@@ -8,7 +8,8 @@ public class Notes {
     
 }
 
-
+// 0 BUG after copy port is not set active
+// 0 IMPROVEMENT Enable AutoConnect when loading from file
 // 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX

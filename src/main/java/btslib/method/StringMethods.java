@@ -141,6 +141,7 @@ public class StringMethods {
             category = "Core",
             description = "Replaces each substring of this string that matches the literal target sequence with the specified literal replacement sequence. The replacement proceeds from the beginning of the string to the end, for example, replacing \"aa\" with \"b\" in the string \"aaa\" will result in \"ba\" rather than \"ab\".")
     public static String replace(String string, String target, String replacement) {
+        replacement = replacement == null ? "" : replacement;
         return string.replace(target, replacement);
     }
 
@@ -149,6 +150,7 @@ public class StringMethods {
             category = "Core",
             description = "Replaces each substring of this string that matches the given regular expression with the given replacement.")
     public static String replaceAll(String string, String regex, String replacement) {
+        replacement = replacement == null ? "" : replacement;
         return string.replaceAll(regex, replacement);
     }
 
@@ -157,6 +159,7 @@ public class StringMethods {
             category = "Core",
             description = "Replaces the first substring of this string that matches the given regular expression with the given replacement.")
     public static String replaceFirst(String string, String regex, String replacement) {
+        replacement = replacement == null ? "" : replacement;
         return string.replaceFirst(regex, replacement);
     }
 

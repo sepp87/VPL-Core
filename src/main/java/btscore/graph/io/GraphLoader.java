@@ -1,5 +1,6 @@
 package btscore.graph.io;
 
+import btscore.App;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -14,7 +15,9 @@ import btscore.workspace.WorkspaceModel;
 import btscore.graph.block.BlockFactory;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.block.BlockModel;
+import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
+import java.util.Collection;
 
 /**
  *
@@ -22,7 +25,7 @@ import btscore.graph.port.PortModel;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file,  WorkspaceModel workspaceModel) {
+    public static void deserialize(File file, WorkspaceModel workspaceModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -47,6 +50,18 @@ public class GraphLoader {
             GroupsTag groups = documentTag.getGroups();
             deserializeGroups(groups, workspaceModel);
 
+            // register all transmitting ports, first after deserializing all blocks and connections
+            Collection<BlockModel> blocks = workspaceModel.getBlockModels();
+            Collection<ConnectionModel> autoConnections = workspaceModel.getAutoConnectIndex().registerAllTransmitters(blocks);
+            if (!autoConnections.isEmpty() && App.LOG_POTENTIAL_BUGS) {
+                /**
+                 * Edge case (which should not occur) - The end user opens and
+                 * edits a .btsxml file in a text editor and removes
+                 * auto-generated connections manually.
+                 */
+                System.out.println(autoConnections.size() + " AUTO CONNECTIONS GENERATED ON LOADING FROM FILE");
+            }
+
             // set file reference for quick save
             workspaceModel.fileProperty().set(file);
 
@@ -64,8 +79,6 @@ public class GraphLoader {
         for (BlockTag blockTag : blockTagList) {
 
             String blockIdentifier = blockTag.getType();
-
-//            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier, workspaceModel);
             BlockModel blockModel = BlockFactory.createBlock(blockIdentifier);
             if (blockModel == null) {
                 System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
@@ -73,7 +86,6 @@ public class GraphLoader {
             }
             blockModel.deserialize(blockTag);
             workspaceModel.addBlockModel(blockModel);
-
         }
     }
 

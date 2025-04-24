@@ -93,7 +93,7 @@ public class PasteBlocksCommand implements UndoableCommand {
             // auto-connect transmitters
             List<PortModel> transmitters = block.getTransmittingPorts();
             for (PortModel port : transmitters) {
-                List<ConnectionModel> autoConnections = workspaceModel.getWirelessIndex().registerTransmitter(port);
+                List<ConnectionModel> autoConnections = workspaceModel.getAutoConnectIndex().registerTransmitter(port);
                 if (!autoConnections.isEmpty()) {
                     /**
                      * Edge case: there can be auto-connections, since the
@@ -114,7 +114,7 @@ public class PasteBlocksCommand implements UndoableCommand {
                 if (port.isConnected()) {
                     continue;
                 }
-                ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
+                ConnectionModel autoConnection = workspaceModel.getAutoConnectIndex().registerReceiver(port);
                 if (autoConnection != null) {
                     /**
                      * Edge case: there can be an auto-connection, since the
@@ -154,13 +154,13 @@ public class PasteBlocksCommand implements UndoableCommand {
             List<PortModel> transmitters = block.getTransmittingPorts();
             for (PortModel port : transmitters) {
                 connectedReceivers.addAll(port.getConnectedPorts());
-                workspaceModel.getWirelessIndex().unregisterTransmitter(port);
+                workspaceModel.getAutoConnectIndex().unregisterTransmitter(port);
             }
 
             // unregister receivers
             List<PortModel> receivers = block.getReceivingPorts();
             for (PortModel port : receivers) {
-                workspaceModel.getWirelessIndex().unregisterReceiver(port);
+                workspaceModel.getAutoConnectIndex().unregisterReceiver(port);
             }
         }
 
@@ -175,7 +175,7 @@ public class PasteBlocksCommand implements UndoableCommand {
             if (port.isConnected()) {
                 continue;
             }
-            ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
+            ConnectionModel autoConnection = workspaceModel.getAutoConnectIndex().registerReceiver(port);
             if (autoConnection != null && App.LOG_POTENTIAL_BUGS) {
                 /**
                  * There cannot be an auto-connection, since the pasted block

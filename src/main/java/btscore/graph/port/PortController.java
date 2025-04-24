@@ -30,6 +30,7 @@ public class PortController {
         view.setOnMouseClicked(this::handlePortClicked);
         view.setOnMousePressed(this::ignoreDrag);
         view.setOnMouseDragged(this::ignoreDrag);
+        view.setActive(model.isActive());
     }
 
 

@@ -8,6 +8,7 @@ import btscore.App;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
+import java.util.Collection;
 
 /**
  * Registers ports and connections flagged as wireless. wireless transmitting
@@ -26,22 +27,20 @@ public class AutoConnectIndex {
     private final Map<Class<?>, List<PortModel>> transmitters = new HashMap<>();
     public final Map<Class<?>, List<PortModel>> pendingReceivers = new HashMap<>();
 
-    public void registerEligiblePorts(BlockModel block) {
-        for (PortModel transmitter : block.getTransmittingPorts()) {
-            registerTransmitter(transmitter);
+    public List<ConnectionModel> registerAllTransmitters(Collection<BlockModel> blocks) {
+        List<ConnectionModel> autoConnections = new ArrayList<>();
+        for (BlockModel block : blocks) {
+            autoConnections.addAll(registerAllTransmitters(block));
         }
-        for (PortModel receiver : block.getReceivingPorts()) {
-            registerReceiver(receiver);
-        }
+        return autoConnections;
     }
 
-    public void unregisterEligiblePorts(BlockModel block) {
-        for (PortModel transmitter : block.getTransmittingPorts()) {
-            unregisterTransmitter(transmitter);
+    public List<ConnectionModel> registerAllTransmitters(BlockModel block) {
+        List<ConnectionModel> autoConnections = new ArrayList<>();
+        for (PortModel port : block.getTransmittingPorts()) {
+            autoConnections.addAll(registerTransmitter(port));
         }
-        for (PortModel receiver : block.getReceivingPorts()) {
-            unregisterReceiver(receiver);
-        }
+        return autoConnections;
     }
 
     public List<ConnectionModel> registerTransmitter(PortModel transmitter) {

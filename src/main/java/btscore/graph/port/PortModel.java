@@ -107,7 +107,7 @@ import btscore.utils.TypeCastUtils;
  */
 public class PortModel extends BaseModel {
 
-    private final BooleanProperty wireless = new SimpleBooleanProperty(this, "wireless", false);
+    private final BooleanProperty autoConnectable = new SimpleBooleanProperty(this, "autoConnectable", false);
     private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
@@ -133,8 +133,8 @@ public class PortModel extends BaseModel {
         throw new UnsupportedOperationException("PortModel controls its own active state.");
     }
 
-    public BooleanProperty wirelessProperty() {
-        return wireless;
+    public BooleanProperty autoConnectableProperty() {
+        return autoConnectable;
     }
 
     public PortType getPortType() {
@@ -206,6 +206,7 @@ public class PortModel extends BaseModel {
     private final SetChangeListener<ConnectionModel> connectionsListener = this::onConnectionsChanged;
 
     private void onConnectionsChanged(Change<? extends ConnectionModel> change) {
+        System.out.println("PortModel.onConnectionsChanged() connections.size() " + connections.size());
         boolean isActive = !connections.isEmpty();
         active.set(isActive);
         if (!isActive && portType == PortType.INPUT) {

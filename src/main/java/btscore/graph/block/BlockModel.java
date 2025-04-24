@@ -170,7 +170,7 @@ public abstract class BlockModel extends BaseModel {
     private List<PortModel> getWirelessPorts(List<PortModel> ports) {
         List<PortModel> result = new ArrayList<>();
         for (PortModel port : ports) {
-            if (port.wirelessProperty().get()) {
+            if (port.autoConnectableProperty().get()) {
                 result.add(port);
             }
         }
@@ -184,7 +184,7 @@ public abstract class BlockModel extends BaseModel {
     public PortModel addInputPort(String name, Class<?> type, boolean isAutoConnectable) {
         PortModel port = new PortModel(name, PortType.INPUT, type, this, false);
         port.dataProperty().addListener(inputDataListener);
-        port.wirelessProperty().set(isAutoConnectable);
+        port.autoConnectableProperty().set(isAutoConnectable);
         inputPorts.add(port);
         return port;
     }
@@ -200,7 +200,7 @@ public abstract class BlockModel extends BaseModel {
     }
     public PortModel addOutputPort(String name, Class<?> type, boolean isAutoConnectable) {
         PortModel port = new PortModel(name, PortType.OUTPUT, type, this, true);
-        port.wirelessProperty().set(isAutoConnectable);
+        port.autoConnectableProperty().set(isAutoConnectable);
         outputPorts.add(port);
         return port;
     }

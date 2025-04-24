@@ -72,7 +72,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
             List<PortModel> transmitters = blockModel.getTransmittingPorts();
 //            System.out.println("Transmitters found " + transmitters.size());
             for (PortModel transmitter : transmitters) {
-                int index = workspaceModel.getWirelessIndex().getTransmitterIndex(transmitter);
+                int index = workspaceModel.getAutoConnectIndex().getTransmitterIndex(transmitter);
 //                System.out.println("record " + index);
                 recordedTransmitters.computeIfAbsent(index, k -> new ArrayList<>()).add(transmitter);
             }
@@ -83,7 +83,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
             }
         }
         for (PortModel transmitter : unregisterTransmitters) {
-            workspaceModel.getWirelessIndex().unregisterTransmitter(transmitter);
+            workspaceModel.getAutoConnectIndex().unregisterTransmitter(transmitter);
         }
 //        System.out.println("Connected receivers found " + connectedReceivers.size());
 
@@ -104,7 +104,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
                 System.out.println("RECEIVER ALREADY CONNECTED in EXECUTE");
 //                continue;
             }
-            ConnectionModel autoConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
+            ConnectionModel autoConnection = workspaceModel.getAutoConnectIndex().registerReceiver(port);
 //            System.out.println("Auto connection found " + autoConnection);
             if (autoConnection != null) {
                 autoConnections.add(autoConnection);
@@ -157,7 +157,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
 //            System.out.println("re-register " + index);
             for (PortModel port : portsByIndex.getValue()) {
                 // WARNING when silent is false, transmitter is connecting, because all connections (also wireless) were revived. Meaning there is a pending receiver, that is actually already connected again
-                List<ConnectionModel> result = workspaceModel.getWirelessIndex().registerTransmitter(index, port, true);
+                List<ConnectionModel> result = workspaceModel.getAutoConnectIndex().registerTransmitter(index, port, true);
                 if (!result.isEmpty() && App.LOG_POTENTIAL_BUGS) {
                     System.out.println("GENERATING AUTOCONNECTIONS FOR TRANSMITTERS " + result.size());
                 }
@@ -174,7 +174,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
                     System.out.println("RECEIVER ALREADY CONNECTED");
 //                    continue;
                 }
-                ConnectionModel result = workspaceModel.getWirelessIndex().registerReceiver(port); // TODO double check here
+                ConnectionModel result = workspaceModel.getAutoConnectIndex().registerReceiver(port); // TODO double check here
                 if (result != null && App.LOG_POTENTIAL_BUGS) {
                     System.out.println("GENERATING AUTOCONNECTIONS FOR RECEIVERS");
                 }

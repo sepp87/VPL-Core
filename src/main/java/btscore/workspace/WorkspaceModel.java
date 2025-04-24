@@ -45,7 +45,7 @@ public class WorkspaceModel {
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
     private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
     
-    public AutoConnectIndex getWirelessIndex(){
+    public AutoConnectIndex getAutoConnectIndex(){
         return wirelessIndex;
     }
 

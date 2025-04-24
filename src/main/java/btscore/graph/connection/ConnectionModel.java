@@ -24,7 +24,7 @@ public class ConnectionModel extends BaseModel {
     }
 
     public boolean isWireless() {
-        return startPort.wirelessProperty().get();
+        return startPort.autoConnectableProperty().get();
     }
 
     private void initialize() {

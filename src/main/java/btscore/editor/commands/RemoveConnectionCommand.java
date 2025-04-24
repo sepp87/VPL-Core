@@ -23,9 +23,9 @@ public class RemoveConnectionCommand implements UndoableCommand {
     @Override
     public boolean execute() {
         workspaceModel.removeConnectionModel(connection);
-        if (connection.getEndPort().wirelessProperty().get()) {
+        if (connection.getEndPort().autoConnectableProperty().get()) {
             PortModel port = connection.getEndPort();
-            ConnectionModel newConnection = workspaceModel.getWirelessIndex().registerReceiver(port);
+            ConnectionModel newConnection = workspaceModel.getAutoConnectIndex().registerReceiver(port);
             if(newConnection != null) {
                 this.autoConnection = newConnection;
                 workspaceModel.addConnectionModel(newConnection);

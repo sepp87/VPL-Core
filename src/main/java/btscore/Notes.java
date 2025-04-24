@@ -8,8 +8,7 @@ public class Notes {
     
 }
 
-// 0 BUG after copy port is not set active
-// 0 IMPROVEMENT Enable AutoConnect when loading from file
+// 0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
 // 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
@@ -59,6 +58,7 @@ public class Notes {
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 0 IMPROVEMENT Enable AutoConnect when loading from file
 // Hardcoded BTS references (namespace and file extensions) - moved to Config
 // 0 REFACTOR key input listener on scene / editor controller level
 // 0 REFACTOR replace IconType with FontAwesomeIcon

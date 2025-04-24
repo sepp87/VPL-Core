@@ -22,7 +22,7 @@ public class ReceiverBlock extends BlockModel {
 
     public ReceiverBlock() {
         this.nameProperty().set("Receiver");
-        addInputPort("Client", HttpClient.class).wirelessProperty().set(true);
+        addInputPort("Client", HttpClient.class).autoConnectableProperty().set(true);
         initialize();
         
     }

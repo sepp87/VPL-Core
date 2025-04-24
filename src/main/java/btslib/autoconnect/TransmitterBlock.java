@@ -22,7 +22,7 @@ public class TransmitterBlock extends BlockModel {
 
     public TransmitterBlock() {
         this.nameProperty().set("Transmitter");
-        addOutputPort("Client", HttpClient.class).wirelessProperty().set(true);
+        addOutputPort("Client", HttpClient.class).autoConnectableProperty().set(true);
         initialize();
     }
 

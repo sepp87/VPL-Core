@@ -23,8 +23,11 @@ public class ConnectionModel extends BaseModel {
     }
 
     @Override
-    public void setActive(boolean isActive) {
-        active.set(isActive);
+    public void setActive(boolean active) {
+        if(active == isActive()) {
+            return; // no need to forward data again
+        }
+        super.setActive(active);
         forwardData();
     }
 

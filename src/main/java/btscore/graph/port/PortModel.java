@@ -1,6 +1,7 @@
 package btscore.graph.port;
 
 //import javafx.beans.property.DoubleProperty;
+import btscore.App;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -165,8 +166,56 @@ public class PortModel extends BaseModel {
         return data;
     }
 
-    public void setData(Object value) {
-        calculateData(value);
+    public void setData(Object newData) {
+        calculateData(newData);
+        if (!App.CONNECTION_REFACTOR) {
+            return;
+        }
+        Object oldData = data.get();
+        if (!oldData.equals(newData)) {
+            data.set(newData);
+        }
+
+        if (portType == PortType.OUTPUT) {
+            publishData();
+
+        } else { // PortType.INPUT
+            preprocessData(newData);
+
+        }
+    }
+
+    private void publishData() {
+        for (ConnectionModel connection : connections) {
+            connection.forwardData();
+        }
+    }
+
+    public void preprocessData(Object value) {
+
+        if (!connections.isEmpty()) { // incoming data of one single incoming connection
+            System.out.println(this.getClass().getSimpleName() + " received: " + value);
+
+            //Cast all primitive dataType to String if this port dataType is String
+            PortModel startPort = connections.iterator().next().getStartPort();
+            if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
+
+                if (startPort.getData() instanceof List) {
+                    List<?> list = (List) startPort.getData();
+                    List<String> newList = new ArrayList<>();
+                    for (Object primitive : list) {
+                        newList.add(primitive + "");
+                    }
+                    data.set(newList);
+                } else {
+                    data.set(startPort.getData() + "");
+                }
+            } else { // this INPUT port does NOT have data type String
+                data.set(startPort.getData());
+            }
+
+        }
+
     }
 
     public Object getData() {
@@ -186,7 +235,7 @@ public class PortModel extends BaseModel {
 //        return new ArrayList<>(connections);
         return connections;
     }
-    
+
     public boolean isConnected() {
         return !connections.isEmpty();
     }
@@ -234,52 +283,24 @@ public class PortModel extends BaseModel {
         calculateData(newVal);
     }
 
-    public void calculateData() {
-        calculateData(null);
-    }
-
     public void calculateData(Object value) {
 
-        if (portType == PortType.INPUT) {
+        if (portType == PortType.OUTPUT) {
+            data.set(value);
 
-            if (multiDockAllowed && connections.size() > 1) {
+        } else { // PortType.INPUT
 
-                this.getDataType().cast(new Object());
-                List listOfLists = new ArrayList<>();
-
-                for (ConnectionModel connection : connections) {
-
-                    //Cast all primitive dataType to String if this port dataType is String
-                    PortModel startPort = connection.getStartPort();
-                    if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
-                        if (startPort.getData() instanceof List) {
-                            List list = (List) startPort.getData();
-                            List newList = new ArrayList<>();
-                            for (Object primitive : list) {
-                                newList.add(primitive + "");
-                            }
-                            listOfLists.add(newList);
-                        } else {
-                            listOfLists.add(startPort.getData() + "");
-                        }
-                    } else {
-                        listOfLists.add(startPort.getData());
-                    }
-
-                }
-                data.set(listOfLists);
-
-            } else if (!connections.isEmpty()) { // incoming data of one single incoming connection
+            if (!connections.isEmpty()) { // incoming data of one single incoming connection
 //                System.out.println("Data Received: " + value);
-                System.out.println("Data Received:");
+                System.out.println(this.getClass().getSimpleName() + " received: " + value);
 
                 //Cast all primitive dataType to String if this port dataType is String
                 PortModel startPort = connections.iterator().next().getStartPort();
                 if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
 
                     if (startPort.getData() instanceof List) {
-                        List list = (List) startPort.getData();
-                        List newList = new ArrayList<>();
+                        List<?> list = (List) startPort.getData();
+                        List<String> newList = new ArrayList<>();
                         for (Object primitive : list) {
                             newList.add(primitive + "");
                         }
@@ -291,13 +312,8 @@ public class PortModel extends BaseModel {
                     data.set(startPort.getData());
                 }
 
-            } else { // if there are no incoming connections, set data to null - REDUNDANT since data already set to null in onConnectionsChanged
-                data.set(null);
             }
-        } else { // if output port then simply set the data
-            data.set(value);
         }
-        //OnDataChanged();
     }
 
     @Override
@@ -313,21 +329,3 @@ public class PortModel extends BaseModel {
         super.revive();
     }
 }
-
-//    private void calculateData(Object value) {
-//        if (portType == Type.IN) {
-//            if (multiDockAllowed && connectedConnections.size() > 1) {
-//                List<Object> listOfData = connectedConnections.stream()
-//                        .map(conn -> conn.getStartPort().getData())
-//                        .collect(Collectors.toList());
-//                data.set(listOfData);
-//            } else if (!connectedConnections.isEmpty()) {
-//                data.set(connectedConnections.get(0).getStartPort().getData());
-//            } else {
-//                data.set(null);
-//            }
-//        } else {
-//            data.set(value);
-//        }
-//    }
-//}

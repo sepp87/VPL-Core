@@ -3,7 +3,6 @@ package btscore.graph.connection;
 import btscore.graph.port.PortModel;
 import btsxml.ConnectionTag;
 import btscore.App;
-import btscore.Config;
 import btscore.graph.base.BaseModel;
 import btscore.graph.port.PortType;
 import btscore.utils.TypeCastUtils;
@@ -23,7 +22,20 @@ public class ConnectionModel extends BaseModel {
         initialize();
     }
 
-    public boolean isWireless() {
+    @Override
+    public void setActive(boolean isActive) {
+        active.set(isActive);
+        forwardData();
+    }
+
+    public void forwardData() {
+        if (!isActive()) {
+            return;
+        }
+        endPort.setData(startPort.getData());
+    }
+
+    public boolean isAutoConnectable() {
         return startPort.autoConnectableProperty().get();
     }
 
@@ -47,7 +59,6 @@ public class ConnectionModel extends BaseModel {
         startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
         startPort.removeConnection(this);
         endPort.removeConnection(this);
-        endPort.calculateData();
         super.remove();
     }
 
@@ -82,6 +93,7 @@ public class ConnectionModel extends BaseModel {
 
         return TypeCastUtils.isCastableTo(outputType, inputType);
     }
+
 }
 
 ///**

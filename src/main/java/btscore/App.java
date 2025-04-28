@@ -40,7 +40,7 @@ public class App extends Application {
     public static final boolean LOG_EDITOR_STATE = false;
 
     public static final boolean TYPE_SENSITIVE = true;
-    public static final boolean BLOCK_MVC = true;
+    public static final boolean CONNECTION_REFACTOR = false;
 
     private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
 

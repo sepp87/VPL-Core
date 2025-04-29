@@ -28,7 +28,7 @@ import javafx.scene.paint.Stop;
  *
  * @author JoostMeulenkamp
  */
-public class CustomColorBox extends VBox {
+public class ColorBox extends VBox {
 
     private final ObjectProperty<Color> currentColorProperty
             = new SimpleObjectProperty<>(Color.WHITE);
@@ -70,7 +70,7 @@ public class CustomColorBox extends VBox {
 
     private ChangeListener<Object> colorListener = (b, o, n) -> colorChanged();
 
-    public CustomColorBox() {
+    public ColorBox() {
 
         getStylesheets().add("css/color.css");
         getStyleClass().add("my-custom-color");

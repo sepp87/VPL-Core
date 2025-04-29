@@ -27,7 +27,7 @@ public class Notes {
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
-// 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 5 IMPROVEMENT dynamically resize BlockSearch according to ListView size
 // 5 IMPROVEMENT - SpreadSheets
 //      - datasheet viewer reordering columns does not update data sheet
 //      - add getColumn and transpose to Matrix methods
@@ -54,6 +54,7 @@ public class Notes {
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 5 IMPROVEMENT styling of scrollbars for BlockSearch and 
 // Refactor Port and Connection data flow - connections are now just like blocks first activated when placed on the workspace, first on the workspace they forward data
 //      0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
 //      -> Solved - bug was caused by blocks first being activated (processing) on the workspace, copied connections however already triggered a data flow before that 

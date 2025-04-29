@@ -106,8 +106,7 @@ public class WorkspaceModel {
             dataTransmittors.computeIfAbsent(port.getDataType(), dataType -> new ArrayList<>()).add(port);
         }
         blockModels.add(blockModel);
-        blockModel.setActive(true); // blocks are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
-
+        blockModel.setActive(true); // blocks and connections are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
     }
 
     public void removeBlockModel(BlockModel blockModel) {
@@ -146,6 +145,7 @@ public class WorkspaceModel {
 
     public void addConnectionModel(ConnectionModel connectionModel) {
         connectionModels.add(connectionModel);
+        connectionModel.setActive(true); // blocks and connections are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
     }
 
     public void removeConnectionModel(ConnectionModel connectionModel) {

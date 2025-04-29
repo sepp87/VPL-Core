@@ -24,11 +24,23 @@ public class ConnectionModel extends BaseModel {
 
     @Override
     public void setActive(boolean active) {
-        if(active == isActive()) {
+        if (active == isActive()) {
             return; // no need to forward data again
         }
         super.setActive(active);
-        forwardData();
+
+        if (isActive()) {
+            forwardData(); // initial data flow
+
+            // Force processing when initially activated with null data
+            // This allows blocks to handle null input appropriately e.g. throw an exception or fall back to defaults
+            if (startPort.getData() == null) {
+                endPort.getBlock().processSafely();
+            }
+        } else {
+            // TODO
+        }
+
     }
 
     public void forwardData() {
@@ -43,10 +55,9 @@ public class ConnectionModel extends BaseModel {
     }
 
     private void initialize() {
+        // add connection to ports here, to ensure connections are re-added on revival
         startPort.addConnection(this);
         endPort.addConnection(this);
-        endPort.calculateData(startPort.getData());
-        startPort.dataProperty().addListener(endPort.getStartPortDataChangedListener());
     }
 
     public PortModel getStartPort() {
@@ -59,10 +70,17 @@ public class ConnectionModel extends BaseModel {
 
     @Override
     public void remove() {
-        startPort.dataProperty().removeListener(endPort.getStartPortDataChangedListener());
         startPort.removeConnection(this);
         endPort.removeConnection(this);
+
+        // Force processing when removing a connection with null data
+        // This maintains consistency with setActive() behavior
+        if (startPort.getData() == null) {
+            endPort.getBlock().processSafely();
+        }
+        super.setActive(false);
         super.remove();
+
     }
 
     @Override
@@ -81,8 +99,9 @@ public class ConnectionModel extends BaseModel {
     public static boolean isEligible(PortModel startPortModel, PortModel endPortModel) {
         boolean differentPortTypes = endPortModel.getPortType() != startPortModel.getPortType();
         boolean differentBlocks = !endPortModel.getBlock().equals(startPortModel.getBlock());
+        boolean typesCompatible = isTypeCompatible(startPortModel, endPortModel);
 
-        return isTypeCompatible(startPortModel, endPortModel) && differentPortTypes && differentBlocks;
+        return typesCompatible && differentPortTypes && differentBlocks;
     }
 
     private static boolean isTypeCompatible(PortModel startPortModel, PortModel endPortModel) {
@@ -98,43 +117,3 @@ public class ConnectionModel extends BaseModel {
     }
 
 }
-
-///**
-// * Extension idea - see PortModel
-// *
-// * @author JoostMeulenkamp
-// */
-//public class ConnectionModel {
-//
-//    private final PortModel sending;
-//    private final PortModel receiving;
-//
-//    public ConnectionModel(PortModel sending, PortModel receiving) throws IllegalArgumentException {
-//        this.sending = sending;
-//        this.receiving = receiving;
-//        bindData();
-//
-//    }
-//
-//    private void onSendingDataChanged(Object b, Object o, Object newData) {
-//        Object data = copyData(newData);
-//    }
-//
-//    private Object copyData(Object data) {
-//        return data;
-//    }
-//
-//    private void bindData() {
-//        receiving.dataProperty().bind(sending.dataProperty());
-//    }
-//
-//    public void remove() {
-//        sending.removeConnection(this);
-//        receiving.removeConnection(this);
-//        unbindData();
-//    }
-//
-//    private void unbindData() {
-//        receiving.dataProperty().unbind();
-//    }
-//}

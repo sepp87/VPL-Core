@@ -8,14 +8,11 @@ public class Notes {
     
 }
 
-// 0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
 // 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
-// 1 IMPROVEMENT clean up App and Workspace according to UI structure
-//      rename Workspace helpers to managers?
 //
 // BACKLOG
 // 3 REFACTOR merge integer and double slider and refactor event handlers
@@ -51,13 +48,16 @@ public class Notes {
 //
 // THOUGHTS
 // Connections
-//      - as soon as a connection is created is actively added to a block, although it is not yet on the workspace. Might want to rethink this e.g. first activate/init connection on adding to workspace
 //      - when RemoveSelectedBlocks, removeConnectionsModels(blockModel) is triggered. this potentially contains duplicate connections. Need to double check. Afterwards connections are also remove by removeBlock(), these are of course already removed
 //
 // QUESTIONS
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// Refactor Port and Connection data flow - connections are now just like blocks first activated when placed on the workspace, first on the workspace they forward data
+//      0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
+//      -> Solved - bug was caused by blocks first being activated (processing) on the workspace, copied connections however already triggered a data flow before that 
+// 1 IMPROVEMENT clean up App and Workspace according to UI structure - MVC structure as good as done, refactored blocks, ports and connection
 // 0 IMPROVEMENT Enable AutoConnect when loading from file
 // Hardcoded BTS references (namespace and file extensions) - moved to Config
 // 0 REFACTOR key input listener on scene / editor controller level
@@ -105,4 +105,5 @@ public class Notes {
 // Remove block - remove block and connections
 // Auto-create connection undo/redo
 //
-// REMINDERS
+// REMINDERS / THOUGTHS
+// do block.onIncomingConnectionAdded/Removed make sense, what could their use be? not trigger processing

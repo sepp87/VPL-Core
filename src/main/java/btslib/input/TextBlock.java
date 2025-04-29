@@ -7,8 +7,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -16,8 +14,6 @@ import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockModel;
-import btscore.graph.port.PortModel;
-import btscore.workspace.WorkspaceModel;
 import btscore.graph.block.BlockMetadata;
 
 /**
@@ -48,6 +44,7 @@ public class TextBlock extends BlockModel {
     protected final void initialize() {
         string.addListener(stringListener);
         editable.bind(inputPorts.get(0).activeProperty().not());
+        editable.addListener(editableListener);
     }
 
     @Override
@@ -69,7 +66,9 @@ public class TextBlock extends BlockModel {
     private final ChangeListener<String> stringListener = this::onStringChanged;
 
     private void onStringChanged(Object b, Object o, Object n) {
-        processSafely();
+        if (editable.get()) {
+            processSafely();
+        }
     }
 
     private void ignoreShortcuts(KeyEvent event) {
@@ -80,9 +79,12 @@ public class TextBlock extends BlockModel {
         textArea.requestFocus();
     }
 
-    @Override
-    public void onIncomingConnectionRemoved(Object data) {
-        string.set(null);
+    private final ChangeListener<Boolean> editableListener = (b, o, n) -> onEditable();
+
+    private void onEditable() {
+        if (editable.get()) {
+            string.set(null);
+        }
     }
 
     /**
@@ -90,6 +92,8 @@ public class TextBlock extends BlockModel {
      */
     @Override
     public void process() {
+//        System.out.println("editable " + editable.get() + "; textAreaExists " + (textArea != null) + "; data " + inputPorts.get(0).getData() + "; portActive " + inputPorts.get(0).activeProperty().get());
+
         // If data is text input by user
         if (editable.get()) {
             outputPorts.get(0).setData(string.get());
@@ -106,6 +110,7 @@ public class TextBlock extends BlockModel {
         }
 
         textArea.setText("");
+//        System.out.println("editable " + editable.get() + "; textAreaExists " + (textArea != null) + "; data " + inputPorts.get(0).getData() + "; portActive " + inputPorts.get(0).activeProperty().get());
 
         //Do Action
         if (data != null) {
@@ -161,7 +166,6 @@ public class TextBlock extends BlockModel {
     @Override
     public BlockModel copy() {
         TextBlock block = new TextBlock();
-//        TextBlock block = new TextBlock(workspace);
         block.widthProperty().set(this.widthProperty().get());
         block.heightProperty().set(this.heightProperty().get());
         if (editable.get()) {
@@ -174,6 +178,7 @@ public class TextBlock extends BlockModel {
     public void onRemoved() {
         string.removeListener(stringListener);
         editable.unbind();
+        editable.removeListener(editableListener);
         if (textArea != null) {
             textArea.textProperty().unbindBidirectional(string);
             textArea.setOnKeyPressed(null);

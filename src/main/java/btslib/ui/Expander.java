@@ -1,15 +1,10 @@
 package btslib.ui;
 
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberExpressionBase;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.binding.StringExpression;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableNumberValue;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -28,10 +23,10 @@ import javafx.scene.layout.GridPane;
 public class Expander extends TitledPane {
 
     private final Slider slider;
-    private final NumberExpressionBase value;
-    private final NumberExpressionBase min;
-    private final NumberExpressionBase max;
-    private final NumberExpressionBase step;
+    private final Property<Number> value;
+    private final Property<Number> min;
+    private final Property<Number> max;
+    private final Property<Number> step;
     private final boolean isIntegerSlider;
 
     private final TextField valueField;
@@ -41,7 +36,7 @@ public class Expander extends TitledPane {
 
     private final EventHandler<KeyEvent> fieldKeyPressedHandler = this::handleFieldKeyPressed;
 
-    public Expander(Slider slider, boolean isIntegerSlider, NumberExpressionBase value, NumberExpressionBase min, NumberExpressionBase max, NumberExpressionBase step) {
+    public Expander(Slider slider, boolean isIntegerSlider, Property<Number> value, Property<Number> min, Property<Number> max, Property<Number> step) {
         this.slider = slider;
         this.isIntegerSlider = isIntegerSlider;
         this.value = value;

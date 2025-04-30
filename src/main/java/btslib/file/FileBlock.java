@@ -1,6 +1,10 @@
-package btslib.input;
+package btslib.file;
 
+import btscore.graph.base.BaseButton;
+import btscore.graph.block.BlockMetadata;
+import btscore.graph.block.BlockModel;
 import btscore.icons.FontAwesomeSolid;
+import btsxml.BlockTag;
 import java.io.File;
 import java.nio.file.NoSuchFileException;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,14 +18,10 @@ import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import btscore.graph.base.BaseButton;
-import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
-import btscore.graph.block.BlockModel;
 
 /**
  *
- * @author JoostMeulenkamp
+ * @author joostmeulenkamp
  */
 @BlockMetadata(
         identifier = "Input.file",
@@ -29,7 +29,7 @@ import btscore.graph.block.BlockModel;
         description = "Open a file",
         tags = {"file", "open", "load"}
 )
-public class FileBlock extends BlockModel {
+public abstract class FileBlock extends BlockModel {
 
     private final StringProperty path = new SimpleStringProperty();
 
@@ -50,8 +50,8 @@ public class FileBlock extends BlockModel {
     @Override
     public Region getCustomization() {
         textField = new TextField();
-        textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
+        customizeTextField(textField);
 
         button = new BaseButton(FontAwesomeSolid.FOLDER_OPEN);
         button.setOnAction(this::handleOpenFile);
@@ -63,6 +63,8 @@ public class FileBlock extends BlockModel {
         textField.textProperty().bindBidirectional(path);
         return box;
     }
+    
+    protected abstract void customizeTextField(TextField textField);
 
     ChangeListener<String> pathListener = this::onPathChanged;
 
@@ -127,13 +129,6 @@ public class FileBlock extends BlockModel {
         String filePath = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
         filePath = !filePath.isEmpty() ? filePath : null;
         this.path.set(filePath);
-    }
-
-    @Override
-    public BlockModel copy() {
-        FileBlock block = new FileBlock();
-        block.path.set(this.path.get());
-        return block;
     }
 
     @Override

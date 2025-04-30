@@ -13,7 +13,8 @@ public class Notes {
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
-// 3 REFACTOR merge integer and double slider and refactor event handlers
+// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser)
+// 3 IMPROVEMENT MultiFileBlock (showOpenMultipleDialog) -> idea dropped due to unknown number of files and exact use case. workaround: simply get files from directory and filter from there
 //
 // BACKLOG
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
@@ -23,7 +24,6 @@ public class Notes {
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
-// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
@@ -41,10 +41,7 @@ public class Notes {
 // 3DViewerBlock
 // Geometry Blocks
 // ChatGPT Block
-// WebClientBlock
 // 2d Map
-// special block/new control: retrigger block process 
-// accumulate results + reset possibility
 //
 // THOUGHTS
 // Connections
@@ -54,6 +51,7 @@ public class Notes {
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 3 REFACTOR merge integer and double slider and refactor event handlers
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and 
 // Refactor Port and Connection data flow - connections are now just like blocks first activated when placed on the workspace, first on the workspace they forward data
 //      0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)

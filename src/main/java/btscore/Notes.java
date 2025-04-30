@@ -13,9 +13,9 @@ public class Notes {
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
+// 3 REFACTOR merge integer and double slider and refactor event handlers
 //
 // BACKLOG
-// 3 REFACTOR merge integer and double slider and refactor event handlers
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0

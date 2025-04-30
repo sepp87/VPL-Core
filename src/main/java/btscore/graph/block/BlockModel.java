@@ -28,7 +28,6 @@ import btscore.graph.port.PortType;
  */
 public abstract class BlockModel extends BaseModel {
 
-//    protected final WorkspaceModel workspace;
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
     protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();

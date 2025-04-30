@@ -103,6 +103,9 @@ public class BlockLibraryLoader {
     private static void loadBlockClasses(Collection<Class<? extends BlockModel>> classes, boolean isExternal) {
         for (Class<?> blockType : classes) {
             BlockMetadata metadata = getBlockMetadata(blockType);
+            if(metadata ==  null) {
+                continue;
+            }
             String identifier = metadata.identifier();
             addBlockType(identifier, blockType, isExternal);
             for (String alias : metadata.aliases()) {

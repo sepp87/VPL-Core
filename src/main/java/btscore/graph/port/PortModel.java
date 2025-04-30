@@ -13,6 +13,7 @@ import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.utils.ObjectUtils;
 import btscore.utils.TypeCastUtils;
+import javafx.beans.value.ChangeListener;
 
 /**
  *
@@ -37,6 +38,8 @@ public class PortModel extends BaseModel {
         this.block = block;
         this.multiDockAllowed = multiDockAllowed;
         this.dataType.set(type);
+
+        data.addListener(dataListener);
     }
 
     @Override
@@ -83,11 +86,16 @@ public class PortModel extends BaseModel {
         }
         data.set(newData);
 
+        if (portType == PortType.INPUT) {
+            preprocessData(newData);
+        }
+    }
+
+    private final ChangeListener<Object> dataListener = this::onDataChanged;
+
+    private void onDataChanged(Object b, Object o, Object n) {
         if (portType == PortType.OUTPUT) {
             publishData();
-
-        } else { // PortType.INPUT
-            preprocessData(newData);
         }
     }
 
@@ -173,12 +181,14 @@ public class PortModel extends BaseModel {
 
     @Override
     public void remove() {
+        data.removeListener(dataListener);
         connections.clear();
         super.remove();
     }
 
     @Override
     public void revive() {
+        data.addListener(dataListener);
         super.revive();
     }
 }

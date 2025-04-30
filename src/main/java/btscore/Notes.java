@@ -13,8 +13,6 @@ public class Notes {
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
-// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser)
-// 3 IMPROVEMENT MultiFileBlock (showOpenMultipleDialog) -> idea dropped due to unknown number of files and exact use case. workaround: simply get files from directory and filter from there
 //
 // BACKLOG
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
@@ -51,6 +49,8 @@ public class Notes {
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser)
+// 3 IMPROVEMENT MultiFileBlock (showOpenMultipleDialog) -> idea dropped due to unknown number of files and exact use case. workaround: simply get files from directory and filter from there
 // 3 REFACTOR merge integer and double slider and refactor event handlers
 // 5 IMPROVEMENT styling of scrollbars for BlockSearch and 
 // Refactor Port and Connection data flow - connections are now just like blocks first activated when placed on the workspace, first on the workspace they forward data

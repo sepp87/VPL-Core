@@ -132,7 +132,7 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 
-.vpl {
+.bts {
     -fx-background-color: #efefef;
 }
 
@@ -154,12 +154,12 @@
     -fx-padding: 0.167em;
 }
 
-.vpl-element {
+.bts-element {
     -fx-background-color: transparent;
     -fx-background-insets: 5 5 5 5;
 }
 
-.vpl-button{
+.bts-button{
     -fx-padding: 0;
     /*-fx-label-padding: 0;*/
     -fx-background-color: transparent;
@@ -170,11 +170,11 @@
     -fx-text-fill: #5F5F5F;
 }
 
-.vpl-button:hover{
+.bts-button:hover{
     -fx-text-fill: salmon;
 }
 
-.vpl-button-fa6 {
+.bts-button-fa6 {
     -fx-padding: 0;
     /*-fx-label-padding: 0;*/
     -fx-background-color: transparent;
@@ -185,11 +185,11 @@
     -fx-text-fill: #5F5F5F;
 }
 
-.vpl-button-fa6:hover{
+.bts-button-fa6:hover{
     -fx-text-fill: salmon;
 }
 
-.vpl-tag{
+.bts-tag{
     -fx-padding: 0;
     -fx-alignment: center-left;
     -fx-background-color: transparent;

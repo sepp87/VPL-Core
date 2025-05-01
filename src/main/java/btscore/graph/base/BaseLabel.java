@@ -43,8 +43,8 @@ public class BaseLabel extends Button {
         textField.setPrefWidth(Region.USE_COMPUTED_SIZE); // Let the parent decide
         textField.setMaxWidth(Double.MAX_VALUE);
 
-        getStyleClass().add("vpl-tag");
-        textField.getStyleClass().add("vpl-tag");
+        getStyleClass().add("bts-tag");
+        textField.getStyleClass().add("bts-tag");
 
         textField.textProperty().bindBidirectional(textProperty());
         textField.setOnKeyPressed(keyPressedHandler);

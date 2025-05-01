@@ -18,8 +18,6 @@ public class RemoveButtonView extends Group {
     private static final String svg;
 
     static {
-//        xml = FileUtils.readFileAsString(new File(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg"));
-//        xml = FileUtils.readResourceAsString(vplcore.Config.get().iconsDirectory() + "circle-xmark-solid.svg");
         xml = FileUtils.readResourceAsString("fontawesome-svg/circle-xmark-solid.svg");
         svg = xml.split("path d=\"")[1].replace("\"/></svg>", "");
     }

@@ -29,7 +29,7 @@ public class BaseButton extends Button {
 
     private void setStyle() {
         getStyleClass().clear();
-        getStyleClass().add("vpl-button");
+        getStyleClass().add("bts-button");
         String fontStyle = icon instanceof FontAwesomeSolid ? "font-awesome-solid" : "font-awesome-regular";
         getStyleClass().add(fontStyle);
     }

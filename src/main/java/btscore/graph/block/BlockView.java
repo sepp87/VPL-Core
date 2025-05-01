@@ -51,7 +51,7 @@ public class BlockView extends GridPane {
 
         menuBox = new HBox(5);
         captionLabel = new BaseLabel(menuBox);
-        captionLabel.getStyleClass().add("vpl-tag");
+        captionLabel.getStyleClass().add("bts-tag");
         captionLabel.setVisible(false);
 
         menuBox.setAlignment(Pos.BOTTOM_LEFT);

@@ -17,7 +17,7 @@
     -fx-font-weight: bold;
 }
 
-.vpl {
+.bts {
     -fx-background-color: white;
 }
 
@@ -79,12 +79,12 @@
     -fx-padding: 0.167em;
 }
 
-.vpl-element {
+.bts-element {
     -fx-background-color: transparent;
     -fx-background-insets: 5 5 5 5;
 }
 
-.vpl-button{
+.bts-button{
     -fx-padding: 0;
     -fx-background-color: transparent;
     -fx-border-insets: 0;
@@ -94,7 +94,7 @@
     -fx-text-fill: #6385c7;
 }
 
-.vpl-tag{
+.bts-tag{
     -fx-padding: 0;
     -fx-background-color: transparent;
     -fx-border-insets: 0;

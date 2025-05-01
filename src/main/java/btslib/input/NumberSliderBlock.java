@@ -8,7 +8,7 @@ import javax.xml.namespace.QName;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockModel;
 import btscore.graph.port.PortModel;
-import btslib.ui.Expander;
+import btslib.ui.NumberSliderExpander;
 import javafx.beans.property.Property;
 
 /**
@@ -25,7 +25,7 @@ public abstract class NumberSliderBlock extends BlockModel {
     protected Property<Number> step;
 
     private Slider slider;
-    private Expander expander;
+    private NumberSliderExpander expander;
 
     public NumberSliderBlock() {
         this.nameProperty().set("Number");
@@ -55,7 +55,7 @@ public abstract class NumberSliderBlock extends BlockModel {
         slider.blockIncrementProperty().bindBidirectional(step);
 
         Pane container = new Pane();
-        expander = new Expander(slider, false, value, min, max, step);
+        expander = new NumberSliderExpander(slider, false, value, min, max, step);
         expander.setLayoutX(0);
         expander.setLayoutY(0);
         slider.setLayoutX(30);

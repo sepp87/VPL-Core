@@ -56,11 +56,11 @@ public class MenuBarView extends MenuBar {
         Menu extrasMenu = new Menu("Extras");
         MenuItem reloadPlugins = new MenuItem("Reload plugins", "RELOAD_PLUGINS");
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
-        MenuItem toggleAutoConnections = new MenuItem("Hide auto-connections", "TOGGLE_AUTO_CONNECTIONS");
-        extrasMenu.getItems().addAll(reloadPlugins, logErrors, toggleAutoConnections);
+        MenuItem help = new MenuItem("Help", "HELP");
+        
+        extrasMenu.getItems().addAll(reloadPlugins, logErrors, help);
 
         logErrors.setDisable(true);
-        toggleAutoConnections.setDisable(true);
 
         this.getMenus().addAll(fileMenu, editMenu, viewMenu, extrasMenu);
     }

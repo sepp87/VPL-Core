@@ -8,6 +8,7 @@ import btscore.editor.commands.AlignTopCommand;
 import btscore.editor.commands.AlignVerticallyCommand;
 import btscore.editor.commands.CopyBlocksCommand;
 import btscore.editor.commands.GroupBlocksCommand;
+import btscore.editor.commands.HelpCommand;
 import btscore.editor.commands.NewFileCommand;
 import btscore.editor.commands.OpenFileCommand;
 import btscore.editor.commands.PasteBlocksCommand;
@@ -73,6 +74,8 @@ public class CommandFactory {
                 return new ZoomOutCommand(workspaceController);
             case "RELOAD_PLUGINS":
                 return new ReloadPluginsCommand();
+            case "HELP":
+                return new HelpCommand();
         }
         return null;
     }

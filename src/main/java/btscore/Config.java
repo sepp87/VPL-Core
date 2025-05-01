@@ -37,6 +37,7 @@ public class Config {
 
     private static final Preferences PREFERENCES = Preferences.userNodeForPackage(Config.class);
     private static final String LAST_DIRECTORY_KEY = "lastOpenedDirectory";
+    private static final String SHOW_HELP_KEY = "showHelp";
 
     private static final String LIBRARY_DIRECTORY = "lib" + File.separatorChar;
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
@@ -114,6 +115,15 @@ public class Config {
         } else {
             PREFERENCES.put(LAST_DIRECTORY_KEY, file.getParent());
         }
+    }
+
+    public static boolean showHelpOnStartup() {
+        boolean showWelcomeDialog = PREFERENCES.getBoolean(SHOW_HELP_KEY, true);
+        return showWelcomeDialog;
+    }
+
+    public static void setShowHelpOnStartup(boolean show) {
+        PREFERENCES.putBoolean(SHOW_HELP_KEY, show);
     }
 
     public static void setStylesheets(Scene scene) {

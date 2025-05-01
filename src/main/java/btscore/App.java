@@ -111,8 +111,10 @@ public class App extends Application {
 
         scene.setOnKeyPressed(KeyboardController::handleShortcutTriggered);
 
-//        WelcomeDialog.show(stage);
-       
+        if (Config.showHelpOnStartup()) {
+            HelpDialog.show();
+        }
+
     }
 
     public static Stage getStage() {
@@ -128,4 +130,3 @@ public class App extends Application {
     }
 
 }
-

@@ -1,5 +1,7 @@
 package btscore;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -7,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -16,7 +19,7 @@ import javafx.stage.Stage;
  *
  * @author joostmeulenkamp
  */
-public class WelcomeDialog extends VBox {
+public class HelpDialog extends VBox {
 
     // Static final strings for the dialog content
     private static final String QUICK_START_CONTENT = """
@@ -57,7 +60,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         "Del/Backspace: delete selected blocks"
     };
 
-    public WelcomeDialog(Stage parentStage) {
+    public HelpDialog(Stage parentStage) {
 //        this.setPrefSize(520, 600); // Size of the dialog window
 
         // Content container
@@ -71,19 +74,37 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         quickStartContent.setWrapText(true);
 
         // Controls
+        TitledPane controlsExpander = new TitledPane();
         Label controlsHeader = new Label("Controls");
         controlsHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Node controlsList = createLabeledList(CONTROLS);
+        controlsExpander.setContent(controlsList);
+        controlsExpander.setPadding(new Insets(0, 0, 10, 0));
+        controlsExpander.setFocusTraversable(false);
 
         // Shortcuts
+        TitledPane shortcutsExpander = new TitledPane();
         Label shortcutsHeader = new Label("Shortcuts");
         shortcutsHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Node shortcutsList = createLabeledList(SHORTCUTS);
+        shortcutsExpander.setContent(shortcutsList);
+        shortcutsExpander.setPadding(new Insets(0, 0, 10, 0));
+        shortcutsExpander.setFocusTraversable(false);
+        shortcutsExpander.setExpanded(false);
+
+        // Toggle expanded between shortcuts and controls
+        controlsExpandedListener = (b, o, n) -> onExpanded(n, shortcutsExpander);
+        shortcutsExpandedListener = (b, o, n) -> onExpanded(n, controlsExpander);
+        controlsExpander.expandedProperty().addListener(controlsExpandedListener);
+        shortcutsExpander.expandedProperty().addListener(shortcutsExpandedListener);
 
         // Show on start + close button
         CheckBox showOnStartCheckbox = new CheckBox("Show this help dialog on startup");
-        showOnStartCheckbox.setSelected(true);
+        showOnStartCheckbox.setSelected(Config.showHelpOnStartup());
         showOnStartCheckbox.setFocusTraversable(false);
+        showOnStartCheckbox.setOnAction(event -> {
+            Config.setShowHelpOnStartup(showOnStartCheckbox.isSelected());
+        });
 
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> ((Stage) this.getScene().getWindow()).close());
@@ -94,12 +115,21 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         // Add all content
         content.getChildren().addAll(
                 quickStartHeader, quickStartContent,
-                controlsHeader, controlsList,
-                shortcutsHeader, shortcutsList,
+                controlsHeader, controlsExpander,
+                shortcutsHeader, shortcutsExpander,
                 footer
         );
 
         this.getChildren().add(content);
+    }
+
+    private final ChangeListener<Boolean> controlsExpandedListener;
+    private final ChangeListener<Boolean> shortcutsExpandedListener;
+
+    private void onExpanded(boolean isExpanded, TitledPane otherExpander) {
+        if (isExpanded && otherExpander.isExpanded()) {
+            otherExpander.setExpanded(false);
+        }
     }
 
     // Helper method to create a labeled list from an array
@@ -113,21 +143,21 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
             label.setMaxWidth(460);
             box.getChildren().add(label);
         }
-        
-        box.getChildren().add(new Label());
 
+//        box.getChildren().add(new Label());
         return box;
     }
 
     // Static method to show the WelcomeDialog
-    public static void show(Stage owner) {
+    public static void show() {
+        Stage owner = App.getStage();
         Stage dialog = new Stage();
         dialog.initOwner(owner);
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle("Welcome");
 
-        WelcomeDialog welcomeView = new WelcomeDialog(owner);
-        Scene scene = new Scene(welcomeView, 520, 870);
+        HelpDialog helpView = new HelpDialog(owner);
+        Scene scene = new Scene(helpView, 520, 870);
         dialog.setScene(scene);
         dialog.show();
     }

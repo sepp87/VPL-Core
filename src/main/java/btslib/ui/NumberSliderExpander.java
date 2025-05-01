@@ -20,7 +20,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author joostmeulenkamp
  */
-public class Expander extends TitledPane {
+public class NumberSliderExpander extends TitledPane {
 
     private final Slider slider;
     private final Property<Number> value;
@@ -36,7 +36,7 @@ public class Expander extends TitledPane {
 
     private final EventHandler<KeyEvent> fieldKeyPressedHandler = this::handleFieldKeyPressed;
 
-    public Expander(Slider slider, boolean isIntegerSlider, Property<Number> value, Property<Number> min, Property<Number> max, Property<Number> step) {
+    public NumberSliderExpander(Slider slider, boolean isIntegerSlider, Property<Number> value, Property<Number> min, Property<Number> max, Property<Number> step) {
         this.slider = slider;
         this.isIntegerSlider = isIntegerSlider;
         this.value = value;

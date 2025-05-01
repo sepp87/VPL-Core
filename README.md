@@ -5,11 +5,30 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 <br><br>
 
 ### QUICK START
-* Left drag: selection rectangle
+Welcome to BlockSmith! Here’s how to get started:
+
+Blocks generate, process, and output data.
+Double-click anywhere on the canvas to add a block.
+Each block does something specific, like entering a number or doing math.
+Need help? Click the (i) icon on a block to learn more about it.
+
+Connect blocks by linking their ports.
+Hover over a port to see what kind of data a port accepts or produces.
+Example: A multiply block needs two numbers and gives you the result.
+That’s it! You’re ready to build your first graph.
+<br><br>
+
+### CONTROLS
 * Right drag: pan
+* Scroll: zoom
+* Left double click: create blocks
+* Left click: select a block
+* Left click + CMD/CTRL: multi select blocks
+* Left drag: selection rectangle
+* Left drag block: move selected block(s)
+* Left click port: connect blocks
+* Left click connection: remove connection
 * Right click: radial menu
-* Double click: open block search box
-* Mouse wheel: zoom
 <br>
 
 ### SHORTCUTS

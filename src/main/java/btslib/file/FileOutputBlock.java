@@ -17,6 +17,7 @@ import javafx.stage.Window;
  */
 @BlockMetadata(
         identifier = "Output.file",
+        aliases = {"File.create"},
         category = "Output",
         description = "Save to file",
         tags = {"file", "save"}

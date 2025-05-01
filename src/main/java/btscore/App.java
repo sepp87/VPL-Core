@@ -111,6 +111,8 @@ public class App extends Application {
 
         scene.setOnKeyPressed(KeyboardController::handleShortcutTriggered);
 
+//        WelcomeDialog.show(stage);
+       
     }
 
     public static Stage getStage() {

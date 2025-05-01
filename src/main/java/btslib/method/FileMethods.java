@@ -9,12 +9,33 @@ import java.util.List;
 import java.util.stream.Stream;
 import btscore.graph.block.BlockMetadata;
 import btscore.utils.FileUtils;
+import java.nio.charset.Charset;
 
 /**
  *
  * @author JoostMeulenkamp
  */
 public class FileMethods {
+
+    @BlockMetadata(
+            name = "isRegularFile",
+            description = "Tests whether a file is a regular file with opaque content.",
+            identifier = "File.isRegularFile",
+            category = "Core")
+    public static boolean isRegularFile(File file) {
+        Path path = file.toPath();
+        return Files.isRegularFile(path);
+    }
+
+    @BlockMetadata(
+            name = "isDirectory",
+            description = "Tests whether a file is a directory.",
+            identifier = "File.isDirectory",
+            category = "Core")
+    public static boolean isDirectory(File file) {
+        Path path = file.toPath();
+        return Files.isDirectory(path);
+    }
 
     @BlockMetadata(
             name = "exists",
@@ -38,12 +59,28 @@ public class FileMethods {
 
     @BlockMetadata(
             name = "readAllLines",
-            description = "Read all lines from a file. Bytes from the file are decoded into characters using the UTF-8 charset.",
+            description = "Read all lines from a file. When no charset is provided, UTF-8 is default.",
             identifier = "File.readAllLines",
             category = "Core")
-    public static List<String> readAllLines(File file) throws IOException {
+    public static List<String> readAllLines(File file, Charset cs) throws IOException {
         Path path = file.toPath();
-        return Files.readAllLines(path);
+        if (cs == null) {
+            return Files.readAllLines(path);
+        }
+        return Files.readAllLines(path, cs);
+    }
+
+    @BlockMetadata(
+            name = "readString",
+            description = "Reads all characters from a file into a string. When no charset is provided, UTF-8 is default.",
+            identifier = "File.readString",
+            category = "Core")
+    public static String readString(File file, Charset cs) throws IOException {
+        Path path = file.toPath();
+        if (cs == null) {
+            return Files.readString(path);
+        }
+        return Files.readString(path);
     }
 
     @BlockMetadata(
@@ -54,20 +91,6 @@ public class FileMethods {
     public static long size(File file) throws IOException {
         Path path = file.toPath();
         return Files.size(path);
-    }
-
-    @BlockMetadata(
-            name = "list",
-            description = "Return a list of files, the elements of which are the entries in the directory.",
-            identifier = "File.list",
-            category = "Core")
-    public static List<File> list(File dir) throws IOException {
-        Path dirPath = dir.toPath();
-        List<File> result = new ArrayList<>();
-        try ( Stream<Path> stream = Files.list(dirPath)) {
-            stream.map(Path::toFile).forEach(result::add);
-        }
-        return result;
     }
 
     @BlockMetadata(
@@ -99,4 +122,17 @@ public class FileMethods {
         return FileUtils.detectEncoding(file);
     }
 
+    @BlockMetadata(
+            name = "list",
+            description = "Return a list of files, the elements of which are the entries in the directory.",
+            identifier = "Directory.list",
+            category = "Core")
+    public static List<File> list(File dir) throws IOException {
+        Path dirPath = dir.toPath();
+        List<File> result = new ArrayList<>();
+        try (Stream<Path> stream = Files.list(dirPath)) {
+            stream.map(Path::toFile).forEach(result::add);
+        }
+        return result;
+    }
 }

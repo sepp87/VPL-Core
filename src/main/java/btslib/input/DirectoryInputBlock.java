@@ -1,13 +1,10 @@
 package btslib.input;
 
-import btscore.graph.base.BaseButton;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btslib.file.FileBlock;
 import java.io.File;
 import java.nio.file.NoSuchFileException;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -19,6 +16,7 @@ import javafx.stage.Window;
  */
 @BlockMetadata(
         identifier = "Input.directory",
+        aliases = {"Directory.open"},
         category = "Input",
         description = "Open a directory",
         tags = {"directory", "open", "load"}

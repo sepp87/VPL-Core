@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 
 /**
  *
- * @author Joost
+ * @author joostmeulenkamp
  */
 public class ZoomHelper {
 

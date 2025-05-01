@@ -1,8 +1,11 @@
-package btslib.input;
+package btslib.file;
 
+import btscore.graph.base.BaseButton;
+import btscore.graph.block.BlockModel;
+import btscore.graph.port.PortModel;
 import btscore.icons.FontAwesomeSolid;
+import btsxml.BlockTag;
 import java.io.File;
-import java.nio.file.NoSuchFileException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -14,31 +17,22 @@ import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.xml.namespace.QName;
-import btscore.graph.base.BaseButton;
-import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
-import btscore.graph.block.BlockModel;
 
 /**
  *
- * @author JoostMeulenkamp
+ * @author joostmeulenkamp
  */
-@BlockMetadata(
-        identifier = "Input.file",
-        category = "Input",
-        description = "Open a file",
-        tags = {"file", "open", "load"}
-)
-public class FileBlock extends BlockModel {
+public abstract class FileBlock extends BlockModel {
 
-    private final StringProperty path = new SimpleStringProperty();
+    protected final PortModel output;
+    protected final StringProperty path = new SimpleStringProperty();
 
-    private BaseButton button;
+    protected BaseButton button;
     private TextField textField;
 
-    public FileBlock( ) {        
+    public FileBlock() {
         this.nameProperty().set("File");
-        addOutputPort("file", File.class);
+        output = addOutputPort("file", File.class);
         initialize();
     }
 
@@ -50,8 +44,8 @@ public class FileBlock extends BlockModel {
     @Override
     public Region getCustomization() {
         textField = new TextField();
-        textField.setPromptText("Open a file...");
         textField.setFocusTraversable(false);
+        customizeTextField(textField);
 
         button = new BaseButton(FontAwesomeSolid.FOLDER_OPEN);
         button.setOnAction(this::handleOpenFile);
@@ -64,6 +58,8 @@ public class FileBlock extends BlockModel {
         return box;
     }
 
+    protected abstract void customizeTextField(TextField textField);
+
     ChangeListener<String> pathListener = this::onPathChanged;
 
     private void onPathChanged(Object b, String o, String n) {
@@ -74,7 +70,7 @@ public class FileBlock extends BlockModel {
         textField.requestFocus();
     }
 
-    private void handleOpenFile(ActionEvent event) {
+    protected void handleOpenFile(ActionEvent event) {
 
         //Do Action
         FileChooser picker = new FileChooser();
@@ -98,7 +94,7 @@ public class FileBlock extends BlockModel {
     }
 
     @Override
-    public void process() throws NoSuchFileException {
+    public void process() throws Exception {
 
         if (path.get() == null || path.get().isEmpty()) {
             outputPorts.get(0).setData(null);
@@ -106,13 +102,10 @@ public class FileBlock extends BlockModel {
         }
 
         File file = new File(path.get());
-        if (file.exists() && file.isFile()) {
-            outputPorts.get(0).setData(file);
-        } else {
-            outputPorts.get(0).setData(null);
-            throw new NoSuchFileException(path.get(), null, "File does not exist or is not a file.");
-        }
+        processFile(file);
     }
+
+    protected abstract void processFile(File file) throws Exception;
 
     @Override
     public void serialize(BlockTag xmlTag) {
@@ -127,13 +120,6 @@ public class FileBlock extends BlockModel {
         String filePath = xmlTag.getOtherAttributes().get(QName.valueOf("path"));
         filePath = !filePath.isEmpty() ? filePath : null;
         this.path.set(filePath);
-    }
-
-    @Override
-    public BlockModel copy() {
-        FileBlock block = new FileBlock();
-        block.path.set(this.path.get());
-        return block;
     }
 
     @Override

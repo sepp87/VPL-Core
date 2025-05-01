@@ -8,17 +8,13 @@ public class Notes {
     
 }
 
-// 0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
 // 0 REFACTOR wireless auto-connections in WirelessIndex, CreateBlockCommand, PasteBlocksCommand and RemoveSelectedBlocksCommand where possible 
 // 0 adding huge lists to input.text causes long loading. should be made concurrent also
 // 1 IMPROVEMENT Method block List methods output cant be used in further operations - TODO TEST FIX
 // 
 // WORK IN PROGRESS
-// 1 IMPROVEMENT clean up App and Workspace according to UI structure
-//      rename Workspace helpers to managers?
 //
 // BACKLOG
-// 3 REFACTOR merge integer and double slider and refactor event handlers
 // 0 refactor port data type to support data structures e.g. with TypeTokens also used in GSON. 
 // 0 refactor concurrency of method blocks
 // 0 refactor methodblock progressIndicator spinner need for checking label width != 0.0
@@ -26,11 +22,10 @@ public class Notes {
 // 1 IMPROVEMENT update overall UI to show port data hints ... 
 // 4 IMPROVEMENT create elaborate tests TBD what to test
 // 3 IMPROVEMENT differentiate between mouse wheel and touch pad. Add trackpad support e.g. zoom by pinch, pan by drag
-// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser) and MultiFileBlock (showOpenMultipleDialog)
 // ? TODO potential bug - monitor if selected blocks list is updated according to the number of selected blocks on the workspace
 // 0 evaluate removal bidirectional binding with layoutx&y of block view to model, somewhere LayoutX & Y is set, which is causing an error message. replace by translatex&y
 // 5 IMPROVEMENT look into mouse support on mac in zoomcontroller scrolling
-// 5 IMPROVEMENT styling of scrollbars for BlockSearch and dynamically resize BlockSearch according to ListView size
+// 5 IMPROVEMENT dynamically resize BlockSearch according to ListView size
 // 5 IMPROVEMENT - SpreadSheets
 //      - datasheet viewer reordering columns does not update data sheet
 //      - add getColumn and transpose to Matrix methods
@@ -44,20 +39,24 @@ public class Notes {
 // 3DViewerBlock
 // Geometry Blocks
 // ChatGPT Block
-// WebClientBlock
 // 2d Map
-// special block/new control: retrigger block process 
-// accumulate results + reset possibility
 //
 // THOUGHTS
 // Connections
-//      - as soon as a connection is created is actively added to a block, although it is not yet on the workspace. Might want to rethink this e.g. first activate/init connection on adding to workspace
 //      - when RemoveSelectedBlocks, removeConnectionsModels(blockModel) is triggered. this potentially contains duplicate connections. Need to double check. Afterwards connections are also remove by removeBlock(), these are of course already removed
 //
 // QUESTIONS
 // getResourceAsStream - path should contain forward dashes and cannot use File.separatorChar... why?
 //
 // DONE
+// 3 IMPROVEMENT DirectoryBlock (DirectoryChooser)
+// 3 IMPROVEMENT MultiFileBlock (showOpenMultipleDialog) -> idea dropped due to unknown number of files and exact use case. workaround: simply get files from directory and filter from there
+// 3 REFACTOR merge integer and double slider and refactor event handlers
+// 5 IMPROVEMENT styling of scrollbars for BlockSearch and 
+// Refactor Port and Connection data flow - connections are now just like blocks first activated when placed on the workspace, first on the workspace they forward data
+//      0 BUG after copy blocks are not showing data (is the data flowing? or is only the UI not updated?)
+//      -> Solved - bug was caused by blocks first being activated (processing) on the workspace, copied connections however already triggered a data flow before that 
+// 1 IMPROVEMENT clean up App and Workspace according to UI structure - MVC structure as good as done, refactored blocks, ports and connection
 // 0 IMPROVEMENT Enable AutoConnect when loading from file
 // Hardcoded BTS references (namespace and file extensions) - moved to Config
 // 0 REFACTOR key input listener on scene / editor controller level
@@ -105,4 +104,5 @@ public class Notes {
 // Remove block - remove block and connections
 // Auto-create connection undo/redo
 //
-// REMINDERS
+// REMINDERS / THOUGTHS
+// do block.onIncomingConnectionAdded/Removed make sense, what could their use be? not trigger processing

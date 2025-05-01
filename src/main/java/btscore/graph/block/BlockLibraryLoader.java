@@ -22,16 +22,17 @@ import btscore.utils.FileUtils;
 import btscore.utils.JarClassLoaderUtils;
 
 /**
- *
+ * 
  * @author joostmeulenkamp
  */
 public class BlockLibraryLoader {
 
     private static final List<String> INTERNAL_PACKAGES = List.of(
-            btslib.input.BooleanBlock.class.getPackageName(),
-            btslib.file.ObserveFileBlock.class.getPackageName(),
-            btslib.spreadsheet.DataSheetBlock.class.getPackageName(),
-            btslib.autoconnect.ReceiverBlock.class.getPackageName()
+//            btslib.input.BooleanBlock.class.getPackageName(),
+//            btslib.file.ObserveFileBlock.class.getPackageName(),
+//            btslib.spreadsheet.DataSheetBlock.class.getPackageName(),
+//            btslib.autoconnect.ReceiverBlock.class.getPackageName(),
+            "btslib"
     );
     private static final List<Class<?>> INTERNAL_METHOD_BLOCKS = List.of(
             btslib.method.DateMethods.class,
@@ -103,6 +104,9 @@ public class BlockLibraryLoader {
     private static void loadBlockClasses(Collection<Class<? extends BlockModel>> classes, boolean isExternal) {
         for (Class<?> blockType : classes) {
             BlockMetadata metadata = getBlockMetadata(blockType);
+            if(metadata ==  null) {
+                continue;
+            }
             String identifier = metadata.identifier();
             addBlockType(identifier, blockType, isExternal);
             for (String alias : metadata.aliases()) {

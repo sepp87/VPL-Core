@@ -24,16 +24,27 @@ public class PortController {
         this.view = view;
 
         model.activeProperty().addListener(activeListener);
-        
+        model.nameProperty().addListener(toolTipSourceListener);
+        model.dataTypeProperty().addListener(toolTipSourceListener);
+
         view.idProperty().bind(model.idProperty());
-        view.getTooltip().textProperty().bind(model.nameProperty());
         view.setOnMouseClicked(this::handlePortClicked);
         view.setOnMousePressed(this::ignoreDrag);
         view.setOnMouseDragged(this::ignoreDrag);
         view.setActive(model.isActive());
+        
+        setToolTip();
     }
 
+    private final ChangeListener<Object> toolTipSourceListener = this::onToolTipSourceChanged;
 
+    private void onToolTipSourceChanged(Object b, Object o, Object n) {
+        setToolTip();
+    }
+
+    private void setToolTip() {
+        view.getTooltip().setText(model.nameProperty().get() + " : " + model.dataTypeProperty().get().getSimpleName());
+    }
 
     private void handlePortClicked(MouseEvent event) {
         if (event.isStillSincePress()) {
@@ -55,16 +66,19 @@ public class PortController {
     public PortModel getModel() {
         return model;
     }
-    
+
     public PortView getView() {
         return view;
     }
 
     public void remove() {
         model.activeProperty().removeListener(activeListener);
-        view.getTooltip().textProperty().unbind();
+        model.nameProperty().removeListener(toolTipSourceListener);
+        model.dataTypeProperty().removeListener(toolTipSourceListener);
+
         view.setOnMouseClicked(null);
         view.setOnMousePressed(null);
         view.setOnMouseDragged(null);
+
     }
 }

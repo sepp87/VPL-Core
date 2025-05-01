@@ -92,6 +92,7 @@ public class MethodBlock extends BlockModel {
     @Override
     public void processSafely() {
 
+        System.out.println(info.identifier().split("\\.")[1] + ".processSafely()");
 //        for (Thread thread : threads) {
 //            thread.interrupt();
 //        }
@@ -180,10 +181,10 @@ public class MethodBlock extends BlockModel {
             }
             Object data = result[0].data().get();
             outputPorts.get(0).setData(data);
-            if((data != null) && !List.class.isAssignableFrom(data.getClass())) {
+            if ((data != null) && !List.class.isAssignableFrom(data.getClass())) {
                 outputPorts.get(0).dataTypeProperty().set(data.getClass());
             }
-         
+
         });
 
     }

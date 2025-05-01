@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="http://www.blocksmith.io/xml" Scale="1.0" TranslateX="0.0" TranslateY="0.0">
+    <Blocks>
+        <Block Type="Input.text" UUID="35503288-f982-4eca-ad4f-b681ee0d6632" X="469.0" Y="252.0" Width="-1.0" Height="-1.0" text=""/>
+        <Block Type="Input.text" UUID="398248a8-2aea-47e4-a0e0-4a78fa4ea63d" X="463.0" Y="593.0" Width="-1.0" Height="-1.0" text=""/>
+        <Block Type="Input.doubleSlider" UUID="38ab2137-5ce0-46c6-9b94-ba23bda4317c" X="218.0" Y="471.0" min="0.0" max="10.0" step="0.1" value="3.2"/>
+        <Block Type="Input.integerSlider" UUID="1f45044c-03c2-4865-999b-c1c83188b150" X="198.0" Y="270.0" min="0" max="10" step="1" value="5"/>
+    </Blocks>
+    <Connections>
+        <Connection StartBlock="1f45044c-03c2-4865-999b-c1c83188b150" StartIndex="0" EndBlock="35503288-f982-4eca-ad4f-b681ee0d6632" EndIndex="0"/>
+        <Connection StartBlock="38ab2137-5ce0-46c6-9b94-ba23bda4317c" StartIndex="0" EndBlock="398248a8-2aea-47e4-a0e0-4a78fa4ea63d" EndIndex="0"/>
+    </Connections>
+</Document>

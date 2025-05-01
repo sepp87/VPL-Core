@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
-import btslib.ui.CustomColorBox;
+import btslib.ui.ColorBox;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
@@ -23,7 +23,7 @@ import btscore.workspace.WorkspaceModel;
 public class ColorBlock extends BlockModel {
 
     private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.WHITE);
-    private CustomColorBox picker;
+    private ColorBox picker;
 
     public ColorBlock() {
 //    public ColorBlock(WorkspaceModel workspaceModel) {
@@ -40,7 +40,7 @@ public class ColorBlock extends BlockModel {
 
     @Override
     public Region getCustomization() {
-        picker = new CustomColorBox();
+        picker = new ColorBox();
         picker.customColorProperty().bindBidirectional(color);
         return picker;
     }

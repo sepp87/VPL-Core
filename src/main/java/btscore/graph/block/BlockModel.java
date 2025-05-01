@@ -1,6 +1,5 @@
 package btscore.graph.block;
 
-import static java.lang.Thread.sleep;
 import btscore.graph.base.BaseModel;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import btsxml.BlockTag;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortType;
-import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -30,7 +28,6 @@ import btscore.workspace.WorkspaceModel;
  */
 public abstract class BlockModel extends BaseModel {
 
-//    protected final WorkspaceModel workspace;
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
     protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
@@ -95,9 +92,9 @@ public abstract class BlockModel extends BaseModel {
      * null.
      */
     public void onIncomingConnectionAdded(Object data) {
-        if (data == null) {
-            processSafely();
-        }
+//        if (data == null) {
+//            processSafely();
+//        }
     }
 
     /**
@@ -108,9 +105,9 @@ public abstract class BlockModel extends BaseModel {
      * triggered in case of null.
      */
     public void onIncomingConnectionRemoved(Object data) {
-        if (data == null) {
-            processSafely();
-        }
+//        if (data == null) {
+//            processSafely();
+//        }
     }
 
     public abstract Region getCustomization();
@@ -120,6 +117,8 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void processSafely() {
+        System.out.println(this.getClass().getSimpleName() + ".processSafely()");
+        
         Set<BlockException> previousExceptions = new HashSet<>(exceptions);
 
         // Ensure processing only happens when active

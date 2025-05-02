@@ -373,8 +373,15 @@
 }
 
 .block .combo-box .arrow {
-
     -fx-background-color: #5F5F5F;
+}
+
+.block-resize-button {
+    
+}
+
+.block-resizable {
+    -fx-padding: 10 0 0 0;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -471,14 +478,14 @@
     -fx-background-color: salmon;
 }
 
-.port-in{
+.port-input{
     -fx-background-insets: 1 1 1 0;
     -fx-background-radius: 0 4 4 0;
     -fx-border-radius: 0 2 2 0;
     -fx-border-width: 2 2 2 0;
 }
 
-.port-out{
+.port-output{
     -fx-background-insets: 1 0 1 1;
     -fx-background-radius: 4 0 0 4;
     -fx-border-radius: 2 0 0 2;
@@ -504,8 +511,12 @@
     -fx-stroke-style: solid;
 }
 
-.connection-remove-icon {
+.connection-remove-button {
     -fx-fill: salmon;
+}
+
+.connection-remove-button-cross {
+    -fx-fill: white;
 }
 
 .temp-line{

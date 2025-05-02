@@ -20,6 +20,8 @@ import javafx.scene.Scene;
 import btscore.utils.FileUtils;
 import btscore.utils.SystemUtils.OperatingSystem;
 import btscore.utils.SystemUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -36,8 +38,9 @@ public class Config {
     public static final String XML_FILE_EXTENSION = "btsxml";
 
     private static final Preferences PREFERENCES = Preferences.userNodeForPackage(Config.class);
-    private static final String LAST_DIRECTORY_KEY = "lastOpenedDirectory";
-    private static final String SHOW_HELP_KEY = "showHelp";
+    private static final String PREF_LAST_DIRECTORY = "lastOpenedDirectory";
+    private static final String PREF_SHOW_HELP = "showHelp";
+    private static final String PREF_STYLESHEET = "stylesheet";
 
     private static final String LIBRARY_DIRECTORY = "lib" + File.separatorChar;
     private static final String BUILD_DIRECTORY = "build" + File.separatorChar;
@@ -88,18 +91,8 @@ public class Config {
         return operatingSystem;
     }
 
-    public String stylesheets() {
-//        String defaultStyle = "css/flat_dark.css";
-//        String defaultStyle = "css/flat_singer.css";
-//        String defaultStyle = "css/flat_singer.css";
-        String defaultStyle = "css/flat_white.css";
-//        String defaultStyle = "css/dark_mode.css";
-
-        return settings.getProperty("stylesheets", defaultStyle);
-    }
-
     public static File getLastOpenedDirectory() {
-        String path = PREFERENCES.get(LAST_DIRECTORY_KEY, null);
+        String path = PREFERENCES.get(PREF_LAST_DIRECTORY, null);
         if (path != null) {
             File file = new File(path);
             if (file.exists() && file.isDirectory()) {
@@ -114,24 +107,43 @@ public class Config {
             return;
         }
         if (file.isDirectory()) {
-            PREFERENCES.put(LAST_DIRECTORY_KEY, file.getPath());
+            PREFERENCES.put(PREF_LAST_DIRECTORY, file.getPath());
         } else {
-            PREFERENCES.put(LAST_DIRECTORY_KEY, file.getParent());
+            PREFERENCES.put(PREF_LAST_DIRECTORY, file.getParent());
         }
     }
 
     public static boolean showHelpOnStartup() {
-        boolean showWelcomeDialog = PREFERENCES.getBoolean(SHOW_HELP_KEY, true);
+        boolean showWelcomeDialog = PREFERENCES.getBoolean(PREF_SHOW_HELP, true);
         return showWelcomeDialog;
     }
 
     public static void setShowHelpOnStartup(boolean show) {
-        PREFERENCES.putBoolean(SHOW_HELP_KEY, show);
+        PREFERENCES.putBoolean(PREF_SHOW_HELP, show);
+    }
+
+    public String getStylesheet() {
+        return PREFERENCES.get(PREF_STYLESHEET, STYLESHEETS.get("Light"));
+    }
+
+    public void setStylesheet(String css) {
+        // save app provided stylesheet to preferences
+        if (STYLESHEETS.containsKey(css)) {
+            PREFERENCES.put(PREF_STYLESHEET, css);
+        }
+        if (true) {
+            return;
+        }
+        // TODO save user provided stylesheet to preferences
+        File stylesheet = new File(css);
+        if (stylesheet.exists()) { // TODO check if file is really a stylesheet
+            PREFERENCES.put(PREF_STYLESHEET, css);
+        }
     }
 
     public static void setStylesheets(Scene scene) {
         // Load the CSS from classpath using ClassLoader
-        String stylesheetPath = Config.get().stylesheets(); // Adjust based on your structure
+        String stylesheetPath = Config.get().getStylesheet(); // Adjust based on your structure
         URL resourceUrl = Config.get().getClass().getClassLoader().getResource(stylesheetPath);
 
         if (resourceUrl != null) {
@@ -172,4 +184,11 @@ public class Config {
         }).start();
     }
 
+    public static final Map<String, String> STYLESHEETS = new HashMap<String, String>() {
+        {
+            put("Dark", "css/dark_mode.css");
+            put("Light", "css/flat_white.css");
+            put("Singer", "css/flat_singer.css");
+        }
+    };
 }

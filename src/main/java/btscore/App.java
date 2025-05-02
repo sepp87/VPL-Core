@@ -102,7 +102,6 @@ public class App extends Application {
         GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);
         editorView.printMenuBarHeight();
 
-        scene.getStylesheets().add(Config.get().stylesheets());
         Config.setStylesheets(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");

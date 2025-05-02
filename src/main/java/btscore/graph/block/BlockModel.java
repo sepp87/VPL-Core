@@ -24,7 +24,7 @@ import btscore.graph.port.PortType;
 
 /**
  *
- * @author Joost
+ * @author joostmeulenkamp
  */
 public abstract class BlockModel extends BaseModel {
 

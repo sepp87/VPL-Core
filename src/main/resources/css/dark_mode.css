@@ -3,6 +3,7 @@
     src: url('SourceCodePro-Regular.otf');
 }
 
+/* Font Awesome v4*/
 @font-face {
     font-family: 'FontAwesome';
     src: url('fontawesome-webfont.ttf');
@@ -32,7 +33,7 @@
 .label{
     -fx-font-size: 10;
     -fx-letter-spacing: 10px;
-    -fx-text-fill: #e0e0e0;
+    /*-fx-text-fill: #e0e0e0;*/
 }
 
 .h3 {
@@ -380,8 +381,15 @@
 }
 
 .block .combo-box .arrow {
-
     -fx-background-color: #b0b0b0;
+}
+
+.block-resize-button {
+    
+}
+
+.block-resizable {
+    -fx-padding: 10 10 0 10;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -458,7 +466,7 @@
     -fx-max-height: 24;
     -fx-background-color: rgba(45,45,45,0.9);
     -fx-border-style: solid;
-    -fx-border-color: #555555;
+    -fx-border-color: #1e1e1e;
 }
 
 .port:hover{
@@ -472,21 +480,21 @@
     -fx-max-height: 24;
     -fx-background-color: #777777;
     -fx-border-style: solid;
-    -fx-border-color: #555555;
+    -fx-border-color: #1e1e1e;
 }
 
 .port-active:hover{
     -fx-background-color: #ff6347;
 }
 
-.port-in{
+.port-input{
     -fx-background-insets: 1 1 1 0;
     -fx-background-radius: 0 4 4 0;
     -fx-border-radius: 0 2 2 0;
     -fx-border-width: 2 2 2 0;
 }
 
-.port-out{
+.port-output{
     -fx-background-insets: 1 0 1 1;
     -fx-background-radius: 4 0 0 4;
     -fx-border-radius: 2 0 0 2;
@@ -512,8 +520,12 @@
     -fx-stroke-style: solid;
 }
 
-.connection-remove-icon {
+.connection-remove-button {
     -fx-fill: #ff6347;
+}
+
+.connection-remove-button-cross {
+    -fx-fill: #1e1e1e;
 }
 
 .temp-line{
@@ -579,11 +591,11 @@
 }
 
 .block-exception-bubble {
-    -fx-background-color: #a83731;
+    -fx-background-color: #95473c;
 }
 
 .block-exception-tail {
-    -fx-fill: #a83731;
+    -fx-fill: #95473c;
 }
 
 .block-exception-paging-controls {

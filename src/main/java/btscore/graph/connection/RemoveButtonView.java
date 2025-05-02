@@ -31,7 +31,7 @@ public class RemoveButtonView extends Group {
 
         removeIcon = new SVGPath();
         removeIcon.setContent(svg);
-        removeIcon.getStyleClass().add("connection-remove-icon");
+        removeIcon.getStyleClass().add("connection-remove-button");
 
         /**
          * In JavaFX, SVGPath (a shape that renders an SVG path) does not have
@@ -52,6 +52,7 @@ public class RemoveButtonView extends Group {
 
         double radius = (BUTTON_SIZE - 1) / 2;
         backgroundCircle = new Circle(0, 0, radius, Color.WHITE);
+        backgroundCircle.getStyleClass().add("connection-remove-button-cross");
 
         this.getChildren().addAll(backgroundCircle, removeIcon);
         this.setVisible(false);

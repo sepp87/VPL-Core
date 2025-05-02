@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -60,8 +61,6 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
     };
 
     public HelpDialog(Stage parentStage) {
-//        this.setPrefSize(520, 600); // Size of the dialog window
-
         // Content container
         VBox content = new VBox(10);
         content.setPadding(new Insets(15));
@@ -72,7 +71,6 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         quickStartHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Label quickStartContent = new Label(QUICK_START_CONTENT);
         quickStartContent.setWrapText(true);
-        quickStartContent.minHeight(240);
         quickStartContent.prefHeight(240);
 
         // Controls
@@ -109,10 +107,13 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
             Config.setShowHelpOnStartup(showOnStartCheckbox.isSelected());
         });
 
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS); // pushes closeButton to the right
+
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> ((Stage) this.getScene().getWindow()).close());
 
-        HBox footer = new HBox(10, showOnStartCheckbox, closeButton);
+        HBox footer = new HBox(10, showOnStartCheckbox, spacer, closeButton);
         footer.setPadding(new Insets(15));
 
         // Add all content
@@ -146,7 +147,6 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
             box.getChildren().add(label);
         }
 
-//        box.getChildren().add(new Label());
         return box;
     }
 
@@ -154,6 +154,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
     public static void show() {
         Stage owner = App.getStage();
         Stage dialog = new Stage();
+        dialog.setResizable(false);
         dialog.initOwner(owner);
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle("Welcome");

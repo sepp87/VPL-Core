@@ -147,8 +147,10 @@ public class BlockView extends GridPane {
     ResizeButton getResizeButton() {
         if (resizeButton == null) {
             resizeButton = new ResizeButton();
+            resizeButton.getStyleClass().add("block-resize-button");
             resizeButton.setVisible(false);
-            contentGrid.setStyle("-fx-padding: 10 0 0 0");
+//            contentGrid.setStyle("-fx-padding: 10 0 0 0");
+            contentGrid.getStyleClass().add("block-resizable");
             contentGrid.add(resizeButton, 2, 3);
         }
         return resizeButton;

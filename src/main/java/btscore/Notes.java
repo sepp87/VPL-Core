@@ -7,7 +7,10 @@ package btscore;
 public class Notes {
     
 }
-
+// TODO / WIP
+// put stylesheets stuff into AppStylesheetsHelper
+//
+//
 // NOTES
 // RemoveSelectedBlocksCommand - removes a block's connections twice
 //      - 1) WorkspaceModel.removeConnectionModels(blockModel) removes and returns the removed connections for undo/redo

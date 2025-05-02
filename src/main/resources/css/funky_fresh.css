@@ -1,9 +1,9 @@
+
 @font-face {
     font-family: 'Source Code Pro';
     src: url('SourceCodePro-Regular.otf');
 }
 
-/* Font Awesome v4*/
 @font-face {
     font-family: 'FontAwesome';
     src: url('fontawesome-webfont.ttf');
@@ -48,13 +48,13 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 .radial-menu {
-    -fx-fill: white;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+    -fx-fill: #f4f1ff;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.3), 10, 0, 7, 7);
 }
 
 .radial-sub-menu {
-    -fx-fill: white;
-    -fx-opacity: 0.8;
+    -fx-fill: #f4f1ff;
+    -fx-opacity: 0.9;
 }
 
 .radial-menu-label {
@@ -63,31 +63,31 @@
 }
 
 .radial-menu-item {
-    -fx-fill: white;
+    -fx-fill: #f4f1ff;
     -fx-stroke: null;
     -fx-stroke-width: 0px;
 }
 .radial-menu-item-hover {
-    -fx-fill: salmon;
+    -fx-fill: #ff6b6b;
 }
 
 .radial-menu-item-icon{
     -fx-font-size: 24;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #6f42c1;
 }
 
 .radial-sub-menu-item {
-    -fx-fill: white;
+    -fx-fill: #f4f1ff;
     -fx-stroke: null;
     -fx-stroke-width: 0px;
 }
 .radial-sub-menu-item-hover {
-    -fx-fill: salmon;
+    -fx-fill: #ff6b6b;
 }
 
 .radial-sub-menu-item-icon {
     -fx-font-size: 24;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #6f42c1;
 }
 
 .font-awesome-solid {
@@ -99,7 +99,7 @@
 }
 
 .selection-rectangle {
-    -fx-border-color: lightgrey;
+    -fx-border-color: #a179de;
     -fx-border-width: 3;
     -fx-border-style: dotted;
     -fx-border-radius: 10;
@@ -107,22 +107,22 @@
 
 
 .zoom-controls {
-    -fx-background-color: #f0f0f0;
-    -fx-border-color: #ccc;
+    -fx-background-color: #f4f1ff;
+    -fx-border-color: #a179de;
     -fx-padding: 5;
     -fx-spacing: 10;
 }
 
 .zoom-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #333;
+    -fx-text-fill: #6f42c1;
 }
 
 .zoom-button {
     -fx-font-size: 16px;
     -fx-padding: 5 10;
-    -fx-background-color: #ddd;
-    -fx-border-color: #bbb;
+    -fx-background-color: #e4daff;
+    -fx-border-color: #a179de;
     -fx-cursor: hand;
 }
 
@@ -134,7 +134,7 @@
 
 
 .bts {
-    -fx-background-color: #efefef;
+    -fx-background-color: #f7f7ff;
 }
 
 
@@ -168,11 +168,11 @@
     -fx-border-width: 0;
     -fx-font-family: 'Font Awesome 6 Free Solid';
     -fx-font-size: 24;
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 .bts-button:hover{
-    -fx-text-fill: salmon;
+    -fx-text-fill: #ff6b6b;
 }
 
 .bts-button-fa6 {
@@ -183,11 +183,11 @@
     -fx-border-width: 0;
     -fx-font-family: 'Font Awesome 6 Free Solid';
     -fx-font-size: 24;
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 .bts-button-fa6:hover{
-    -fx-text-fill: salmon;
+    -fx-text-fill: #ff6b6b;
 }
 
 .bts-tag{
@@ -198,8 +198,8 @@
     -fx-border-width: 0;
     -fx-font-family: Arial;
     -fx-font-size: 18;
-    -fx-text-fill: #5F5F5F;
-    -fx-highlight-fill: #F8644C;
+    -fx-text-fill: #6f42c1;
+    -fx-highlight-fill: #ff6b6b;
     -fx-text-overrun: ellipsis;
 }
 
@@ -213,24 +213,24 @@
 .block {
     -fx-background-color: white;
     -fx-background-insets: 0;
-    -fx-background-radius: 4;
+    -fx-background-radius: 12;
     -fx-border-color: white;
     -fx-border-insets: 0 0 0 0;
     -fx-border-width: 0;
     -fx-border-style: solid;
     -fx-border-radius: 0;
     -fx-padding: 10 0 10 0;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.15), 10, 0, 7, 7);
 }
 
 .block:hover {
     /*-fx-background-color: pink;*/
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.3), 10, 0, 7, 7);
 }
 
 .block-selected{
-    -fx-background-color: lightblue;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 10,0,7,7 );
+    -fx-background-color: #e4daff;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.3), 10, 0, 7, 7);
     /*-fx-border-color: #F8B516;*/
     /*-fx-border-color: #5F5F5F;*/
     /*    -fx-border-color: #6385c7;
@@ -246,16 +246,16 @@
 .block-awesome-icon{
     /*-fx-font-family: 'Font Awesome 6 Free Solid';*/
     -fx-font-size: 30;
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 .block-awesome-icon:hover{
-    -fx-text-fill: salmon;
+    -fx-text-fill: #ff6b6b;
 }
 
 .block-text{
     -fx-font-size: 30;
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
     -fx-font-weight: bold;
 }
 
@@ -280,7 +280,7 @@
 
 .block .text-area .scroll-pane .content{
     -fx-background-color: transparent,
-        linear-gradient(from 0px 3.5px to 0px 19.5px, repeat, #5F5F5F 0%, transparent 10%);
+        linear-gradient(from 0px 3.5px to 0px 19.5px, repeat, #6f42c1 0%, transparent 10%);
     /*linear-gradient(from 0px 3.5px to 0px 12px, repeat, #b5b5b5 0%, transparent 10%);*/
     -fx-background-insets: 16 0 0 0;
 }
@@ -294,7 +294,7 @@
     -fx-background-color: transparent;
     -fx-font-family: 'Source Code Pro';
     -fx-pref-column-count: 22;
-    -fx-prompt-text-fill: #5F5F5F;
+    -fx-prompt-text-fill: #6f42c1;
 }
 
 .block .list-view {
@@ -305,18 +305,18 @@
 
 
 .block .list-view .list-cell {
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 .block .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: salmon;
+    -fx-background-color: #ff6b6b;
     -fx-text-fill: white;
 }
 
 
 
 .block .list-view .list-cell:even {
-    -fx-background-color: rgba(127,127,127,0.1);
+    -fx-background-color: rgba(111, 66, 193, 0.05);
 }
 
 .block .list-view .list-cell:odd {
@@ -358,7 +358,7 @@
 /* This is the button cell (collapsed ComboBox display) */
 .block .combo-box .cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 /* Hover color */
@@ -374,7 +374,7 @@
 
 .block .combo-box .arrow {
 
-    -fx-background-color: #5F5F5F;
+    -fx-background-color: #6f42c1;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -386,14 +386,14 @@
 .block-search {
     -fx-background-color: white;
     -fx-background-insets: 0;
-    -fx-background-radius: 4;
+    -fx-background-radius: 12;
     -fx-border-color: white;
     -fx-border-insets: 0 0 0 0;
     -fx-border-width: 0;
     -fx-border-style: solid;
     -fx-border-radius: 0;
     -fx-padding: 20 10 20 20;
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.15), 10, 0, 7, 7);
 }
 
 
@@ -401,7 +401,7 @@
     -fx-background-color: transparent;
     -fx-font-family: 'Source Code Pro';
     -fx-pref-column-count: 22;
-    -fx-prompt-text-fill: #5F5F5F;
+    -fx-prompt-text-fill: #6f42c1;
 }
 
 .block-search .list-view {
@@ -411,16 +411,16 @@
 }
 
 .block-search .list-view .list-cell {
-    -fx-text-fill: #5F5F5F;
+    -fx-text-fill: #6f42c1;
 }
 
 .block-search .list-view .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: salmon;
+    -fx-background-color: #ff6b6b;
     -fx-text-fill: white;
 }
 
 .block-search .list-view .list-cell:even {
-    -fx-background-color: rgba(127,127,127,0.1);
+    -fx-background-color: rgba(111, 66, 193, 0.05);
 }
 
 .block-search .list-view .list-cell:odd {
@@ -436,7 +436,7 @@
 
 .block-group {
     -fx-background-color: transparent;
-    -fx-border-color: lightblue;
+    -fx-border-color: #a179de;
     -fx-border-insets: -10;
     -fx-border-width: 2;
     -fx-border-style: solid;
@@ -450,11 +450,11 @@
     -fx-max-height: 24;
     -fx-background-color: rgba(255,255,255,0.9);
     -fx-border-style: solid;
-    -fx-border-color: lightgrey;
+    -fx-border-color: #a179de;
 }
 
 .port:hover{
-    -fx-background-color: salmon;
+    -fx-background-color: #ff6b6b;
 }
 
 .port-active{
@@ -462,13 +462,13 @@
     -fx-min-height: 24;
     -fx-max-width: 12;
     -fx-max-height: 24;
-    -fx-background-color: #b5b5b5;
+    -fx-background-color: #a179de;
     -fx-border-style: solid;
-    -fx-border-color: lightgrey;
+    -fx-border-color: #6f42c1;
 }
 
 .port-active:hover{
-    -fx-background-color: salmon;
+    -fx-background-color: #ff6b6b;
 }
 
 .port-in{
@@ -499,17 +499,17 @@
 
 .connection{
     -fx-fill: null;
-    -fx-stroke: #b5b5b5;
+    -fx-stroke: #a179de;
     -fx-stroke-width: 2;
     -fx-stroke-style: solid;
 }
 
 .connection-remove-icon {
-    -fx-fill: salmon;
+    -fx-fill: #ff6b6b;
 }
 
 .temp-line{
-    -fx-stroke: #b5b5b5;
+    -fx-stroke: #a179de;
     -fx-stroke-width: 2;
     -fx-stroke-dash-array: 0 6;
     -fx-stroke-dash-offset: 6;
@@ -524,17 +524,17 @@
 /*////////////////////////////////////////////////////////////////////////////*/
 
 .block-info {
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.1) , 10,0,7,7 );
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.15), 10, 0, 7, 7);
 }
 
 .block-info-bubble {
     -fx-padding: 0 0 0 8;
     -fx-background-radius: 4;
-    -fx-background-color: #5F5F5F;
+    -fx-background-color: #6f42c1;
 }
 
 .block-info-tail {
-    -fx-fill: #5F5F5F;
+    -fx-fill: #6f42c1;
     -fx-stroke: transparent;
     -fx-stroke-width: 0px;
 }
@@ -570,11 +570,11 @@
 }
 
 .block-exception-bubble {
-    -fx-background-color: #DD7C77;
+    -fx-background-color: #ff6b6b;
 }
 
 .block-exception-tail {
-    -fx-fill: #DD7C77;
+    -fx-fill: #ff6b6b;
 }
 
 .block-exception-paging-controls {
@@ -628,14 +628,14 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-color: rgba(111, 66, 193, 0.5);
     -fx-background-radius: 4px;
     -fx-border-radius: 4px;
 }
 
 /* Change color on hover for a sleek transition effect */
 .scroll-bar:hover .thumb {
-    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-background-color: rgba(111, 66, 193, 0.8);
 }
 
 /* 
@@ -665,7 +665,7 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-background-color: rgba(111, 66, 193, 0.8);
 }
 
 /* Make the scrollbars disappear when not in use */
@@ -734,7 +734,7 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* Ensure text inside the placeholder remains visible */
 .table-view .placeholder .label {
-    -fx-font-family:'Source Code Pro';
+    -fx-font-family: 'Source Code Pro';
     -fx-font-size: 12px;
 }
 
@@ -748,7 +748,7 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* Ensure column headers also have a vertical border */
 .table-view .column-header {
-    -fx-border-color: WhiteSmoke; /* Match the table-cell border */
+    -fx-border-color: #f4f1ff; /* Match the table-cell border */
     -fx-border-width: 0 1px 0 0; /* Right-side border */
 }
 
@@ -759,18 +759,18 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* Dragged column header */
 .table-view .column-drag-header {
-    -fx-background-color: lightblue; /* Light blue for dragged column */
+    -fx-background-color: #e4daff; /* Light purple for dragged column */
 }
 
 .table-view .table-cell {
-    -fx-border-color: WhiteSMoke; /* Change to your preferred color */
+    -fx-border-color: #f4f1ff; /* Change to your preferred color */
     -fx-border-width: 0 1px 0 0; /* Right border only */
 
 }
 
 .table-view .table-row-cell {
     -fx-background-color: transparent;
-    -fx-border-color: WhiteSmoke; /* Light gray border */
+    -fx-border-color: #f4f1ff; /* Light gray border */
     -fx-border-width: 1px 0 0 0; /* Only bottom border for separation */
 }
 
@@ -786,14 +786,14 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* Selection styling */
 .table-view .table-row-cell:selected {
-    -fx-background-color: lightblue !important; /* Subtle blue for selection */
-    -fx-text-fill: black; /* Keep text black */
+    -fx-background-color: #e4daff !important; /* Subtle blue for selection */
+    -fx-text-fill: #6f42c1; /* Keep text purple */
 }
 
 
-/* Ensure text remains black even when selected */
+/* Ensure text remains visible even when selected */
 .table-view .table-row-cell:selected .text {
-    -fx-fill: black;
+    -fx-fill: #6f42c1;
 }
 
 /*////////////////////////////////////////////////////////////////////////////*/
@@ -826,13 +826,13 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* Make sure the thumb is styled consistently */
 .table-view .virtual-flow .scroll-bar .thumb {
-    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-color: rgba(111, 66, 193, 0.5);
     -fx-background-radius: 4px;
     -fx-border-radius: 4px;
 }
 
 .table-view .virtual-flow .scroll-bar:hover .thumb {
-    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-background-color: rgba(111, 66, 193, 0.8);
 }
 
 
@@ -841,8 +841,6 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 /* DOES NOT WORK (overwrite TableViewSkin and TableHeaderRow since column-drag-header-line is not available through CSS)- Drop target indicator (where the column will be placed) */
 .column-drag-header-line {
-    -fx-background-color: salmon; /* Salmon color for drop target line */
+    -fx-background-color: #ff6b6b; /* Vibrant red for drop target line */
     -fx-pref-height: 3px; /* Make the line more visible */
-
 }
-

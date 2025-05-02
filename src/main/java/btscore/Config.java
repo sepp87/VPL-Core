@@ -91,7 +91,10 @@ public class Config {
     public String stylesheets() {
 //        String defaultStyle = "css/flat_dark.css";
 //        String defaultStyle = "css/flat_singer.css";
+//        String defaultStyle = "css/flat_singer.css";
         String defaultStyle = "css/flat_white.css";
+//        String defaultStyle = "css/dark_mode.css";
+
         return settings.getProperty("stylesheets", defaultStyle);
     }
 

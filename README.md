@@ -7,7 +7,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 ### QUICK START
 Welcome to BlockSmith! Here’s how to get started:
 
-Blocks generate, process, and output data.
+Blocks generate, process and output data.
 Double-click anywhere on the canvas to add a block.
 Each block does something specific, like entering a number or doing math.
 Need help? Click the (i) icon on a block to learn more about it.
@@ -70,7 +70,7 @@ That’s it! You’re ready to build your first graph.
 
 ### TODO
 * General UI/UX
-    * Start screen
+    * ✅ Start screen
     * ✅ Undo/redo
     * Auto save/load
     * ✅ Menu bar

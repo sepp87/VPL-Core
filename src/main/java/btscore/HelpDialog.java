@@ -1,16 +1,15 @@
 package btscore;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,7 +24,7 @@ public class HelpDialog extends VBox {
     private static final String QUICK_START_CONTENT = """
 Welcome to BlockSmith! Here’s how to get started: 
                                                       
-Blocks generate, process, and output data. Double-click anywhere on the canvas to add a block. Each block does something specific, like entering a number or doing math. Need help? Click the (i) icon on a block to learn more about it.
+Blocks generate, process and output data. Double-click anywhere on the canvas to add a block. Each block does something specific, like entering a number or doing math. Need help? Click the (i) icon on a block to learn more about it.
                                                       
 Connect blocks by linking their ports. Hover over a port to see what kind of data a port accepts or produces. Example: A multiply block needs two numbers and gives you the result. That’s it! You’re ready to build your first graph.
 
@@ -66,12 +65,15 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         // Content container
         VBox content = new VBox(10);
         content.setPadding(new Insets(15));
+        VBox.setVgrow(content, Priority.ALWAYS);
 
         // Quick Start
         Label quickStartHeader = new Label("Quick Start");
         quickStartHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         Label quickStartContent = new Label(QUICK_START_CONTENT);
         quickStartContent.setWrapText(true);
+        quickStartContent.minHeight(240);
+        quickStartContent.prefHeight(240);
 
         // Controls
         TitledPane controlsExpander = new TitledPane();
@@ -81,6 +83,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         controlsExpander.setContent(controlsList);
         controlsExpander.setPadding(new Insets(0, 0, 10, 0));
         controlsExpander.setFocusTraversable(false);
+//        controlsExpander.setExpanded(false);
 
         // Shortcuts
         TitledPane shortcutsExpander = new TitledPane();
@@ -98,7 +101,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         controlsExpander.expandedProperty().addListener(controlsExpandedListener);
         shortcutsExpander.expandedProperty().addListener(shortcutsExpandedListener);
 
-        // Show on start + close button
+        // Footer - Show on start + close button
         CheckBox showOnStartCheckbox = new CheckBox("Show this help dialog on startup");
         showOnStartCheckbox.setSelected(Config.showHelpOnStartup());
         showOnStartCheckbox.setFocusTraversable(false);
@@ -110,17 +113,16 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         closeButton.setOnAction(e -> ((Stage) this.getScene().getWindow()).close());
 
         HBox footer = new HBox(10, showOnStartCheckbox, closeButton);
-        footer.setPadding(new Insets(10, 0, 0, 0));
+        footer.setPadding(new Insets(15));
 
         // Add all content
         content.getChildren().addAll(
                 quickStartHeader, quickStartContent,
                 controlsHeader, controlsExpander,
-                shortcutsHeader, shortcutsExpander,
-                footer
+                shortcutsHeader, shortcutsExpander
         );
 
-        this.getChildren().add(content);
+        this.getChildren().addAll(content, footer);
     }
 
     private final ChangeListener<Boolean> controlsExpandedListener;
@@ -157,7 +159,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         dialog.setTitle("Welcome");
 
         HelpDialog helpView = new HelpDialog(owner);
-        Scene scene = new Scene(helpView, 520, 870);
+        Scene scene = new Scene(helpView, 520, 750);
         dialog.setScene(scene);
         dialog.show();
     }

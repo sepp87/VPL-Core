@@ -25,7 +25,7 @@ public class HelpDialog extends VBox {
     private static final String QUICK_START_CONTENT = """
 Welcome to BlockSmith! Here’s how to get started: 
                                                       
-Blocks generate, process and output data. Double-click anywhere on the canvas to add a block. Each block does something specific, like entering a number or doing math. Need help? Click the (i) icon on a block to learn more about it.
+Blocks generate, process and output data. Double-click anywhere on the workspace to add a block. Each block does something specific, like entering a number or doing math. Need help? Click the (i) icon on a block to learn more about it.
                                                       
 Connect blocks by linking their ports. Hover over a port to see what kind of data a port accepts or produces. Example: A multiply block needs two numbers and gives you the result. That’s it! You’re ready to build your first graph.
 

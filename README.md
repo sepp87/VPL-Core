@@ -8,7 +8,7 @@ See example at: https://www.youtube.com/watch?v=Oev1IJZvAPw
 Welcome to BlockSmith! Here’s how to get started:
 
 Blocks generate, process and output data.
-Double-click anywhere on the canvas to add a block.
+Double-click anywhere on the workspace to add a block.
 Each block does something specific, like entering a number or doing math.
 Need help? Click the (i) icon on a block to learn more about it.
 

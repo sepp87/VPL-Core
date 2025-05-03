@@ -102,7 +102,7 @@ public class App extends Application {
         GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);
         editorView.printMenuBarHeight();
 
-        Config.setStylesheets(scene);
+        Config.setStylesheetToScene(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook

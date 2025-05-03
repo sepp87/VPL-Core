@@ -18,6 +18,8 @@ public class MenuBarView extends MenuBar {
     private final MenuItem undo;
     private final MenuItem redo;
     private final MenuItem group;
+    
+    private final Menu styleMenu;
 
     public MenuBarView() {
         this.setUseSystemMenuBar(false);
@@ -57,8 +59,13 @@ public class MenuBarView extends MenuBar {
         MenuItem reloadPlugins = new MenuItem("Reload plugins", "RELOAD_PLUGINS");
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
         MenuItem help = new MenuItem("Help", "HELP");
-        
-        extrasMenu.getItems().addAll(reloadPlugins, logErrors, help);
+        this.styleMenu = new Menu("Style");
+        extrasMenu.getItems().addAll(reloadPlugins, logErrors, help, styleMenu);
+
+        MenuItem light = new MenuItem("Light", "STYLESHEET");
+        MenuItem dark = new MenuItem("Dark", "STYLESHEET");
+        MenuItem singer = new MenuItem("Singer", "STYLESHEET");
+        styleMenu.getItems().addAll(light, dark, singer);
 
         logErrors.setDisable(true);
 
@@ -87,6 +94,10 @@ public class MenuBarView extends MenuBar {
 
     public MenuItem getGroupMenuItem() {
         return group;
+    }
+    
+    public List<MenuItem> getStyleMenuItems(){
+        return getMenuItemsFrom(styleMenu);
     }
 
     public class MenuItem extends javafx.scene.control.MenuItem {

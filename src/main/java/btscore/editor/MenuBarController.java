@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import btscore.App;
+import btscore.Config;
 import btscore.editor.context.ActionManager;
 
 /**
@@ -29,6 +30,10 @@ public class MenuBarController extends BaseController {
         view.getEditMenu().showingProperty().addListener(editMenuShownListener);
         view.getUndoMenuItem().setOnAction((e) -> undo());
         view.getRedoMenuItem().setOnAction((e) -> redo());
+
+        for (MenuItem styleItem : view.getStyleMenuItems()) {
+            styleItem.setOnAction((e) -> Config.setStylesheet(view.getScene(), styleItem.getText()));
+        }
     }
 
     private void undo() {

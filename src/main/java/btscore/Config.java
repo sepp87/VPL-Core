@@ -122,31 +122,53 @@ public class Config {
         PREFERENCES.putBoolean(PREF_SHOW_HELP, show);
     }
 
-    public String getStylesheet() {
-        return PREFERENCES.get(PREF_STYLESHEET, STYLESHEETS.get("Light"));
+    private static final String DEFAULT_STYLE = "Light";
+
+    public static final Map<String, String> STYLESHEETS = new HashMap<String, String>() {
+        {
+            put("Dark", "css/dark_mode.css");
+            put("Light", "css/flat_white.css");
+            put("Singer", "css/flat_singer.css");
+        }
+    };
+
+    public static String getStylesheet() {
+        String styleOrPath = PREFERENCES.get(PREF_STYLESHEET, STYLESHEETS.get(DEFAULT_STYLE)); // Predefined style or path to user defined CSS
+        if (STYLESHEETS.containsValue(styleOrPath)) {
+            return styleOrPath;
+        }
+        File userDefinedStyle = new File(styleOrPath);
+        if (userDefinedStyle.exists()) {
+            return styleOrPath;
+        }
+        return STYLESHEETS.get(DEFAULT_STYLE);
     }
 
-    public void setStylesheet(String css) {
+    public static void setStylesheet(Scene scene, String style) {
+        setStylesheetToPreferences(style);
+        setStylesheetToScene(scene);
+    }
+
+    private static void setStylesheetToPreferences(String style) {
         // save app provided stylesheet to preferences
-        if (STYLESHEETS.containsKey(css)) {
-            PREFERENCES.put(PREF_STYLESHEET, css);
+        if (STYLESHEETS.containsKey(style)) {
+            PREFERENCES.put(PREF_STYLESHEET, STYLESHEETS.get(style));
         }
-        if (true) {
-            return;
-        }
-        // TODO save user provided stylesheet to preferences
-        File stylesheet = new File(css);
+
+        // save user provided stylesheet to preferences
+        File stylesheet = new File(style);
         if (stylesheet.exists()) { // TODO check if file is really a stylesheet
-            PREFERENCES.put(PREF_STYLESHEET, css);
+            PREFERENCES.put(PREF_STYLESHEET, style);
         }
     }
 
-    public static void setStylesheets(Scene scene) {
+    public static void setStylesheetToScene(Scene scene) {
         // Load the CSS from classpath using ClassLoader
-        String stylesheetPath = Config.get().getStylesheet(); // Adjust based on your structure
+        String stylesheetPath = Config.getStylesheet(); // Adjust based on your structure
         URL resourceUrl = Config.get().getClass().getClassLoader().getResource(stylesheetPath);
 
         if (resourceUrl != null) {
+            scene.getStylesheets().clear();
             scene.getStylesheets().add(resourceUrl.toExternalForm());
             System.out.println("CSS Loaded: " + resourceUrl.toExternalForm());
         } else {
@@ -184,11 +206,4 @@ public class Config {
         }).start();
     }
 
-    public static final Map<String, String> STYLESHEETS = new HashMap<String, String>() {
-        {
-            put("Dark", "css/dark_mode.css");
-            put("Light", "css/flat_white.css");
-            put("Singer", "css/flat_singer.css");
-        }
-    };
 }

@@ -28,6 +28,23 @@ public class JsonMethods {
             .create();
 
     @BlockMetadata(
+            identifier = "Json.asStringList",
+            category = "Core",
+            description = "Converts a JSON array into a list of string values.")
+    public static List<String> asStringList(String jsonArray) {
+
+        JsonElement element = PARSER.parse(jsonArray);
+        List<String> list = new ArrayList<>();
+        if (element.isJsonArray()) {
+            for (JsonElement item : element.getAsJsonArray()) {
+                String value = GSON.toJson(item);
+                list.add(value);
+            }
+        }
+        return list;
+    }
+
+    @BlockMetadata(
             identifier = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")

@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -21,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import btsxml.BlockTag;
 import btscore.graph.port.PortModel;
 import btscore.graph.block.ExceptionPanel.BlockException;
+import btscore.graph.block.MethodExecutor.InvocationResult;
 import btscore.utils.ListUtils;
 
 /**
@@ -138,22 +137,22 @@ public class MethodBlock extends BlockModel {
             int count = inputPorts.size();
             switch (count) {
                 case 0 -> {
-                    result[0] = invokeMethodArgs(traversalLog);
+                    result[0] = invokeMethodArgs();
                 }
                 case 1 -> {
                     Object a = inputPorts.get(0).getData();
-                    result[0] = isListOperator ? invokeListMethodArgs(traversalLog, a) : invokeMethodArgs(traversalLog, a);
+                    result[0] = isListOperator ? invokeListMethodArgs(traversalLog, a) : invokeMethodArgs(a);
                 }
                 case 2 -> {
                     Object a = inputPorts.get(0).getData();
                     Object b = inputPorts.get(1).getData();
-                    result[0] = isListOperator ? invokeListMethodArgs2(traversalLog, a, b) : invokeMethodArgs(traversalLog, a, b);
+                    result[0] = isListOperator ? invokeListMethodArgs2(traversalLog, a, b) : invokeMethodArgs(a, b);
                 }
                 case 3 -> {
                     Object a = inputPorts.get(0).getData();
                     Object b = inputPorts.get(1).getData();
                     Object c = inputPorts.get(2).getData();
-                    result[0] = invokeMethodArgs(traversalLog, a, b, c);
+                    result[0] = invokeMethodArgs(a, b, c);
                     // ToDo
                 }
                 default -> { // Show an error when there are more than 3 ports
@@ -174,7 +173,7 @@ public class MethodBlock extends BlockModel {
 
         Platform.runLater(() -> {
             int size = exceptions.size();
-            exceptions.addAll(result[0].exceptions);
+            exceptions.addAll(result[0].exceptions());
             exceptions.remove(0, size);
             if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
                 exceptions.clear();
@@ -243,76 +242,22 @@ public class MethodBlock extends BlockModel {
                 throwable = e.getCause();
             }
             BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
-            invocationResult.exceptions.add(exception);
+            invocationResult.exceptions().add(exception);
         }
         return invocationResult;
     }
 
-    private InvocationResult invokeMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        int listCount = getListCount(parameters);
+    private InvocationResult invokeMethodArgs(Object... parameters) {
+        return getMethodExecutor().invoke(parameters);
+    }
 
-        if (listCount == 0) { // none are list - invoke method
-            InvocationResult invocationResult = new InvocationResult();
+    private MethodExecutor methodExecutor;
 
-            try {
-                Object result = method.invoke(null, parameters);
-                invocationResult.data().set(result);
-
-            } catch (Exception e) {
-                Throwable throwable = e;
-                if (e.getCause() != null) {
-                    throwable = e.getCause();
-                }
-                BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
-                invocationResult.exceptions.add(exception);
-            }
-            return invocationResult;
-
-        } else if (listCount == inputPorts.size()) { // all are lists - loop and recurse
-
-            List<Object> list = new ArrayList<>();
-            InvocationResult invocationResult = new InvocationResult();
-            invocationResult.data().set(list);
-
-            long shortestListSize = getShortestListSize(parameters);
-            for (int i = 0; i < shortestListSize; i++) {
-                traversalLog.add(i);
-
-                Object[] array = new Object[parameters.length];
-                for (int j = 0; j < parameters.length; j++) {
-                    List<?> p = (List<?>) parameters[j];
-                    Object item = p.get(i);
-                    array[j] = item;
-                }
-
-                InvocationResult subResult = invokeMethodArgs(traversalLog, array);
-                invocationResult.exceptions().addAll(subResult.exceptions);
-                list.add(subResult.data);
-
-                traversalLog.pop();
-            }
-            return invocationResult;
-
-        } else { // some are list, some are not - make all lists and recurse
-            long shortestListSize = getShortestListSize(parameters);
-            if (shortestListSize == 0) {
-                return null;
-            }
-
-            for (int i = 0; i < shortestListSize; i++) {
-                Object p = parameters[i];
-                if (ListUtils.isList(p)) {
-                    continue;
-                }
-                List<Object> list = new ArrayList<>();
-                for (int j = 0; j < shortestListSize; j++) {
-                    list.add(p);
-                }
-                parameters[i] = list;
-            }
-            InvocationResult invocationResult = invokeMethodArgs(traversalLog, parameters);
-            return invocationResult;
+    private MethodExecutor getMethodExecutor() {
+        if(methodExecutor == null) {
+            methodExecutor = new MethodExecutor(method);
         }
+        return methodExecutor;
     }
 
     private String getExceptionIndex(Deque<Integer> traversalLog) {
@@ -324,41 +269,6 @@ public class MethodBlock extends BlockModel {
             result += "[" + index + "]";
         }
         return result;
-    }
-
-    private int getListCount(Object... parameters) {
-        int result = 0;
-        for (Object p : parameters) {
-            if (ListUtils.isList(p)) {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    private int getShortestListSize(Object... parameters) {
-        List<?> first = getFirstList(parameters);
-        int result = -1;
-        if (first == null) {
-            return result;
-        }
-        result = first.size();
-        for (Object p : parameters) {
-            if (ListUtils.isList(p)) {
-                List<?> list = (List<?>) p;
-                result = list.size() < result ? list.size() : result;
-            }
-        }
-        return result;
-    }
-
-    private List<?> getFirstList(Object... parameters) {
-        for (Object p : parameters) {
-            if (ListUtils.isList(p)) {
-                return (List<?>) p;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -397,13 +307,5 @@ public class MethodBlock extends BlockModel {
         CROSS_PRODUCT
     }
 
-    public record InvocationResult(
-            ObjectProperty data,
-            List<BlockException> exceptions) {
-
-        public InvocationResult() {
-            this(new SimpleObjectProperty(), new ArrayList<>());
-        }
-    }
 
 }

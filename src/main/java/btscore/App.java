@@ -96,10 +96,10 @@ public class App extends Application {
         stage.setFullScreen(false);
 
 //        GraphLoader.deserialize(new File("btsxml/method-block.btsxml"), workspaceModel);
-//        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceModel);
+        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/addition.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/file.btsxml"), workspaceModel);
-        GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);
+//        GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);
         editorView.printMenuBarHeight();
 
         Config.setStylesheetToScene(scene);

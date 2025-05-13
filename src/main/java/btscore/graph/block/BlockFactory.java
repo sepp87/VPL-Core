@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import btscore.AppLauncher;
 import btscore.graph.port.AutoConnectable;
 import btscore.icons.FontAwesomeSolid;
 import java.lang.reflect.Field;
@@ -7,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,8 +66,20 @@ public class BlockFactory {
             if (returnType.equals(Number.class)) {
                 blockModel.addOutputPort("double", double.class, isAutoConnectable);
             } else if (List.class.isAssignableFrom(returnType)) {
-                blockModel.isListReturnType = true;
-                blockModel.addOutputPort(Object.class.getSimpleName(), Object.class, isAutoConnectable);
+
+                Type genericReturnType = method.getGenericReturnType();
+                if (genericReturnType instanceof ParameterizedType) { // if list TODO refactor since the return type is a ParameterizedType of type list
+                    ParameterizedType pt = (ParameterizedType) genericReturnType;
+                    Type typeArgument = pt.getActualTypeArguments()[0];
+                    if (typeArgument instanceof Class) {
+                        Class<?> clazz = (Class<?>) typeArgument;
+                        blockModel.addOutputPort(clazz.getSimpleName(), clazz, isAutoConnectable);
+                    } else {
+                        blockModel.isListReturnType = true;
+                        blockModel.addOutputPort(Object.class.getSimpleName(), Object.class, isAutoConnectable);
+                    }
+                }
+
             } else {
                 blockModel.addOutputPort(returnType.getSimpleName(), returnType, isAutoConnectable);
             }
@@ -87,6 +101,41 @@ public class BlockFactory {
             Logger.getLogger(BlockFactory.class.getName()).log(Level.SEVERE, null, e);
         }
         return blockModel;
+    }
+
+    static void testMethod() {
+        for (Method m : AppLauncher.class.getDeclaredMethods()) {
+            if (m.getName().equals("getKey")) {
+                Type genericReturnType = m.getGenericReturnType();
+                if (genericReturnType instanceof ParameterizedType) {
+                    ParameterizedType pt = (ParameterizedType) genericReturnType;
+
+                    System.out.println("Raw type: " + pt.getRawType()); // Map
+
+                    for (Type arg : pt.getActualTypeArguments()) {
+                        System.out.println("Type arg: " + arg); // String, Integer
+                    }
+                } else {
+                    System.out.println("Not parameterized");
+                    System.out.println(genericReturnType.getTypeName());
+                }
+
+                Type[] types = m.getGenericParameterTypes();
+                for (Type type : types) {
+//                    if (type instanceof ParameterizedType pt) {
+//                        System.out.println("Raw type: " + pt.getRawType()); // Map
+//
+//                        for (Type arg : pt.getActualTypeArguments()) {
+//                            System.out.println("Type arg: " + arg); // String, Integer
+//                        }
+//                    } else {
+                    System.out.println("Not parameterized");
+                    System.out.println(type.getTypeName());
+
+//                    }
+                }
+            }
+        }
     }
 
     public static BlockModel createBlockFromField(Field field) {
